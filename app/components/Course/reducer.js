@@ -5,7 +5,7 @@ import {
 
 const initialState = fromJS({});
 
-function appReducer(state = initialState, action) {
+function courseReducer(state = initialState, action) {
   switch (action.type) {
     case SOME_ACTION:
       return state;
@@ -14,8 +14,8 @@ function appReducer(state = initialState, action) {
   }
 }
 
-export default appReducer;
+export default courseReducer;
 
 // Добавить в reducers.js
-// import App from 'containers/App/reducer';
-// { app: appReducer }
+// import Course from 'components/Course/reducer';
+// { course: courseReducer }
