@@ -14,8 +14,11 @@ function routeReducer(state = fromJS({ locationBeforeTransitions: null }), actio
   }
 }
 
+import courseReducer from 'components/Course/reducer';
+
 const reducers = combineReducers({
   route: routeReducer,
+  course: courseReducer,
 });
 
 export default reducers;
