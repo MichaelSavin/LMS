@@ -5,7 +5,7 @@
 const componentExists = require('../utils/componentExists');
 
 module.exports = {
-  description: 'Add a container component',
+  description: 'Add smart component',
   prompts: [{
     type: 'input',
     name: 'name',
@@ -39,7 +39,7 @@ module.exports = {
     const actions = [{
       type: 'add',
       path: '../../app/components/{{properCase name}}/index.js',
-      templateFile: './container/index.js.hbs',
+      templateFile: './smart/index.js.hbs',
       abortOnFail: true,
     }];
 
@@ -50,7 +50,7 @@ module.exports = {
       actions.push({
         type: 'add',
         path: '../../app/components/{{properCase name}}/actions.js',
-        templateFile: './container/actions.js.hbs',
+        templateFile: './smart/actions.js.hbs',
         abortOnFail: true,
       });
 
@@ -58,7 +58,7 @@ module.exports = {
       actions.push({
         type: 'add',
         path: '../../app/components/{{properCase name}}/constants.js',
-        templateFile: './container/constants.js.hbs',
+        templateFile: './smart/constants.js.hbs',
         abortOnFail: true,
       });
 
@@ -66,7 +66,7 @@ module.exports = {
       actions.push({
         type: 'add',
         path: '../../app/components/{{properCase name}}/selectors.js',
-        templateFile: './container/selectors.js.hbs',
+        templateFile: './smart/selectors.js.hbs',
         abortOnFail: true,
       });
 
@@ -74,7 +74,7 @@ module.exports = {
       actions.push({
         type: 'add',
         path: '../../app/components/{{properCase name}}/reducer.js',
-        templateFile: './container/reducer.js.hbs',
+        templateFile: './smart/reducer.js.hbs',
         abortOnFail: true,
       });
     }
@@ -84,7 +84,7 @@ module.exports = {
       actions.push({
         type: 'add',
         path: '../../app/components/{{properCase name}}/sagas.js',
-        templateFile: './container/sagas.js.hbs',
+        templateFile: './smart/sagas.js.hbs',
         abortOnFail: true,
       });
     }

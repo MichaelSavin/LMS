@@ -5,7 +5,7 @@
 const componentExists = require('../utils/componentExists');
 
 module.exports = {
-  description: 'Add an unconnected component',
+  description: 'Add dumb component',
   prompts: [{
     type: 'input',
     name: 'name',
@@ -24,12 +24,12 @@ module.exports = {
     [{
       type: 'add',
       path: '../../app/components/{{properCase name}}/index.js',
-      templateFile: './component/index.js.hbs',
+      templateFile: './dumb/index.js.hbs',
       abortOnFail: true,
     }, {
       type: 'add',
       path: '../../app/components/{{properCase name}}/styles.css',
-      templateFile: './component/styles.css.hbs',
+      templateFile: './dumb/styles.css.hbs',
       abortOnFail: true,
     }]
   ),
