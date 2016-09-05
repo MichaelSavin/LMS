@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import courseSelector from './selectors';
 import { connect } from 'react-redux';
 import Structure from './Structure';
 
@@ -6,22 +7,20 @@ export class Course extends Component { // eslint-disable-line react/prefer-stat
   render() {
     return (
       <div>
-        <Structure {...this.props.data} />
+        <Structure {...this.props.course} />
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => ({
-  data: state.get('course').toJS(),
-});
+const mapStateToProps = courseSelector();
 
 const mapDispatchToProps = (dispatch) => ({
   dispatch,
 });
 
 Course.propTypes = {
-  data: PropTypes.object.isRequired,
+  course: PropTypes.object.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Course);

@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 
-const selectStateData = () => state => state.get('stateData');
+const selectCourse = () => (state) => state.get('course');
 
-const stateDataSelector = () => createSelector(
-  selectStateData(),
-  (stateData) => stateData.toJS()
+const courseSelector = () => createSelector(
+  selectCourse(),
+  (course) => ({ course: course.toJS() })
 );
 
-export default stateDataSelector;
+export default courseSelector;
