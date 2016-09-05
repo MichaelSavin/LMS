@@ -9,3 +9,5 @@ cd LMS
 npm install
 npm start
 ```
+
+Информация о прогрессе проекта находиться в Wiki
