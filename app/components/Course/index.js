@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import stateDataSelector from './selectors';
+import Structure from './Structure';
+import { toJS } from 'immutable';
+// import Unit from './Unit';
 
 export class Course extends Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
       <div>
-        🔨
+        <Structure {...this.props.course} />
       </div>
     );
   }
 }
 
-const mapStateToProps = stateDataSelector();
+const mapStateToProps = (state) => ({
+  course: state.get('course').toJS(),
+});
 
 const mapDispatchToProps = (dispatch) => ({
   dispatch,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Course);
-
-// Добавить в routes.js:
-// import Course from 'components/Course';
-// <Route path="/Course" component={ Course }></Route>

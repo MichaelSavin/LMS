@@ -4,7 +4,7 @@ import styles from './styles.css';
 
 const Actions = () => (
   <div className={styles.actions}>
-    🔨
+    Действия
   </div>
 );
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route } from 'react-router';
 
-import App from 'components/App';
+import Course from 'components/Course';
 
 const routes = (
-  <Route path="/" component={App}></Route>
+  <Route path="/" component={Course}></Route>
 );
 
 export default routes;

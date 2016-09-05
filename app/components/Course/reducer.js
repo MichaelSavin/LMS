@@ -1,5 +1,6 @@
 import { fromJS, Immutable } from 'immutable';
 import mock from './mock';
+
 import {
   ADD_SECTION,
   REMOVE_SECTION,
