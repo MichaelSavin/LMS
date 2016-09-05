@@ -7,7 +7,7 @@
     "url": "git://github.com/erohin/LMS.git"
   },
   "engines": {
-    "npm": ">=3"
+    "npm": "6.5.0"
   },
   "author": "Evgeny Erohin",
   "license": "",
