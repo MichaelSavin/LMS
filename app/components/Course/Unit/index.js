@@ -2,12 +2,12 @@ import React from 'react';
 
 import styles from './styles.css';
 
-const Exercise = () => (
+const Unit = () => (
   <div className={styles.exercise}>
     🔨
   </div>
 );
 
-Exercise.propTypes = {};
+Unit.propTypes = {};
 
-export default Exercise;
+export default Unit;
