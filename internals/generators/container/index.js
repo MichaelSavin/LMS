@@ -38,7 +38,7 @@ module.exports = {
     // Generate index.js
     const actions = [{
       type: 'add',
-      path: '../../app/containers/{{properCase name}}/index.js',
+      path: '../../app/components/{{properCase name}}/index.js',
       templateFile: './container/index.js.hbs',
       abortOnFail: true,
     }];
@@ -49,7 +49,7 @@ module.exports = {
       // Actions
       actions.push({
         type: 'add',
-        path: '../../app/containers/{{properCase name}}/actions.js',
+        path: '../../app/components/{{properCase name}}/actions.js',
         templateFile: './container/actions.js.hbs',
         abortOnFail: true,
       });
@@ -57,7 +57,7 @@ module.exports = {
       // Constants
       actions.push({
         type: 'add',
-        path: '../../app/containers/{{properCase name}}/constants.js',
+        path: '../../app/components/{{properCase name}}/constants.js',
         templateFile: './container/constants.js.hbs',
         abortOnFail: true,
       });
@@ -65,7 +65,7 @@ module.exports = {
       // Selectors
       actions.push({
         type: 'add',
-        path: '../../app/containers/{{properCase name}}/selectors.js',
+        path: '../../app/components/{{properCase name}}/selectors.js',
         templateFile: './container/selectors.js.hbs',
         abortOnFail: true,
       });
@@ -73,7 +73,7 @@ module.exports = {
       // Reducer
       actions.push({
         type: 'add',
-        path: '../../app/containers/{{properCase name}}/reducer.js',
+        path: '../../app/components/{{properCase name}}/reducer.js',
         templateFile: './container/reducer.js.hbs',
         abortOnFail: true,
       });
@@ -83,7 +83,7 @@ module.exports = {
     if (data.wantSagas) {
       actions.push({
         type: 'add',
-        path: '../../app/containers/{{properCase name}}/sagas.js',
+        path: '../../app/components/{{properCase name}}/sagas.js',
         templateFile: './container/sagas.js.hbs',
         abortOnFail: true,
       });
