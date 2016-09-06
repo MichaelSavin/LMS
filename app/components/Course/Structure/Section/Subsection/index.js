@@ -4,7 +4,7 @@ import Unit from './Unit';
 
 import styles from './styles.css';
 
-const SubSection = ({ name, units }) => (
+const Subsection = ({ name, units }) => (
   <div className={styles.subsection}>
     <div className={styles.name}>{name}</div>
     {units && units.map((data, index) =>
@@ -13,9 +13,9 @@ const SubSection = ({ name, units }) => (
   </div>
 );
 
-SubSection.propTypes = {
+Subsection.propTypes = {
   name: PropTypes.string.isRequired,
   units: PropTypes.array,
 };
 
-export default SubSection;
+export default Subsection;

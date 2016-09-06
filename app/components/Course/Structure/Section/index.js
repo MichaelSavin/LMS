@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import SubSection from './SubSection';
+import Subsection from './Subsection';
 
 import styles from './styles.css';
 
@@ -8,7 +8,7 @@ const Section = ({ name, subsections }) => (
   <div className={styles.section}>
     <div className={styles.name}>{name}</div>
     {subsections && subsections.map((data, index) =>
-      <SubSection key={index} {...data} />)
+      <Subsection key={index} {...data} />)
     }
   </div>
 );
