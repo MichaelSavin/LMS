@@ -5,11 +5,11 @@ import Actions from './Actions';
 
 import styles from './styles.css';
 
-const Structure = ({ name, info, sections }) => (
+const Structure = ({ name, info, sections = [] }) => (
   <div className={styles.structure}>
     <div className={styles.name}>{name}</div>
     <div className={styles.info}>{info}</div>
-    {sections && sections.map((data, index) =>
+    {sections.map((data, index) =>
       <Section key={index} {...data} />)
     }
     <Actions />

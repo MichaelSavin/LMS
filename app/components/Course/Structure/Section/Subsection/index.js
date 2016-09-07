@@ -4,10 +4,10 @@ import Unit from './Unit';
 
 import styles from './styles.css';
 
-const Subsection = ({ name, units }) => (
+const Subsection = ({ name, units = [] }) => (
   <div className={styles.subsection}>
     <div className={styles.name}>{name}</div>
-    {units && units.map((data, index) =>
+    {units.map((data, index) =>
       <Unit key={index} {...data} />)
     }
   </div>
