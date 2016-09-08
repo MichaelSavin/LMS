@@ -1,3 +1,12 @@
-.unit { /* stylelint-disable */
+/* .unit {
+} */
 
+.name {
+  padding: 5px;
+  font-size: 15px;
+  padding-left: 10px;
+}
+
+.info {
+  display: none;
 }

@@ -1,3 +1,10 @@
-.subsection { /* stylelint-disable */
+/* .subsection {
+} */
 
+.name {
+  color: white;
+  padding: 7.5px;
+  font-size: 14px;
+  padding-left: 10px;
+  background-color: #6967C4;
 }
