@@ -13,11 +13,11 @@ const Section = ({ name, subsections = [] }) => (
     <div className={styles.title}>
       <div className={styles.name}>
         {name}
-        <Edit size={17.5} />
+        <Edit action={() => alert('edit section')} size={17.5} />
       </div>
       <div className={styles.actions}>
-        <Add size={17.5} />
-        <Remove size={20} />
+        <Add action={() => alert('add section')} size={17.5} />
+        <Remove action={() => alert('remove section')} size={20} />
       </div>
     </div>
     {subsections.map((data, index) =>

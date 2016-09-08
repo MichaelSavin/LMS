@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import courseSelector from './selectors';
 import { connect } from 'react-redux';
+import * as actions from './actions';
 import Structure from './Structure';
 
 export class Course extends Component { // eslint-disable-line react/prefer-stateless-function
@@ -16,7 +17,7 @@ export class Course extends Component { // eslint-disable-line react/prefer-stat
 const mapStateToProps = courseSelector();
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatch,
+  addSection: (section) => dispatch(actions.addSection(section)),
 });
 
 Course.propTypes = {
