@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 
 import Subsection from './Subsection';
 
+import Add from 'components/UI/Icons/plus';
 import Edit from 'components/UI/Icons/pencil';
 import Remove from 'components/UI/Icons/trash';
 
@@ -15,6 +16,7 @@ const Section = ({ name, subsections = [] }) => (
         <Edit size={17.5} />
       </div>
       <div className={styles.actions}>
+        <Add size={17.5} />
         <Remove size={20} />
       </div>
     </div>
