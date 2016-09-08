@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
 import courseSelector from './selectors';
 import { connect } from 'react-redux';
 import * as actions from './actions';
@@ -8,7 +9,10 @@ export class Course extends Component { // eslint-disable-line react/prefer-stat
   render() {
     return (
       <div>
-        <Structure {...this.props.course} />
+        <Structure
+          data={this.props.data}
+          actions={this.props.actions}
+        />
       </div>
     );
   }
@@ -17,11 +21,12 @@ export class Course extends Component { // eslint-disable-line react/prefer-stat
 const mapStateToProps = courseSelector();
 
 const mapDispatchToProps = (dispatch) => ({
-  addSection: (section) => dispatch(actions.addSection(section)),
+  actions: bindActionCreators(actions, dispatch),
 });
 
 Course.propTypes = {
-  course: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
+  actions: PropTypes.object.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Course);

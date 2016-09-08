@@ -1,4 +1,4 @@
-import { fromJS, Immutable } from 'immutable';
+import Immutable, { fromJS } from 'immutable';
 import mock from './mock';
 
 import {

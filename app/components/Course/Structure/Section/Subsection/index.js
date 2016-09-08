@@ -8,7 +8,7 @@ import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
 
-const Subsection = ({ name, units = [] }) => (
+const Subsection = ({ data: { id, name, units = [] }, actions }) => ( // eslint-disable-line no-unused-vars
   <div className={styles.subsection}>
     <div className={styles.title}>
       <div className={styles.name}>
@@ -21,14 +21,22 @@ const Subsection = ({ name, units = [] }) => (
       </div>
     </div>
     {units.map((data, index) =>
-      <Unit key={index} {...data} />)
-    }
+      <Unit
+        key={index}
+        data={{ ...data, id: index }}
+        actions={actions}
+      />
+    )}
   </div>
 );
 
 Subsection.propTypes = {
-  name: PropTypes.string.isRequired,
-  units: PropTypes.array,
+  data: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    units: PropTypes.array,
+  }).isRequired,
+  actions: PropTypes.object.isRequired,
 };
 
 export default Subsection;
