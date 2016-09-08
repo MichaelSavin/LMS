@@ -22,7 +22,7 @@ function courseReducer(course = initialState, action) {
       return course.updateIn(
         ['sections'],
         Immutable.List.of(),
-        list => list.push(action.section)
+        list => list.push(fromJS(action.section))
       );
 
     case RENAME_SECTION:
@@ -47,7 +47,7 @@ function courseReducer(course = initialState, action) {
         'subsections',
       ],
         Immutable.List.of(),
-        list => list.push(action.subsection)
+        list => list.push(fromJS(action.subsection))
       );
 
     case RENAME_SUBSECTION:
@@ -78,7 +78,7 @@ function courseReducer(course = initialState, action) {
         'units',
       ],
         Immutable.List.of(),
-        list => list.push(action.unit)
+        list => list.push(fromJS(action.unit))
       );
 
     case RENAME_UNIT:
