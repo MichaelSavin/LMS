@@ -14,55 +14,58 @@ const initialState = fromJS(mock);
 
 function courseReducer(course = initialState, action) {
   switch (action.type) {
+
     case ADD_SECTION:
       return course.updateIn(
         ['sections'],
         Immutable.list(),
         list => list.push(action.section)
       );
+
     case RENAME_SECTION:
-      return course.setIn(
-        [
-          'sections',
-          action.sectionId,
-          'name',
-        ],
+      return course.setIn([
+        'sections',
+        action.sectionId,
+        'name',
+      ],
         action.name
       );
+
     case REMOVE_SECTION:
-      return course.deleteIn(
-        ['sections', action.sectionId]
-      );
+      return course.deleteIn([
+        'sections',
+        action.sectionId,
+      ]);
+
     case ADD_SUBSECTION:
-      return course.updateIn(
-        [
-          'sections',
-          action.sectionId,
-          'subsections',
-        ],
+      return course.updateIn([
+        'sections',
+        action.sectionId,
+        'subsections',
+      ],
         Immutable.list(),
         list => list.push(action.subsection)
       );
+
     case RENAME_SUBSECTION:
-      return course.setIn(
-        [
-          'sections',
-          action.sectionId,
-          'subsections',
-          action.subsectionId,
-          'name',
-        ],
+      return course.setIn([
+        'sections',
+        action.sectionId,
+        'subsections',
+        action.subsectionId,
+        'name',
+      ],
         action.name
       );
+
     case REMOVE_SUBSECTION:
-      return course.deleteIn(
-        [
-          'sections',
-          action.sectionId,
-          'subsections',
-          action.subsectionId,
-        ]
-      );
+      return course.deleteIn([
+        'sections',
+        action.sectionId,
+        'subsections',
+        action.subsectionId,
+      ]);
+
     default:
       return course;
   }
