@@ -16,8 +16,8 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => ( // esli
         <Edit action={() => alert('edit section')} size={17.5} />
       </div>
       <div className={styles.actions}>
-        <Add action={() => alert('add section')} size={17.5} />
-        <Remove action={() => alert('remove section')} size={20} />
+        <Add action={() => actions.addSection({ name: 'Новая секция', info: '' })} size={17.5} />
+        <Remove action={() => actions.removeSection({ sectionId: id })} size={20} />
       </div>
     </div>
     {subsections.map((data, index) =>

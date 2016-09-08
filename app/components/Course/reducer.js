@@ -18,7 +18,7 @@ function courseReducer(course = initialState, action) {
     case ADD_SECTION:
       return course.updateIn(
         ['sections'],
-        Immutable.list(),
+        Immutable.List.of(),
         list => list.push(action.section)
       );
 
@@ -43,7 +43,7 @@ function courseReducer(course = initialState, action) {
         action.sectionId,
         'subsections',
       ],
-        Immutable.list(),
+        Immutable.List.of(),
         list => list.push(action.subsection)
       );
 
