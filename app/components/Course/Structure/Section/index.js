@@ -26,7 +26,13 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => ( // esli
       <div className={styles.actions}>
         <Add
           size={22.5}
-          action={() => alert('ADD')
+          action={() =>
+            actions.addSubsection({
+              sectionId: id,
+              subsection: {
+                name: 'Новая подсекция',
+              },
+            })
           }
         />
         <Clone
@@ -54,8 +60,8 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => ( // esli
       <Subsection
         key={index}
         data={{ ...data, id: index }}
-        parent={id}
         actions={actions}
+        sectionId={id}
       />
     )}
   </div>

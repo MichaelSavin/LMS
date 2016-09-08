@@ -9,7 +9,7 @@ import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
 
-const Subsection = ({ data: { id, name, units = [] }, parent: parentId, actions }) => ( // eslint-disable-line no-unused-vars
+const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => ( // eslint-disable-line no-unused-vars
   <div className={styles.subsection}>
     <div className={styles.title}>
       <div className={styles.name}>
@@ -18,7 +18,7 @@ const Subsection = ({ data: { id, name, units = [] }, parent: parentId, actions 
           size={15}
           action={() =>
             actions.renameSubsection({
-              sectionId: parentId,
+              sectionId,
               subsectionId: id,
               name: prompt('Название подсекции', name) || 'Подсекция',
             })
@@ -34,7 +34,7 @@ const Subsection = ({ data: { id, name, units = [] }, parent: parentId, actions 
           size={12.5}
           action={() =>
             actions.addSubsection({
-              sectionId: parentId,
+              sectionId,
               subsection: {
                 name: `${name} Копия`,
                 units,
@@ -46,7 +46,7 @@ const Subsection = ({ data: { id, name, units = [] }, parent: parentId, actions 
           size={17.5}
           action={() =>
             actions.removeSubsection({
-              sectionId: parentId,
+              sectionId,
               subsectionId: id,
             })
           }
@@ -69,8 +69,8 @@ Subsection.propTypes = {
     name: PropTypes.string.isRequired,
     units: PropTypes.array,
   }).isRequired,
-  parent: PropTypes.number.isRequired,
   actions: PropTypes.object.isRequired,
+  sectionId: PropTypes.number.isRequired,
 };
 
 export default Subsection;
