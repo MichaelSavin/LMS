@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import Edit from 'components/UI/Icons/pencil';
-import Clone from 'components/UI/Icons/mirror';
+import Clone from 'components/UI/Icons/branch';
 import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';

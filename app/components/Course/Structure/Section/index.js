@@ -4,7 +4,7 @@ import Subsection from './Subsection';
 
 import Add from 'components/UI/Icons/plus';
 import Edit from 'components/UI/Icons/pencil';
-import Clone from 'components/UI/Icons/mirror';
+import Clone from 'components/UI/Icons/branch';
 import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
@@ -36,7 +36,7 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => (
           }
         />
         <Clone
-          size={15}
+          size={17.5}
           action={() =>
             actions.addSection({
               section: {
