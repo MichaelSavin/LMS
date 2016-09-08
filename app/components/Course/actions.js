@@ -1,4 +1,7 @@
 import {
+  ADD_UNIT,
+  RENAME_UNIT,
+  REMOVE_UNIT,
   ADD_SECTION,
   RENAME_SECTION,
   REMOVE_SECTION,
@@ -23,7 +26,7 @@ export const removeSection = ({ sectionId }) => ({
   sectionId,
 });
 
-export const addSubsection = ({ subsection, sectionId }) => ({
+export const addSubsection = ({ sectionId, subsection }) => ({
   type: ADD_SUBSECTION,
   sectionId,
   subsection,
@@ -40,4 +43,26 @@ export const removeSubsection = ({ sectionId, subsectionId }) => ({
   type: REMOVE_SUBSECTION,
   sectionId,
   subsectionId,
+});
+
+export const addUnit = ({ sectionId, subsectionId, unit }) => ({
+  type: ADD_UNIT,
+  sectionId,
+  subsectionId,
+  unit,
+});
+
+export const renameUnit = ({ sectionId, subsectionId, unitId, name }) => ({
+  type: RENAME_UNIT,
+  sectionId,
+  subsectionId,
+  unitId,
+  name,
+});
+
+export const removeUnit = ({ sectionId, subsectionId, unitId }) => ({
+  type: REMOVE_UNIT,
+  sectionId,
+  subsectionId,
+  unitId,
 });

@@ -2,6 +2,9 @@ import Immutable, { fromJS } from 'immutable';
 import mock from './mock';
 
 import {
+  ADD_UNIT,
+  RENAME_UNIT,
+  REMOVE_UNIT,
   ADD_SECTION,
   RENAME_SECTION,
   REMOVE_SECTION,
@@ -64,6 +67,41 @@ function courseReducer(course = initialState, action) {
         action.sectionId,
         'subsections',
         action.subsectionId,
+      ]);
+
+    case ADD_UNIT:
+      return course.updateIn([
+        'sections',
+        action.sectionId,
+        'subsections',
+        action.subsectionId,
+        'units',
+      ],
+        Immutable.List.of(),
+        list => list.push(action.unit)
+      );
+
+    case RENAME_UNIT:
+      return course.setIn([
+        'sections',
+        action.sectionId,
+        'subsections',
+        action.subsectionId,
+        'units',
+        action.unitId,
+        'name',
+      ],
+        action.name
+      );
+
+    case REMOVE_UNIT:
+      return course.deleteIn([
+        'sections',
+        action.sectionId,
+        'subsections',
+        action.subsectionId,
+        'units',
+        action.unitId,
       ]);
 
     default:
