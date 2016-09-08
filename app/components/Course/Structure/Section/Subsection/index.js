@@ -26,7 +26,7 @@ const Subsection = ({ data: { id, name, units = [] }, parent: parentId, actions 
       </div>
       <div className={styles.actions}>
         <Add
-          size={16}
+          size={20}
           action={() =>
             actions.addSubsection({
               sectionId: parentId,

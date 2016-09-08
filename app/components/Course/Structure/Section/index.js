@@ -24,7 +24,7 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => ( // esli
       </div>
       <div className={styles.actions}>
         <Add
-          size={17.5}
+          size={22.5}
           action={() =>
             actions.addSection({
               section: { name: 'Новая секция' },
