@@ -4,6 +4,7 @@ import Unit from './Unit';
 
 import Add from 'components/UI/Icons/plus';
 import Edit from 'components/UI/Icons/pencil';
+import Clone from 'components/UI/Icons/mirror';
 import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
@@ -27,10 +28,17 @@ const Subsection = ({ data: { id, name, units = [] }, parent: parentId, actions 
       <div className={styles.actions}>
         <Add
           size={20}
+          action={() => alert('ADD')}
+        />
+        <Clone
+          size={12.5}
           action={() =>
             actions.addSubsection({
               sectionId: parentId,
-              subsection: { name: 'Новая секция' },
+              subsection: {
+                name: `${name} Копия`,
+                units,
+              },
             })
           }
         />

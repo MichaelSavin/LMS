@@ -4,6 +4,7 @@ import Subsection from './Subsection';
 
 import Add from 'components/UI/Icons/plus';
 import Edit from 'components/UI/Icons/pencil';
+import Clone from 'components/UI/Icons/mirror';
 import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
@@ -25,9 +26,17 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => ( // esli
       <div className={styles.actions}>
         <Add
           size={22.5}
+          action={() => alert('ADD')
+          }
+        />
+        <Clone
+          size={15}
           action={() =>
             actions.addSection({
-              section: { name: 'Новая секция' },
+              section: {
+                name: `${name} Копия`,
+                subsections,
+              },
             })
           }
         />
