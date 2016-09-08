@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import Section from './Section';
-import Actions from './Actions';
+// import Actions from './Actions';
 
 import styles from './styles.css';
 
@@ -12,7 +12,7 @@ const Structure = ({ name, info, sections = [] }) => (
     {sections.map((data, index) =>
       <Section key={index} {...data} />)
     }
-    <Actions />
+    { /* <Actions /> */ }
   </div>
 );
 

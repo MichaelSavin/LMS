@@ -1,9 +1,23 @@
-/* .section {
-} */
+.section {
+  display: flex;
+  flex-direction: column;
+  background-color: #474647;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
 
 .name {
   color: white;
   padding: 10px;
   font-size: 16px;
-  background-color: #474647;
+}
+
+.actions {
+  color: white;
+  margin-right: 10px;
 }

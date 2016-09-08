@@ -1,10 +1,25 @@
-/* .subsection {
-} */
+.section {
+  display: flex;
+  flex-direction: column;
+  background-color: #474647;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #6967C4;
+  justify-content: space-between;
+}
 
 .name {
   color: white;
   padding: 7.5px;
   font-size: 14px;
   padding-left: 10px;
-  background-color: #6967C4;
+}
+
+.actions {
+  color: white;
+  margin-right: 10px;
 }

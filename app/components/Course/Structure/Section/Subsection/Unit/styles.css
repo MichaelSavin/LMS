@@ -1,5 +1,7 @@
-/* .unit {
-} */
+.unit {
+  flex-direction: column;
+  background-color: #EEE;
+}
 
 .name {
   padding: 5px;
