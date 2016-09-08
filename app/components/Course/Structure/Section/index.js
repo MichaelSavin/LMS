@@ -9,7 +9,7 @@ import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
 
-const Section = ({ data: { id, name, subsections = [] }, actions }) => ( // eslint-disable-line no-unused-vars
+const Section = ({ data: { id, name, subsections = [] }, actions }) => (
   <div className={styles.section}>
     <div className={styles.title}>
       <div className={styles.name}>

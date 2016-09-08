@@ -9,7 +9,7 @@ import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
 
-const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => ( // eslint-disable-line no-unused-vars
+const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => (
   <div className={styles.subsection}>
     <div className={styles.title}>
       <div className={styles.name}>
@@ -28,7 +28,15 @@ const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => (
       <div className={styles.actions}>
         <Add
           size={20}
-          action={() => alert('ADD')}
+          action={() =>
+            actions.addUnit({
+              sectionId,
+              subsectionId: id,
+              unit: {
+                name: 'Новый блок',
+              },
+            })
+          }
         />
         <Clone
           size={12.5}
@@ -58,6 +66,8 @@ const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => (
         key={index}
         data={{ ...data, id: index }}
         actions={actions}
+        sectionId={sectionId}
+        subsectionId={id}
       />
     )}
   </div>

@@ -1,6 +1,14 @@
 .unit {
+  display: flex;
   flex-direction: column;
   background-color: #EEE;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .name {
@@ -9,6 +17,7 @@
   padding-left: 10px;
 }
 
-.info {
-  display: none;
+.actions {
+  color: black;
+  margin-right: 10px;
 }
