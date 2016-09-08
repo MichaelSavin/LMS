@@ -7,7 +7,7 @@ import {
   REMOVE_SUBSECTION,
 } from './constants';
 
-export const addSection = (section) => ({
+export const addSection = ({ section }) => ({
   type: ADD_SECTION,
   section,
 });
@@ -23,8 +23,9 @@ export const removeSection = ({ sectionId }) => ({
   sectionId,
 });
 
-export const addSubsection = ({ subsection }) => ({
+export const addSubsection = ({ subsection, sectionId }) => ({
   type: ADD_SUBSECTION,
+  sectionId,
   subsection,
 });
 

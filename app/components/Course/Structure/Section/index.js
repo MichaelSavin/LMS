@@ -13,17 +13,39 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => ( // esli
     <div className={styles.title}>
       <div className={styles.name}>
         {name}
-        <Edit action={() => alert('edit section')} size={17.5} />
+        <Edit
+          size={17.5}
+          action={() =>
+            actions.renameSection({
+              sectionId: id,
+              name: prompt('Название секции', name) || 'Секция' })
+            }
+        />
       </div>
       <div className={styles.actions}>
-        <Add action={() => actions.addSection({ name: 'Новая секция', info: '' })} size={17.5} />
-        <Remove action={() => actions.removeSection({ sectionId: id })} size={20} />
+        <Add
+          size={17.5}
+          action={() =>
+            actions.addSection({
+              section: { name: 'Новая секция' },
+            })
+          }
+        />
+        <Remove
+          size={20}
+          action={() =>
+            actions.removeSection({
+              sectionId: id,
+            })
+          }
+        />
       </div>
     </div>
     {subsections.map((data, index) =>
       <Subsection
         key={index}
         data={{ ...data, id: index }}
+        parent={id}
         actions={actions}
       />
     )}

@@ -8,16 +8,41 @@ import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
 
-const Subsection = ({ data: { id, name, units = [] }, actions }) => ( // eslint-disable-line no-unused-vars
+const Subsection = ({ data: { id, name, units = [] }, parent: parentId, actions }) => ( // eslint-disable-line no-unused-vars
   <div className={styles.subsection}>
     <div className={styles.title}>
       <div className={styles.name}>
         {name}
-        <Edit action={() => alert('edit subsection')} size={15} />
+        <Edit
+          size={15}
+          action={() =>
+            actions.renameSubsection({
+              sectionId: parentId,
+              subsectionId: id,
+              name: prompt('Название подсекции', name) || 'Подсекция',
+            })
+          }
+        />
       </div>
       <div className={styles.actions}>
-        <Add action={() => alert('add subsection')} size={16} />
-        <Remove action={() => alert('remove subsection')} size={17.5} />
+        <Add
+          size={16}
+          action={() =>
+            actions.addSubsection({
+              sectionId: parentId,
+              subsection: { name: 'Новая секция' },
+            })
+          }
+        />
+        <Remove
+          size={17.5}
+          action={() =>
+            actions.removeSubsection({
+              sectionId: parentId,
+              subsectionId: id,
+            })
+          }
+        />
       </div>
     </div>
     {units.map((data, index) =>
@@ -36,6 +61,7 @@ Subsection.propTypes = {
     name: PropTypes.string.isRequired,
     units: PropTypes.array,
   }).isRequired,
+  parent: PropTypes.number.isRequired,
   actions: PropTypes.object.isRequired,
 };
 
