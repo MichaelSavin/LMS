@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import Unit from './Unit';
+import Unit from '../Unit';
 
 import Add from 'components/UI/Icons/plus';
 import Edit from 'components/UI/Icons/pencil';
