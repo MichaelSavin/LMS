@@ -1,21 +1,22 @@
 import React, { Component, PropTypes } from 'react';
+import * as actionCreators from './actions';
 import { bindActionCreators } from 'redux';
 import courseSelector from './selectors';
 import { connect } from 'react-redux';
-import * as actions from './actions';
 import Sidebar from './Sidebar';
 
 import styles from './styles.css';
 
 export class Course extends Component { // eslint-disable-line react/prefer-stateless-function
   render() {
+    const { data, actions, children } = this.props;
     return (
       <div className={styles.course}>
         <Sidebar
-          data={this.props.data}
-          actions={this.props.actions}
+          data={data}
+          actions={actions}
         />
-        {this.props.children}
+        {children && React.cloneElement(children, { data })}
       </div>
     );
   }
@@ -24,7 +25,7 @@ export class Course extends Component { // eslint-disable-line react/prefer-stat
 const mapStateToProps = courseSelector();
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(actions, dispatch),
+  actions: bindActionCreators(actionCreators, dispatch),
 });
 
 Course.propTypes = {
