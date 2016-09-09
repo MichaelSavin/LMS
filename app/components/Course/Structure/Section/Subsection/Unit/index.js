@@ -6,7 +6,20 @@ import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
 
-const Unit = ({ data: { id, name, content }, sectionId, subsectionId, actions }) => (
+const Unit = ({
+  data: {
+    id,
+    name,
+    content,
+  },
+  actions: {
+    addUnit,
+    renameUnit,
+    removeUnit,
+  },
+  sectionId,
+  subsectionId,
+}) => (
   <div className={styles.unit}>
     <div className={styles.title}>
       <div className={styles.name}>
@@ -14,7 +27,7 @@ const Unit = ({ data: { id, name, content }, sectionId, subsectionId, actions })
         <Edit
           size={15}
           action={() =>
-            actions.renameUnit({
+            renameUnit({
               sectionId,
               subsectionId,
               unitId: id,
@@ -27,7 +40,7 @@ const Unit = ({ data: { id, name, content }, sectionId, subsectionId, actions })
         <Clone
           size={12.5}
           action={() =>
-            actions.addUnit({
+            addUnit({
               sectionId,
               subsectionId,
               unit: {
@@ -40,7 +53,7 @@ const Unit = ({ data: { id, name, content }, sectionId, subsectionId, actions })
         <Remove
           size={15}
           action={() =>
-            actions.removeUnit({
+            removeUnit({
               sectionId,
               subsectionId,
               unitId: id,
@@ -58,7 +71,11 @@ Unit.propTypes = {
     name: PropTypes.string.isRequired,
     content: PropTypes.object,
   }).isRequired,
-  actions: PropTypes.object.isRequired,
+  actions: PropTypes.shape({
+    addUnit: PropTypes.func.isRequired,
+    renameUnit: PropTypes.func.isRequired,
+    removeUnit: PropTypes.func.isRequired,
+  }).isRequired,
   sectionId: PropTypes.number.isRequired,
   subsectionId: PropTypes.number.isRequired,
 };

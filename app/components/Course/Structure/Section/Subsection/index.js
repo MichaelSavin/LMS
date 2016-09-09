@@ -9,7 +9,21 @@ import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
 
-const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => (
+const Subsection = ({
+  data: {
+    id,
+    name,
+    units = [],
+  },
+  actions: {
+    addUnit,
+    addSubsection,
+    renameSubsection,
+    removeSubsection,
+  },
+  sectionId,
+  actions,
+}) => (
   <div className={styles.subsection}>
     <div className={styles.title}>
       <div className={styles.name}>
@@ -17,7 +31,7 @@ const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => (
         <Edit
           size={15}
           action={() =>
-            actions.renameSubsection({
+            renameSubsection({
               sectionId,
               subsectionId: id,
               name: prompt('Название подсекции', name) || 'Подсекция',
@@ -29,7 +43,7 @@ const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => (
         <Add
           size={20}
           action={() =>
-            actions.addUnit({
+            addUnit({
               sectionId,
               subsectionId: id,
               unit: {
@@ -41,7 +55,7 @@ const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => (
         <Clone
           size={15}
           action={() =>
-            actions.addSubsection({
+            addSubsection({
               sectionId,
               subsection: {
                 name: `${name} Копия`,
@@ -53,7 +67,7 @@ const Subsection = ({ data: { id, name, units = [] }, sectionId, actions }) => (
         <Remove
           size={17.5}
           action={() =>
-            actions.removeSubsection({
+            removeSubsection({
               sectionId,
               subsectionId: id,
             })
@@ -79,7 +93,12 @@ Subsection.propTypes = {
     name: PropTypes.string.isRequired,
     units: PropTypes.array,
   }).isRequired,
-  actions: PropTypes.object.isRequired,
+  actions: PropTypes.shape({
+    addUnit: PropTypes.func.isRequired,
+    addSubsection: PropTypes.func.isRequired,
+    renameSubsection: PropTypes.func.isRequired,
+    removeSubsection: PropTypes.func.isRequired,
+  }).isRequired,
   sectionId: PropTypes.number.isRequired,
 };
 

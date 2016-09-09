@@ -9,7 +9,20 @@ import Remove from 'components/UI/Icons/trash';
 
 import styles from './styles.css';
 
-const Section = ({ data: { id, name, subsections = [] }, actions }) => (
+const Section = ({
+  data: {
+    id,
+    name,
+    subsections = [],
+  },
+  actions: {
+    addSection,
+    renameSection,
+    removeSection,
+    addSubsection,
+  },
+  actions,
+}) => (
   <div className={styles.section}>
     <div className={styles.title}>
       <div className={styles.name}>
@@ -17,7 +30,7 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => (
         <Edit
           size={17.5}
           action={() =>
-            actions.renameSection({
+            renameSection({
               sectionId: id,
               name: prompt('Название секции', name) || 'Секция' })
             }
@@ -27,7 +40,7 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => (
         <Add
           size={22.5}
           action={() =>
-            actions.addSubsection({
+            addSubsection({
               sectionId: id,
               subsection: {
                 name: 'Новая подсекция',
@@ -38,7 +51,7 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => (
         <Clone
           size={17.5}
           action={() =>
-            actions.addSection({
+            addSection({
               section: {
                 name: `${name} Копия`,
                 subsections,
@@ -49,7 +62,7 @@ const Section = ({ data: { id, name, subsections = [] }, actions }) => (
         <Remove
           size={20}
           action={() =>
-            actions.removeSection({
+            removeSection({
               sectionId: id,
             })
           }
@@ -73,7 +86,12 @@ Section.propTypes = {
     name: PropTypes.string.isRequired,
     subsections: PropTypes.array,
   }).isRequired,
-  actions: PropTypes.object.isRequired,
+  actions: PropTypes.shape({
+    addSection: PropTypes.func.isRequired,
+    renameSection: PropTypes.func.isRequired,
+    removeSection: PropTypes.func.isRequired,
+    addSubsection: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default Section;
