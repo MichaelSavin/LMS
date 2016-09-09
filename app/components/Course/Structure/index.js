@@ -15,7 +15,6 @@ const Structure = ({ data: { name, info, sections = [] }, actions }) => (
         actions={actions}
       />
     )}
-    { /* <Actions /> */ }
   </div>
 );
 
