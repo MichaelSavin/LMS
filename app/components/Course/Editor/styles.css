@@ -1,6 +1,6 @@
 .editor {
-  margin-left: 25px;
-  width: 500px;
+  margin-left: 20px;
+  width: 700px;
   display: flex;
   flex-direction: column;
 }
