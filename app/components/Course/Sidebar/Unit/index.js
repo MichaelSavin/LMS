@@ -25,7 +25,12 @@ const Unit = ({
   <div className={styles.unit}>
     <div className={styles.title}>
       <div className={styles.name}>
-        <Link to={`/unit/${sectionId}-${subsectionId}-${id}/`}>{name}</Link>
+        <Link
+          activeStyle={{ textDecoration: 'underline' }}
+          to={`/unit/${sectionId}-${subsectionId}-${id}/`}
+        >
+          {name}
+        </Link>
         <Edit
           size={15}
           action={() =>

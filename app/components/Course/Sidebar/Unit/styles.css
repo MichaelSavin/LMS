@@ -17,6 +17,15 @@
   padding-left: 10px;
 }
 
+a {
+  color: black;
+  text-decoration: none;
+}
+
+.link {
+  text-decoration: underline;
+}
+
 .actions {
   color: black;
   margin-right: 10px;
