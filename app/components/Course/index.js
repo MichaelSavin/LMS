@@ -13,6 +13,7 @@ export class Course extends Component { // eslint-disable-line react/prefer-stat
           data={this.props.data}
           actions={this.props.actions}
         />
+        {this.props.children}
       </div>
     );
   }
@@ -27,6 +28,7 @@ const mapDispatchToProps = (dispatch) => ({
 Course.propTypes = {
   data: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
+  children: PropTypes.element,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Course);

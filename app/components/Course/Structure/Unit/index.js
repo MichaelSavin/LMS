@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 
+import { Link } from 'react-router';
+
 import Edit from 'components/UI/Icons/pencil';
 import Clone from 'components/UI/Icons/branch';
 import Remove from 'components/UI/Icons/trash';
@@ -23,7 +25,7 @@ const Unit = ({
   <div className={styles.unit}>
     <div className={styles.title}>
       <div className={styles.name}>
-        {name}
+        <Link to={`/unit/${sectionId}-${subsectionId}-${id}/`}>{name}</Link>
         <Edit
           size={15}
           action={() =>
