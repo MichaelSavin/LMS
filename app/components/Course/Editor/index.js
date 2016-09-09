@@ -11,7 +11,10 @@ const Editor = ({
   },
 }) => (
   <div className={styles.editor}>
-    {data.sections[sectionId].subsections[subsectionId].units[unitId].name}
+    <div className={styles.title}>
+      {data.sections[sectionId].subsections[subsectionId].units[unitId].name}
+    </div>
+
   </div>
 );
 

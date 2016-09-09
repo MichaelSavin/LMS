@@ -1,5 +1,12 @@
 .editor {
   margin-left: 25px;
+  width: 500px;
   display: flex;
   flex-direction: column;
+}
+
+.title {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #EEE;
 }

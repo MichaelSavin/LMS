@@ -18,9 +18,18 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: selectLocationState(),
 });
 
+// const router = Router.create({ routes });
+
+// if (module.hot) {
+//   module.hot.accept('./routes', function() {
+//     const newRoutes = require('./routes').default;
+//     router.replaceRoutes(newRoutes);
+//   });
+// }
+
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={history} render={applyRouterMiddleware(useScroll())} >
+    <Router history={history} render={applyRouterMiddleware(useScroll())} key={Math.random()} >
       {routes}
     </Router>
   </Provider>,
