@@ -6,7 +6,7 @@ import Editor from 'components/Course/Editor';
 
 const routes = (
   <Route path="/" component={Course}>
-    <Route path="/unit/:sectionId-:subsectionId-:unitId" component={Editor} />
+    <Route path="/:sectionId-:subsectionId-:unitId" component={Editor} />
   </Route>
 );
 
