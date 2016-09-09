@@ -5,10 +5,12 @@ import { connect } from 'react-redux';
 import * as actions from './actions';
 import Sidebar from './Sidebar';
 
+import styles from './styles.css';
+
 export class Course extends Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
-      <div>
+      <div className={styles.course}>
         <Sidebar
           data={this.props.data}
           actions={this.props.actions}

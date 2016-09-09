@@ -9,16 +9,16 @@ const Editor = ({
     unitId,
   },
 }) => (
-  <div className={styles.exercise}>
+  <div className={styles.editor}>
     {sectionId} : {subsectionId} : {unitId}
   </div>
 );
 
 Editor.propTypes = {
   params: PropTypes.shape({
-    sectionId: PropTypes.number.isRequired,
-    subsectionId: PropTypes.number.isRequired,
-    unitId: PropTypes.number.isRequired,
+    sectionId: PropTypes.string.isRequired,
+    subsectionId: PropTypes.string.isRequired,
+    unitId: PropTypes.string.isRequired,
   }).isRequired,
 };
 
