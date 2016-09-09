@@ -4,8 +4,8 @@ import Section from './Section';
 
 import styles from './styles.css';
 
-const Structure = ({ data: { name, info, sections = [] }, actions }) => (
-  <div className={styles.structure}>
+const Sidebar = ({ data: { name, info, sections = [] }, actions }) => (
+  <div className={styles.sidebar}>
     <div className={styles.name}>{name}</div>
     <div className={styles.info}>{info}</div>
     {sections.map((data, index) =>
@@ -18,7 +18,7 @@ const Structure = ({ data: { name, info, sections = [] }, actions }) => (
   </div>
 );
 
-Structure.propTypes = {
+Sidebar.propTypes = {
   data: PropTypes.shape({
     name: PropTypes.string.isRequired,
     info: PropTypes.string.isRequired,
@@ -27,4 +27,4 @@ Structure.propTypes = {
   actions: PropTypes.object.isRequired,
 };
 
-export default Structure;
+export default Sidebar;

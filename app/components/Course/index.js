@@ -3,13 +3,13 @@ import { bindActionCreators } from 'redux';
 import courseSelector from './selectors';
 import { connect } from 'react-redux';
 import * as actions from './actions';
-import Structure from './Structure';
+import Sidebar from './Sidebar';
 
 export class Course extends Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
       <div>
-        <Structure
+        <Sidebar
           data={this.props.data}
           actions={this.props.actions}
         />
