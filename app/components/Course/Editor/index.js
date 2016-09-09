@@ -1,22 +1,26 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import styles from './styles.css';
 
-const Editor = ({
-  data,
-  params: {
-    sectionId,
-    subsectionId,
-    unitId,
-  },
-}) => (
-  <div className={styles.editor}>
-    <div className={styles.title}>
-      {data.sections[sectionId].subsections[subsectionId].units[unitId].name}
-    </div>
-
-  </div>
-);
+export class Editor extends Component { // eslint-disable-line react/prefer-stateless-function
+  render() {
+    const {
+      data,
+      params: {
+        sectionId,
+        subsectionId,
+        unitId,
+      },
+    } = this.props;
+    return (
+      <div className={styles.editor}>
+        <div className={styles.title}>
+          {data.sections[sectionId].subsections[subsectionId].units[unitId].name}
+        </div>
+      </div>
+    );
+  }
+}
 
 Editor.propTypes = {
   data: PropTypes.object, // http://stackoverflow.com/a/33427304
