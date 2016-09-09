@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 
 import { Link } from 'react-router';
 
-import Edit from 'components/UI/Icons/pencil';
 import Clone from 'components/UI/Icons/branch';
 import Remove from 'components/UI/Icons/trash';
 
@@ -16,7 +15,6 @@ const Unit = ({
   },
   actions: {
     addUnit,
-    renameUnit,
     removeUnit,
   },
   sectionId,
@@ -31,17 +29,6 @@ const Unit = ({
         >
           {name}
         </Link>
-        <Edit
-          size={15}
-          action={() =>
-            renameUnit({
-              sectionId,
-              subsectionId,
-              unitId: id,
-              name: prompt('Название блока', name) || 'Блок',
-            })
-          }
-        />
       </div>
       <div className={styles.actions}>
         <Clone

@@ -16,7 +16,7 @@ export class Course extends Component { // eslint-disable-line react/prefer-stat
           data={data}
           actions={actions}
         />
-        {children && React.cloneElement(children, { data })}
+        {children && React.cloneElement(children, { data, actions })}
       </div>
     );
   }
