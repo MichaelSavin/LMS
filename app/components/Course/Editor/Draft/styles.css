@@ -1,6 +1,21 @@
 .draft {
-  background-color: #F5F5F5;
+  background-color: #EEE;
   min-height: 240px;
   font-size: 14px;
   padding: 10px;
+}
+
+.text {
+  width: 680px;
+  padding: 10px;
+  min-height: 180px;
+  background-color: white;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -10px;
 }
