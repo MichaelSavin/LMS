@@ -25,7 +25,7 @@ const Unit = ({
       <div className={styles.name}>
         <Link
           activeStyle={{ textDecoration: 'underline' }}
-          to={`/${sectionId}-${subsectionId}-${id}/`}
+          to={`/${sectionId}-${subsectionId}-${id}/draft/`}
         >
           {name}
         </Link>
