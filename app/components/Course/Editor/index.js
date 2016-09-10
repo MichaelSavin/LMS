@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 
+import { Link } from 'react-router';
+
 import Edit from 'components/UI/Icons/pencil';
 
 import styles from './styles.css';
@@ -16,7 +18,9 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
         subsectionId,
         unitId,
       },
+      children,
     } = this.props;
+    const route = `${sectionId}-${subsectionId}-${unitId}`;
     const name = data
       .sections[sectionId]
       .subsections[subsectionId]
@@ -39,7 +43,24 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
               }
             />
           </div>
+          <div className={styles.selectors}>
+            <Link
+              to={`/${route}/draft`}
+              className={styles.selector}
+              activeStyle={{ textDecoration: 'underline' }}
+            >
+              Редактор
+            </Link>
+            <Link
+              to={`/${route}/view`}
+              className={styles.selector}
+              activeStyle={{ textDecoration: 'underline' }}
+            >
+              Просмотр
+            </Link>
+          </div>
         </div>
+        {children}
       </div>
     );
   }
@@ -55,6 +76,7 @@ Editor.propTypes = {
     subsectionId: PropTypes.string.isRequired,
     unitId: PropTypes.string.isRequired,
   }).isRequired,
+  children: PropTypes.element,
 };
 
 export default Editor;

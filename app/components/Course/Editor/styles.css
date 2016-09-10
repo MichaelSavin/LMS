@@ -1,12 +1,29 @@
 .editor {
-  margin-left: 20px;
   width: 700px;
   display: flex;
+  margin-left: 20px;
   flex-direction: column;
 }
 
 .title {
+  display: flex;
   padding: 10px;
   font-size: 16px;
+  margin-bottom: 10px;
+  flex-direction: row;
   background-color: #EEE;
+  justify-content: space-between;
+}
+
+.selectors {
+  margin: -10px;
+  padding: 10px;
+  padding-left: 0;
+  padding-right: 20px;
+  background-color: #FFE000;
+}
+
+.selector {
+  font-size: 14px;
+  padding-left: 20px;
 }
