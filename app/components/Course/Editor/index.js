@@ -18,19 +18,19 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
         subsectionId,
         unitId,
       },
+      actions,
       children,
     } = this.props;
     const route = `${sectionId}-${subsectionId}-${unitId}`;
-    const name = data
+    const unit = data
       .sections[sectionId]
       .subsections[subsectionId]
-      .units[unitId]
-      .name;
+      .units[unitId];
     return (
       <div className={styles.editor}>
         <div className={styles.title}>
           <div className={styles.name}>
-            {name}
+            {unit.name}
             <Icon
               size={15}
               type="edit"
@@ -61,7 +61,7 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
             </Link>
           </div>
         </div>
-        {children}
+        {React.cloneElement(children, { data: unit.content, actions })}
       </div>
     );
   }

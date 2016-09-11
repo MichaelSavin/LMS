@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import Button from 'components/UI/Button';
 
@@ -10,7 +10,8 @@ class Draft extends Component { // eslint-disable-line react/prefer-stateless-fu
       <div className={styles.draft}>
         <textarea
           className={styles.text}
-          defaultValue="Задание..."
+          onChange={() => {}}
+          value={this.props.data}
         >
         </textarea>
         <div className={styles.buttons}>
@@ -35,6 +36,8 @@ class Draft extends Component { // eslint-disable-line react/prefer-stateless-fu
   }
 }
 
-Draft.propTypes = {};
+Draft.propTypes = {
+  data: PropTypes.string, // http://stackoverflow.com/a/33427304
+};
 
 export default Draft;

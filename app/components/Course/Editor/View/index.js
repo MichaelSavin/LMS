@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import styles from './styles.css';
 
@@ -6,12 +6,14 @@ class View extends Component { // eslint-disable-line react/prefer-stateless-fun
   render() {
     return (
       <div className={styles.view}>
-        Блок предосмотра
+        {this.props.data}
       </div>
     );
   }
 }
 
-View.propTypes = {};
+View.propTypes = {
+  data: PropTypes.string, // http://stackoverflow.com/a/33427304
+};
 
 export default View;
