@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 
 import { Link } from 'react-router';
 
-import Clone from 'components/UI/Icons/branch';
-import Remove from 'components/UI/Icons/trash';
+import Icon from 'components/UI/Icon';
 
 import styles from './styles.css';
 
@@ -31,8 +30,9 @@ const Unit = ({
         </Link>
       </div>
       <div className={styles.actions}>
-        <Clone
+        <Icon
           size={12.5}
+          type="clone"
           action={() =>
             addUnit({
               sectionId,
@@ -44,8 +44,9 @@ const Unit = ({
             })
           }
         />
-        <Remove
+        <Icon
           size={15}
+          type="remove"
           action={() =>
             removeUnit({
               sectionId,

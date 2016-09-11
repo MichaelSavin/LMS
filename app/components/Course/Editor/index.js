@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 import { Link } from 'react-router';
 
-import Edit from 'components/UI/Icons/pencil';
+import Icon from 'components/UI/Icon';
 
 import styles from './styles.css';
 
@@ -31,8 +31,9 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
         <div className={styles.title}>
           <div className={styles.name}>
             {name}
-            <Edit
+            <Icon
               size={15}
+              type="edit"
               action={() =>
                 renameUnit({
                   sectionId,

@@ -2,10 +2,7 @@ import React, { PropTypes } from 'react';
 
 import Unit from '../Unit';
 
-import Add from 'components/UI/Icons/plus';
-import Edit from 'components/UI/Icons/pencil';
-import Clone from 'components/UI/Icons/branch';
-import Remove from 'components/UI/Icons/trash';
+import Icon from 'components/UI/Icon';
 
 import styles from './styles.css';
 
@@ -28,8 +25,9 @@ const Subsection = ({
     <div className={styles.title}>
       <div className={styles.name}>
         {name}
-        <Edit
+        <Icon
           size={15}
+          type="edit"
           action={() =>
             renameSubsection({
               sectionId,
@@ -40,8 +38,9 @@ const Subsection = ({
         />
       </div>
       <div className={styles.actions}>
-        <Add
+        <Icon
           size={20}
+          type="add"
           action={() =>
             addUnit({
               sectionId,
@@ -52,8 +51,9 @@ const Subsection = ({
             })
           }
         />
-        <Clone
+        <Icon
           size={15}
+          type="clone"
           action={() =>
             addSubsection({
               sectionId,
@@ -64,8 +64,9 @@ const Subsection = ({
             })
           }
         />
-        <Remove
+        <Icon
           size={17.5}
+          type="remove"
           action={() =>
             removeSubsection({
               sectionId,
