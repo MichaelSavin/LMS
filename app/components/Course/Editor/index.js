@@ -39,7 +39,7 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
                   sectionId,
                   subsectionId,
                   unitId,
-                  name: prompt('Название блока', name) || 'Блок',
+                  name: prompt('Название блока', unit.name) || 'Блок',
                 })
               }
             />
