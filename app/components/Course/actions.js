@@ -1,5 +1,6 @@
 import {
   ADD_UNIT,
+  EDIT_UNIT,
   RENAME_UNIT,
   REMOVE_UNIT,
   ADD_SECTION,
@@ -50,6 +51,14 @@ export const addUnit = ({ sectionId, subsectionId, unit }) => ({
   sectionId,
   subsectionId,
   unit,
+});
+
+export const editUnit = ({ sectionId, subsectionId, unitId, content }) => ({
+  type: EDIT_UNIT,
+  sectionId,
+  subsectionId,
+  unitId,
+  content,
 });
 
 export const renameUnit = ({ sectionId, subsectionId, unitId, name }) => ({

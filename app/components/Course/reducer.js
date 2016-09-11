@@ -3,6 +3,7 @@ import mock from './mock';
 
 import {
   ADD_UNIT,
+  EDIT_UNIT,
   RENAME_UNIT,
   REMOVE_UNIT,
   ADD_SECTION,
@@ -79,6 +80,19 @@ function courseReducer(course = initialState, action) {
       ],
         Immutable.List.of(),
         list => list.push(fromJS(action.unit))
+      );
+
+    case EDIT_UNIT:
+      return course.setIn([
+        'sections',
+        action.sectionId,
+        'subsections',
+        action.subsectionId,
+        'units',
+        action.unitId,
+        'content',
+      ],
+        action.content
       );
 
     case RENAME_UNIT:

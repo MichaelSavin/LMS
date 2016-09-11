@@ -61,7 +61,15 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
             </Link>
           </div>
         </div>
-        {React.cloneElement(children, { data: unit.content, actions })}
+        {React.cloneElement(children, {
+          unit: {
+            sectionId,
+            subsectionId,
+            unitId,
+          },
+          content: unit.content,
+          actions,
+        })}
       </div>
     );
   }

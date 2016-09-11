@@ -1,4 +1,5 @@
 export const ADD_UNIT = 'Course/ADD_UNIT';
+export const EDIT_UNIT = 'Course/EDIT_UNIT';
 export const RENAME_UNIT = 'Course/RENAME_UNIT';
 export const REMOVE_UNIT = 'Course/REMOVE_UNIT';
 export const ADD_SECTION = 'Course/ADD_SECTION';

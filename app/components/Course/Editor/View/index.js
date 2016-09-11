@@ -6,14 +6,14 @@ class View extends Component { // eslint-disable-line react/prefer-stateless-fun
   render() {
     return (
       <div className={styles.view}>
-        {this.props.data}
+        {this.props.content}
       </div>
     );
   }
 }
 
 View.propTypes = {
-  data: PropTypes.string, // http://stackoverflow.com/a/33427304
+  content: PropTypes.string, // http://stackoverflow.com/a/33427304
 };
 
 export default View;
