@@ -49,7 +49,7 @@ const Section = ({
         />
         <Icon
           size={17.5}
-          type="add"
+          type="clone"
           action={() =>
             addSection({
               section: {
