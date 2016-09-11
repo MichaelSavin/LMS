@@ -64,7 +64,7 @@ Unit.propTypes = {
   data: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
-    content: PropTypes.object,
+    content: PropTypes.string,
   }).isRequired,
   actions: PropTypes.shape({
     addUnit: PropTypes.func.isRequired,
