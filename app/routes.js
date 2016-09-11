@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router';
+import { Route, IndexRedirect } from 'react-router';
 
 import Course from 'components/Course';
 import Editor from 'components/Course/Editor';
@@ -12,8 +12,9 @@ const routes = (
       component={Editor}
       path=":sectionId-:subsectionId-:unitId"
     >
-      <Route path="draft" component={Draft} />
+      <IndexRedirect to="draft" />
       <Route path="view" component={View} />
+      <Route path="draft" component={Draft} />
     </Route>
   </Route>
 );
