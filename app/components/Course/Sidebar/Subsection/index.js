@@ -47,6 +47,7 @@ const Subsection = ({
               subsectionId: id,
               unit: {
                 name: 'Новый блок',
+                content: '',
               },
             })
           }
