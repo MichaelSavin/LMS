@@ -8,7 +8,7 @@
 .text {
   width: 680px;
   padding: 10px;
-  min-height: 180px;
+  min-height: 185px;
   background-color: white;
 }
 
@@ -17,5 +17,5 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-bottom: -10px;
+  margin-top: 5px;
 }

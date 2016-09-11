@@ -14,9 +14,21 @@ class Draft extends Component { // eslint-disable-line react/prefer-stateless-fu
         >
         </textarea>
         <div className={styles.buttons}>
-          <Button name="Картинка" />
-          <Button name="Видео" />
-          <Button name="Тест" />
+          <Button
+            action={() => alert('Тест')}
+            name="Тест"
+            icon="quiz"
+          />
+          <Button
+            action={() => alert('Картинка')}
+            name="Картинка"
+            icon="image"
+          />
+          <Button
+            action={() => alert('Видео')}
+            name="Видео"
+            icon="video"
+          />
         </div>
       </div>
     );
