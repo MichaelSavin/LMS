@@ -30,7 +30,7 @@ const Section = ({
           action={() =>
             renameSection({
               sectionId: id,
-              name: prompt('Название секции', name) || 'Секция' })
+              name: prompt('Название секции', name) || name })
             }
         />
       </div>

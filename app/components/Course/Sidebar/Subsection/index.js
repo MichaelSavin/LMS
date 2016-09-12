@@ -32,7 +32,7 @@ const Subsection = ({
             renameSubsection({
               sectionId,
               subsectionId: id,
-              name: prompt('Название подсекции', name) || 'Подсекция',
+              name: prompt('Название подсекции', name) || name,
             })
           }
         />

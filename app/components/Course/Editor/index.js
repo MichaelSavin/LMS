@@ -22,7 +22,10 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
       children,
     } = this.props;
     const route = `${sectionId}-${subsectionId}-${unitId}`;
-    const unit = data
+    const {
+      name,
+      content,
+    } = data
       .sections[sectionId]
       .subsections[subsectionId]
       .units[unitId];
@@ -30,7 +33,7 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
       <div className={styles.editor}>
         <div className={styles.title}>
           <div className={styles.name}>
-            {unit.name}
+            {name}
             <Icon
               size={15}
               type="edit"
@@ -39,7 +42,7 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
                   sectionId,
                   subsectionId,
                   unitId,
-                  name: prompt('Название блока', unit.name) || 'Блок',
+                  name: prompt('Название блока', name) || name,
                 })
               }
             />
@@ -67,7 +70,7 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
             subsectionId,
             unitId,
           },
-          content: unit.content,
+          content,
           actions,
         })}
       </div>
