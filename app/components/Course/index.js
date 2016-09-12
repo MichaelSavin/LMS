@@ -9,12 +9,18 @@ import styles from './styles.css';
 
 export class Course extends Component { // eslint-disable-line react/prefer-stateless-function
   render() {
-    const { data, actions, children } = this.props;
+    const {
+      data,
+      actions,
+      children,
+      params,
+    } = this.props;
     return (
       <div className={styles.course}>
         <Sidebar
           data={data}
           actions={actions}
+          editing={params}
         />
         {children && React.cloneElement(children, { data, actions })}
       </div>
@@ -30,6 +36,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 Course.propTypes = {
   data: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
   children: PropTypes.element,
 };
