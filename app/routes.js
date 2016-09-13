@@ -1,5 +1,13 @@
 import React from 'react';
-import { Route, IndexRedirect } from 'react-router';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import useScroll from 'react-router-scroll';
+import {
+  Route,
+  Router,
+  IndexRedirect,
+  applyRouterMiddleware,
+} from 'react-router';
 
 import Course from 'components/Course';
 import Editor from 'components/Course/Editor';
@@ -19,4 +27,15 @@ const routes = (
   </Route>
 );
 
-export default routes;
+const router = (store, history) => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <Router history={history} render={applyRouterMiddleware(useScroll())} key={Math.random()} >
+        {routes}
+      </Router>
+    </Provider>,
+    document.getElementById('app')
+  );
+};
+
+export default router;
