@@ -1,35 +1,29 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import { fromJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
 import reducers from './reducers';
 
+import * as storage from 'redux-storage';
+import merger from 'redux-storage-merger-immutablejs';
+import createEngine from 'redux-storage-engine-localstorage';
+
 const sagaMiddleware = createSagaMiddleware();
-const devtools = window.devToolsExtension || (() => noop => noop);
 
 const configureStore = (initialState = {}, history) => {
-  const store = createStore(
-    reducers,
-    fromJS(initialState),
-    compose(
-      devtools(),
-      applyMiddleware(
-        routerMiddleware(history),
-        sagaMiddleware,
-      ),
-    ),
-  );
-
+  const reducer = storage.reducer(reducers, merger);
+  const engine = createEngine('key');
+  const engineMiddleware = storage.createMiddleware(engine);
+  const createStoreWithMiddleware = compose(
+    applyMiddleware(engineMiddleware, routerMiddleware(history), sagaMiddleware),
+    window.devToolsExtension && window.devToolsExtension({
+      // actionsBlacklist: ['REDUX_STORAGE_LOAD', 'REDUX_STORAGE_SAVE'],
+    }),
+  )(createStore);
+  const store = createStoreWithMiddleware(reducer);
+  const load = storage.createLoader(engine);
   store.runSaga = sagaMiddleware.run;
-
-  if (module.hot) {
-    System.import('./reducers').then((reducerModule) => {
-      store.replaceReducer(reducerModule.default);
-    });
-  }
-
+  load(store);
   return store;
 };
 
 export default configureStore;
-
