@@ -28,8 +28,8 @@ export class Content extends Component { // eslint-disable-line react/prefer-sta
     } = data
       .sections[sectionId]
       .subsections[subsectionId]
-      .units[unitId];
-    return (
+      .units[unitId] || {};
+    return (name) ? (
       <div className={styles.editor}>
         <div className={styles.title}>
           <div className={styles.name}>
@@ -74,7 +74,9 @@ export class Content extends Component { // eslint-disable-line react/prefer-sta
           actions,
         })}
       </div>
-    );
+    )
+    :
+    (<div></div>);
   }
 }
 
