@@ -6,7 +6,7 @@ import Icon from 'components/UI/Icon';
 
 import styles from './styles.css';
 
-export class Editor extends Component { // eslint-disable-line react/prefer-stateless-function
+export class Content extends Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     const {
       data,
@@ -49,7 +49,7 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
           </div>
           <div className={styles.selectors}>
             <Link
-              to={`/${route}/draft`}
+              to={`/${route}/editor`}
               className={styles.selector}
               activeStyle={{ textDecoration: 'underline' }}
             >
@@ -78,7 +78,7 @@ export class Editor extends Component { // eslint-disable-line react/prefer-stat
   }
 }
 
-Editor.propTypes = {
+Content.propTypes = {
   data: PropTypes.object,    // http://stackoverflow.com/a/33427304
   actions: PropTypes.shape({ // http://stackoverflow.com/a/33427304
     renameUnit: PropTypes.func.isRequired,
@@ -91,4 +91,4 @@ Editor.propTypes = {
   children: PropTypes.element,
 };
 
-export default Editor;
+export default Content;
