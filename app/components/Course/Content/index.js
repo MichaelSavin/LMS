@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 
 import Icon from 'components/UI/Icon';
 
@@ -76,7 +76,7 @@ export class Content extends Component { // eslint-disable-line react/prefer-sta
       </div>
     )
     :
-    (<div></div>);
+    (<div>{browserHistory.push('/')}</div>);
   }
 }
 

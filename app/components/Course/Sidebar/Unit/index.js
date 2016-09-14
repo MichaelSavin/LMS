@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { Link, browserHistory } from 'react-router';
+import { Link } from 'react-router';
 
 import Icon from 'components/UI/Icon';
 
@@ -47,14 +47,13 @@ const Unit = ({
         <Icon
           size={15}
           type="remove"
-          action={() => {
-            browserHistory.push('/');
+          action={() =>
             removeUnit({
               sectionId,
               subsectionId,
               unitId: id,
-            });
-          }}
+            })
+          }
         />
       </div>
     </div>
