@@ -1,15 +1,8 @@
-.draft {
+.editor {
   background-color: #EEE;
-  min-height: 240px;
+  min-height: 230px;
   font-size: 14px;
   padding: 10px;
-}
-
-.text {
-  width: 680px;
-  padding: 10px;
-  min-height: 185px;
-  background-color: white;
 }
 
 .buttons {
@@ -18,4 +11,15 @@
   justify-content: center;
   align-items: center;
   margin-top: 5px;
+}
+
+.draft {
+  background-color: #FFF;
+  min-height: 140px;
+  cursor: text;
+  font-size: 14px;
+  margin-top: 10px;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-bottom: 5px;
 }

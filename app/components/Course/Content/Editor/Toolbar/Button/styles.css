@@ -1,0 +1,13 @@
+.inactive {
+  color: #AAA;
+  cursor: pointer;
+  margin-right: 16px;
+  font-size: 13px;
+  padding: 2px 0;
+  display: inline-block;
+}
+
+.active {
+  color: black;
+  composes: inactive;
+}
