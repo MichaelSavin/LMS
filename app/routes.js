@@ -10,20 +10,21 @@ import {
 } from 'react-router';
 
 import Course from 'components/Course';
-import Editor from 'components/Course/Editor';
-import Draft from 'components/Course/Editor/Draft';
-import View from 'components/Course/Editor/View';
+import Content from 'components/Course/Content';
+import Editor from 'components/Course/Content/Editor';
+import View from 'components/Course/Content/View';
 
 const routes = (
   <Route path="/" component={Course}>
     <Route
-      component={Editor}
+      component={Content}
       path=":sectionId-:subsectionId-:unitId"
     >
-      <IndexRedirect to="draft" />
+      <IndexRedirect to="editor" />
       <Route path="view" component={View} />
-      <Route path="draft" component={Draft} />
+      <Route path="editor" component={Editor} />
     </Route>
+    <Route path="*" component={Course} />
   </Route>
 );
 
