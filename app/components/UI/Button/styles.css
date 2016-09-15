@@ -1,4 +1,5 @@
 .button {
+  font-size: 14px;
   display: flex;
   margin: 0 25px;
   align-items: center;

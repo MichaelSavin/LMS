@@ -1,7 +1,6 @@
 .editor {
   background-color: #EEE;
   min-height: 230px;
-  font-size: 14px;
   padding: 10px;
 }
 
@@ -17,7 +16,7 @@
   background-color: #FFF;
   min-height: 140px;
   cursor: text;
-  font-size: 14px;
+  font-size: 15px;
   margin-top: 10px;
   padding-top: 5px;
   padding-left: 10px;

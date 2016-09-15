@@ -1,11 +1,11 @@
 .view {
   background-color: #F5F5F5;
   min-height: 240px;
-  font-size: 14px;
 }
 
 .draft {
   background-color: white;
+  font-size: 15px;
   padding-top: 5px;
   padding-left: 10px;
   padding-bottom: 5px;
