@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { convertToRaw, ContentState } from 'draft-js';
 
 import Unit from '../Unit';
 
@@ -47,7 +48,9 @@ const Subsection = ({
               subsectionId: id,
               unit: {
                 name: 'Новый блок',
-                content: '',
+                content: convertToRaw(
+                  ContentState.createFromText('')
+                ),
               },
             })
           }
