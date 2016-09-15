@@ -1,3 +1,7 @@
+import { convertToRaw, ContentState } from 'draft-js';
+
+const content = convertToRaw(ContentState.createFromText(''));
+
 const course = {
   name: 'Тестовый курс',
   info: 'Краткая информация о курсе',
@@ -11,12 +15,12 @@ const course = {
             {
               name: 'Блок 1',
               info: 'Информация о блоке',
-              content: '',
+              content,
             },
             {
               name: 'Блок 2',
               info: 'Информация о блоке',
-              content: '',
+              content,
             },
           ],
         },
@@ -26,7 +30,7 @@ const course = {
             {
               name: 'Блок 1',
               info: 'Информация о блоке',
-              content: '',
+              content,
             },
           ],
         },

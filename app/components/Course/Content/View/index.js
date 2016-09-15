@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-import Markdown from 'react-remarkable';
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
 
 import styles from './styles.css';
 
@@ -8,14 +8,19 @@ class View extends Component { // eslint-disable-line react/prefer-stateless-fun
   render() {
     return (
       <div className={styles.view}>
-        <Markdown source={this.props.content} />
+        <Editor
+          editorState={EditorState.createWithContent(
+            convertFromRaw(this.props.content)
+          )}
+          readOnly
+        />
       </div>
     );
   }
 }
 
 View.propTypes = {
-  content: PropTypes.string, // http://stackoverflow.com/a/33427304
+  content: PropTypes.object, // http://stackoverflow.com/a/33427304
 };
 
 export default View;

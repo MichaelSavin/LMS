@@ -118,7 +118,7 @@ Draft.propTypes = { // http://stackoverflow.com/a/33427304
     subsectionId: PropTypes.string.isRequired,
     unitId: PropTypes.string.isRequired,
   }),
-  content: PropTypes.string,
+  content: PropTypes.object,
 };
 
 export default Draft;
