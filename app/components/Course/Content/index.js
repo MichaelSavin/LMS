@@ -18,6 +18,9 @@ export class Content extends Component { // eslint-disable-line react/prefer-sta
         subsectionId,
         unitId,
       },
+      location: {
+        key,
+      },
       actions,
       children,
     } = this.props;
@@ -65,6 +68,7 @@ export class Content extends Component { // eslint-disable-line react/prefer-sta
           </div>
         </div>
         {React.cloneElement(children, {
+          key, // Автоматическое отмонтирование компонента при роутинге
           unit: {
             sectionId,
             subsectionId,
@@ -89,6 +93,9 @@ Content.propTypes = {
     subsectionId: PropTypes.string.isRequired,
     unitId: PropTypes.string.isRequired,
   }).isRequired,
+  location: PropTypes.shape({
+    key: PropTypes.string.isRequired,
+  }),
   children: PropTypes.element,
 };
 

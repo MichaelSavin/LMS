@@ -40,16 +40,6 @@ class Draft extends Component {
     };
   }
 
-  componentWillReceiveProps(props) {
-    if (props.location.key !== this.props.location.key) {
-      this.setState({
-        editorState: EditorState.createWithContent(
-          convertFromRaw(props.content)
-        ),
-      });
-    }
-  }
-
   handleKeyCommand = (command) => {
     const { editorState } = this.state;
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -135,9 +125,6 @@ class Draft extends Component {
 
 Draft.propTypes = {
   actions: PropTypes.object, // http://stackoverflow.com/a/33427304
-  location: PropTypes.shape({ // https://github.com/ReactTraining/react-router/blob/master/docs/guides/ComponentLifecycle.md
-    key: PropTypes.string.isRequired,
-  }).isRequired,
   unit: PropTypes.shape({
     sectionId: PropTypes.string.isRequired,
     subsectionId: PropTypes.string.isRequired,
