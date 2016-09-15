@@ -41,11 +41,13 @@ class Draft extends Component {
   }
 
   componentWillReceiveProps(props) {
-    this.setState({
-      editorState: EditorState.createWithContent(
-        convertFromRaw(props.content)
-      ),
-    });
+    if (props.location.key !== this.props.location.key) {
+      this.setState({
+        editorState: EditorState.createWithContent(
+          convertFromRaw(props.content)
+        ),
+      });
+    }
   }
 
   handleKeyCommand = (command) => {
@@ -57,7 +59,6 @@ class Draft extends Component {
     }
     return false;
   }
-
 
   toggleBlockType = (blockType) => {
     this.onChange(
@@ -132,8 +133,11 @@ class Draft extends Component {
   }
 }
 
-Draft.propTypes = { // http://stackoverflow.com/a/33427304
-  actions: PropTypes.object,
+Draft.propTypes = {
+  actions: PropTypes.object, // http://stackoverflow.com/a/33427304
+  location: PropTypes.shape({ // https://github.com/ReactTraining/react-router/blob/master/docs/guides/ComponentLifecycle.md
+    key: PropTypes.string.isRequired,
+  }).isRequired,
   unit: PropTypes.shape({
     sectionId: PropTypes.string.isRequired,
     subsectionId: PropTypes.string.isRequired,
