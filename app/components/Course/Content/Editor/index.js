@@ -26,7 +26,7 @@ class Draft extends Component {
         convertFromRaw(content)
       ),
     };
-    this.focus = () => {}; // eslint-disable-line react/no-string-refs
+    this.focus = () => { this.refs.editor.focus(); }; // eslint-disable-line react/no-string-refs
     this.onChange = (editorState) => {
       if (editorState.getCurrentContent() !== this.state.editorState.getCurrentContent()) {
         editUnit({
@@ -40,6 +40,14 @@ class Draft extends Component {
     };
   }
 
+  componentWillReceiveProps(props) {
+    this.setState({
+      editorState: EditorState.createWithContent(
+        convertFromRaw(props.content)
+      ),
+    });
+  }
+
   handleKeyCommand = (command) => {
     const { editorState } = this.state;
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -49,6 +57,7 @@ class Draft extends Component {
     }
     return false;
   }
+
 
   toggleBlockType = (blockType) => {
     this.onChange(
