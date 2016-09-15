@@ -20,7 +20,7 @@ const configureStore = () => {
   const createStoreWithMiddleware = compose(
     applyMiddleware(engineMiddleware, routerMiddleware(browserHistory), sagaMiddleware),
       window.devToolsExtension ? window.devToolsExtension({
-        // actionsBlacklist: ['REDUX_STORAGE_LOAD', 'REDUX_STORAGE_SAVE'],
+        actionsBlacklist: ['REDUX_STORAGE_LOAD', 'REDUX_STORAGE_SAVE'],
       }) : f => f,
     )(createStore);
   const store = createStoreWithMiddleware(reducer);
