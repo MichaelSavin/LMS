@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
 
 import Toolbar from './Toolbar';
 
@@ -10,21 +10,34 @@ import styles from './styles.css';
 class Draft extends Component {
   constructor(props) {
     super(props);
-    // const {
-    //   actions: {
-    //     editUnit,
-    //   },
-    //   unit: {
-    //     sectionId,
-    //     subsectionId,
-    //     unitId,
-    //   },
-    //   content,
-    // } = this.props;
-    this.state = { editorState: EditorState.createEmpty() };
-
-    this.focus = () => this.refs.editor.focus(); // eslint-disable-line react/no-string-refs
-    this.onChange = (editorState) => this.setState({ editorState });
+    const {
+      actions: {
+        editUnit,
+      },
+      unit: {
+        sectionId,
+        subsectionId,
+        unitId,
+      },
+      content,
+    } = this.props;
+    this.state = {
+      editorState: EditorState.createWithContent(
+        convertFromRaw(content)
+      ),
+    };
+    this.focus = () => {}; // eslint-disable-line react/no-string-refs
+    this.onChange = (editorState) => {
+      if (editorState.getCurrentContent() !== this.state.editorState.getCurrentContent()) {
+        editUnit({
+          sectionId,
+          subsectionId,
+          unitId,
+          content: convertToRaw(editorState.getCurrentContent()),
+        });
+      }
+      this.setState({ editorState });
+    };
   }
 
   handleKeyCommand = (command) => {
@@ -57,7 +70,6 @@ class Draft extends Component {
 
   render() {
     const { editorState } = this.state;
-
     return (
       <div className={styles.editor}>
         <Toolbar
