@@ -2,13 +2,13 @@
   background-color: #F5F5F5;
   min-height: 240px;
   font-size: 14px;
-  padding: 5px 0;
 }
 
-p {
-  margin: 13px 20px;
-}
-
-li {
-  margin: -3px -5px;
+.draft {
+  background-color: white;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-bottom: 5px;
+  min-height: 220px;
+  margin: 15px;
 }

@@ -8,12 +8,14 @@ class View extends Component { // eslint-disable-line react/prefer-stateless-fun
   render() {
     return (
       <div className={styles.view}>
-        <Editor
-          editorState={EditorState.createWithContent(
-            convertFromRaw(this.props.content)
-          )}
-          readOnly
-        />
+        <div className={styles.draft}>
+          <Editor
+            editorState={EditorState.createWithContent(
+              convertFromRaw(this.props.content)
+            )}
+            readOnly
+          />
+        </div>
       </div>
     );
   }
