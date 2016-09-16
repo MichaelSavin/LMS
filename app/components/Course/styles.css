@@ -17,3 +17,9 @@ ol {
 li {
   margin: 1px -5px;
 }
+
+h3 {
+  border-bottom: 1px solid #EEE;
+  margin-right: 10px;
+  margin-top: 15px;
+}
