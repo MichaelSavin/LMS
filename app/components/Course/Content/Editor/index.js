@@ -1,15 +1,30 @@
-import React, { Component, PropTypes } from 'react';
-import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
-
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
+import {
+  Editor,
+  RichUtils,
+  EditorState,
+  convertToRaw,
+  convertFromRaw,
+} from 'draft-js';
 import Toolbar from './Toolbar';
-
 import Button from 'components/UI/Button';
-
 import styles from './styles.css';
 
 class Draft extends Component {
+
   constructor(props) {
     super(props);
+    this.state = {
+      editorState: EditorState.createWithContent(
+        convertFromRaw(this.props.content)
+      ),
+    };
+  }
+
+  onChange = (editorState) => {
     const {
       actions: {
         editUnit,
@@ -19,30 +34,22 @@ class Draft extends Component {
         subsectionId,
         unitId,
       },
-      content,
     } = this.props;
-    this.state = {
-      editorState: EditorState.createWithContent(
-        convertFromRaw(content)
-      ),
-    };
-    this.focus = () => { this.refs.editor.focus(); }; // eslint-disable-line react/no-string-refs
-    this.onChange = (editorState) => {
-      if (editorState.getCurrentContent() !== this.state.editorState.getCurrentContent()) {
-        editUnit({
-          sectionId,
-          subsectionId,
-          unitId,
-          content: convertToRaw(editorState.getCurrentContent()),
-        });
-      }
-      this.setState({ editorState });
-    };
+    if (editorState.getCurrentContent() !== this.state.editorState.getCurrentContent()) {
+      editUnit({
+        sectionId,
+        subsectionId,
+        unitId,
+        content: convertToRaw(editorState.getCurrentContent()),
+      });
+    }
+    this.setState({ editorState });
   }
 
   handleKeyCommand = (command) => {
-    const { editorState } = this.state;
-    const newState = RichUtils.handleKeyCommand(editorState, command);
+    const newState = RichUtils.handleKeyCommand(
+      this.state.editorState, command
+    );
     if (newState) {
       this.onChange(newState);
       return true;
@@ -92,9 +99,12 @@ class Draft extends Component {
             { label: 'Подчеркнутый текст', style: 'UNDERLINE' },
           ]}
         />
-        <div className={styles.draft} onClick={this.focus}>
+        <div
+          className={styles.draft}
+          onClick={() => { this.refs.editor.focus(); }} // eslint-disable-line react/no-string-refs
+        >
           <Editor
-            ref="editor" // eslint-disable-line react/no-string-refs
+            ref="editor"              // eslint-disable-line react/no-string-refs
             editorState={editorState}
             handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
