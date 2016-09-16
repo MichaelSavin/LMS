@@ -2,7 +2,12 @@ import React, { PropTypes } from 'react';
 
 import Button from './Button';
 
-const Toolbar = ({ type, buttons, editorState, onToggle }) => {
+const Toolbar = ({
+  type,
+  buttons,
+  onToggle,
+  editorState,
+}) => {
   switch (type) {
     case 'BLOCK':
       return (
@@ -25,7 +30,6 @@ const Toolbar = ({ type, buttons, editorState, onToggle }) => {
           )}
         </div>
       );
-
     case 'INLINE':
       return (
         <div className="toolbar">

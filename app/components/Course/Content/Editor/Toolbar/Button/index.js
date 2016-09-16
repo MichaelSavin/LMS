@@ -1,33 +1,23 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
-class Button extends Component {
-
-  onToggle = (event) => {
-    const {
-      style,
-      onToggle,
-    } = this.props;
-    event.preventDefault();
-    onToggle(style);
-  };
-
-  render() {
-    const {
-      active,
-      label,
-    } = this.props;
-    return (
-      <span
-        className={styles[active ? 'active' : 'inactive']}
-        onMouseDown={this.onToggle}
-      >
-        {label}
-      </span>
-    );
-  }
-}
+const Button = ({
+  active,
+  label,
+  style,
+  onToggle,
+}) => (
+  <span
+    className={styles[active ? 'active' : 'inactive']}
+    onMouseDown={(event) => {
+      event.preventDefault();
+      onToggle(style);
+    }}
+  >
+    {label}
+  </span>
+);
 
 Button.propTypes = {
   style: PropTypes.string.isRequired,

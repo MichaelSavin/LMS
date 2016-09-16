@@ -4,15 +4,18 @@ import { Editor, EditorState, convertFromRaw } from 'draft-js';
 
 import styles from './styles.css';
 
-class View extends Component { // eslint-disable-line react/prefer-stateless-function
+class View extends Component { // HMR
   render() {
     return (
       <div className={styles.view}>
         <div className={styles.draft}>
           <Editor
-            editorState={EditorState.createWithContent(
-              convertFromRaw(this.props.content)
-            )}
+            editorState={EditorState
+              .createWithContent(
+                convertFromRaw(
+                  this.props.content
+                )
+              )}
             readOnly
           />
         </div>

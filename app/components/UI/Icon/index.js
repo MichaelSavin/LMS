@@ -10,7 +10,11 @@ const svg = {
   add: 'm22.5 17.5v-10h-5v10h-10v5h10v10h5v-10h10v-5h-10z',
 };
 
-const Icon = ({ action, size, type }) => (
+const Icon = ({
+  action,
+  size,
+  type,
+}) => (
   <span onClick={action}>
     <svg
       width={size + 7.5}

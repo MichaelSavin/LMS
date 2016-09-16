@@ -7,9 +7,13 @@ import Sidebar from './Sidebar';
 
 import styles from './styles.css';
 
-export class Course extends Component { // eslint-disable-line react/prefer-stateless-function
+class Course extends Component { // HMR
   render() {
-    const { data, actions, children } = this.props;
+    const {
+      data,
+      actions,
+      children,
+    } = this.props;
     return (
       <div className={styles.course}>
         <Sidebar

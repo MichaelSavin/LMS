@@ -1,10 +1,15 @@
 import React, { PropTypes } from 'react';
-
 import Section from './Section';
-
 import styles from './styles.css';
 
-const Sidebar = ({ data: { name, info, sections = [] }, actions }) => (
+const Sidebar = ({
+  data: {
+    name,
+    info,
+    sections = [],
+  },
+  actions,
+}) => (
   <div className={styles.sidebar}>
     <div className={styles.name}>{name}</div>
     <div className={styles.info}>{info}</div>

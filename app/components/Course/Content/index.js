@@ -6,7 +6,7 @@ import Icon from 'components/UI/Icon';
 
 import styles from './styles.css';
 
-export class Content extends Component { // eslint-disable-line react/prefer-stateless-function
+class Content extends Component {
   render() {
     const {
       data,
@@ -24,7 +24,6 @@ export class Content extends Component { // eslint-disable-line react/prefer-sta
       actions,
       children,
     } = this.props;
-    const route = `${sectionId}-${subsectionId}-${unitId}`;
     const {
       name,
       content,
@@ -32,6 +31,7 @@ export class Content extends Component { // eslint-disable-line react/prefer-sta
       .sections[sectionId]
       .subsections[subsectionId]
       .units[unitId] || {};
+    const route = `${sectionId}-${subsectionId}-${unitId}`;
     return (name) ? (
       <div className={styles.editor}>
         <div className={styles.title}>
