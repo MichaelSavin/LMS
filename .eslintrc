@@ -55,16 +55,24 @@
     "no-console": 1,
     "no-use-before-define": 0,
     "prefer-template": 2,
+    "react/prefer-stateless-function": 2,
     "react/jsx-filename-extension": 0,
     "react/jsx-no-target-blank": 0,
     "react/require-extension": 0,
     "react/self-closing-comp": 0,
     "require-yield": 0,
     "fp/no-mutation": ["error", {
-      "exceptions": [{
-        "property": "propTypes"
+      "allowThis": true,
+      "exceptions": [{ 
+        "property": "propTypes" 
       }]
-    }]
+    }],
+    "fp/no-unused-expression": 0,
+    "better/explicit-return": 0,
+    "better/no-ifs": 0,
+    "fp/no-class": 0,
+    "fp/no-this": 0,
+    "fp/no-nil": 0
   },
   "settings": {
     "import/resolver": {
