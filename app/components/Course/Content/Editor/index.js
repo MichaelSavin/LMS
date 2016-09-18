@@ -3,15 +3,48 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Editor,
+  Entity,
   RichUtils,
   EditorState,
   convertToRaw,
   convertFromRaw,
+  AtomicBlockUtils,
 } from 'draft-js';
-import Toolbar from './Toolbar';
+import createImagePlugin, {
+  // imageStyles,
+  // imageCreator,
+} from 'draft-js-image-plugin';
+import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
+import createLinkifyPlugin from 'draft-js-linkify-plugin';
+import createVideoPlugin from 'draft-js-video-plugin';
+import Editor from 'draft-js-plugins-editor';
 import Button from 'components/UI/Button';
+import Toolbar from './Toolbar';
 import styles from './styles.css';
+
+const imageTheme = {
+  imageLoader: 'imageLoader',
+  imageWrapper: 'imageWrapper',
+  image: 'image',
+};
+
+const plugins = [
+  createImagePlugin({
+    theme: imageTheme,
+    type: 'atomic',
+  }),
+  createVideoPlugin(),
+  createLinkifyPlugin({
+    theme: {
+      link: 'link',
+    },
+    component: (props) => (
+      // eslint-disable-next-line no-alert, jsx-a11y/anchor-has-content
+      <a {...props} onClick={() => alert('Clicked on Link!')} />
+    ),
+  }),
+  createEntityPropsPlugin(),
+];
 
 class Draft extends Component {
 
@@ -46,16 +79,16 @@ class Draft extends Component {
     this.setState({ editorState });
   }
 
-  handleKeyCommand = (command) => {
-    const newState = RichUtils.handleKeyCommand(
-      this.state.editorState, command
-    );
-    if (newState) {
-      this.onChange(newState);
-      return true;
-    }
-    return false;
-  }
+  // handleKeyCommand = (command) => {
+  //   const newState = RichUtils.handleKeyCommand(
+  //     this.state.editorState, command
+  //   );
+  //   if (newState) {
+  //     this.onChange(newState);
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   toggleBlockType = (blockType) => {
     this.onChange(
@@ -106,9 +139,10 @@ class Draft extends Component {
           <Editor
             ref="editor"              // eslint-disable-line react/no-string-refs
             editorState={editorState}
-            handleKeyCommand={this.handleKeyCommand}
+            // handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
             spellCheck={false}
+            plugins={plugins}
           />
         </div>
         <div className={styles.buttons}>
@@ -118,8 +152,24 @@ class Draft extends Component {
             icon="quiz"
           />
           <Button
-            action={() => alert('Картинка')}
-            name="Картинка"
+            action={() => {
+              const url = prompt('URL изображения', '');
+              const entityKey = Entity.create('block-image', 'IMMUTABLE', {
+                src: url,
+                progress: -1,
+                alt: '',
+                // width: 300,
+                // height: 300,
+              });
+              this.setState({
+                editorState: AtomicBlockUtils.insertAtomicBlock(
+                  this.state.editorState,
+                  entityKey,
+                  ' '
+                ),
+              });
+            }}
+            name="Изображение"
             icon="image"
           />
           <Button
