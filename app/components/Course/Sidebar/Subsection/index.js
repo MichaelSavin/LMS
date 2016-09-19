@@ -1,8 +1,8 @@
-import React, { PropTypes } from 'react';
 import { convertToRaw, ContentState } from 'draft-js';
+import React, { PropTypes } from 'react';
 import Icon from 'components/UI/Icon';
-import Unit from '../Unit';
 import styles from './styles.css';
+import Unit from '../Unit';
 
 const Subsection = ({
   data: {

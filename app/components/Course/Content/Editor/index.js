@@ -38,8 +38,7 @@ const plugins = [
     theme: {
       link: 'link',
     },
-    component: (props) => (
-      // eslint-disable-next-line no-alert, jsx-a11y/anchor-has-content
+    component: (props) => ( // eslint-disable-line react/display-name
       <a {...props} onClick={() => alert('Clicked on Link!')} />
     ),
   }),
@@ -90,24 +89,6 @@ class Draft extends Component {
   //   return false;
   // }
 
-  toggleBlockType = (blockType) => {
-    this.onChange(
-      RichUtils.toggleBlockType(
-        this.state.editorState,
-        blockType
-      )
-    );
-  }
-
-  toggleInlineStyle = (inlineStyle) => {
-    this.onChange(
-      RichUtils.toggleInlineStyle(
-        this.state.editorState,
-        inlineStyle
-      )
-    );
-  }
-
   render() {
     const { editorState } = this.state;
     return (
@@ -115,7 +96,14 @@ class Draft extends Component {
         <Toolbar
           type="BLOCK"
           editorState={editorState}
-          onToggle={this.toggleBlockType}
+          onToggle={(blockType) => {
+            this.onChange(
+              RichUtils.toggleBlockType(
+                this.state.editorState,
+                blockType
+              )
+            );
+          }}
           buttons={[
             { label: 'Заголовок', style: 'header-three' },
             { label: 'Простой список', style: 'unordered-list-item' },
@@ -125,7 +113,14 @@ class Draft extends Component {
         <Toolbar
           type="INLINE"
           editorState={editorState}
-          onToggle={this.toggleInlineStyle}
+          onToggle={(inlineStyle) => {
+            this.onChange(
+              RichUtils.toggleInlineStyle(
+                this.state.editorState,
+                inlineStyle
+              )
+            );
+          }}
           buttons={[
             { label: 'Жирный текст', style: 'BOLD' },
             { label: 'Наклонный текст', style: 'ITALIC' },
@@ -137,7 +132,7 @@ class Draft extends Component {
           onClick={() => { this.refs.editor.focus(); }} // eslint-disable-line react/no-string-refs
         >
           <Editor
-            ref="editor"              // eslint-disable-line react/no-string-refs
+            ref="editor" // eslint-disable-line react/no-string-refs
             editorState={editorState}
             // handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
@@ -161,7 +156,7 @@ class Draft extends Component {
                 // width: 300,
                 // height: 300,
               });
-              this.setState({
+              this.setState({ // eslint-disable-line react/no-set-state
                 editorState: AtomicBlockUtils.insertAtomicBlock(
                   this.state.editorState,
                   entityKey,

@@ -21,7 +21,8 @@ const Toolbar = ({
                   editorState
                     .getSelection()
                     .getStartKey()
-                ).getType()
+                )
+                .getType()
               }
               label={button.label}
               onToggle={onToggle}

@@ -1,9 +1,10 @@
 import { fromJS } from 'immutable';
 import { combineReducers } from 'redux-immutable';
 import { LOCATION_CHANGE } from 'react-router-redux';
+import courseReducer from 'components/Course/reducer';
 
 // Поддержка ImmutableJS в react-router-redux
-function routeReducer(state = fromJS({ locationBeforeTransitions: null }), action) {
+const routeReducer = (state = fromJS({ locationBeforeTransitions: null }), action) => {
   switch (action.type) {
     case LOCATION_CHANGE:
       return state.merge({
@@ -12,9 +13,7 @@ function routeReducer(state = fromJS({ locationBeforeTransitions: null }), actio
     default:
       return state;
   }
-}
-
-import courseReducer from 'components/Course/reducer';
+};
 
 const reducers = combineReducers({
   route: routeReducer,

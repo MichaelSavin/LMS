@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import Subsection from '../Subsection';
 import Icon from 'components/UI/Icon';
+import Subsection from '../Subsection';
 import styles from './styles.css';
 
 const Section = ({

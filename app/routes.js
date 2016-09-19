@@ -31,7 +31,11 @@ const routes = (
 const router = (store, history) => {
   ReactDOM.render(
     <Provider store={store}>
-      <Router history={history} render={applyRouterMiddleware(useScroll())} key={Math.random()} >
+      <Router
+        history={history}
+        key={Math.random()}
+        render={applyRouterMiddleware(useScroll())}
+      >
         {routes}
       </Router>
     </Provider>,

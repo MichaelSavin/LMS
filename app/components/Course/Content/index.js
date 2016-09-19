@@ -9,7 +9,6 @@ import styles from './styles.css';
 class Content extends Component {
   render() {
     const {
-      data,
       actions: {
         renameUnit,
       },
@@ -27,7 +26,7 @@ class Content extends Component {
     const {
       name,
       content,
-    } = data
+    } = this.props.data
       .sections[sectionId]
       .subsections[subsectionId]
       .units[unitId] || {};

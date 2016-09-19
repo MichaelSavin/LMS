@@ -2,7 +2,9 @@
   "parser": "babel-eslint",
   "extends": [
     "airbnb",
-    "cleanjs"
+    "cleanjs",
+    "eslint:recommended", 
+    "plugin:react/recommended"
   ],
   "env": {
     "browser": true,
@@ -30,8 +32,6 @@
       2,
       "always-multiline"
     ],
-    "import/imports-first": 0,
-    "import/newline-after-import": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-named-as-default": 0,
     "import/no-unresolved": 2,
@@ -39,10 +39,25 @@
     "indent": [
       2,
       2,
-      {
-        "SwitchCase": 1
+      { 
+        "SwitchCase": 1,
+        "MemberExpression": 1,
+        "VariableDeclarator": 1
       }
     ],
+    "newline-per-chained-call": [2, { 
+      "ignoreChainWithDepth": 2 
+    }],
+    "no-console": 2,
+    "prefer-template": 2,
+    "no-use-before-define": 0,
+    "react/prefer-stateless-function": 1,
+    "react/jsx-filename-extension": 0,
+    "react/require-extension": 0,
+    "react/no-set-state": 2,
+    "react/jsx-no-bind": [2, {
+      "allowArrowFunctions": true
+    }],
     "jsx-a11y/aria-props": 2,
     "jsx-a11y/heading-has-content": 0,
     "jsx-a11y/href-no-hash": 2,
@@ -50,18 +65,7 @@
     "jsx-a11y/mouse-events-have-key-events": 2,
     "jsx-a11y/role-has-required-aria-props": 2,
     "jsx-a11y/role-supports-aria-props": 2,
-    "max-len": 0,
-    "newline-per-chained-call": 0,
-    "no-console": 1,
-    "no-use-before-define": 0,
-    "prefer-template": 2,
-    "react/prefer-stateless-function": 1,
-    "react/jsx-filename-extension": 0,
-    "react/jsx-no-target-blank": 0,
-    "react/require-extension": 0,
-    "react/self-closing-comp": 0,
-    "require-yield": 0,
-    "fp/no-mutation": ["error", {
+    "fp/no-mutation": [2, {
       "allowThis": true,
       "exceptions": [{ 
         "property": "propTypes" 

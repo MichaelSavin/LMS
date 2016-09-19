@@ -1,3 +1,4 @@
+/* eslint max-len: 0 */
 import React, { PropTypes } from 'react';
 
 const svg = {

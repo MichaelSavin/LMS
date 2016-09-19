@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import * as actionCreators from './actions';
 import { bindActionCreators } from 'redux';
-import courseSelector from './selectors';
 import { connect } from 'react-redux';
-import Sidebar from './Sidebar';
 
+import * as actionCreators from './actions';
+import courseSelector from './selectors';
 import styles from './styles.css';
+import Sidebar from './Sidebar';
 
 class Course extends Component { // HMR
   render() {
