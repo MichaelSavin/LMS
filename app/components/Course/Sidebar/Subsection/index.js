@@ -8,6 +8,7 @@ const Subsection = ({
   data: {
     id,
     name,
+    sectionId,
     units = [],
   },
   actions: {
@@ -16,7 +17,6 @@ const Subsection = ({
     renameSubsection,
     removeSubsection,
   },
-  sectionId,
   actions,
 }) => (
   <div className={styles.subsection}>
@@ -80,10 +80,13 @@ const Subsection = ({
     {units.map((data, index) =>
       <Unit
         key={index}
-        data={{ ...data, id: index }}
+        data={{
+          ...data,
+          id: index,
+          sectionId,
+          subsectionId: id,
+        }}
         actions={actions}
-        sectionId={sectionId}
-        subsectionId={id}
       />
     )}
   </div>
@@ -94,6 +97,7 @@ Subsection.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     units: PropTypes.array,
+    sectionId: PropTypes.number.isRequired,
   }).isRequired,
   actions: PropTypes.shape({
     addUnit: PropTypes.func.isRequired,
@@ -101,7 +105,6 @@ Subsection.propTypes = {
     renameSubsection: PropTypes.func.isRequired,
     removeSubsection: PropTypes.func.isRequired,
   }).isRequired,
-  sectionId: PropTypes.number.isRequired,
 };
 
 export default Subsection;

@@ -70,9 +70,12 @@ const Section = ({
     {subsections.map((data, index) =>
       <Subsection
         key={index}
-        data={{ ...data, id: index }}
+        data={{
+          ...data,
+          id: index,
+          sectionId: id,
+        }}
         actions={actions}
-        sectionId={id}
       />
     )}
   </div>

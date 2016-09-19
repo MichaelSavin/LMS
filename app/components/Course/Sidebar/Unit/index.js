@@ -8,13 +8,13 @@ const Unit = ({
     id,
     name,
     content,
+    sectionId,
+    subsectionId,
   },
   actions: {
     addUnit,
     removeUnit,
   },
-  sectionId,
-  subsectionId,
 }) => (
   <div className={styles.unit}>
     <div className={styles.title}>
@@ -62,14 +62,14 @@ Unit.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     content: PropTypes.object.isRequired,
+    sectionId: PropTypes.number.isRequired,
+    subsectionId: PropTypes.number.isRequired,
   }).isRequired,
   actions: PropTypes.shape({
     addUnit: PropTypes.func.isRequired,
     renameUnit: PropTypes.func.isRequired,
     removeUnit: PropTypes.func.isRequired,
   }).isRequired,
-  sectionId: PropTypes.number.isRequired,
-  subsectionId: PropTypes.number.isRequired,
 };
 
 export default Unit;
