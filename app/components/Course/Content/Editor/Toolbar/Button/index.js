@@ -3,16 +3,16 @@ import React, { PropTypes } from 'react';
 import styles from './styles.css';
 
 const Button = ({
-  active,
   label,
   style,
-  onToggle,
+  onClick,
+  isActive,
 }) => (
   <span
-    className={styles[active ? 'active' : 'inactive']}
+    className={styles[isActive ? 'active' : 'inactive']}
     onMouseDown={(event) => {
       event.preventDefault();
-      onToggle(style);
+      onClick(style);
     }}
   >
     {label}
@@ -22,8 +22,8 @@ const Button = ({
 Button.propTypes = {
   style: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  active: PropTypes.bool.isRequired,
-  onToggle: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired,
 };
 
 export default Button;

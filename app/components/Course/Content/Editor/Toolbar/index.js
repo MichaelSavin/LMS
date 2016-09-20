@@ -3,66 +3,31 @@ import React, { PropTypes } from 'react';
 import Button from './Button';
 
 const Toolbar = ({
-  type,
   buttons,
-  onToggle,
-  editorState,
-}) => {
-  switch (type) {
-    case 'BLOCK':
-      return (
-        <div className="toolbar">
-          {buttons.map((button) =>
-            <Button
-              key={button.label}
-              active={button.style === editorState
-                .getCurrentContent()
-                .getBlockForKey(
-                  editorState
-                    .getSelection()
-                    .getStartKey()
-                )
-                .getType()
-              }
-              label={button.label}
-              onToggle={onToggle}
-              style={button.style}
-            />
-          )}
-        </div>
-      );
-    case 'INLINE':
-      return (
-        <div className="toolbar">
-          {buttons.map(button =>
-            <Button
-              key={button.label}
-              active={editorState
-                .getCurrentInlineStyle()
-                .has(button.style)
-              }
-              label={button.label}
-              onToggle={onToggle}
-              style={button.style}
-            />
-          )}
-        </div>
-      );
-    default:
-      return undefined;
-  }
-};
+  onButtonClick: onClick,
+  isButtonActive: isActive,
+}) => 
+  <div className="toolbar">
+    {buttons.map(button =>
+      <Button
+        key={button.label}
+        label={button.label}
+        style={button.style}
+        onClick={onClick}
+        isActive={isActive(button)}
+      />
+    )}
+  </div>;
 
 Toolbar.propTypes = {
-  type: PropTypes.string.isRequired,
   buttons: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       style: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
-  editorState: PropTypes.object.isRequired,
-  onToggle: PropTypes.func.isRequired,
+  onButtonClick: PropTypes.func.isRequired,
+  isButtonActive: PropTypes.func.isRequired,
 };
 
 export default Toolbar;

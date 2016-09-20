@@ -3,47 +3,56 @@ import React, {
   PropTypes,
 } from 'react';
 import {
+  Editor,
   Entity,
   RichUtils,
   EditorState,
   convertToRaw,
   convertFromRaw,
   AtomicBlockUtils,
+  CompositeDecorator,
 } from 'draft-js';
-import createImagePlugin, {
+// import createImagePlugin, {
   // imageStyles,
   // imageCreator,
-} from 'draft-js-image-plugin';
-import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
-import createVideoPlugin from 'draft-js-video-plugin';
-import Editor from 'draft-js-plugins-editor';
+// } from 'draft-js-image-plugin';
+// import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
+// import createVideoPlugin from 'draft-js-video-plugin';
+// import Editor from 'draft-js-plugins-editor';
 import Button from 'components/UI/Button';
 import Toolbar from './Toolbar';
 import styles from './styles.css';
+import Link, { findLinkEntities } from './Entities/Link';
 
-const imageTheme = {
-  imageLoader: 'imageLoader',
-  imageWrapper: 'imageWrapper',
-  image: 'image',
-};
 
-const plugins = [
-  createImagePlugin({
-    theme: imageTheme,
-    type: 'atomic',
-  }),
-  createVideoPlugin(),
-  createEntityPropsPlugin(),
-];
+// const imageTheme = {
+//   imageLoader: 'imageLoader',
+//   imageWrapper: 'imageWrapper',
+//   image: 'image',
+// };
+
+const plugins = null; // [
+//   createImagePlugin({
+//     theme: imageTheme,
+//     type: 'atomic',
+//   }),
+//   createVideoPlugin(),
+//   createEntityPropsPlugin(),
+// ];
 
 class Draft extends Component {
 
   constructor(props) {
     super(props);
+    const decorator = new CompositeDecorator([{ // eslint-disable-line better/no-new
+      strategy: findLinkEntities,
+      component: Link,
+    }]);
     this.state = {
       editorState: EditorState.moveFocusToEnd(
         EditorState.createWithContent(
-          convertFromRaw(this.props.content)
+          convertFromRaw(this.props.content),
+          decorator,
         ),
       ),
     };
@@ -71,25 +80,23 @@ class Draft extends Component {
     this.setState({ editorState });
   }
 
-  // handleKeyCommand = (command) => {
-  //   const newState = RichUtils.handleKeyCommand(
-  //     this.state.editorState, command
-  //   );
-  //   if (newState) {
-  //     this.onChange(newState);
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   render() {
     const { editorState } = this.state;
     return (
       <div className={styles.editor}>
         <Toolbar
-          type="BLOCK"
-          editorState={editorState}
-          onToggle={(blockType) => {
+          isButtonActive={(button) => 
+            button.style === 
+            editorState
+              .getCurrentContent()
+              .getBlockForKey(
+                editorState
+                  .getSelection()
+                  .getStartKey()
+              )
+              .getType()
+          }
+          onButtonClick={(blockType) => {
             this.onChange(
               RichUtils.toggleBlockType(
                 this.state.editorState,
@@ -104,9 +111,10 @@ class Draft extends Component {
           ]}
         />
         <Toolbar
-          type="INLINE"
-          editorState={editorState}
-          onToggle={(inlineStyle) => {
+          isButtonActive={(button) => 
+            editorState.getCurrentInlineStyle().has(button.style)
+          }
+          onButtonClick={(inlineStyle) => {
             this.onChange(
               RichUtils.toggleInlineStyle(
                 this.state.editorState,
@@ -123,12 +131,11 @@ class Draft extends Component {
         />
         <div
           className={styles.draft}
-          onClick={() => { this.refs.editor.focus(); }} // eslint-disable-line react/no-string-refs
+          onClick={() => { this.refs.editor.focus() }} // eslint-disable-line react/no-string-refs
         >
           <Editor
             ref="editor" // eslint-disable-line react/no-string-refs
             editorState={editorState}
-            // handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
             spellCheck={false}
             plugins={plugins}
@@ -147,8 +154,8 @@ class Draft extends Component {
                 src: url,
                 progress: -1,
                 alt: '',
-                // width: 300,
-                // height: 300,
+                width: 300,
+                height: 300,
               });
               this.setState({ // eslint-disable-line react/no-set-state
                 editorState: AtomicBlockUtils.insertAtomicBlock(
@@ -165,6 +172,26 @@ class Draft extends Component {
             action={() => alert('Видео')}
             name="Видео"
             icon="video"
+          />
+          <Button
+            action={() => {
+              const { editorState } = this.state;
+              if (!editorState.getSelection().isCollapsed()) {
+                this.onChange(
+                  RichUtils.toggleLink(
+                    editorState,
+                    editorState.getSelection(),
+                    Entity.create('LINK', 'IMMUTABLE', {
+                      url: prompt('Ссылка', 'http://www.ya.ru'),
+                    })
+                  )
+                );
+              } else {
+                alert('Выделите текст');
+              }
+            }}
+            name="Ссылка"
+            icon="link"
           />
         </div>
       </div>
