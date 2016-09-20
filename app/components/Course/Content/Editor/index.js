@@ -15,7 +15,6 @@ import createImagePlugin, {
   // imageCreator,
 } from 'draft-js-image-plugin';
 import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
-import createLinkifyPlugin from 'draft-js-linkify-plugin';
 import createVideoPlugin from 'draft-js-video-plugin';
 import Editor from 'draft-js-plugins-editor';
 import Button from 'components/UI/Button';
@@ -34,14 +33,6 @@ const plugins = [
     type: 'atomic',
   }),
   createVideoPlugin(),
-  createLinkifyPlugin({
-    theme: {
-      link: 'link',
-    },
-    component: (props) => ( // eslint-disable-line react/display-name
-      <a {...props} onClick={() => alert('Clicked on Link!')} />
-    ),
-  }),
   createEntityPropsPlugin(),
 ];
 
@@ -50,8 +41,10 @@ class Draft extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createWithContent(
-        convertFromRaw(this.props.content)
+      editorState: EditorState.moveFocusToEnd(
+        EditorState.createWithContent(
+          convertFromRaw(this.props.content)
+        ),
       ),
     };
   }
@@ -125,6 +118,7 @@ class Draft extends Component {
             { label: 'Жирный текст', style: 'BOLD' },
             { label: 'Наклонный текст', style: 'ITALIC' },
             { label: 'Подчеркнутый текст', style: 'UNDERLINE' },
+
           ]}
         />
         <div

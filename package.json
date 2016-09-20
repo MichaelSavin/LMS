@@ -103,7 +103,6 @@
     "draft-js": "^0.9.0",
     "draft-js-entity-props-plugin": "^2.0.0-beta.4",
     "draft-js-image-plugin": "^2.0.0-beta.4",
-    "draft-js-linkify-plugin": "^2.0.0-beta.4",
     "draft-js-plugins-editor": "^2.0.0-beta.4",
     "draft-js-video-plugin": "0.0.4",
     "express": "4.14.0",
