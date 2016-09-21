@@ -1,11 +1,21 @@
 import React, { Component, PropTypes } from 'react';
 
-import { Editor, EditorState, convertFromRaw } from 'draft-js';
+import { 
+  Editor,
+  EditorState,
+  convertFromRaw,
+  CompositeDecorator,
+} from 'draft-js';
+import Link, { findLinkEntities } from '../Editor/Entities/Link';
 
 import styles from './styles.css';
 
 class View extends Component { // HMR
   render() {
+    const decorator = new CompositeDecorator([{ // eslint-disable-line better/no-new
+      strategy: findLinkEntities,
+      component: Link,
+    }]);
     return (
       <div className={styles.view}>
         <div className={styles.draft}>
@@ -14,7 +24,8 @@ class View extends Component { // HMR
               .createWithContent(
                 convertFromRaw(
                   this.props.content
-                )
+                ),
+                decorator,
               )}
             readOnly
           />

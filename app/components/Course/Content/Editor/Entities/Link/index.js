@@ -6,7 +6,12 @@ const Link = ({
   children,
   entityKey,
 }) =>
-  <a href={Entity.get(entityKey).getData().url} className={styles.link}>
+  <a
+    target="_blank"
+    rel="noopener noreferrer"
+    href={Entity.get(entityKey).getData().url}
+    className={styles.link}
+  >
     {children}
   </a>;
 
