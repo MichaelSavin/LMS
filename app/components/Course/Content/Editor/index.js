@@ -145,9 +145,9 @@ class Draft extends Component {
         </div>
         <div className={styles.buttons}>
           <Button
-            action={() => alert('Тест')}
-            name="Тест"
-            icon="quiz"
+            action={() => alert('Формула')}
+            name="Формула"
+            icon="formula"
           />
           <Button
             action={() => {
@@ -194,6 +194,11 @@ class Draft extends Component {
             }}
             name="Ссылка"
             icon="link"
+          />
+          <Button
+            action={() => alert('Вопрос')}
+            name="Вопрос"
+            icon="question"
           />
         </div>
       </div>
