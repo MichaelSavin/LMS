@@ -69,7 +69,7 @@ class Draft extends Component {
         unitId,
       },
     } = this.props;
-    if (editorState.getCurrentContent() !== this.state.editorState.getCurrentContent()) {
+    if (editorState.getCurrentContent() !== this.state.editorState.getCurrentContent()) { // eslint-disable-line better/no-ifs
       editUnit({
         sectionId,
         subsectionId,
@@ -128,7 +128,6 @@ class Draft extends Component {
             { label: 'Жирный текст', style: 'BOLD' },
             { label: 'Наклонный текст', style: 'ITALIC' },
             { label: 'Подчеркнутый текст', style: 'UNDERLINE' },
-
           ]}
         />
         <div
@@ -178,19 +177,17 @@ class Draft extends Component {
           <Button
             action={() => {
               const { editorState } = this.state;
-              if (!editorState.getSelection().isCollapsed()) {
-                this.onChange(
-                  RichUtils.toggleLink(
-                    editorState,
-                    editorState.getSelection(),
-                    Entity.create('LINK', 'IMMUTABLE', {
-                      url: prompt('Ссылка', 'http://www.ya.ru'),
-                    })
-                  )
-                );
-              } else {
-                alert('Выделите текст');
-              }
+              editorState.getSelection().isCollapsed()
+                ? alert('Выделите текст')
+                : this.onChange(
+                    RichUtils.toggleLink(
+                      editorState,
+                      editorState.getSelection(),
+                      Entity.create('LINK', 'IMMUTABLE', {
+                        url: prompt('Ссылка', 'http://www.ya.ru'),
+                      })
+                    )
+                  );
             }}
             name="Ссылка"
             icon="link"

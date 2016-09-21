@@ -16,7 +16,7 @@ import {
 
 const initialState = fromJS(mock);
 
-function courseReducer(course = initialState, action) {
+const courseReducer = (course = initialState, action) => {
   switch (action.type) {
 
     case ADD_SECTION:
