@@ -3,7 +3,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Editor,
+  // Editor,
   Entity,
   RichUtils,
   EditorState,
@@ -12,42 +12,42 @@ import {
   AtomicBlockUtils,
   CompositeDecorator,
 } from 'draft-js';
-// import createImagePlugin, {
+import createImagePlugin, {
   // imageStyles,
   // imageCreator,
-// } from 'draft-js-image-plugin';
-// import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
-// import createVideoPlugin from 'draft-js-video-plugin';
-// import Editor from 'draft-js-plugins-editor';
+} from 'draft-js-image-plugin';
+import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
+import createVideoPlugin from 'draft-js-video-plugin';
+import Editor from 'draft-js-plugins-editor';
 import Button from 'components/UI/Button';
 import Toolbar from './Toolbar';
 import styles from './styles.css';
 import Link, { findLinkEntities } from './Entities/Link';
 
+const imageTheme = {
+  imageLoader: 'imageLoader',
+  imageWrapper: 'imageWrapper',
+  image: 'image',
+};
 
-// const imageTheme = {
-//   imageLoader: 'imageLoader',
-//   imageWrapper: 'imageWrapper',
-//   image: 'image',
-// };
+const plugins = [
+  createImagePlugin({
+    theme: imageTheme,
+    type: 'atomic',
+  }),
+  createVideoPlugin(),
+  createEntityPropsPlugin(),
+];
 
-const plugins = null; // [
-//   createImagePlugin({
-//     theme: imageTheme,
-//     type: 'atomic',
-//   }),
-//   createVideoPlugin(),
-//   createEntityPropsPlugin(),
-// ];
+const decorator = new CompositeDecorator([{ // eslint-disable-line better/no-new
+  strategy: findLinkEntities,
+  component: Link,
+}]);
 
 class Draft extends Component {
 
   constructor(props) {
     super(props);
-    const decorator = new CompositeDecorator([{ // eslint-disable-line better/no-new
-      strategy: findLinkEntities,
-      component: Link,
-    }]);
     this.state = {
       editorState: EditorState.moveFocusToEnd(
         EditorState.createWithContent(
@@ -77,6 +77,9 @@ class Draft extends Component {
         content: convertToRaw(editorState.getCurrentContent()),
       });
     }
+    // this.setState({ editorState: 
+    //   EditorState.set(editorState, { decorator }),
+    // });
     this.setState({ editorState });
   }
 
