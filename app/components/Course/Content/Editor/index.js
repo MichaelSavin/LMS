@@ -77,10 +77,9 @@ class Draft extends Component {
         content: convertToRaw(editorState.getCurrentContent()),
       });
     }
-    // this.setState({ editorState: 
-    //   EditorState.set(editorState, { decorator }),
-    // });
-    this.setState({ editorState });
+    this.setState({ editorState: 
+      EditorState.set(editorState, { decorator }),
+    });
   }
 
   render() {
