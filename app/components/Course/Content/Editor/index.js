@@ -39,7 +39,7 @@ const plugins = [
   createEntityPropsPlugin(),
 ];
 
-const decorator = new CompositeDecorator([{ // eslint-disable-line better/no-new
+const decorator = new CompositeDecorator([{
   strategy: findLinkEntities,
   component: Link,
 }]);
@@ -69,7 +69,8 @@ class Draft extends Component {
         unitId,
       },
     } = this.props;
-    if (editorState.getCurrentContent() !== this.state.editorState.getCurrentContent()) { // eslint-disable-line better/no-ifs
+    if (editorState.getCurrentContent() !==
+        this.state.editorState.getCurrentContent()) {
       editUnit({
         sectionId,
         subsectionId,
@@ -77,7 +78,7 @@ class Draft extends Component {
         content: convertToRaw(editorState.getCurrentContent()),
       });
     }
-    this.setState({ editorState: 
+    this.setState({ editorState:
       EditorState.set(editorState, { decorator }),
     });
   }
@@ -87,8 +88,8 @@ class Draft extends Component {
     return (
       <div className={styles.editor}>
         <Toolbar
-          isButtonActive={(button) => 
-            button.style === 
+          isButtonActive={button =>
+            button.style ===
             editorState
               .getCurrentContent()
               .getBlockForKey(
@@ -113,7 +114,7 @@ class Draft extends Component {
           ]}
         />
         <Toolbar
-          isButtonActive={(button) => 
+          isButtonActive={button =>
             editorState.getCurrentInlineStyle().has(button.style)
           }
           onButtonClick={(inlineStyle) => {
@@ -132,10 +133,10 @@ class Draft extends Component {
         />
         <div
           className={styles.draft}
-          onClick={() => { this.refs.editor.focus() }} // eslint-disable-line react/no-string-refs
+          onClick={() => { this.refs.editor.focus(); }}
         >
           <Editor
-            ref="editor" // eslint-disable-line react/no-string-refs
+            ref="editor"
             editorState={editorState}
             onChange={this.onChange}
             spellCheck={false}
@@ -158,7 +159,7 @@ class Draft extends Component {
                 width: 300,
                 height: 300,
               });
-              this.setState({ // eslint-disable-line react/no-set-state
+              this.setState({
                 editorState: AtomicBlockUtils.insertAtomicBlock(
                   this.state.editorState,
                   entityKey,
@@ -176,8 +177,7 @@ class Draft extends Component {
           />
           <Button
             action={() => {
-              const { editorState } = this.state;
-              editorState.getSelection().isCollapsed()
+              editorState.getSelection().isCollapsed() // eslint-disable-line no-unused-expressions
                 ? alert('Выделите текст')
                 : this.onChange(
                     RichUtils.toggleLink(

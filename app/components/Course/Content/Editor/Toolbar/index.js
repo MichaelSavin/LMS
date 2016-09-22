@@ -6,7 +6,7 @@ const Toolbar = ({
   buttons,
   onButtonClick: onClick,
   isButtonActive: isActive,
-}) => 
+}) => (
   <div className="toolbar">
     {buttons.map(button =>
       <Button
@@ -17,7 +17,8 @@ const Toolbar = ({
         isActive={isActive(button)}
       />
     )}
-  </div>;
+  </div>
+);
 
 Toolbar.propTypes = {
   buttons: PropTypes.arrayOf(

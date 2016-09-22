@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-import { 
+import {
   // Editor,
   EditorState,
   convertFromRaw,

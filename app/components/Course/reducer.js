@@ -121,6 +121,6 @@ const courseReducer = (course = initialState, action) => {
     default:
       return course;
   }
-}
+};
 
 export default courseReducer;

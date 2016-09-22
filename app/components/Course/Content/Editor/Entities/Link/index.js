@@ -5,7 +5,7 @@ import styles from './styles.css';
 const Link = ({
   children,
   entityKey,
-}) =>
+}) => (
   <a
     target="_blank"
     rel="noopener noreferrer"
@@ -13,7 +13,8 @@ const Link = ({
     className={styles.link}
   >
     {children}
-  </a>;
+  </a>
+);
 
 const findLinkEntities = (contentBlock, callback) => {
   contentBlock.findEntityRanges(
@@ -26,7 +27,7 @@ const findLinkEntities = (contentBlock, callback) => {
     },
     callback
   );
-}
+};
 
 Link.propTypes = {
   children: PropTypes.array.isRequired,

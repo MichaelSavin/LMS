@@ -28,7 +28,7 @@ class Course extends Component { // HMR
 
 const mapStateToProps = courseSelector();
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actionCreators, dispatch),
 });
 

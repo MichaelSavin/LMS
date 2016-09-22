@@ -17,7 +17,7 @@ const configureStore = (reducers, router) => {
   const engineMiddleware = storage.createMiddleware(engine);
   const createStoreWithMiddleware = compose(
     applyMiddleware(engineMiddleware, routerMiddleware(browserHistory), sagaMiddleware),
-      window.devToolsExtension 
+      window.devToolsExtension
         ? window.devToolsExtension({ actionsBlacklist: ['REDUX_STORAGE_LOAD', 'REDUX_STORAGE_SAVE'] })
         : f => f,
   )(createStore);
@@ -26,8 +26,8 @@ const configureStore = (reducers, router) => {
   store.runSaga = sagaMiddleware.run; // eslint-disable-line fp/no-mutation
   load(store).then(() => {
     const history = syncHistoryWithStore(
-      browserHistory, 
-      store, 
+      browserHistory,
+      store,
       { selectLocationState: selectLocationState() }
     );
     router(store, history);

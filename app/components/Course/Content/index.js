@@ -1,9 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-
 import { Link } from 'react-router';
-
 import Icon from 'components/UI/Icon';
-
 import styles from './styles.css';
 
 class Content extends Component {
