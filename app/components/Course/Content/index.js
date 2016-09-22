@@ -29,7 +29,7 @@ class Content extends Component {
       .units[unitId] || {};
     const route = `${sectionId}-${subsectionId}-${unitId}`;
     return (name) ? (
-      <div className={styles.editor}>
+      <div className={styles.content}>
         <div className={styles.title}>
           <div className={styles.name}>
             {name}
