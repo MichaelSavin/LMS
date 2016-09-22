@@ -22,6 +22,8 @@ import Editor from 'draft-js-plugins-editor';
 import Button from 'components/UI/Button';
 import Toolbar from './Toolbar';
 import styles from './styles.css';
+
+import TeX, { findTeXEntities, insertTeX } from './Entities/TeX';
 import Link, { findLinkEntities } from './Entities/Link';
 
 const imageTheme = {
@@ -42,6 +44,9 @@ const plugins = [
 const decorator = new CompositeDecorator([{
   strategy: findLinkEntities,
   component: Link,
+}, {
+  strategy: findTeXEntities,
+  component: TeX,
 }]);
 
 class Draft extends Component {
@@ -69,17 +74,20 @@ class Draft extends Component {
         unitId,
       },
     } = this.props;
-    if (editorState.getCurrentContent() !==
-        this.state.editorState.getCurrentContent()) {
+    if (
+      editorState.getCurrentContent() !==
+      this.state.editorState.getCurrentContent()
+    ) {
       editUnit({
         sectionId,
         subsectionId,
         unitId,
         content: convertToRaw(editorState.getCurrentContent()),
       });
+      console.log(convertToRaw(editorState.getCurrentContent()));
     }
-    this.setState({ editorState:
-      EditorState.set(editorState, { decorator }),
+    this.setState({
+      editorState: EditorState.set(editorState, { decorator }),
     });
   }
 
@@ -102,7 +110,7 @@ class Draft extends Component {
           onButtonClick={(blockType) => {
             this.onChange(
               RichUtils.toggleBlockType(
-                this.state.editorState,
+                editorState,
                 blockType
               )
             );
@@ -120,7 +128,7 @@ class Draft extends Component {
           onButtonClick={(inlineStyle) => {
             this.onChange(
               RichUtils.toggleInlineStyle(
-                this.state.editorState,
+                editorState,
                 inlineStyle
               )
             );
@@ -138,6 +146,7 @@ class Draft extends Component {
           <Editor
             ref="editor"
             editorState={editorState}
+            blockRendererFn={this.blockRenderer}
             onChange={this.onChange}
             spellCheck={false}
             plugins={plugins}
@@ -145,27 +154,29 @@ class Draft extends Component {
         </div>
         <div className={styles.buttons}>
           <Button
-            action={() => alert('Формула')}
+            action={() => insertTeX(editorState, this.onChange)}
             name="Формула"
             icon="formula"
           />
           <Button
             action={() => {
-              const url = prompt('URL изображения', '');
-              const entityKey = Entity.create('block-image', 'IMMUTABLE', {
-                src: url,
-                progress: -1,
-                alt: '',
-                width: 300,
-                height: 300,
-              });
-              this.setState({
-                editorState: AtomicBlockUtils.insertAtomicBlock(
-                  this.state.editorState,
-                  entityKey,
-                  ' '
+              const url = prompt('URL изображения', 'http://www.google.com/logos/doodles/2016/mid-autumn-festival-2016-vietnam-5715224209391616-hp2x.jpg');
+              this.onChange(
+                AtomicBlockUtils.insertAtomicBlock(
+                  editorState,
+                  Entity.create(
+                    'block-image',
+                    'IMMUTABLE', {
+                      src: url,
+                      progress: -1,
+                      alt: '',
+                      width: 300,
+                      height: 300,
+                    }
+                  ),
+                  'Картинка'
                 ),
-              });
+              );
             }}
             name="Изображение"
             icon="image"

@@ -26,6 +26,7 @@
   },
   "rules": {
     "no-var": 2,
+    "new-cap": 0,
     "arrow-body-style": [
       2,
       "as-needed"
