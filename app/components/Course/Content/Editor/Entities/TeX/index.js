@@ -10,15 +10,21 @@ import styles from '../../../../../../../node_modules/katex/dist/katex.min.css';
 class TeX extends Component {
 
   componentDidMount() {
-    const { content } = Entity.get(this.props.entityKey).getData();
-    katex.render(content, this.refs.math);
+    katex.render(
+      Entity
+        .get(this.props.entityKey)
+        .getData()
+        .content,
+    this.refs.math);
   }
 
   update() {
-    const { content } = Entity.get(this.props.entityKey).getData();
+    const { content } = Entity
+      .get(this.props.entityKey)
+      .getData();
     katex.render(
       prompt('Редактирование формулы', content) || content,
-      this.refs.math
+      this.refs.math,
     );
   }
 
@@ -60,7 +66,7 @@ const insertTeX = (editorState, changeState) => {
   const element = Modifier.insertText(
     editorState.getCurrentContent(),
     editorState.getSelection(),
-    ' ',
+    '*',
     null,
     entity
   );
