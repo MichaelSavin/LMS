@@ -1,7 +1,6 @@
 .editor {
-  width: 700px;
   display: flex;
-  margin-left: 20px;
+  margin: 0 20px;
   flex-direction: column;
 }
 
