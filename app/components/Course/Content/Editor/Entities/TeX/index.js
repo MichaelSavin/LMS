@@ -1,4 +1,7 @@
-import React, { PropTypes, Component } from 'react';
+import React, {
+  PropTypes,
+  Component,
+} from 'react';
 import {
   Entity,
   Modifier,
@@ -10,6 +13,7 @@ import styles from '../../../../../../../node_modules/katex/dist/katex.min.css';
 class TeX extends Component {
 
   componentDidMount() {
+    console.log('mount KaTeX');
     katex.render(
       Entity
         .get(this.props.entityKey)
@@ -18,10 +22,27 @@ class TeX extends Component {
     this.refs.math);
   }
 
-  update() {
-    const { content } = Entity
-      .get(this.props.entityKey)
-      .getData();
+  shouldComponentUpdate(nextProps) {
+    const [
+      currentContent,
+      nextContent,
+    ] = [
+      this.props,
+      nextProps,
+    ].map(props =>
+      props.entityKey
+    ).map(entity =>
+      Entity
+       .get(this.props.entityKey)
+       .getData(entity)
+       .content
+    );
+    return currentContent !== nextContent;
+  }
+
+  onClick() {
+    console.log('update KaTeX');
+    const { content } = Entity.get(this.props.entityKey).getData();
     katex.render(
       prompt('Редактирование формулы', content) || content,
       this.refs.math,
@@ -29,10 +50,11 @@ class TeX extends Component {
   }
 
   render() {
+    console.log('render KaTeX');
     return (
       <span
         ref="math"
-        onClick={() => this.update()}
+        onClick={() => this.onClick()}
         // contentEditable="false"
         style={{
           borderBottom: '1px solid magenta',
