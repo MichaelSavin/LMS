@@ -54,10 +54,11 @@ class TeX extends Component {
     return (
       <span
         ref="math"
-        onDoubleClick={() => this.onClick(event)}
-        // contentEditable="false"
+        onDoubleClick={() => this.onClick()}
+        contentEditable="false"
         style={{
           borderBottom: '1px solid magenta',
+          WebkitUserSelect: 'none',
           padding: '2.5px 5px',
           cursor: 'pointer',
         }}
