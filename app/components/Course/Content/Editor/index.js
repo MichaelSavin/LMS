@@ -23,8 +23,9 @@ import Button from 'components/UI/Button';
 import Toolbar from './Toolbar';
 import styles from './styles.css';
 
-import TeX, { findTeXEntities, insertTeX } from './Entities/TeX';
 import Link, { findLinkEntities } from './Entities/Link';
+import TeX, { findTeXEntities, insertTeX } from './Entities/TeX';
+import Select, { findSelectEntities, insertSelect } from './Entities/Select';
 
 const imageTheme = {
   imageLoader: 'imageLoader',
@@ -47,6 +48,9 @@ const decorator = new CompositeDecorator([{
 }, {
   strategy: findTeXEntities,
   component: TeX,
+}, {
+  strategy: findSelectEntities,
+  component: Select,
 }]);
 
 class Draft extends Component {
@@ -84,7 +88,6 @@ class Draft extends Component {
         unitId,
         content: convertToRaw(editorState.getCurrentContent()),
       });
-      console.log(convertToRaw(editorState.getCurrentContent()));
     }
     this.setState({
       editorState: EditorState.set(editorState, { decorator }),
@@ -204,7 +207,7 @@ class Draft extends Component {
             icon="link"
           />
           <Button
-            action={() => alert('Вопрос')}
+            action={() => insertSelect(editorState, this.onChange)}
             name="Вопрос"
             icon="question"
           />
