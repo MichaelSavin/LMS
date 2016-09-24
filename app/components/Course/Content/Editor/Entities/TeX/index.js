@@ -13,7 +13,6 @@ import styles from '../../../../../../../node_modules/katex/dist/katex.min.css';
 class TeX extends Component {
 
   componentDidMount() {
-    console.log('mount KaTeX');
     katex.render(
       Entity
         .get(this.props.entityKey)
@@ -41,7 +40,6 @@ class TeX extends Component {
   }
 
   onClick() {
-    console.log('update KaTeX');
     const { content } = Entity.get(this.props.entityKey).getData();
     katex.render(
       prompt('Редактирование формулы', content) || content,
@@ -50,7 +48,6 @@ class TeX extends Component {
   }
 
   render() {
-    console.log('render KaTeX');
     return (
       <span
         ref="math"
