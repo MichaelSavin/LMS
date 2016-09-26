@@ -92,13 +92,11 @@ class Draft extends Component {
       });
     }
 
-    this.setState({ EOL: false });
-
     const addEntityEOLDelimiter = (editorState, block) => { // eslint-disable-line no-shadow
       const blockKey = block.key;
       const characterList = block.characterList;
       if (!characterList.isEmpty() && characterList.last().getEntity()) {
-        if (editorState.getLastChangeType() === 'backspace-character' && this.state.EOL) {
+        if (editorState.getLastChangeType() === 'backspace-character') {
           const selection = new SelectionState({
             anchorKey: blockKey,
             anchorOffset: block.getLength() - 1,
@@ -124,7 +122,6 @@ class Draft extends Component {
             focusOffset: block.getLength(),
             hasFocus: true,
           });
-          this.setState({ EOL: true });
           const zwwsp = String.fromCharCode(8203);
           const modifiedContent = Modifier.insertText(
             editorState.getCurrentContent(),
