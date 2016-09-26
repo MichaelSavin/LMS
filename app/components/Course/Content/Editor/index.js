@@ -80,17 +80,18 @@ class Draft extends Component {
         unitId,
       },
     } = this.props;
-    if (
-      editorState.getCurrentContent() !==
-      this.state.editorState.getCurrentContent()
-    ) {
-      editUnit({
-        sectionId,
-        subsectionId,
-        unitId,
-        content: convertToRaw(editorState.getCurrentContent()),
-      });
-    }
+
+    // if (
+      // editorState.getCurrentContent() !==
+      // this.state.editorState.getCurrentContent()
+    // ) {
+    editUnit({
+      sectionId,
+      subsectionId,
+      unitId,
+      content: convertToRaw(editorState.getCurrentContent()),
+    });
+    // }
 
     const addEntityEOLDelimiter = (editorState, block) => { // eslint-disable-line no-shadow
       const blockKey = block.key;

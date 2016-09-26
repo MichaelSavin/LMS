@@ -36,11 +36,11 @@ class TeX extends Component {
   }
 
   onClick() {
-    const { content } = Entity.get(this.props.entityKey).getData();
-    katex.render(
-      prompt('Редактирование формулы', content) || content,
-      this.refs.math,
-    );
+    const { entityKey } = this.props;
+    const { content } = Entity.get(entityKey).getData();
+    const newContent = prompt('Редактирование формулы', content) || content;
+    Entity.replaceData(entityKey, { content: newContent });
+    katex.render(newContent, this.refs.math);
   }
 
   render() {
