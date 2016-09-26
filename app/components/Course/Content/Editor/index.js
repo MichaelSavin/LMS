@@ -94,7 +94,7 @@ class Draft extends Component {
 
     this.setState({ EOL: false });
 
-    const addEntityEOLDelimiter = (editorState, block) => {
+    const addEntityEOLDelimiter = (editorState, block) => { // eslint-disable-line no-shadow
       const blockKey = block.key;
       const characterList = block.characterList;
       if (!characterList.isEmpty() && characterList.last().getEntity()) {
@@ -116,7 +116,7 @@ class Draft extends Component {
             modifiedContent,
             editorState.getLastChangeType()
           );
-        } else {
+        } else { // eslint-disable-line no-else-return
           const selection = new SelectionState({
             anchorKey: blockKey,
             anchorOffset: block.getLength(),
@@ -137,7 +137,7 @@ class Draft extends Component {
             editorState.getLastChangeType()
           );
         }
-      } else {
+      } else { // eslint-disable-line no-else-return
         return editorState;
       }
     };
