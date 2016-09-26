@@ -271,8 +271,9 @@ class Draft extends Component {
           <Button
             action={() =>
               insertEntity(
-                'SELECT',
-                'Один,Два,Три,Четыре',
+                'SELECT', {
+                  options: ['Один', 'Два', 'Три', 'Четыре'],
+                },
                 editorState,
                 this.onChange
             )}
