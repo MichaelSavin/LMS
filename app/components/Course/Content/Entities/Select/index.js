@@ -2,11 +2,7 @@ import React, {
   PropTypes,
   Component,
 } from 'react';
-import {
-  Entity,
-  Modifier,
-  EditorState,
-} from 'draft-js';
+import { Entity } from 'draft-js';
 
 // import styles from './styles.css';
 
@@ -76,44 +72,9 @@ class Select extends Component {
   }
 }
 
-const findSelectEntities = (contentBlock, callback) => {
-  contentBlock.findEntityRanges(
-    (character) => {
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        Entity.get(entityKey).getType() === 'SELECT'
-      );
-    },
-    callback
-  );
-};
-
-const insertSelect = (editorState, changeState) => {
-  const entity = Entity.create(
-    'SELECT',
-    'IMMUTABLE',
-    { content: 'Один,Два,Три,Четыре' }
-  );
-  const element = Modifier.insertText(
-    editorState.getCurrentContent(),
-    editorState.getSelection(),
-    '*',
-    null,
-    entity
-  );
-  changeState(
-    EditorState.push( // eslint-disable-line fp/no-mutating-methods
-      editorState,
-      element,
-      'insert-text'
-    )
-  );
-};
-
 Select.propTypes = {
   children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
 };
 
-export { Select as default, insertSelect, findSelectEntities };
+export default Select;

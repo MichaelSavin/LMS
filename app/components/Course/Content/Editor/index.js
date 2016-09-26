@@ -23,9 +23,10 @@ import Button from 'components/UI/Button';
 import Toolbar from './Toolbar';
 import styles from './styles.css';
 
-import Link, { findLinkEntities } from './Entities/Link';
-import TeX, { findTeXEntities, insertTeX } from './Entities/TeX';
-import Select, { findSelectEntities, insertSelect } from './Entities/Select';
+import TeX from '../Entities/TeX';
+import Link from '../Entities/Link';
+import Select from '../Entities/Select';
+import { insertEntity, findEntities } from '../Entities';
 
 const imageTheme = {
   imageLoader: 'imageLoader',
@@ -43,13 +44,13 @@ const plugins = [
 ];
 
 const decorator = new CompositeDecorator([{
-  strategy: findLinkEntities,
+  strategy: findEntities('LINK'),
   component: Link,
 }, {
-  strategy: findTeXEntities,
+  strategy: findEntities('TEX'),
   component: TeX,
 }, {
-  strategy: findSelectEntities,
+  strategy: findEntities('SELECT'),
   component: Select,
 }]);
 
@@ -157,7 +158,13 @@ class Draft extends Component {
         </div>
         <div className={styles.buttons}>
           <Button
-            action={() => insertTeX(editorState, this.onChange)}
+            action={() =>
+              insertEntity(
+                'TEX',
+                'a^n+b^n = c^n',
+                editorState,
+                this.onChange
+            )}
             name="Формула"
             icon="formula"
           />
@@ -207,7 +214,13 @@ class Draft extends Component {
             icon="link"
           />
           <Button
-            action={() => insertSelect(editorState, this.onChange)}
+            action={() =>
+              insertEntity(
+                'SELECT',
+                'Один,Два,Три,Четыре',
+                editorState,
+                this.onChange
+            )}
             name="Вопрос"
             icon="question"
           />

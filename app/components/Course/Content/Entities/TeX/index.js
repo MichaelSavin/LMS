@@ -2,13 +2,9 @@ import React, {
   PropTypes,
   Component,
 } from 'react';
-import {
-  Entity,
-  Modifier,
-  EditorState,
-} from 'draft-js';
+import { Entity } from 'draft-js';
 import katex from 'katex';
-import styles from '../../../../../../../node_modules/katex/dist/katex.min.css'; // eslint-disable-line no-unused-vars
+import styles from '../../../../../../node_modules/katex/dist/katex.min.css'; // eslint-disable-line no-unused-vars
 
 class TeX extends Component {
 
@@ -54,7 +50,7 @@ class TeX extends Component {
         onDoubleClick={() => this.onClick()}
         contentEditable="false"
         style={{
-          borderBottom: '1px solid magenta',
+          // borderBottom: '1px solid magenta',
           WebkitUserSelect: 'none',
           padding: '2.5px 5px',
           cursor: 'pointer',
@@ -64,44 +60,9 @@ class TeX extends Component {
   }
 }
 
-const findTeXEntities = (contentBlock, callback) => {
-  contentBlock.findEntityRanges(
-    (character) => {
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        Entity.get(entityKey).getType() === 'TEX'
-      );
-    },
-    callback
-  );
-};
-
-const insertTeX = (editorState, changeState) => {
-  const entity = Entity.create(
-    'TEX',
-    'IMMUTABLE',
-    { content: 'a^n+b^n = c^n' }
-  );
-  const element = Modifier.insertText(
-    editorState.getCurrentContent(),
-    editorState.getSelection(),
-    '*',
-    null,
-    entity
-  );
-  changeState(
-    EditorState.push( // eslint-disable-line fp/no-mutating-methods
-      editorState,
-      element,
-      'insert-text'
-    )
-  );
-};
-
 TeX.propTypes = {
   children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
 };
 
-export { TeX as default, findTeXEntities, insertTeX };
+export default TeX;

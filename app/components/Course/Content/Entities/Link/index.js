@@ -16,22 +16,9 @@ const Link = ({
   </a>
 );
 
-const findLinkEntities = (contentBlock, callback) => {
-  contentBlock.findEntityRanges(
-    (character) => {
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        Entity.get(entityKey).getType() === 'LINK'
-      );
-    },
-    callback
-  );
-};
-
 Link.propTypes = {
   children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
 };
 
-export { Link as default, findLinkEntities };
+export default Link;

@@ -1,7 +1,8 @@
-import React, { Component, PropTypes } from 'react';
-
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
 import {
-  // Editor,
   EditorState,
   convertFromRaw,
   CompositeDecorator,
@@ -13,8 +14,12 @@ import createImagePlugin, {
 import Editor from 'draft-js-plugins-editor';
 import createVideoPlugin from 'draft-js-video-plugin';
 import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
-import Link, { findLinkEntities } from '../Editor/Entities/Link';
 import styles from './styles.css';
+
+import TeX from '../Entities/TeX';
+import Link from '../Entities/Link';
+import Select from '../Entities/Select';
+import { findEntities } from '../Entities';
 
 const imageTheme = {
   imageLoader: 'imageLoader',
@@ -31,12 +36,19 @@ const plugins = [
   createEntityPropsPlugin(),
 ];
 
+const decorator = new CompositeDecorator([{
+  strategy: findEntities('LINK'),
+  component: Link,
+}, {
+  strategy: findEntities('TEX'),
+  component: TeX,
+}, {
+  strategy: findEntities('SELECT'),
+  component: Select,
+}]);
+
 class View extends Component { // HMR
   render() {
-    const decorator = new CompositeDecorator([{ // eslint-disable-line better/no-new
-      strategy: findLinkEntities,
-      component: Link,
-    }]);
     return (
       <div className={styles.view}>
         <div className={styles.draft}>
