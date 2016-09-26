@@ -3,12 +3,13 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  // Editor,
   Entity,
+  Modifier,
   RichUtils,
   EditorState,
   convertToRaw,
   convertFromRaw,
+  SelectionState,
   AtomicBlockUtils,
   CompositeDecorator,
 } from 'draft-js';
@@ -90,9 +91,65 @@ class Draft extends Component {
         content: convertToRaw(editorState.getCurrentContent()),
       });
     }
-    this.setState({
-      editorState: EditorState.set(editorState, { decorator }),
-    });
+
+    this.setState({ EOL: false });
+
+    const addEntityEOLDelimiter = (editorState, block) => {
+      const blockKey = block.key;
+      const characterList = block.characterList;
+      if (!characterList.isEmpty() && characterList.last().getEntity()) {
+        if (editorState.getLastChangeType() === 'backspace-character' && this.state.EOL) {
+          const selection = new SelectionState({
+            anchorKey: blockKey,
+            anchorOffset: block.getLength() - 1,
+            focusKey: blockKey,
+            focusOffset: block.getLength(),
+            hasFocus: true,
+          });
+          const modifiedContent = Modifier.removeRange(
+            editorState.getCurrentContent(),
+            selection,
+            'backward'
+          );
+          return EditorState.push( // eslint-disable-line fp/no-mutating-methods
+            editorState,
+            modifiedContent,
+            editorState.getLastChangeType()
+          );
+        } else {
+          const selection = new SelectionState({
+            anchorKey: blockKey,
+            anchorOffset: block.getLength(),
+            focusKey: blockKey,
+            focusOffset: block.getLength(),
+            hasFocus: true,
+          });
+          this.setState({ EOL: true });
+          const zwwsp = String.fromCharCode(8203);
+          const modifiedContent = Modifier.insertText(
+            editorState.getCurrentContent(),
+            selection,
+            zwwsp
+          );
+          return EditorState.push( // eslint-disable-line fp/no-mutating-methods
+            editorState,
+            modifiedContent,
+            editorState.getLastChangeType()
+          );
+        }
+      } else {
+        return editorState;
+      }
+    };
+
+    if (editorState.getLastChangeType() === 'undo' || editorState.getLastChangeType() === 'redo') {
+      this.setState({ editorState: EditorState.set(editorState, { decorator }) });
+    } else {
+      const currentContent = editorState.getCurrentContent();
+      const blocks = currentContent.blockMap;
+      const newEditorState = blocks.reduce(addEntityEOLDelimiter, editorState);
+      this.setState({ editorState: EditorState.set(newEditorState, { decorator }) });
+    }
   }
 
   render() {

@@ -2,6 +2,7 @@ import {
   Entity,
   Modifier,
   EditorState,
+  // SelectionState,
 } from 'draft-js';
 
 const findEntities = type => (contentBlock, callback) => {
@@ -17,12 +18,7 @@ const findEntities = type => (contentBlock, callback) => {
   );
 };
 
-const insertEntity = (
-  type,
-  content,
-  editorState,
-  changeState,
-) => {
+const insertEntity = (type, content, editorState, changeState) => {
   const entity = Entity.create(
     type,
     'IMMUTABLE',
