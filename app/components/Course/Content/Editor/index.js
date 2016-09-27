@@ -20,8 +20,7 @@ import createImagePlugin, {
 import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
 import createVideoPlugin from 'draft-js-video-plugin';
 import Editor from 'draft-js-plugins-editor';
-import { List } from 'immutable';
-import Button from 'components/UI/Button';
+import Button from './Button';
 import Toolbar from './Toolbar';
 import styles from './styles.css';
 
@@ -216,6 +215,42 @@ class Draft extends Component {
           <Button
             action={() =>
               insertEntity(
+                'SELECT', {
+                  options: ['Один', 'Два', 'Три', 'Четыре'],
+                },
+                editorState,
+                this.onChange
+            )}
+            name="Чеклист"
+            icon="checklist"
+          />
+          <Button
+            action={() =>
+              insertEntity(
+                'INPUT', {
+                  value: '',
+                },
+                editorState,
+                this.onChange
+            )}
+            name="Инпут"
+            icon="input"
+          />
+          <Button
+            action={() =>
+              insertEntity(
+                'HINT', {
+                  text: 'Подсказка',
+                },
+                editorState,
+                this.onChange
+            )}
+            name="Подсказка"
+            icon="hint"
+          />
+          <Button
+            action={() =>
+              insertEntity(
                 'TEX',
                 'a^n+b^n = c^n',
                 editorState,
@@ -268,18 +303,6 @@ class Draft extends Component {
             }}
             name="Ссылка"
             icon="link"
-          />
-          <Button
-            action={() =>
-              insertEntity(
-                'SELECT', {
-                  options: List.of('Один', 'Два', 'Три', 'Четыре'),
-                },
-                editorState,
-                this.onChange
-            )}
-            name="Вопрос"
-            icon="question"
           />
         </div>
       </div>

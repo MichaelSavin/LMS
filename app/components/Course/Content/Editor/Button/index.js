@@ -4,6 +4,7 @@ import styles from './styles.css';
 
 const Button = ({
   action,
+  color,
   name,
   icon,
 }) => (
@@ -14,6 +15,7 @@ const Button = ({
     <Icon
       size={17.5}
       type={icon}
+      color={color}
     />
     {name}
   </div>
@@ -21,6 +23,7 @@ const Button = ({
 
 Button.propTypes = {
   action: PropTypes.func.isRequired,
+  color: PropTypes.string,
   icon: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 };
