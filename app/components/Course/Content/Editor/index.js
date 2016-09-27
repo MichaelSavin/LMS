@@ -20,6 +20,7 @@ import createImagePlugin, {
 import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
 import createVideoPlugin from 'draft-js-video-plugin';
 import Editor from 'draft-js-plugins-editor';
+import { List } from 'immutable';
 import Button from 'components/UI/Button';
 import Toolbar from './Toolbar';
 import styles from './styles.css';
@@ -272,7 +273,7 @@ class Draft extends Component {
             action={() =>
               insertEntity(
                 'SELECT', {
-                  options: ['Один', 'Два', 'Три', 'Четыре'],
+                  options: List.of('Один', 'Два', 'Три', 'Четыре'),
                 },
                 editorState,
                 this.onChange

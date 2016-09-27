@@ -2,7 +2,7 @@ import React, {
   PropTypes,
   Component,
 } from 'react';
-import Immutable, { fromJS } from 'immutable';
+import Immutable, { List } from 'immutable';
 import { Entity } from 'draft-js';
 import styles from './styles.css';
 
@@ -10,16 +10,23 @@ class Select extends Component {
 
   constructor(props) {
     super(props);
-    this.state = Entity
+    const {
+      answer,
+      options,
+    } = Entity
       .get(this.props.entityKey)
       .getData()
       .content;
+    this.state = {
+      answer,
+      options: List(options),
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const [
-      currentPropsContent,
-      nextPropsContent,
+      currentOptions,
+      nextOptions,
     ] = [
       this.props,
       nextProps,
@@ -30,15 +37,19 @@ class Select extends Component {
        .get(this.props.entityKey)
        .getData(entity)
        .content
+       .options
     );
-    return !Immutable.is(
-      fromJS(this.state),
-      fromJS(nextState),
+    return this.state.answer !==
+      nextState.answer
+    ||
+      !Immutable.is(
+        this.state.options,
+        nextState.options,
       )
     ||
       !Immutable.is(
-        fromJS(currentPropsContent),
-        fromJS(nextPropsContent)
+        currentOptions,
+        nextOptions
       );
   }
 
@@ -48,20 +59,21 @@ class Select extends Component {
       .get(entityKey)
       .getData();
     const options = content.options.join(',');
-    const newOptions = (
-      prompt('Редактирование вопроса', options) || options
+    const newOptions = List(
+      (prompt('Редактирование вопроса', options) || options)
+      .split(',')
     );
     const newContent = {
-      options: newOptions.split(','),
+      options: newOptions,
       answer: content.answer,
     };
     Entity.replaceData(entityKey, { content: newContent });
-    this.setState(newContent);
+    this.setState({ options: newOptions });
   }
 
   chooseAnswer(optionIndex) {
     const newContent = {
-      options: this.state.options,
+      ...this.state,
       answer: optionIndex,
     };
     Entity.replaceData(
@@ -69,7 +81,7 @@ class Select extends Component {
         content: newContent,
       }
     );
-    this.setState(newContent);
+    this.setState({ answer: optionIndex });
   }
 
   render() {
@@ -89,7 +101,7 @@ class Select extends Component {
           )
         }
         contentEditable="false"
-        value={options[answer - 1]}
+        value={options.get(answer - 1)}
         className={styles.select}
       >
         <option />
