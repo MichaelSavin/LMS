@@ -4,8 +4,7 @@ import React, {
 } from 'react';
 import Immutable, { fromJS } from 'immutable';
 import { Entity } from 'draft-js';
-
-// import styles from './styles.css';
+import styles from './styles.css';
 
 class Select extends Component {
 
@@ -91,15 +90,7 @@ class Select extends Component {
         }
         contentEditable="false"
         value={options[answer - 1]}
-        style={{
-          cursor: 'pointer',
-          height: '22px',
-          border: '1px solid #CCC',
-          margin: '0 5px',
-          fontSize: '14px',
-          backgroundColor: '#EEE',
-          WebkitUserSelect: 'none',
-        }}
+        className={styles.select}
       >
         <option />
         {options.map((text, index) =>
