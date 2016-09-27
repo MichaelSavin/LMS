@@ -26,6 +26,7 @@ import styles from './styles.css';
 
 import TeX from '../Entities/TeX';
 import Link from '../Entities/Link';
+import Input from '../Entities/Input';
 import Select from '../Entities/Select';
 import { insertEntity, findEntities } from '../Entities';
 
@@ -50,6 +51,9 @@ const decorator = new CompositeDecorator([{
 }, {
   strategy: findEntities('TEX'),
   component: TeX,
+}, {
+  strategy: findEntities('INPUT'),
+  component: Input,
 }, {
   strategy: findEntities('SELECT'),
   component: Select,
@@ -200,7 +204,12 @@ class Draft extends Component {
         />
         <div
           className={styles.draft}
-          onClick={() => { this.refs.editor.focus(); }}
+          onClick={() => {
+            if (window.EditorReadOnly) {
+              this.forceUpdate();
+            }
+            this.refs.editor.focus();
+          }}
         >
           <Editor
             ref="editor"
@@ -209,6 +218,7 @@ class Draft extends Component {
             onChange={this.onChange}
             spellCheck={false}
             plugins={plugins}
+            readOnly={window.EditorReadOnly}
           />
         </div>
         <div className={styles.buttons}>

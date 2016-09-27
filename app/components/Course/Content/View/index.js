@@ -18,6 +18,7 @@ import styles from './styles.css';
 
 import TeX from '../Entities/TeX';
 import Link from '../Entities/Link';
+import Input from '../Entities/Input';
 import Select from '../Entities/Select';
 import { findEntities } from '../Entities';
 
@@ -42,6 +43,9 @@ const decorator = new CompositeDecorator([{
 }, {
   strategy: findEntities('TEX'),
   component: TeX,
+}, {
+  strategy: findEntities('INPUT'),
+  component: Input,
 }, {
   strategy: findEntities('SELECT'),
   component: Select,
