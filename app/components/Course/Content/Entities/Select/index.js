@@ -59,10 +59,9 @@ class Select extends Component {
       .get(entityKey)
       .getData();
     const options = content.options.join(',');
-    const newOptions = List(
-      (prompt('Редактирование вопроса', options) || options)
-      .split(',')
-    );
+    const newOptions = List((
+      prompt('Редактирование вопроса', options) || options
+    ).split(','));
     const newContent = {
       options: newOptions,
       answer: content.answer,
