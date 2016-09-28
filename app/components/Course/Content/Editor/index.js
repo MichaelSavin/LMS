@@ -11,7 +11,6 @@ import {
   convertFromRaw,
   SelectionState,
   AtomicBlockUtils,
-  CompositeDecorator,
 } from 'draft-js';
 import createImagePlugin, {
   // imageStyles,
@@ -24,11 +23,10 @@ import Button from './Button';
 import Toolbar from './Toolbar';
 import styles from './styles.css';
 
-import TeX from '../Entities/TeX';
-import Link from '../Entities/Link';
-import Input from '../Entities/Input';
-import Select from '../Entities/Select';
-import { insertInlineEntity, findEntities } from '../Entities';
+import {
+  insertInlineEntity,
+  entitiesDecorator,
+} from '../Entities';
 
 const imageTheme = {
   imageLoader: 'imageLoader',
@@ -45,19 +43,19 @@ const plugins = [
   createEntityPropsPlugin(),
 ];
 
-const decorator = new CompositeDecorator([{
-  strategy: findEntities('LINK'),
-  component: Link,
-}, {
-  strategy: findEntities('TEX'),
-  component: TeX,
-}, {
-  strategy: findEntities('INPUT'),
-  component: Input,
-}, {
-  strategy: findEntities('SELECT'),
-  component: Select,
-}]);
+// const decorator = new CompositeDecorator([{
+//   strategy: findEntities('LINK'),
+//   component: Link,
+// }, {
+//   strategy: findEntities('TEX'),
+//   component: TeX,
+// }, {
+//   strategy: findEntities('INPUT'),
+//   component: Input,
+// }, {
+//   strategy: findEntities('SELECT'),
+//   component: Select,
+// }]);
 
 class Draft extends Component {
 
@@ -67,7 +65,7 @@ class Draft extends Component {
       editorState: EditorState.moveFocusToEnd(
         EditorState.createWithContent(
           convertFromRaw(this.props.content),
-          decorator,
+          entitiesDecorator,
         ),
       ),
     };
@@ -144,13 +142,29 @@ class Draft extends Component {
       }
     };
 
-    if (editorState.getLastChangeType() === 'undo' || editorState.getLastChangeType() === 'redo') {
-      this.setState({ editorState: EditorState.set(editorState, { decorator }) });
+    if (editorState.getLastChangeType() === 'undo'
+    || editorState.getLastChangeType() === 'redo') {
+      this.setState({
+        editorState: EditorState.set(
+          editorState, {
+            decorator: entitiesDecorator,
+          }
+        ),
+      });
     } else {
       const currentContent = editorState.getCurrentContent();
       const blocks = currentContent.blockMap;
-      const newEditorState = blocks.reduce(addEntityEOLDelimiter, editorState);
-      this.setState({ editorState: EditorState.set(newEditorState, { decorator }) });
+      const newEditorState = blocks.reduce(
+        addEntityEOLDelimiter,
+        editorState
+      );
+      this.setState({
+        editorState: EditorState.set(
+          newEditorState, {
+            decorator: entitiesDecorator,
+          }
+        ),
+      });
     }
   }
 

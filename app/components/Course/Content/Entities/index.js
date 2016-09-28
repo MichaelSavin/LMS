@@ -2,8 +2,13 @@ import {
   Entity,
   Modifier,
   EditorState,
-  // SelectionState,
+  CompositeDecorator,
 } from 'draft-js';
+
+import TeX from './TeX';
+import Link from './Link';
+import Input from './Input';
+import Select from './Select';
 
 const findEntities = type => (contentBlock, callback) => {
   contentBlock.findEntityRanges(
@@ -38,4 +43,21 @@ const insertInlineEntity = (type, content, editorState, changeState) => {
   );
 };
 
-export { findEntities, insertInlineEntity };
+const entitiesDecorator = new CompositeDecorator([{
+  strategy: findEntities('LINK'),
+  component: Link,
+}, {
+  strategy: findEntities('TEX'),
+  component: TeX,
+}, {
+  strategy: findEntities('INPUT'),
+  component: Input,
+}, {
+  strategy: findEntities('SELECT'),
+  component: Select,
+}]);
+
+export {
+  entitiesDecorator,
+  insertInlineEntity,
+};

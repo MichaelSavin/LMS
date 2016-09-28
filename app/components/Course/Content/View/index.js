@@ -5,7 +5,6 @@ import React, {
 import {
   EditorState,
   convertFromRaw,
-  CompositeDecorator,
 } from 'draft-js';
 import createImagePlugin, {
   // imageStyles,
@@ -16,11 +15,7 @@ import createVideoPlugin from 'draft-js-video-plugin';
 import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
 import styles from './styles.css';
 
-import TeX from '../Entities/TeX';
-import Link from '../Entities/Link';
-import Input from '../Entities/Input';
-import Select from '../Entities/Select';
-import { findEntities } from '../Entities';
+import { entitiesDecorator } from '../Entities';
 
 const imageTheme = {
   imageLoader: 'imageLoader',
@@ -37,20 +32,6 @@ const plugins = [
   createEntityPropsPlugin(),
 ];
 
-const decorator = new CompositeDecorator([{
-  strategy: findEntities('LINK'),
-  component: Link,
-}, {
-  strategy: findEntities('TEX'),
-  component: TeX,
-}, {
-  strategy: findEntities('INPUT'),
-  component: Input,
-}, {
-  strategy: findEntities('SELECT'),
-  component: Select,
-}]);
-
 class View extends Component { // HMR
   render() {
     return (
@@ -63,7 +44,7 @@ class View extends Component { // HMR
                 convertFromRaw(
                   this.props.content
                 ),
-                decorator,
+                entitiesDecorator,
               )}
             readOnly
           />
