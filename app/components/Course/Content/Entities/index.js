@@ -18,26 +18,24 @@ const findEntities = type => (contentBlock, callback) => {
   );
 };
 
-const insertEntity = (type, content, editorState, changeState) => {
-  const entity = Entity.create(
-    type,
-    'IMMUTABLE',
-    { content }
-  );
-  const element = Modifier.insertText(
-    editorState.getCurrentContent(),
-    editorState.getSelection(),
-    '*',
-    null,
-    entity
-  );
+const insertInlineEntity = (type, content, editorState, changeState) => {
   changeState(
     EditorState.push( // eslint-disable-line fp/no-mutating-methods
       editorState,
-      element,
+      Modifier.insertText(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        '*',
+        null,
+        Entity.create(
+          type,
+          'IMMUTABLE',
+          { content }
+        ),
+      ),
       'insert-text'
     )
   );
 };
 
-export { findEntities, insertEntity };
+export { findEntities, insertInlineEntity };

@@ -28,7 +28,7 @@ import TeX from '../Entities/TeX';
 import Link from '../Entities/Link';
 import Input from '../Entities/Input';
 import Select from '../Entities/Select';
-import { insertEntity, findEntities } from '../Entities';
+import { insertInlineEntity, findEntities } from '../Entities';
 
 const imageTheme = {
   imageLoader: 'imageLoader',
@@ -215,7 +215,7 @@ class Draft extends Component {
         <div className={styles.buttons}>
           <Button
             action={() =>
-              insertEntity(
+              insertInlineEntity(
                 'SELECT', {
                   options: ['Один', 'Два', 'Три', 'Четыре'],
                 },
@@ -227,7 +227,7 @@ class Draft extends Component {
           />
           <Button
             action={() =>
-              insertEntity(
+              insertInlineEntity(
                 'INPUT', {
                   value: '',
                 },
@@ -239,7 +239,7 @@ class Draft extends Component {
           />
           <Button
             action={() =>
-              insertEntity(
+              insertInlineEntity(
                 'HINT', {
                   text: 'Подсказка',
                 },
@@ -251,7 +251,7 @@ class Draft extends Component {
           />
           <Button
             action={() =>
-              insertEntity(
+              insertInlineEntity(
                 'TEX',
                 'a^n+b^n = c^n',
                 editorState,
