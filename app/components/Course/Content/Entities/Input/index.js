@@ -41,7 +41,12 @@ class Input extends Component {
     );
   }
 
-  editValue(newValue) {
+  editValue() {
+    const currentValue = this.state.value;
+    const newValue = prompt(
+      'Редактирование значения',
+      currentValue
+    ) || currentValue;
     Entity.replaceData(
       this.props.entityKey, {
         content: {
@@ -56,16 +61,14 @@ class Input extends Component {
     return (
       <input
         type="text"
-        ref="input"
-        onFocus={() => { window.EditorReadOnly = true; }} // eslint-disable-line fp/no-mutation
-        onBlur={() => { window.EditorReadOnly = false; }} // eslint-disable-line fp/no-mutation
-        onChange={event =>
-          this.editValue(
-            event.target.value
-          )
-        }
-        value={this.state.value}
+        onDoubleClick={() => this.editValue()}
         className={styles.input}
+        onChange={(event) => {
+          this.setState({
+            value: event.target.value,
+          });
+        }}
+        value={this.state.value}
       />
     );
   }

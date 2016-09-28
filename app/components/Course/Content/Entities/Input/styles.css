@@ -3,5 +3,8 @@
   height: 22px;
   border: 1px solid #CCC;
   margin: 0 5px;
+  padding: 0 5px;
   font-size: 14px;
+  text-align: left;
+  background-color: #EEE;
 }

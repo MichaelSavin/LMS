@@ -204,21 +204,12 @@ class Draft extends Component {
         />
         <div
           className={styles.draft}
-          onClick={() => {
-            if (window.EditorReadOnly) {
-              this.forceUpdate();
-            }
-            this.refs.editor.focus();
-          }}
         >
           <Editor
-            ref="editor"
             editorState={editorState}
-            blockRendererFn={this.blockRenderer}
             onChange={this.onChange}
             spellCheck={false}
             plugins={plugins}
-            readOnly={window.EditorReadOnly}
           />
         </div>
         <div className={styles.buttons}>
