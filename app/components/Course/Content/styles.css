@@ -29,6 +29,10 @@
   padding-left: 20px;
 }
 
+figure {
+  margin: 0;
+}
+
 ul {
   margin: 10px;
   padding-left: 20px;

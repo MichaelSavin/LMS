@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import {
   Entity,
+  Editor,
   Modifier,
   RichUtils,
   EditorState,
@@ -12,50 +13,38 @@ import {
   SelectionState,
   AtomicBlockUtils,
 } from 'draft-js';
-import createImagePlugin, {
+// import createImagePlugin, {
   // imageStyles,
   // imageCreator,
-} from 'draft-js-image-plugin';
-import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
-import createVideoPlugin from 'draft-js-video-plugin';
-import Editor from 'draft-js-plugins-editor';
+// } from 'draft-js-image-plugin';
+// import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
+// import createVideoPlugin from 'draft-js-video-plugin';
+// import Editor from 'draft-js-plugins-editor';
 import Button from './Button';
 import Toolbar from './Toolbar';
 import styles from './styles.css';
 
 import {
+  blockRenderer,
+  insertBlockEntity,
   insertInlineEntity,
   entitiesDecorator,
 } from '../Entities';
 
-const imageTheme = {
-  imageLoader: 'imageLoader',
-  imageWrapper: 'imageWrapper',
-  image: 'image',
-};
+// const imageTheme = {
+//   imageLoader: 'imageLoader',
+//   imageWrapper: 'imageWrapper',
+//   image: 'image',
+// };
 
-const plugins = [
-  createImagePlugin({
-    theme: imageTheme,
-    type: 'atomic',
-  }),
-  createVideoPlugin(),
-  createEntityPropsPlugin(),
-];
-
-// const decorator = new CompositeDecorator([{
-//   strategy: findEntities('LINK'),
-//   component: Link,
-// }, {
-//   strategy: findEntities('TEX'),
-//   component: TeX,
-// }, {
-//   strategy: findEntities('INPUT'),
-//   component: Input,
-// }, {
-//   strategy: findEntities('SELECT'),
-//   component: Select,
-// }]);
+// const plugins = [
+//   createImagePlugin({
+//     theme: imageTheme,
+//     type: 'atomic',
+//   }),
+//   createVideoPlugin(),
+//   createEntityPropsPlugin(),
+// ];
 
 class Draft extends Component {
 
@@ -168,6 +157,16 @@ class Draft extends Component {
     }
   }
 
+  handleKeyCommand(command) {
+    const { editorState } = this.state;
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      this.onChange(newState);
+      return true;
+    }
+    return false;
+  }
+
   render() {
     const { editorState } = this.state;
     return (
@@ -220,13 +219,27 @@ class Draft extends Component {
           className={styles.draft}
         >
           <Editor
+            handleKeyCommand={this.handleKeyCommand.bind(this)}
+            blockRendererFn={blockRenderer}
             editorState={editorState}
             onChange={this.onChange}
             spellCheck={false}
-            plugins={plugins}
+            // plugins={plugins}
           />
         </div>
         <div className={styles.buttons}>
+          <Button
+            action={() =>
+              insertBlockEntity(
+                'RADIO', {
+                  options: ['Один', 'Два', 'Три', 'Четыре'],
+                },
+                editorState,
+                this.onChange
+            )}
+            name="Радио"
+            icon="radio"
+          />
           <Button
             action={() =>
               insertInlineEntity(

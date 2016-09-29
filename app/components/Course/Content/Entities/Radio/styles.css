@@ -1,0 +1,15 @@
+.container {
+  margin: 5px -5px;
+}
+
+.input {
+  margin: 0 10px;
+}
+
+.value {
+  margin-left: 7.5px;
+}
+
+.radio {
+  height: 15px;
+}

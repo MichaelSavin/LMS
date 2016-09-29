@@ -16,9 +16,7 @@
   background-color: #FFF;
   min-height: 210px;
   cursor: text;
+  padding: 5px 10px;
   font-size: 15px;
   margin-top: 10px;
-  padding-top: 5px;
-  padding-left: 10px;
-  padding-bottom: 5px;
 }

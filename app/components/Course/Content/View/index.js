@@ -3,34 +3,38 @@ import React, {
   PropTypes,
 } from 'react';
 import {
+  Editor,
   EditorState,
   convertFromRaw,
 } from 'draft-js';
-import createImagePlugin, {
+// import createImagePlugin, {
   // imageStyles,
   // imageCreator,
-} from 'draft-js-image-plugin';
-import Editor from 'draft-js-plugins-editor';
-import createVideoPlugin from 'draft-js-video-plugin';
-import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
+// } from 'draft-js-image-plugin';
+// import Editor from 'draft-js-plugins-editor';
+// import createVideoPlugin from 'draft-js-video-plugin';
+// import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
 import styles from './styles.css';
 
-import { entitiesDecorator } from '../Entities';
+import {
+  blockRenderer,
+  entitiesDecorator,
+} from '../Entities';
 
-const imageTheme = {
-  imageLoader: 'imageLoader',
-  imageWrapper: 'imageWrapper',
-  image: 'image',
-};
+// const imageTheme = {
+//   imageLoader: 'imageLoader',
+//   imageWrapper: 'imageWrapper',
+//   image: 'image',
+// };
 
-const plugins = [
-  createImagePlugin({
-    theme: imageTheme,
-    type: 'atomic',
-  }),
-  createVideoPlugin(),
-  createEntityPropsPlugin(),
-];
+// const plugins = [
+//   createImagePlugin({
+//     theme: imageTheme,
+//     type: 'atomic',
+//   }),
+//   createVideoPlugin(),
+//   createEntityPropsPlugin(),
+// ];
 
 class View extends Component { // HMR
   render() {
@@ -38,7 +42,8 @@ class View extends Component { // HMR
       <div className={styles.view}>
         <div className={styles.draft}>
           <Editor
-            plugins={plugins}
+            // plugins={plugins}
+            blockRendererFn={blockRenderer}
             editorState={EditorState
               .createWithContent(
                 convertFromRaw(
