@@ -12,6 +12,7 @@ import Link from './Link';
 import Input from './Input';
 import Radio from './Radio';
 import Select from './Select';
+import Checkbox from './Checkbox';
 
 const findEntities = type => (
   contentBlock,
@@ -41,7 +42,7 @@ const insertInlineEntity = (
       Modifier.insertText(
         editorState.getCurrentContent(),
         editorState.getSelection(),
-        '*',
+        ' ',
         null,
         Entity.create(
           type,
@@ -85,8 +86,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
           entityKey={entityKey}
         />
       );
-    // case 'CHECKBOX':
-    //   return <Checkbox options={content.options} />;
+    case 'CHECKBOX':
+      return (
+        <Checkbox
+          content={content}
+          entityKey={entityKey}
+        />
+      );
     default:
       return undefined;
   }
@@ -99,13 +105,14 @@ const insertBlockEntity = (
   changeEditorState
 ) => {
   changeEditorState(
-    AtomicBlockUtils.insertAtomicBlock(
-      editorState,
-      Entity.create(
-        type,
-        'IMMUTABLE',
-        { content },
-      ),
+    AtomicBlockUtils
+      .insertAtomicBlock(
+        editorState,
+        Entity.create(
+          type,
+          'IMMUTABLE',
+          { content },
+        ),
       ' '
     )
   );

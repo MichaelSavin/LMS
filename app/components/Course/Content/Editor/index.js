@@ -242,6 +242,18 @@ class Draft extends Component {
           />
           <Button
             action={() =>
+              insertBlockEntity(
+                'CHECKBOX', {
+                  options: ['Один', 'Два', 'Три', 'Четыре'],
+                },
+                editorState,
+                this.onChange
+            )}
+            name="Чекбокс"
+            icon="checkbox"
+          />
+          <Button
+            action={() =>
               insertInlineEntity(
                 'SELECT', {
                   options: ['Один', 'Два', 'Три', 'Четыре'],
@@ -249,8 +261,8 @@ class Draft extends Component {
                 editorState,
                 this.onChange
             )}
-            name="Чеклист"
-            icon="checklist"
+            name="Селект"
+            icon="select"
           />
           <Button
             action={() =>

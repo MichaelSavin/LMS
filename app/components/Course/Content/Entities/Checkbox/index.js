@@ -1,4 +1,4 @@
-// Состояние редактора не изменяется при выборе ответа - facebook/draft-js#185
+// Состояние редактора не изменяется при выборе ответов - facebook/draft-js#185
 // Нужно кликнуть по редактору
 
 import React, {
@@ -9,7 +9,7 @@ import { isEqual } from 'lodash';
 import { Entity } from 'draft-js';
 import styles from './styles.css';
 
-class Radio extends Component {
+class Checkbox extends Component {
 
   constructor(props) {
     super(props);
@@ -20,20 +20,6 @@ class Radio extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(this.state, nextState);
-  }
-
-  chooseAnswer(optionIndex, entityKey) {
-    Entity.replaceData(
-      entityKey, {
-        content: {
-          ...this.state,
-          answer: optionIndex,
-        },
-      },
-    );
-    this.setState({
-      answer: optionIndex,
-    });
   }
 
   editOptions() {
@@ -54,10 +40,29 @@ class Radio extends Component {
     });
   }
 
+  toggleAnswer(optionIndex, entityKey, checked) {
+    const { answers = [] } = this.state;
+    const newAnswers = checked
+      ? [...answers, optionIndex]
+      : answers.filter(answer => answer !== optionIndex);
+    Entity.replaceData(
+      entityKey, {
+        content: {
+          ...this.state,
+          answers: newAnswers,
+        },
+      },
+    );
+    this.setState({
+      answers: newAnswers,
+    });
+  }
+
+
   render() {
     const {
-      answer,
       options,
+      answers = [],
     } = this.state;
     const {
       entityKey,
@@ -74,22 +79,23 @@ class Radio extends Component {
           <p
             key={index}
             className={styles[
-              answer === index
+              answers.includes(index)
               ? 'selected'
               : 'unselected'
             ]}
           >
             <input
-              type="radio"
+              type="checkbox"
               name={entityKey}
-              className={styles.radio}
-              onChange={() =>
-                this.chooseAnswer(
+              className={styles.checkbox}
+              onChange={(event) => {
+                this.toggleAnswer(
                   index,
-                  entityKey
-                )
-              }
-              checked={answer === index}
+                  entityKey,
+                  event.target.checked,
+                );
+              }}
+              checked={answers.includes(index)}
             />
             <span
               className={styles.value}
@@ -103,12 +109,12 @@ class Radio extends Component {
   }
 }
 
-Radio.propTypes = {
+Checkbox.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    answer: PropTypes.number,
+    answers: PropTypes.array,
     options: PropTypes.array.isRequired,
   }).isRequired,
 };
 
-export default Radio;
+export default Checkbox;
