@@ -1,5 +1,7 @@
 .container {
   margin: 5px -5px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .input {

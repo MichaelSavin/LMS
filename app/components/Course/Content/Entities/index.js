@@ -74,12 +74,17 @@ const blockRenderer = block =>
     : undefined;
 
 const Block = ({ block }) => { // eslint-disable-line react/prop-types
-  const entity = Entity.get(block.getEntityAt(0));
-  console.log(entity);
+  const entityKey = block.getEntityAt(0);
+  const entity = Entity.get(entityKey);
   const { content } = entity.getData();
   switch (entity.getType()) {
     case 'RADIO':
-      return <Radio options={content.options} />;
+      return (
+        <Radio
+          content={content}
+          entityKey={entityKey}
+        />
+      );
     // case 'CHECKBOX':
     //   return <Checkbox options={content.options} />;
     default:

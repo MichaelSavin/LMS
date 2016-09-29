@@ -1,18 +1,86 @@
-import React, { Component, PropTypes } from 'react';
+// Состояние редактора не изменяется при выборе ответа - facebook/draft-js#185
+// Нужно кликнуть по редактору
+
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
+import { Entity } from 'draft-js';
 import styles from './styles.css';
 
 class Radio extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...props.content,
+    };
+  }
+
+  chooseAnswer(optionIndex, entityKey) {
+    Entity.replaceData(
+      entityKey, {
+        content: {
+          ...this.state,
+          answer: optionIndex,
+        },
+      },
+    );
+    this.setState({
+      answer: optionIndex,
+    });
+  }
+
+  editOptions() {
+    const { entityKey } = this.props;
+    const options = this.state.options.join(',');
+    const newOptions = (
+      prompt('Редактирование вопроса', options)
+     || options
+    ).split(',');
+    Entity.replaceData(entityKey, {
+      content: {
+        ...this.state,
+        options: newOptions,
+      },
+    });
+    this.setState({
+      options: newOptions,
+    });
+  }
+
   render() {
-    const { options } = this.props;
+    const {
+      answer,
+      options,
+    } = this.state;
+    const {
+      entityKey,
+    } = this.props;
     return (
-      <div className={styles.container}>
+      <div
+        className={styles.container}
+        onContextMenu={(event) => {
+          event.preventDefault();
+          return this.editOptions();
+        }}
+      >
         {options.map((option, index) =>
-          <p className={styles.input}>
+          <p
+            key={index}
+            className={styles.input}
+          >
             <input
               type="radio"
-              key={index}
-              name="radio"
+              name={entityKey}
               className={styles.radio}
+              onChange={() =>
+                this.chooseAnswer(
+                  index,
+                  entityKey
+                )
+              }
+              checked={answer === index}
             />
             <span
               className={styles.value}
@@ -27,7 +95,11 @@ class Radio extends Component {
 }
 
 Radio.propTypes = {
-  options: PropTypes.array.isRequired,
+  entityKey: PropTypes.string.isRequired,
+  content: PropTypes.shape({
+    answer: PropTypes.number,
+    options: PropTypes.array.isRequired,
+  }).isRequired,
 };
 
 export default Radio;
