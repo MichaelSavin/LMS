@@ -22,9 +22,13 @@ class Hint extends Component {
   }
 
   toggleHint() {
+    const {
+      used,
+      hidden,
+    } = this.state;
     this.setState({
-      used: true,
-      hidden: !this.state.hidden,
+      used: used || !hidden,
+      hidden: !hidden,
     });
   }
 
@@ -67,11 +71,13 @@ class Hint extends Component {
             ]}
           >
             {hidden
-              ? 'Показать подсказку'
+              ? used
+                ? 'Показать подсказку еще раз'
+                : 'Показать подсказку'
               : 'Скрыть подсказку'
             }
           </span>
-          {!used &&
+          {!used && hidden &&
             <span className={styles.info}>
               За использование снимается 1 балл
             </span>
