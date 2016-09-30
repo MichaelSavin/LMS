@@ -278,9 +278,9 @@ class Draft extends Component {
           />
           <Button
             action={() =>
-              insertInlineEntity(
+              insertBlockEntity(
                 'HINT', {
-                  text: 'Подсказка',
+                  text: prompt('Подсказка', '') || 'Текст подсказки',
                 },
                 editorState,
                 this.onChange

@@ -1,0 +1,30 @@
+.container {
+  margin: 5px 0;
+  cursor: pointer;
+  user-select: none;
+  display: inline-block;
+  -webkit-user-select: none;
+}
+
+.unused {
+  font-weight: 500;
+  padding: 2.5px 10px;
+  border-radius: 5px;
+  background-color: #FAB0FF;
+}
+
+.used {
+  composes: unused;
+  background-color: white;
+  border: 1px solid #EF00FF;
+}
+
+.info {
+  font-size: 13px;
+  padding-left: 10px;
+}
+
+.text {
+  margin-top: 5px;
+  padding: 0 5px;
+}

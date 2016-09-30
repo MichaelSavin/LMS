@@ -9,6 +9,7 @@ import {
 
 import TeX from './TeX';
 import Link from './Link';
+import Hint from './Hint';
 import Input from './Input';
 import Radio from './Radio';
 import Select from './Select';
@@ -89,6 +90,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'CHECKBOX':
       return (
         <Checkbox
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'HINT':
+      return (
+        <Hint
           content={content}
           entityKey={entityKey}
         />
