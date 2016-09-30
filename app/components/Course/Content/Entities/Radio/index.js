@@ -20,7 +20,8 @@ class Radio extends Component {
     return !isEqual(this.state, nextState);
   }
 
-  chooseAnswer(optionIndex, entityKey) {
+  chooseAnswer(optionIndex) {
+    const { entityKey } = this.props;
     Entity.replaceData(
       entityKey, {
         content: {
@@ -82,10 +83,7 @@ class Radio extends Component {
               name={entityKey}
               className={styles.radio}
               onChange={() =>
-                this.chooseAnswer(
-                  index,
-                  entityKey
-                )
+                this.chooseAnswer(index)
               }
               checked={answer === index}
             />

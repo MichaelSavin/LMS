@@ -38,7 +38,8 @@ class Checkbox extends Component {
     });
   }
 
-  toggleAnswer(optionIndex, entityKey, checked) {
+  toggleAnswer(optionIndex, checked) {
+    const { entityKey } = this.props;
     const { answers = [] } = this.state;
     const newAnswers = checked
       ? [...answers, optionIndex]
@@ -89,7 +90,6 @@ class Checkbox extends Component {
               onChange={(event) => {
                 this.toggleAnswer(
                   index,
-                  entityKey,
                   event.target.checked,
                 );
               }}
