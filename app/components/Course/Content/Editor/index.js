@@ -11,7 +11,7 @@ import {
   convertToRaw,
   convertFromRaw,
   SelectionState,
-  AtomicBlockUtils,
+  // AtomicBlockUtils,
 } from 'draft-js';
 // import createImagePlugin, {
   // imageStyles,
@@ -299,6 +299,7 @@ class Draft extends Component {
             name="Формула"
             icon="formula"
           />
+          {/*
           <Button
             action={() => {
               const url = prompt('URL изображения', 'http://www.google.com/logos/doodles/2016/mid-autumn-festival-2016-vietnam-5715224209391616-hp2x.jpg');
@@ -327,6 +328,7 @@ class Draft extends Component {
             name="Видео"
             icon="video"
           />
+          */}
           <Button
             action={() => {
               editorState.getSelection().isCollapsed() // eslint-disable-line no-unused-expressions
