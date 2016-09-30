@@ -13,9 +13,7 @@ class Radio extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      ...props.content,
-    };
+    this.state = props.content;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
