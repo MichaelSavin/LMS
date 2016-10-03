@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import useScroll from 'react-router-scroll';
+import useScroll from 'react-router-scroll/lib/useScroll';
 import {
   Route,
   Router,
