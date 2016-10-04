@@ -12,7 +12,7 @@ class Course extends Component { // HMR
     const {
       data,
       actions,
-      children,
+      // children,
     } = this.props;
     return (
       <div className={styles.course}>
@@ -20,7 +20,7 @@ class Course extends Component { // HMR
           data={data}
           actions={actions}
         />
-        {children && React.cloneElement(children, { data, actions })}
+        { /* children && React.cloneElement(children, { data: data.toJS(), actions }) */ }
       </div>
     );
   }
