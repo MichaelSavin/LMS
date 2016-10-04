@@ -12,15 +12,15 @@ class Course extends Component { // HMR
     const {
       data,
       actions,
-      // children,
+      children,
     } = this.props;
     return (
       <div className={styles.course}>
         <Sidebar
-          data={data}
+          data={data.toJS()}
           actions={actions}
         />
-        { /* children && React.cloneElement(children, { data: data.toJS(), actions }) */ }
+        { children && React.cloneElement(children, { data: data.toJS(), actions }) }
       </div>
     );
   }

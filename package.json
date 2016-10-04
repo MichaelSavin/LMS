@@ -66,7 +66,7 @@
         "extensible-destructuring",
         {
           "mode": "optout",
-          "impl": "safe"
+          "impl": "immutable"
         }
       ],
       [
