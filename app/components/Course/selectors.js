@@ -4,7 +4,7 @@ const selectCourse = () => state => state.get('course');
 
 const courseSelector = () => createSelector(
   selectCourse(),
-  course => ({ data: course.toJS() })
+  course => ({ data: course })
 );
 
 export default courseSelector;
