@@ -3,42 +3,25 @@ import React, {
   Component,
 } from 'react';
 import { Entity } from 'draft-js';
-import styles from './styles.css';
+import { Input as AntInput } from 'antd';
+// import styles from './styles.css';
 
 class Input extends Component {
 
   constructor(props) {
     super(props);
-    const { value } = Entity
-      .get(this.props.entityKey)
-      .getData()
-      .content;
-    this.state = { value };
+    this.state = {
+      value: Entity
+        .get(this.props.entityKey)
+        .getData()
+        .content
+        .value,
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const [
-      currentValue,
-      nextValue,
-    ] = [
-      this.props,
-      nextProps,
-    ].map(props =>
-      props.entityKey
-    ).map(entity =>
-      Entity
-       .get(this.props.entityKey)
-       .getData(entity)
-       .content
-       .value
-    );
-    return (
-      this.state.value !==
-      nextState.value
-    ||
-      currentValue !==
-      nextValue
-    );
+    return this.state.value !==
+      nextState.value;
   }
 
   editValue() {
@@ -58,17 +41,17 @@ class Input extends Component {
   }
 
   render() {
+    const { value } = this.state;
     return (
-      <input
+      <AntInput
         type="text"
         onDoubleClick={() => this.editValue()}
-        className={styles.input}
-        onChange={(event) => {
-          this.setState({
-            value: event.target.value,
-          });
+        style={{
+          width: value.length > 30
+            ? 200 * (value.length / 30)
+            : 200,
         }}
-        value={this.state.value}
+        value={value}
       />
     );
   }
