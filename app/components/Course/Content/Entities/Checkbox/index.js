@@ -5,6 +5,9 @@ import React, {
   Component,
   PropTypes,
 } from 'react';
+import {
+  Checkbox as AntCheckbox,
+} from 'antd';
 import { isEqual } from 'lodash';
 import { Entity } from 'draft-js';
 import styles from './styles.css';
@@ -25,7 +28,7 @@ class Checkbox extends Component {
     const options = this.state.options.join(',');
     const newOptions = (
       prompt('Редактирование вопроса', options)
-     || options
+      || options
     ).split(',');
     Entity.replaceData(entityKey, {
       content: {
@@ -38,14 +41,9 @@ class Checkbox extends Component {
     });
   }
 
-  toggleAnswer(optionIndex, checked) {
-    const { entityKey } = this.props;
-    const { answers = [] } = this.state;
-    const newAnswers = checked
-      ? [...answers, optionIndex]
-      : answers.filter(answer => answer !== optionIndex);
+  toggleAnswer(newAnswers) {
     Entity.replaceData(
-      entityKey, {
+      this.props.entityKey, {
         content: {
           ...this.state,
           answers: newAnswers,
@@ -57,51 +55,26 @@ class Checkbox extends Component {
     });
   }
 
-
   render() {
     const {
       options,
       answers = [],
     } = this.state;
-    const {
-      entityKey,
-    } = this.props;
     return (
       <div
-        className={styles.container}
+        className={styles.checkbox}
         onContextMenu={(event) => {
           event.preventDefault();
           return this.editOptions();
         }}
       >
-        {options.map((option, index) =>
-          <p
-            key={index}
-            className={styles[
-              answers.includes(index)
-              ? 'selected'
-              : 'unselected'
-            ]}
-          >
-            <input
-              type="checkbox"
-              name={entityKey}
-              className={styles.checkbox}
-              onChange={(event) => {
-                this.toggleAnswer(
-                  index,
-                  event.target.checked,
-                );
-              }}
-              checked={answers.includes(index)}
-            />
-            <span
-              className={styles.value}
-            >
-              {option}
-            </span>
-          </p>
-        )}
+        <AntCheckbox.Group
+          options={options}
+          defaultValue={answers}
+          onChange={newAnswers =>
+            this.toggleAnswer(newAnswers)
+          }
+        />
       </div>
     );
   }
