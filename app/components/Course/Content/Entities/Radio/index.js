@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { isEqual } from 'lodash';
 import { Entity } from 'draft-js';
+import { Radio as AntRadio } from 'antd';
 import styles from './styles.css';
 
 class Radio extends Component {
@@ -21,9 +22,8 @@ class Radio extends Component {
   }
 
   chooseAnswer(optionIndex) {
-    const { entityKey } = this.props;
     Entity.replaceData(
-      entityKey, {
+      this.props.entityKey, {
         content: {
           ...this.state,
           answer: optionIndex,
@@ -40,7 +40,7 @@ class Radio extends Component {
     const options = this.state.options.join(',');
     const newOptions = (
       prompt('Редактирование вопроса', options)
-     || options
+      || options
     ).split(',');
     Entity.replaceData(entityKey, {
       content: {
@@ -58,42 +58,32 @@ class Radio extends Component {
       answer,
       options,
     } = this.state;
-    const {
-      entityKey,
-    } = this.props;
     return (
       <div
-        className={styles.container}
+        className={styles.radio}
         onContextMenu={(event) => {
           event.preventDefault();
           return this.editOptions();
         }}
       >
-        {options.map((option, index) =>
-          <p
-            key={index}
-            className={styles[
-              answer === index
-              ? 'selected'
-              : 'unselected'
-            ]}
-          >
-            <input
-              type="radio"
-              name={entityKey}
-              className={styles.radio}
-              onChange={() =>
-                this.chooseAnswer(index)
-              }
-              checked={answer === index}
-            />
-            <span
-              className={styles.value}
+        <AntRadio.Group
+          onChange={event =>
+            this.chooseAnswer(
+              event.target.value
+            )
+          }
+          value={answer}
+        >
+          {options.map((option, index) =>
+            <AntRadio
+              key={index}
+              value={index}
+              className={styles.option}
             >
               {option}
-            </span>
-          </p>
-        )}
+            </AntRadio>
+          )}
+        </AntRadio.Group>
       </div>
     );
   }
