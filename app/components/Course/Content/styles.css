@@ -24,31 +24,11 @@
   background-color: #FFE000;
 }
 
+.selectors a {
+  color: black;
+}
+
 .selector {
   font-size: 14px;
   padding-left: 20px;
 }
-
-figure {
-  margin: 0;
-}
-
-/* ul {
-  margin: 10px;
-  padding-left: 20px;
-}
-
-ol {
-  margin: 10px;
-  padding-left: 20px;
-}
-
-li {
-  margin: 1px -5px;
-}
-
-h3 {
-  border-bottom: 1px solid #EEE;
-  margin-right: 10px;
-  margin-top: 15px;
-} */

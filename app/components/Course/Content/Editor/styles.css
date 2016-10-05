@@ -20,3 +20,27 @@
   font-size: 15px;
   margin-top: 10px;
 }
+
+.draft ul {
+  margin: 10px;
+  padding-left: 20px;
+}
+
+.draft ol {
+  margin: 10px;
+  padding-left: 20px;
+}
+
+.draft li {
+  margin: 1px -5px;
+}
+
+.draft h3 {
+  border-bottom: 1px solid #EEE;
+  margin-right: 10px;
+  margin-top: 15px;
+}
+
+.draft figure {
+  margin: 0;
+}
