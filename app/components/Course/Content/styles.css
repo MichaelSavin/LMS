@@ -28,6 +28,10 @@
   color: black;
 }
 
+.selectors a:hover {
+  color: black;
+}
+
 .selector {
   font-size: 14px;
   padding-left: 20px;
