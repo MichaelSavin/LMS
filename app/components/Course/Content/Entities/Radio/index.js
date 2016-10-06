@@ -51,16 +51,22 @@ class Radio extends Component {
   }
 
   modifyOptions = () => {
-    const options = uniq(this.state.promt.value.split(';'));
-    const answer = this.state.answer > options.length - 1
-      ? undefined
-      : this.state.answer;
-    Entity.replaceData(this.props.entityKey, {
-      content: {
-        answer,
-        options,
-      },
-    });
+    const options = uniq(
+      this.state
+      .promt.value
+      .split(';'));
+    const answer =
+      this.state.answer > options.length - 1
+        ? undefined
+        : this.state.answer;
+    Entity.replaceData(
+      this.props.entityKey, {
+        content: {
+          answer,
+          options,
+        },
+      }
+    );
     this.setState({
       answer,
       options,

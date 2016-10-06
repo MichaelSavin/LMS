@@ -36,14 +36,22 @@ class Checkbox extends Component {
   }
 
   modifyOptions = () => {
-    const options = uniq(this.state.promt.value.split(';'));
-    const answers = this.state.answers.slice(0, options.length);
-    Entity.replaceData(this.props.entityKey, {
-      content: {
-        options,
-        answers,
-      },
-    });
+    const options = uniq(
+      this.state
+      .promt.value
+      .split(';')
+    );
+    const answers = this.state
+      .answers
+      .slice(0, options.length);
+    Entity.replaceData(
+      this.props.entityKey, {
+        content: {
+          options,
+          answers,
+        },
+      }
+    );
     this.setState({
       options,
       answers,
