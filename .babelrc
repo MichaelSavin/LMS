@@ -1,0 +1,39 @@
+{
+  "presets": [
+    [
+      "latest",
+      {
+        "modules": false
+      }
+    ],
+    "react",
+    "stage-0"
+  ],
+  "env": {
+    "production": {
+      "only": [
+        "app"
+      ],
+      "plugins": [
+        "transform-react-remove-prop-types",
+        "transform-react-constant-elements"
+        // "transform-react-inline-elements" // https://github.com/ant-design/babel-plugin-import/issues/64
+      ]
+    }
+  },
+  "plugins": [
+    [
+      "import", {
+        "libraryName": "antd",
+        "style": "css"
+      }
+    ],
+    [
+      "extensible-destructuring",
+      {
+        "mode": "optout",
+        "impl": "immutable"
+      }
+    ]
+  ]
+}

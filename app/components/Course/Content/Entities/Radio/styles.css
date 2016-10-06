@@ -5,8 +5,8 @@
   -webkit-user-select: none;
 }
 
-.option {
-  display: block;
+:global .ant-radio-wrapper {
+  display: block !important;
   height: 30px;
   line-height: 30px;
 }

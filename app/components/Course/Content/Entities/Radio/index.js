@@ -78,7 +78,6 @@ class Radio extends Component {
             <AntRadio
               key={index}
               value={index}
-              className={styles.option}
             >
               {option}
             </AntRadio>

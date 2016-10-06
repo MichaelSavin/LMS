@@ -4,9 +4,9 @@
   -webkit-user-select: none;
 }
 
-:global .ant-checkbox-group-item {
-  display: block;
+:global .ant-checkbox-wrapper {
+  display: block !important;
   height: 30px;
   line-height: 30px;
-  margin-left: 8px;
+  margin-left: 0 !important;
 }
