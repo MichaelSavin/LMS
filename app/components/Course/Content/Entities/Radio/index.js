@@ -1,77 +1,88 @@
 // Состояние редактора не изменяется при выборе ответа - facebook/draft-js#185
 // Нужно кликнуть по редактору
 
-import React, {
-  Component,
-  PropTypes,
-} from 'react';
-import { isEqual } from 'lodash';
-import { Entity } from 'draft-js';
+import React, { Component, PropTypes } from 'react';
+import AntPromt from 'components/UI/Promt';
 import { Radio as AntRadio } from 'antd';
+import { isEqual, uniq } from 'lodash';
+import { Entity } from 'draft-js';
 import styles from './styles.css';
 
 class Radio extends Component {
 
   constructor(props) {
     super(props);
-    this.state = props.content;
+    this.state = {
+      ...props.content,
+      promt: {
+        open: false,
+        value: null,
+      },
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(this.state, nextState);
   }
 
-  chooseAnswer(optionIndex) {
-    Entity.replaceData(
-      this.props.entityKey, {
-        content: {
-          ...this.state,
-          answer: optionIndex,
-        },
-      },
-    );
+  editOptions = (event) => {
+    event.preventDefault();
     this.setState({
-      answer: optionIndex,
+      promt: {
+        open: true,
+        value: this.state.options.join(';'),
+      },
     });
   }
 
-  editOptions() {
-    const { entityKey } = this.props;
-    const options = this.state.options.join(',');
-    const newOptions = (
-      prompt('Редактирование вопроса', options)
-      || options
-    ).split(',');
-    Entity.replaceData(entityKey, {
+  chooseAnswer = (event) => {
+    const {
+      value: answer,
+    } = event.target;
+    Entity.replaceData(
+      this.props.entityKey, {
+        content: {
+          options: this.state.options,
+          answer,
+        },
+      },
+    );
+    this.setState({ answer });
+  }
+
+  modifyOptions = () => {
+    const options = uniq(this.state.promt.value.split(';'));
+    const answer = this.state.answer > options.length - 1
+      ? undefined
+      : this.state.answer;
+    Entity.replaceData(this.props.entityKey, {
       content: {
-        ...this.state,
-        options: newOptions,
+        answer,
+        options,
       },
     });
     this.setState({
-      options: newOptions,
+      answer,
+      options,
+      promt: {
+        open: false,
+      },
     });
   }
 
   render() {
     const {
+      promt,
       answer,
       options,
     } = this.state;
     return (
       <div
         className={styles.radio}
-        onContextMenu={(event) => {
-          event.preventDefault();
-          return this.editOptions();
-        }}
+        onContextMenu={this.editOptions}
       >
         <AntRadio.Group
-          onChange={event =>
-            this.chooseAnswer(
-              event.target.value
-            )
-          }
+          onChange={this.chooseAnswer}
           value={answer}
         >
           {options.map((option, index) =>
@@ -83,6 +94,27 @@ class Radio extends Component {
             </AntRadio>
           )}
         </AntRadio.Group>
+        <AntPromt
+          value={promt.value}
+          onSave={this.modifyOptions}
+          visible={promt.open}
+          onChange={(event) => {
+            this.setState({
+              promt: {
+                ...promt,
+                value: event.target.value,
+              },
+            });
+          }}
+          onCancel={() => {
+            this.setState({
+              promt: {
+                ...promt,
+                open: false,
+              },
+            });
+          }}
+        />
       </div>
     );
   }
