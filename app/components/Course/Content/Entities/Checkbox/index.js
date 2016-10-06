@@ -35,7 +35,7 @@ class Checkbox extends Component {
     });
   }
 
-  changeOptions = () => {
+  modifyOptions = () => {
     const options = uniq(this.state.promt.value.split(';'));
     const answers = this.state.answers.slice(0, options.length);
     Entity.replaceData(this.props.entityKey, {
@@ -86,7 +86,7 @@ class Checkbox extends Component {
 
         <AntPromt
           value={promt.value}
-          onSave={this.changeOptions}
+          onSave={this.modifyOptions}
           visible={promt.open}
           onChange={(event) => {
             this.setState({

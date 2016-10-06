@@ -26,7 +26,7 @@ class Input extends Component {
     return !isEqual(this.state, nextState);
   }
 
-  changeValue = () => {
+  modifyValue = () => {
     const { value } = this.state.promt;
     Entity.replaceData(
       this.props.entityKey, {
@@ -69,7 +69,7 @@ class Input extends Component {
         />
         <AntPromt
           value={promt.value}
-          onSave={this.changeValue}
+          onSave={this.modifyValue}
           visible={promt.open}
           onChange={(event) => {
             this.setState({
