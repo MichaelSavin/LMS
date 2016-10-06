@@ -1,14 +1,10 @@
 // Состояние редактора не изменяется при выборе ответов - facebook/draft-js#185
 // Нужно кликнуть по редактору
 
-import React, {
-  Component,
-  PropTypes,
-} from 'react';
-import {
-  Checkbox as AntCheckbox,
-} from 'antd';
-import { isEqual } from 'lodash';
+import React, { Component, PropTypes } from 'react';
+import { Checkbox as AntCheckbox } from 'antd';
+import AntPromt from 'components/UI/Promt';
+import { isEqual, uniq } from 'lodash';
 import { Entity } from 'draft-js';
 import styles from './styles.css';
 
@@ -16,37 +12,53 @@ class Checkbox extends Component {
 
   constructor(props) {
     super(props);
-    this.state = props.content;
+    this.state = {
+      ...props.content,
+      promt: {
+        open: false,
+        value: null,
+      },
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(this.state, nextState);
   }
 
-  editOptions() {
-    const { entityKey } = this.props;
-    const options = this.state.options.join(',');
-    const newOptions = (
-      prompt('Редактирование вопроса', options)
-      || options
-    ).split(',');
-    Entity.replaceData(entityKey, {
-      content: {
-        ...this.state,
-        options: newOptions,
-      },
-    });
+  editOptions = (event) => {
+    event.preventDefault();
     this.setState({
-      options: newOptions,
+      promt: {
+        open: true,
+        value: this.state.options.join(';'),
+      },
     });
   }
 
-  toggleAnswer(newAnswers) {
+  changeOptions = () => {
+    const options = uniq(this.state.promt.value.split(';'));
+    const answers = this.state.answers.slice(0, options.length);
+    Entity.replaceData(this.props.entityKey, {
+      content: {
+        options,
+        answers,
+      },
+    });
+    this.setState({
+      options,
+      answers,
+      promt: {
+        open: false,
+      },
+    });
+  }
+
+  toggleAnswer = (newAnswers) => {
     Entity.replaceData(
       this.props.entityKey, {
         content: {
-          ...this.state,
           answers: newAnswers,
+          options: this.state.options,
         },
       },
     );
@@ -57,23 +69,41 @@ class Checkbox extends Component {
 
   render() {
     const {
+      promt,
       options,
       answers = [],
     } = this.state;
     return (
       <div
         className={styles.checkbox}
-        onContextMenu={(event) => {
-          event.preventDefault();
-          return this.editOptions();
-        }}
+        onContextMenu={this.editOptions}
       >
         <AntCheckbox.Group
           options={options}
           defaultValue={answers}
-          onChange={newAnswers =>
-            this.toggleAnswer(newAnswers)
-          }
+          onChange={this.toggleAnswer}
+        />
+
+        <AntPromt
+          value={promt.value}
+          onSave={this.changeOptions}
+          visible={promt.open}
+          onChange={(event) => {
+            this.setState({
+              promt: {
+                ...promt,
+                value: event.target.value,
+              },
+            });
+          }}
+          onCancel={() => {
+            this.setState({
+              promt: {
+                ...promt,
+                open: false,
+              },
+            });
+          }}
         />
       </div>
     );

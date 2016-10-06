@@ -1,6 +1,7 @@
 .checkbox {
   margin: 5px 0;
   user-select: none;
+  display: inline-block;
   -webkit-user-select: none;
 }
 
