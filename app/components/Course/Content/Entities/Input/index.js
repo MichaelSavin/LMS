@@ -20,7 +20,7 @@ class Input extends Component {
         .getData()
         .content
         .value,
-      editor: {
+      promt: {
         open: false,
         value: null,
       },
@@ -32,7 +32,7 @@ class Input extends Component {
   }
 
   changeValue = () => {
-    const { value } = this.state.editor;
+    const { value } = this.state.promt;
     Entity.replaceData(
       this.props.entityKey, {
         content: {
@@ -42,7 +42,7 @@ class Input extends Component {
     );
     this.setState({
       value,
-      editor: {
+      promt: {
         open: false,
       },
     });
@@ -51,7 +51,7 @@ class Input extends Component {
   render() {
     const {
       value,
-      editor,
+      promt,
     } = this.state;
     return (
       <div className={styles.input}>
@@ -59,7 +59,7 @@ class Input extends Component {
           type="text"
           onDoubleClick={() =>
             this.setState({
-              editor: {
+              promt: {
                 open: true,
                 value,
               },
@@ -74,14 +74,14 @@ class Input extends Component {
         />
         <AntModal
           title="Редактирование"
-          visible={editor.open}
+          visible={promt.open}
           onOk={this.changeValue}
           okText="Сохранить"
           cancelText="Отмена"
           onCancel={() =>
             this.setState({
-              editor: {
-                ...editor,
+              promt: {
+                ...promt,
                 open: false,
               },
             })
@@ -89,12 +89,12 @@ class Input extends Component {
         >
           <AntInput
             type="text"
-            value={editor.value}
+            value={promt.value}
             onPressEnter={this.changeValue}
             onChange={(event) => {
               this.setState({
-                editor: {
-                  ...editor,
+                promt: {
+                  ...promt,
                   value: event.target.value,
                 },
               });
