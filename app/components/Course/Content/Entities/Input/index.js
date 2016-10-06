@@ -1,13 +1,8 @@
-import React, {
-  PropTypes,
-  Component,
-} from 'react';
+import React, { PropTypes, Component } from 'react';
 import { isEqual } from 'lodash';
 import { Entity } from 'draft-js';
-import {
-  Input as AntInput,
-  Modal as AntModal,
- } from 'antd';
+import { Input as AntInput } from 'antd';
+import AntPromt from 'components/UI/Promt';
 import styles from './styles.css';
 
 class Input extends Component {
@@ -72,35 +67,27 @@ class Input extends Component {
           }}
           value={value}
         />
-        <AntModal
-          title="Редактирование"
+        <AntPromt
+          value={promt.value}
+          onSave={this.changeValue}
           visible={promt.open}
-          onOk={this.changeValue}
-          okText="Сохранить"
-          cancelText="Отмена"
-          onCancel={() =>
+          onChange={(event) => {
+            this.setState({
+              promt: {
+                ...promt,
+                value: event.target.value,
+              },
+            });
+          }}
+          onCancel={() => {
             this.setState({
               promt: {
                 ...promt,
                 open: false,
               },
-            })
-          }
-        >
-          <AntInput
-            type="text"
-            value={promt.value}
-            onPressEnter={this.changeValue}
-            onChange={(event) => {
-              this.setState({
-                promt: {
-                  ...promt,
-                  value: event.target.value,
-                },
-              });
-            }}
-          />
-        </AntModal>
+            });
+          }}
+        />
       </div>
     );
   }
