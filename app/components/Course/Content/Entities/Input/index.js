@@ -2,9 +2,13 @@ import React, {
   PropTypes,
   Component,
 } from 'react';
+import { isEqual } from 'lodash';
 import { Entity } from 'draft-js';
-import { Input as AntInput } from 'antd';
-// import styles from './styles.css';
+import {
+  Input as AntInput,
+  Modal as AntModal,
+ } from 'antd';
+import styles from './styles.css';
 
 class Input extends Component {
 
@@ -16,43 +20,88 @@ class Input extends Component {
         .getData()
         .content
         .value,
+      editor: {
+        open: false,
+        value: null,
+      },
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return this.state.value !==
-      nextState.value;
+    return !isEqual(this.state, nextState);
   }
 
-  editValue() {
-    const currentValue = this.state.value;
-    const newValue = prompt(
-      'Редактирование значения',
-      currentValue
-    ) || currentValue;
+  changeValue = () => {
+    const { value } = this.state.editor;
     Entity.replaceData(
       this.props.entityKey, {
         content: {
-          value: newValue,
+          value,
         },
       }
     );
-    this.setState({ value: newValue });
+    this.setState({
+      value,
+      editor: {
+        open: false,
+      },
+    });
   }
 
   render() {
-    const { value } = this.state;
+    const {
+      value,
+      editor,
+    } = this.state;
     return (
-      <AntInput
-        type="text"
-        onDoubleClick={() => this.editValue()}
-        style={{
-          width: value.length > 30
-            ? 200 * (value.length / 30)
-            : 200,
-        }}
-        value={value}
-      />
+      <div className={styles.input}>
+        <AntInput
+          type="text"
+          onDoubleClick={() =>
+            this.setState({
+              editor: {
+                open: true,
+                value,
+              },
+            })
+          }
+          style={{
+            width: value.length > 30
+              ? 200 * (value.length / 30)
+              : 200,
+          }}
+          value={value}
+        />
+        <AntModal
+          title="Редактирование"
+          visible={editor.open}
+          onOk={this.changeValue}
+          okText="Сохранить"
+          cancelText="Отмена"
+          onCancel={() =>
+            this.setState({
+              editor: {
+                ...editor,
+                open: false,
+              },
+            })
+          }
+        >
+          <AntInput
+            type="text"
+            value={editor.value}
+            onPressEnter={this.changeValue}
+            onChange={(event) => {
+              this.setState({
+                editor: {
+                  ...editor,
+                  value: event.target.value,
+                },
+              });
+            }}
+          />
+        </AntModal>
+      </div>
     );
   }
 }
