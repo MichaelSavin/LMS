@@ -280,7 +280,7 @@ class Draft extends Component {
             action={() =>
               insertBlockEntity(
                 'HINT', {
-                  text: prompt('Подсказка', '') || 'Текст подсказки',
+                  text: 'Текст подсказки',
                 },
                 editorState,
                 this.onChange

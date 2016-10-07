@@ -1,7 +1,5 @@
-import React, {
-  Component,
-  PropTypes,
-} from 'react';
+import React, { Component, PropTypes } from 'react';
+import AntPromt from 'components/UI/Promt';
 import { isEqual } from 'lodash';
 import { Entity } from 'draft-js';
 import styles from './styles.css';
@@ -14,6 +12,10 @@ class Hint extends Component {
       ...props.content,
       hidden: true,
       used: false,
+      promt: {
+        open: false,
+        value: null,
+      },
     };
   }
 
@@ -21,7 +23,7 @@ class Hint extends Component {
     return !isEqual(this.state, nextState);
   }
 
-  toggleHint() {
+  toggleHint = () => {
     const {
       used,
       hidden,
@@ -32,19 +34,32 @@ class Hint extends Component {
     });
   }
 
-  editHint() {
-    const { entityKey } = this.props;
-    const { text } = this.state;
-    const newText =
-      prompt('Редактирование подсказки', text)
-      || text;
-    Entity.replaceData(entityKey, {
-      content: {
-        text: newText,
+  editHint = (event) => {
+    event.preventDefault();
+    this.setState({
+      promt: {
+        open: true,
+        value: this.state.text,
       },
     });
+  }
+
+  modifyHint = () => {
+    const {
+      value: text,
+    } = this.state.promt;
+    Entity.replaceData(
+      this.props.entityKey, {
+        content: {
+          text,
+        },
+      }
+    );
     this.setState({
-      text: newText,
+      text,
+      promt: {
+        open: false,
+      },
     });
   }
 
@@ -52,23 +67,23 @@ class Hint extends Component {
     const {
       text,
       used,
+      promt,
       hidden,
     } = this.state;
     return (
       <div
-        className={styles.container}
-        onContextMenu={(event) => {
-          event.preventDefault();
-          return this.editHint();
-        }}
+        className={styles.hint}
+        onContextMenu={this.editHint}
       >
-        <div onClick={() => this.toggleHint()}>
+        <div onClick={this.toggleHint}>
           <span
-            className={styles[
-              used
-              ? 'used'
-              : 'unused'
-            ]}
+            className={
+              styles[
+                used
+                ? 'used'
+                : 'unused'
+              ]
+            }
           >
             {hidden
               ? used
@@ -88,6 +103,27 @@ class Hint extends Component {
             {text}
           </div>
         }
+        <AntPromt
+          value={promt.value}
+          onSave={this.modifyHint}
+          visible={promt.open}
+          onChange={(event) => {
+            this.setState({
+              promt: {
+                ...promt,
+                value: event.target.value,
+              },
+            });
+          }}
+          onCancel={() => {
+            this.setState({
+              promt: {
+                ...promt,
+                open: false,
+              },
+            });
+          }}
+        />
       </div>
     );
   }
