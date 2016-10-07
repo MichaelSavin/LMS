@@ -232,6 +232,7 @@ class Draft extends Component {
             action={() =>
               insertBlockEntity(
                 'RADIO', {
+                  answer: undefined,
                   options: ['Один', 'Два', 'Три', 'Четыре'],
                 },
                 editorState,
@@ -244,6 +245,7 @@ class Draft extends Component {
             action={() =>
               insertBlockEntity(
                 'CHECKBOX', {
+                  answers: [],
                   options: ['Один', 'Два', 'Три', 'Четыре'],
                 },
                 editorState,
@@ -256,6 +258,7 @@ class Draft extends Component {
             action={() =>
               insertInlineEntity(
                 'SELECT', {
+                  answer: undefined,
                   options: ['Один', 'Два', 'Три', 'Четыре'],
                 },
                 editorState,

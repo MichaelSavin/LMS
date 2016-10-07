@@ -41,7 +41,8 @@ class Checkbox extends Component {
       .promt.value
       .split(';')
     );
-    const answers = this.state
+    const answers =
+      this.state
       .answers
       .slice(0, options.length);
     Entity.replaceData(
@@ -61,17 +62,17 @@ class Checkbox extends Component {
     });
   }
 
-  toggleAnswer = (newAnswers) => {
+  toggleAnswer = (answers) => {
     Entity.replaceData(
       this.props.entityKey, {
         content: {
-          answers: newAnswers,
+          answers,
           options: this.state.options,
         },
       },
     );
     this.setState({
-      answers: newAnswers,
+      answers,
     });
   }
 
@@ -121,7 +122,7 @@ class Checkbox extends Component {
 Checkbox.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    answers: PropTypes.array,
+    answers: PropTypes.array.isRequired,
     options: PropTypes.array.isRequired,
   }).isRequired,
 };
