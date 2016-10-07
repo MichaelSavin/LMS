@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
-import { isEqual } from 'lodash';
-import { Entity } from 'draft-js';
-import { Input as AntInput } from 'antd';
 import AntPromt from 'components/UI/Promt';
+import { Input as AntInput } from 'antd';
+import { Entity } from 'draft-js';
+import { isEqual } from 'lodash';
 import styles from './styles.css';
 
 class Input extends Component {
@@ -24,6 +24,15 @@ class Input extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(this.state, nextState);
+  }
+
+  editValue = () => {
+    this.setState({
+      promt: {
+        open: true,
+        value: this.state.value,
+      },
+    });
   }
 
   modifyValue = () => {
@@ -52,14 +61,7 @@ class Input extends Component {
       <div className={styles.input}>
         <AntInput
           type="text"
-          onDoubleClick={() =>
-            this.setState({
-              promt: {
-                open: true,
-                value,
-              },
-            })
-          }
+          onDoubleClick={this.editValue}
           style={{
             width: value.length > 30
               ? 200 * (value.length / 30)
