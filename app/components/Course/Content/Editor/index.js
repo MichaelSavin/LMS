@@ -291,8 +291,9 @@ class Draft extends Component {
           <Button
             action={() =>
               insertInlineEntity(
-                'TEX',
-                'a^n+b^n = c^n',
+                'TEX', {
+                  value: 'a^n+b^n = c^n',
+                },
                 editorState,
                 this.onChange
             )}
