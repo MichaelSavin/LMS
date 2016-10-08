@@ -231,6 +231,18 @@ class Draft extends Component {
           <Button
             action={() =>
               insertBlockEntity(
+                'TEXTAREA', {
+                  value: '',
+                },
+                editorState,
+                this.onChange
+            )}
+            name="Текст"
+            icon="textarea"
+          />
+          <Button
+            action={() =>
+              insertBlockEntity(
                 'RADIO', {
                   answer: undefined,
                   options: ['Один', 'Два', 'Три', 'Четыре'],

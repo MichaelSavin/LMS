@@ -5,6 +5,7 @@ import {
 } from 'antd';
 
 const Promt = ({
+  type,
   value,
   onSave,
   visible,
@@ -20,15 +21,17 @@ const Promt = ({
     cancelText="Отмена"
   >
     <AntInput
-      type="text"
+      type={type || 'text'}
       value={value}
       onChange={onChange}
-      onPressEnter={onSave}
+      autosize
+      // onPressEnter={onSave}
     />
   </AntModal>
 );
 
 Promt.propTypes = {
+  type: React.PropTypes.oneOf(['text', 'textarea']),
   value: PropTypes.string,
   onSave: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,

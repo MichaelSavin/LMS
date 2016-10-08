@@ -14,6 +14,7 @@ import Input from './Input';
 import Radio from './Radio';
 import Select from './Select';
 import Checkbox from './Checkbox';
+import Textarea from './Textarea';
 
 const findEntities = type => (
   contentBlock,
@@ -80,6 +81,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
   const entity = Entity.get(entityKey);
   const { content } = entity.getData();
   switch (entity.getType()) {
+    case 'TEXTAREA':
+      return (
+        <Textarea
+          content={content}
+          entityKey={entityKey}
+        />
+      );
     case 'RADIO':
       return (
         <Radio
