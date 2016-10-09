@@ -3,7 +3,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Entity,
+  // Entity,
   Editor,
   Modifier,
   RichUtils,
@@ -20,14 +20,15 @@ import {
 // import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
 // import createVideoPlugin from 'draft-js-video-plugin';
 // import Editor from 'draft-js-plugins-editor';
-import Button from './Button';
+// import Button from './Button';
 import Toolbar from './Toolbar';
+import Widgets from './Widgets';
 import styles from './styles.css';
 
 import {
   blockRenderer,
-  insertBlockEntity,
-  insertInlineEntity,
+  // insertBlockEntity,
+  // insertInlineEntity,
   entitiesDecorator,
 } from '../Entities';
 
@@ -227,6 +228,10 @@ class Draft extends Component {
             // plugins={plugins}
           />
         </div>
+
+        <Widgets />
+
+        { /*
         <div className={styles.buttons}>
           <Button
             action={() =>
@@ -315,7 +320,6 @@ class Draft extends Component {
             name="Формула"
             icon="formula"
           />
-          {/*
           <Button
             action={() => {
               const url = prompt('URL изображения', 'http://www.google.com/logos/doodles/2016/mid-autumn-festival-2016-vietnam-5715224209391616-hp2x.jpg');
@@ -344,7 +348,6 @@ class Draft extends Component {
             name="Видео"
             icon="video"
           />
-          */}
           <Button
             action={() => {
               editorState.getSelection().isCollapsed() // eslint-disable-line no-unused-expressions
@@ -363,6 +366,7 @@ class Draft extends Component {
             icon="link"
           />
         </div>
+        */}
       </div>
     );
   }
