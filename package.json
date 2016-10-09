@@ -17,7 +17,7 @@
     "preinstall": "npm run npmcheckversion",
     "postinstall": "npm run build:dll",
     "heroku-postbuild": "npm run build",
-    "build": "webpack --config internals/webpack/webpack.prod.babel.js --color -p --display-error-details",
+    "build": "cross-env NODE_ENV=production webpack --display-error-details --config internals/webpack/webpack.prod.babel.js --bail",
     "clean": "rimraf ./node_modules",
     "build:clean": "rimraf ./build",
     "build:dll": "node ./internals/scripts/dependencies.js",
