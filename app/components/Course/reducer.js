@@ -23,7 +23,9 @@ const courseReducer = (course = initialState, action) => {
       return course.updateIn(
         ['sections'],
         Immutable.List.of(),
-        list => list.push(fromJS(action.section)) // eslint-disable-line fp/no-mutating-methods
+        List => List.push(
+          fromJS(action.section)
+        )
       );
 
     case RENAME_SECTION:
@@ -48,7 +50,9 @@ const courseReducer = (course = initialState, action) => {
         'subsections',
       ],
         Immutable.List.of(),
-        list => list.push(fromJS(action.subsection)) // eslint-disable-line fp/no-mutating-methods
+        List => List.push(
+          fromJS(action.subsection)
+        )
       );
 
     case RENAME_SUBSECTION:
@@ -79,7 +83,9 @@ const courseReducer = (course = initialState, action) => {
         'units',
       ],
         Immutable.List.of(),
-        list => list.push(fromJS(action.unit)) // eslint-disable-line fp/no-mutating-methods
+        List => List.push(
+          fromJS(action.unit)
+        )
       );
 
     case EDIT_UNIT:
