@@ -1,4 +1,6 @@
-import React, { PropTypes } from 'react';
+import React, {
+  PropTypes,
+} from 'react';
 import {
   Input as AntInput,
   Modal as AntModal,

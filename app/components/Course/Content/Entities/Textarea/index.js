@@ -18,21 +18,31 @@ class Textarea extends Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.state, nextState);
+  shouldComponentUpdate(
+    nextProps,
+    nextState
+  ) {
+    return !isEqual(
+      this.state,
+      nextState
+    );
   }
 
   editValue = () => {
     this.setState({
       promt: {
         open: true,
-        value: this.state.value,
+        value: this
+          .state
+          .value,
       },
     });
   }
 
   modifyValue = () => {
-    const { value } = this.state.promt;
+    const {
+      value,
+    } = this.state.promt;
     Entity.replaceData(
       this.props.entityKey, {
         content: {
@@ -70,7 +80,9 @@ class Textarea extends Component {
             this.setState({
               promt: {
                 ...promt,
-                value: event.target.value,
+                value: event
+                  .target
+                  .value,
               },
             });
           }}

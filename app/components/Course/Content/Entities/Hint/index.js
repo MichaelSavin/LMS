@@ -19,8 +19,14 @@ class Hint extends Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.state, nextState);
+  shouldComponentUpdate(
+    nextProps,
+    nextState
+  ) {
+    return !isEqual(
+      this.state,
+      nextState
+    );
   }
 
   toggleHint = () => {
@@ -39,7 +45,9 @@ class Hint extends Component {
     this.setState({
       promt: {
         open: true,
-        value: this.state.text,
+        value: this
+          .state
+          .text,
       },
     });
   }
@@ -111,7 +119,9 @@ class Hint extends Component {
             this.setState({
               promt: {
                 ...promt,
-                value: event.target.value,
+                value: event
+                  .target
+                  .value,
               },
             });
           }}

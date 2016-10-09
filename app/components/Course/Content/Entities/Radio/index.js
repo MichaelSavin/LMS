@@ -21,8 +21,14 @@ class Radio extends Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.state, nextState);
+  shouldComponentUpdate(
+    nextProps,
+    nextState
+  ) {
+    return !isEqual(
+      this.state,
+      nextState
+    );
   }
 
   editOptions = (event) => {
@@ -30,7 +36,10 @@ class Radio extends Component {
     this.setState({
       promt: {
         open: true,
-        value: this.state.options.join(';'),
+        value: this
+          .state
+          .options
+          .join(';'),
       },
     });
   }
@@ -42,7 +51,9 @@ class Radio extends Component {
     Entity.replaceData(
       this.props.entityKey, {
         content: {
-          options: this.state.options,
+          options: this
+            .state
+            .options,
           answer,
         },
       },
@@ -108,7 +119,9 @@ class Radio extends Component {
             this.setState({
               promt: {
                 ...promt,
-                value: event.target.value,
+                value: event
+                  .target
+                  .value,
               },
             });
           }}

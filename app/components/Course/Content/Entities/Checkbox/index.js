@@ -21,8 +21,14 @@ class Checkbox extends Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.state, nextState);
+  shouldComponentUpdate(
+    nextProps,
+    nextState
+  ) {
+    return !isEqual(
+      this.state,
+      nextState
+    );
   }
 
   editOptions = (event) => {
@@ -30,19 +36,24 @@ class Checkbox extends Component {
     this.setState({
       promt: {
         open: true,
-        value: this.state.options.join(';'),
+        value: this
+          .state
+          .options
+          .join(';'),
       },
     });
   }
 
   modifyOptions = () => {
     const options = uniq(
-      this.state
-      .promt.value
+      this
+      .state
+      .promt
+      .value
       .split(';')
     );
-    const answers =
-      this.state
+    const answers = this
+      .state
       .answers
       .slice(0, options.length);
     Entity.replaceData(
@@ -67,7 +78,9 @@ class Checkbox extends Component {
       this.props.entityKey, {
         content: {
           answers,
-          options: this.state.options,
+          options: this
+            .state
+            .options,
         },
       },
     );
@@ -101,7 +114,9 @@ class Checkbox extends Component {
             this.setState({
               promt: {
                 ...promt,
-                value: event.target.value,
+                value: event
+                  .target
+                  .value,
               },
             });
           }}
