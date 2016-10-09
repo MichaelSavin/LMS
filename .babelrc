@@ -15,8 +15,8 @@
         "app"
       ],
       "plugins": [
-        "transform-react-remove-prop-types",
-        "transform-react-constant-elements"
+        "transform-react-remove-prop-types"
+        // "transform-react-constant-elements" // https://github.com/babel/babel/issues/4458
         // "transform-react-inline-elements" // https://github.com/ant-design/babel-plugin-import/issues/64
       ]
     }
