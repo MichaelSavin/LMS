@@ -7,14 +7,14 @@ import {
   CompositeDecorator,
 } from 'draft-js';
 
-import TeX from './TeX';
-import Link from './Link';
-import Hint from './Hint';
-import Input from './Input';
-import Radio from './Radio';
-import Select from './Select';
-import Checkbox from './Checkbox';
-import Textarea from './Textarea';
+import TeX from './Inline/TeX';
+import Link from './Inline/Link';
+import Hint from './Block/Hint';
+import Input from './Inline/Input';
+import Radio from './Block/Radio';
+import Select from './Inline/Select';
+import Checkbox from './Block/Checkbox';
+import Textarea from './Block/Textarea';
 
 const findEntities = type => (
   contentBlock,
