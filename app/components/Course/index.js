@@ -20,7 +20,14 @@ class Course extends Component { // HMR
           data={data.toJS()}
           actions={actions}
         />
-        { children && React.cloneElement(children, { data: data.toJS(), actions }) }
+        {children &&
+          React.cloneElement(
+            children, {
+              data: data.toJS(),
+              actions,
+            }
+          )
+        }
       </div>
     );
   }
