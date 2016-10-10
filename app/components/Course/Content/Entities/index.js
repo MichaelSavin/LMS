@@ -3,6 +3,7 @@ import {
   Entity,
   Modifier,
   EditorState,
+  SelectionState,
   AtomicBlockUtils,
   CompositeDecorator,
 } from 'draft-js';
@@ -29,31 +30,6 @@ const findEntities = type => (
       );
     },
     callback
-  );
-};
-
-const insertInlineEntity = (
-  type,
-  content,
-  editorState,
-  changeEditorState,
-) => {
-  changeEditorState(
-    EditorState.push(
-      editorState,
-      Modifier.insertText(
-        editorState.getCurrentContent(),
-        editorState.getSelection(),
-        ' ',
-        null,
-        Entity.create(
-          type,
-          'IMMUTABLE',
-          { content }
-        ),
-      ),
-      'insert-text'
-    )
   );
 };
 
@@ -114,6 +90,53 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
   }
 };
 
+const addEOLtoInlineEntity = (editorState, block) => { // REFACTORING
+  const blockKey = block.key;
+  const characterList = block.characterList;
+  if (!characterList.isEmpty() && characterList.last().getEntity()) {
+    if (editorState.getLastChangeType() === 'backspace-character') {
+      const selection = new SelectionState({
+        anchorKey: blockKey,
+        anchorOffset: block.getLength() - 1,
+        focusKey: blockKey,
+        focusOffset: block.getLength(),
+        hasFocus: true,
+      });
+      const modifiedContent = Modifier.removeRange(
+        editorState.getCurrentContent(),
+        selection,
+        'backward'
+      );
+      return EditorState.push(
+        editorState,
+        modifiedContent,
+        editorState.getLastChangeType()
+      );
+    } else { // eslint-disable-line no-else-return
+      const selection = new SelectionState({
+        anchorKey: blockKey,
+        anchorOffset: block.getLength(),
+        focusKey: blockKey,
+        focusOffset: block.getLength(),
+        hasFocus: true,
+      });
+      const zwwsp = String.fromCharCode(8203);
+      const modifiedContent = Modifier.insertText(
+        editorState.getCurrentContent(),
+        selection,
+        zwwsp
+      );
+      return EditorState.push(
+        editorState,
+        modifiedContent,
+        editorState.getLastChangeType()
+      );
+    }
+  } else { // eslint-disable-line no-else-return
+    return editorState;
+  }
+};
+
 const insertBlockEntity = (
   type,
   content,
@@ -134,9 +157,58 @@ const insertBlockEntity = (
   );
 };
 
+const insertInlineEntity = (
+  type,
+  content,
+  editorState,
+  changeEditorState,
+) => {
+  changeEditorState(
+    EditorState.push(
+      editorState,
+      Modifier.insertText(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        ' ',
+        null,
+        Entity.create(
+          type,
+          'IMMUTABLE',
+          { content }
+        ),
+      ),
+      'insert-text'
+    )
+  );
+};
+
+const insertEntity = (
+  editorState,
+  changeEditorState
+) => ({
+  view: entityView,
+  type: entityType,
+  content: entityContent,
+}) => {
+  const args = [
+    entityType,
+    entityContent,
+    editorState,
+    changeEditorState,
+  ];
+  switch (entityView) {
+    case 'BLOCK':
+      return insertBlockEntity(...args);
+    case 'INLINE':
+      return insertInlineEntity(...args);
+    default:
+      return null;
+  }
+};
+
 export {
+  insertEntity,
   blockRenderer,
   entitiesDecorator,
-  insertBlockEntity,
-  insertInlineEntity,
+  addEOLtoInlineEntity,
 };

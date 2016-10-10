@@ -5,12 +5,10 @@ import React, {
 import {
   // Entity,
   Editor,
-  Modifier,
   RichUtils,
   EditorState,
   convertToRaw,
   convertFromRaw,
-  SelectionState,
   // AtomicBlockUtils,
 } from 'draft-js';
 // import createImagePlugin, {
@@ -27,9 +25,8 @@ import styles from './styles.css';
 
 import {
   blockRenderer,
-  // insertBlockEntity,
-  // insertInlineEntity,
   entitiesDecorator,
+  addEOLtoInlineEntity,
 } from '../Entities';
 
 // const imageTheme = {
@@ -85,53 +82,6 @@ class Draft extends Component {
     });
     // }
 
-    const addEntityEOLDelimiter = (editorState, block) => { // eslint-disable-line no-shadow
-      const blockKey = block.key;
-      const characterList = block.characterList;
-      if (!characterList.isEmpty() && characterList.last().getEntity()) {
-        if (editorState.getLastChangeType() === 'backspace-character') {
-          const selection = new SelectionState({
-            anchorKey: blockKey,
-            anchorOffset: block.getLength() - 1,
-            focusKey: blockKey,
-            focusOffset: block.getLength(),
-            hasFocus: true,
-          });
-          const modifiedContent = Modifier.removeRange(
-            editorState.getCurrentContent(),
-            selection,
-            'backward'
-          );
-          return EditorState.push( // eslint-disable-line fp/no-mutating-methods
-            editorState,
-            modifiedContent,
-            editorState.getLastChangeType()
-          );
-        } else { // eslint-disable-line no-else-return
-          const selection = new SelectionState({
-            anchorKey: blockKey,
-            anchorOffset: block.getLength(),
-            focusKey: blockKey,
-            focusOffset: block.getLength(),
-            hasFocus: true,
-          });
-          const zwwsp = String.fromCharCode(8203);
-          const modifiedContent = Modifier.insertText(
-            editorState.getCurrentContent(),
-            selection,
-            zwwsp
-          );
-          return EditorState.push( // eslint-disable-line fp/no-mutating-methods
-            editorState,
-            modifiedContent,
-            editorState.getLastChangeType()
-          );
-        }
-      } else { // eslint-disable-line no-else-return
-        return editorState;
-      }
-    };
-
     if (editorState.getLastChangeType() === 'undo'
     || editorState.getLastChangeType() === 'redo') {
       this.setState({
@@ -145,7 +95,7 @@ class Draft extends Component {
       const currentContent = editorState.getCurrentContent();
       const blocks = currentContent.blockMap;
       const newEditorState = blocks.reduce(
-        addEntityEOLDelimiter,
+        addEOLtoInlineEntity,
         editorState
       );
       this.setState({
@@ -229,97 +179,13 @@ class Draft extends Component {
           />
         </div>
 
-        <Widgets />
+        <Widgets
+          editorState={editorState}
+          changeEditorState={this.onChange}
+        />
 
         { /*
         <div className={styles.buttons}>
-          <Button
-            action={() =>
-              insertBlockEntity(
-                'TEXTAREA', {
-                  value: '',
-                },
-                editorState,
-                this.onChange
-            )}
-            name="Текст"
-            icon="textarea"
-          />
-          <Button
-            action={() =>
-              insertBlockEntity(
-                'RADIO', {
-                  answer: undefined,
-                  options: ['Один', 'Два', 'Три', 'Четыре'],
-                },
-                editorState,
-                this.onChange
-            )}
-            name="Радио"
-            icon="radio"
-          />
-          <Button
-            action={() =>
-              insertBlockEntity(
-                'CHECKBOX', {
-                  answers: [],
-                  options: ['Один', 'Два', 'Три', 'Четыре'],
-                },
-                editorState,
-                this.onChange
-            )}
-            name="Чекбокс"
-            icon="checkbox"
-          />
-          <Button
-            action={() =>
-              insertInlineEntity(
-                'SELECT', {
-                  answer: undefined,
-                  options: ['Один', 'Два', 'Три', 'Четыре'],
-                },
-                editorState,
-                this.onChange
-            )}
-            name="Селект"
-            icon="select"
-          />
-          <Button
-            action={() =>
-              insertInlineEntity(
-                'INPUT', {
-                  value: '',
-                },
-                editorState,
-                this.onChange
-            )}
-            name="Инпут"
-            icon="input"
-          />
-          <Button
-            action={() =>
-              insertBlockEntity(
-                'HINT', {
-                  text: 'Текст подсказки',
-                },
-                editorState,
-                this.onChange
-            )}
-            name="Подсказка"
-            icon="hint"
-          />
-          <Button
-            action={() =>
-              insertInlineEntity(
-                'TEX', {
-                  value: 'a^n+b^n = c^n',
-                },
-                editorState,
-                this.onChange
-            )}
-            name="Формула"
-            icon="formula"
-          />
           <Button
             action={() => {
               const url = prompt('URL изображения', 'http://www.google.com/logos/doodles/2016/mid-autumn-festival-2016-vietnam-5715224209391616-hp2x.jpg');

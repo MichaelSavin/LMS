@@ -1,5 +1,5 @@
 import React, {
-  // PropTypes,
+  PropTypes,
 } from 'react';
 import {
   Icon as AntIcon,
@@ -7,6 +7,7 @@ import {
   Button as AntButton,
   Dropdown as AntDropdown,
 } from 'antd';
+import { insertEntity } from '../../Entities';
 
 import styles from './styles.css';
 
@@ -23,11 +24,9 @@ const menu = [
       },
       {
         name: 'Видео', // Video
-        action: () => {},
       },
       {
         name: 'Изображение', // Image
-        action: () => {},
       },
     ],
   },
@@ -45,8 +44,14 @@ const menu = [
         name: 'Слайдер',
       },
       {
-        name: 'Формула', // TeX
-        action: () => {},
+        name: 'Формула',
+        data: {
+          view: 'INLINE',
+          type: 'TEX',
+          content: {
+            value: 'a^n+b^n = c^n',
+          },
+        },
       },
       {
         name: 'Карточка',
@@ -73,8 +78,14 @@ const menu = [
         name: 'Базовые',
         items: [
           {
-            name: 'Ввод ответа', // Input
-            action: () => {},
+            name: 'Ввод ответа',
+            data: {
+              view: 'INLINE',
+              type: 'INPUT',
+              content: {
+                value: 'Правильный ответ',
+              },
+            },
           },
           {
             name: 'Голосование',
@@ -86,23 +97,65 @@ const menu = [
             name: 'Перетаскивание',
           },
           {
-            name: 'Выбор из списка', // Select
-            action: () => {},
+            name: 'Выбор из списка',
+            data: {
+              view: 'INLINE',
+              type: 'SELECT',
+              content: {
+                answer: undefined,
+                options: [
+                  'Вариант 1',
+                  'Вариант 2',
+                  'Вариант 3',
+                  'Вариант 4',
+                ],
+              },
+            },
           },
           {
             name: 'Укажи на картинке',
           },
           {
-            name: 'Развернутый ответ', // Textarea
-            action: () => {},
+            name: 'Развернутый ответ',
+            data: {
+              view: 'BLOCK',
+              type: 'TEXTAREA',
+              content: {
+                value: 'Развернутый ответ',
+              },
+            },
           },
           {
-            name: 'Единственный выбор', // Radio
-            action: () => {},
+            name: 'Единственный выбор',
+            data: {
+              view: 'BLOCK',
+              type: 'RADIO',
+              content: {
+                answer: undefined,
+                options: [
+                  'Вариант 1',
+                  'Вариант 2',
+                  'Вариант 3',
+                  'Вариант 4',
+                ],
+              },
+            },
           },
           {
-            name: 'Множественный выбор', // Checkbox
-            action: () => {},
+            name: 'Множественный выбор',
+            data: {
+              view: 'BLOCK',
+              type: 'CHECKBOX',
+              content: {
+                answers: [],
+                options: [
+                  'Вариант 1',
+                  'Вариант 2',
+                  'Вариант 3',
+                  'Вариант 4',
+                ],
+              },
+            },
           },
         ],
       },
@@ -137,18 +190,38 @@ const menu = [
           },
         ],
       },
+      {
+        name: 'Подсказка',
+        data: {
+          view: 'BLOCK',
+          type: 'HINT',
+          content: {
+            text: 'Текст подсказки',
+          },
+        },
+      },
     ],
   },
 ];
 
-const Widgets = () => (
+const Widgets = ({
+  editorState,
+  changeEditorState,
+}) => (
   <div className={styles.widgets}>
     {menu.map((section, index) =>
       <AntDropdown
         key={index}
         trigger={['click']}
         overlay={
-          <AntMenu>
+          <AntMenu
+            onClick={({ item }) =>
+              insertEntity(
+                editorState,
+                changeEditorState
+              )(item.props.data)
+            }
+          >
             {section.items.map((
               item,
               itemIndex
@@ -165,9 +238,12 @@ const Widgets = () => (
                   ) =>
                     <AntMenu.Item
                       key={subitemIndex}
-                      onClick={subitem.action}
-                      disabled={!subitem.action}
+                      data={subitem.data}
+                      disabled={!subitem.data}
                     >
+                      <AntIcon
+                        type={subitem.icon}
+                      />
                       {subitem.name}
                     </AntMenu.Item>
                   )}
@@ -175,8 +251,8 @@ const Widgets = () => (
               :
                 <AntMenu.Item
                   key={itemIndex}
-                  onClick={item.action}
-                  disabled={!item.action}
+                  data={item.data}
+                  disabled={!item.data}
                 >
                   {item.name}
                 </AntMenu.Item>
@@ -195,6 +271,8 @@ const Widgets = () => (
 );
 
 Widgets.propTypes = {
+  editorState: PropTypes.object.isRequired,
+  changeEditorState: PropTypes.func.isRequired,
   // menu: PropTypes.array.isRequired,
 };
 
