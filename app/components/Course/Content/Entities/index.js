@@ -14,6 +14,7 @@ import Hint from './Block/Hint';
 import Rate from './Inline/Rate';
 import Input from './Inline/Input';
 import Radio from './Block/Radio';
+import Slider from './Block/Slider';
 import Select from './Inline/Select';
 import Checkbox from './Block/Checkbox';
 import Textarea from './Block/Textarea';
@@ -71,6 +72,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'RADIO':
       return (
         <Radio
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'SLIDER':
+      return (
+        <Slider
           content={content}
           entityKey={entityKey}
         />

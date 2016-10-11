@@ -48,9 +48,6 @@ const menu = [
         name: 'Таблица',
       },
       {
-        name: 'Слайдер',
-      },
-      {
         name: 'Формула',
         data: {
           view: 'INLINE',
@@ -85,6 +82,17 @@ const menu = [
         name: 'Базовые',
         items: [
           {
+            name: 'Слайдер',
+            data: {
+              view: 'BLOCK',
+              type: 'SLIDER',
+              content: {
+                value: 50,
+                scale: [-100, 500],
+              },
+            },
+          },
+          {
             name: 'Ввод ответа',
             data: {
               view: 'INLINE',
@@ -93,12 +101,6 @@ const menu = [
                 value: 'Правильный ответ',
               },
             },
-          },
-          {
-            name: 'Голосование',
-          },
-          {
-            name: 'Загрузка файла',
           },
           {
             name: 'Перетаскивание',
@@ -174,9 +176,6 @@ const menu = [
           },
           {
             name: 'Матрица',
-          },
-          {
-            name: 'Слайдер',
           },
           {
             name: 'Измерение',
