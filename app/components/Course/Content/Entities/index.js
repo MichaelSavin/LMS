@@ -16,6 +16,7 @@ import Input from './Inline/Input';
 import Radio from './Block/Radio';
 import Slider from './Block/Slider';
 import Select from './Inline/Select';
+import Switch from './Inline/Switch';
 import Checkbox from './Block/Checkbox';
 import Textarea from './Block/Textarea';
 
@@ -47,6 +48,9 @@ const entitiesDecorator = new CompositeDecorator([{
 }, {
   strategy: findEntities('INPUT'),
   component: Input,
+}, {
+  strategy: findEntities('SWITCH'),
+  component: Switch,
 }, {
   strategy: findEntities('SELECT'),
   component: Select,

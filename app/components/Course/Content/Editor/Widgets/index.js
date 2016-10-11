@@ -103,6 +103,16 @@ const menu = [
             },
           },
           {
+            name: 'Переключатель',
+            data: {
+              view: 'INLINE',
+              type: 'SWITCH',
+              content: {
+                checked: false,
+              },
+            },
+          },
+          {
             name: 'Перетаскивание',
           },
           {
