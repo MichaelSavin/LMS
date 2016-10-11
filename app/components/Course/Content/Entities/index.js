@@ -11,6 +11,7 @@ import {
 import TeX from './Inline/TeX';
 import Link from './Inline/Link';
 import Hint from './Block/Hint';
+import Rate from './Inline/Rate';
 import Input from './Inline/Input';
 import Radio from './Block/Radio';
 import Select from './Inline/Select';
@@ -39,6 +40,9 @@ const entitiesDecorator = new CompositeDecorator([{
 }, {
   strategy: findEntities('TEX'),
   component: TeX,
+}, {
+  strategy: findEntities('RATE'),
+  component: Rate,
 }, {
   strategy: findEntities('INPUT'),
   component: Input,

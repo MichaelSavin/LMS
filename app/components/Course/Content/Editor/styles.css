@@ -24,16 +24,18 @@
 .draft ul {
   margin: 10px;
   padding-left: 20px;
+  list-style-type: disc;
 }
 
 .draft ol {
   margin: 10px;
   padding-left: 20px;
+  list-style-type: disc;
 }
 
-.draft li {
+/* .draft li {
   margin: 1px -5px;
-}
+} */
 
 .draft h3 {
   border-bottom: 1px solid #EEE;

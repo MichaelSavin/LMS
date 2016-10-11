@@ -38,6 +38,13 @@ const menu = [
         name: 'Тэг',
       },
       {
+        name: 'Оценка',
+        data: {
+          view: 'INLINE',
+          type: 'RATE',
+        },
+      },
+      {
         name: 'Таблица',
       },
       {
