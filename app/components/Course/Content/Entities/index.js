@@ -12,6 +12,7 @@ import TeX from './Inline/TeX';
 import Link from './Inline/Link';
 import Hint from './Block/Hint';
 import Rate from './Inline/Rate';
+import Alert from './Inline/Alert';
 import Input from './Inline/Input';
 import Radio from './Block/Radio';
 import Slider from './Block/Slider';
@@ -97,6 +98,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'HINT':
       return (
         <Hint
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'ALERT':
+      return (
+        <Alert
           content={content}
           entityKey={entityKey}
         />

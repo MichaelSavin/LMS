@@ -71,6 +71,13 @@ const menu = [
       },
       {
         name: 'Обратите внимание',
+        data: {
+          view: 'BLOCK',
+          type: 'ALERT',
+          content: {
+            message: 'Обратите внимание',
+          },
+        },
       },
     ],
   },
