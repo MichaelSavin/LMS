@@ -61,6 +61,21 @@ const menu = [
         name: 'Карточка',
       },
       {
+        name: 'Карусель',
+        data: {
+          view: 'BLOCK',
+          type: 'CAROUSEL',
+          content: {
+            images: [
+              'https://img2.goodfon.ru/wallpaper/middle/b/4e/treehouse-point-ssha.jpg',
+              'https://img3.goodfon.ru/wallpaper/middle/7/e6/kedr-shishki-hvoya-zelen-cedar.jpg',
+              'https://img1.goodfon.ru/wallpaper/middle/a/8b/zemlyanika-polevye-cvety-trava.jpg',
+              'https://img1.goodfon.ru/wallpaper/middle/a/98/griby-boroviki-parochka.jpg',
+            ],
+          },
+        },
+      },
+      {
         name: 'Прогресс',
       },
       {

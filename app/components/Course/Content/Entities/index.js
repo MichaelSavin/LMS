@@ -18,6 +18,7 @@ import Radio from './Block/Radio';
 import Slider from './Block/Slider';
 import Select from './Inline/Select';
 import Switch from './Inline/Switch';
+import Carousel from './Block/Carousel';
 import Timeline from './Block/Timeline';
 import Checkbox from './Block/Checkbox';
 import Textarea from './Block/Textarea';
@@ -113,6 +114,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'TIMELINE':
       return (
         <Timeline
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'CAROUSEL':
+      return (
+        <Carousel
           content={content}
           entityKey={entityKey}
         />
