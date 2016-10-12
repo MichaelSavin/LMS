@@ -18,6 +18,7 @@ import Radio from './Block/Radio';
 import Slider from './Block/Slider';
 import Select from './Inline/Select';
 import Switch from './Inline/Switch';
+import Progress from './Block/Progress';
 import Carousel from './Block/Carousel';
 import Timeline from './Block/Timeline';
 import Checkbox from './Block/Checkbox';
@@ -121,6 +122,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'CAROUSEL':
       return (
         <Carousel
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'PROGRESS':
+      return (
+        <Progress
           content={content}
           entityKey={entityKey}
         />

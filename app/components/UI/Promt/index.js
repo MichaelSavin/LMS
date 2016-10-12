@@ -34,7 +34,10 @@ const Promt = ({
 
 Promt.propTypes = {
   type: React.PropTypes.oneOf(['text', 'textarea']),
-  value: PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.number,
+  ]),
   onSave: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,

@@ -77,6 +77,13 @@ const menu = [
       },
       {
         name: 'Прогресс',
+        data: {
+          view: 'BLOCK',
+          type: 'PROGRESS',
+          content: {
+            percent: 50,
+          },
+        },
       },
       {
         name: 'Развернуть',
