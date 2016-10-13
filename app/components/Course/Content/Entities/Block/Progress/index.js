@@ -68,7 +68,6 @@ class Progress extends Component {
       promt,
       percent,
     } = this.state;
-    console.log(this.state);
     return (
       <div onDoubleClick={this.editPercent}>
         <AntProgress percent={percent} />
