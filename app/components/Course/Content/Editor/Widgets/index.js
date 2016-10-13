@@ -36,6 +36,13 @@ const menu = [
     items: [
       {
         name: 'Тэг',
+        data: {
+          view: 'INLINE',
+          type: 'TAG',
+          content: {
+            text: 'Тэг',
+          },
+        },
       },
       {
         name: 'Оценка',

@@ -8,6 +8,7 @@ import {
   CompositeDecorator,
 } from 'draft-js';
 
+import Tag from './Inline/Tag';
 import TeX from './Inline/TeX';
 import Link from './Inline/Link';
 import Hint from './Block/Hint';
@@ -46,6 +47,9 @@ const entitiesDecorator = new CompositeDecorator([{
 }, {
   strategy: findEntities('TEX'),
   component: TeX,
+}, {
+  strategy: findEntities('TAG'),
+  component: Tag,
 }, {
   strategy: findEntities('RATE'),
   component: Rate,
