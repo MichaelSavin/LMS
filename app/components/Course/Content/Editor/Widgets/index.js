@@ -18,6 +18,28 @@ const menu = [
     items: [
       {
         name: 'Файл',
+        data: {
+          view: 'BLOCK',
+          type: 'UPLOAD',
+          content: {
+            files: [{
+              uid: -1,
+              name: 'Картинка 1.png',
+              status: 'done',
+              url: 'https://img3.goodfon.ru/wallpaper/middle/8/de/vincent-willem-van-gogh-wheat.jpg',
+            }, {
+              uid: -2,
+              name: 'Картинка 2.png',
+              status: 'done',
+              url: 'https://img2.goodfon.ru/wallpaper/middle/7/f0/zhivopis-orlovskiy-vid-na.jpg',
+            }, {
+              uid: -3,
+              name: 'Картинка 3.png',
+              status: 'done',
+              url: 'https://img2.goodfon.ru/wallpaper/middle/7/f0/zhivopis-orlovskiy-vid-na.jpg',
+            }],
+          },
+        },
       },
       {
         name: 'Аудио',

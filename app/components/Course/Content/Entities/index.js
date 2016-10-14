@@ -19,6 +19,7 @@ import Radio from './Block/Radio';
 import Slider from './Block/Slider';
 import Select from './Inline/Select';
 import Switch from './Inline/Switch';
+import Upload from './Block/Upload';
 import Progress from './Block/Progress';
 import Carousel from './Block/Carousel';
 import Timeline from './Block/Timeline';
@@ -133,6 +134,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'PROGRESS':
       return (
         <Progress
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'UPLOAD':
+      return (
+        <Upload
           content={content}
           entityKey={entityKey}
         />
