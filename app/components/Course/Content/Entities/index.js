@@ -11,6 +11,7 @@ import {
 import Tag from './Inline/Tag';
 import TeX from './Inline/TeX';
 import Link from './Inline/Link';
+import Tree from './Block/Tree';
 import Card from './Block/Card';
 import Hint from './Block/Hint';
 import Rate from './Inline/Rate';
@@ -157,6 +158,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'TRANSFER':
       return (
         <Transfer
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'TREE':
+      return (
+        <Tree
           content={content}
           entityKey={entityKey}
         />

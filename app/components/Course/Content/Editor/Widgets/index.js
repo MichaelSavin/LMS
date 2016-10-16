@@ -74,6 +74,16 @@ const menu = [
         },
       },
       {
+        name: 'Дерево',
+        data: {
+          view: 'BLOCK',
+          type: 'TREE',
+          content: {
+            tree: {},
+          },
+        },
+      },
+      {
         name: 'Таблица',
       },
       {
