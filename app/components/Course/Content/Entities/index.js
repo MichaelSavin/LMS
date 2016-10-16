@@ -23,6 +23,7 @@ import Slider from './Block/Slider';
 import Select from './Inline/Select';
 import Switch from './Inline/Switch';
 import Upload from './Block/Upload';
+import Collapse from './Block/Collapse';
 import Transfer from './Block/Transfer';
 import Progress from './Block/Progress';
 import Carousel from './Block/Carousel';
@@ -173,6 +174,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'TABLE':
       return (
         <Table
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'COLLAPSE':
+      return (
+        <Collapse
           content={content}
           entityKey={entityKey}
         />

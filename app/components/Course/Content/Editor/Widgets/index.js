@@ -141,6 +141,13 @@ const menu = [
       },
       {
         name: 'Развернуть',
+        data: {
+          view: 'BLOCK',
+          type: 'COLLAPSE',
+          content: {
+            rows: {},
+          },
+        },
       },
       {
         name: 'Шкала времени',
