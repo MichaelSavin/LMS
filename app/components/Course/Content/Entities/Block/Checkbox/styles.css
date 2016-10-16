@@ -5,7 +5,7 @@
   -webkit-user-select: none;
 }
 
-:global .ant-checkbox-wrapper {
+:global .ant-checkbox-group .ant-checkbox-wrapper {
   display: block !important;
   height: 30px;
   line-height: 30px;
