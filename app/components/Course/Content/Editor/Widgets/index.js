@@ -85,6 +85,13 @@ const menu = [
       },
       {
         name: 'Таблица',
+        data: {
+          view: 'BLOCK',
+          type: 'TABLE',
+          content: {
+            rows: {},
+          },
+        },
       },
       {
         name: 'Формула',

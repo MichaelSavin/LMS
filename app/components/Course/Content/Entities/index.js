@@ -18,6 +18,7 @@ import Rate from './Inline/Rate';
 import Alert from './Inline/Alert';
 import Input from './Inline/Input';
 import Radio from './Block/Radio';
+import Table from './Block/Table';
 import Slider from './Block/Slider';
 import Select from './Inline/Select';
 import Switch from './Inline/Switch';
@@ -165,6 +166,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'TREE':
       return (
         <Tree
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'TABLE':
+      return (
+        <Table
           content={content}
           entityKey={entityKey}
         />
