@@ -21,6 +21,7 @@ import Slider from './Block/Slider';
 import Select from './Inline/Select';
 import Switch from './Inline/Switch';
 import Upload from './Block/Upload';
+import Transfer from './Block/Transfer';
 import Progress from './Block/Progress';
 import Carousel from './Block/Carousel';
 import Timeline from './Block/Timeline';
@@ -149,6 +150,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'CARD':
       return (
         <Card
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'TRANSFER':
+      return (
+        <Transfer
           content={content}
           entityKey={entityKey}
         />
