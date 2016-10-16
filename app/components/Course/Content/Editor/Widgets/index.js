@@ -88,6 +88,14 @@ const menu = [
       },
       {
         name: 'Карточка',
+        data: {
+          view: 'BLOCK',
+          type: 'CARD',
+          content: {
+            title: 'Информация',
+            text: 'Контент',
+          },
+        },
       },
       {
         name: 'Карусель',

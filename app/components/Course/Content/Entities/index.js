@@ -11,6 +11,7 @@ import {
 import Tag from './Inline/Tag';
 import TeX from './Inline/TeX';
 import Link from './Inline/Link';
+import Card from './Block/Card';
 import Hint from './Block/Hint';
 import Rate from './Inline/Rate';
 import Alert from './Inline/Alert';
@@ -141,6 +142,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'UPLOAD':
       return (
         <Upload
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'CARD':
+      return (
+        <Card
           content={content}
           entityKey={entityKey}
         />
