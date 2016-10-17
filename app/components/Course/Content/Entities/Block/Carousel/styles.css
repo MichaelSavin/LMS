@@ -1,8 +1,15 @@
 .carousel {
-  width: 290px;
+  /*min-width: 100%;*/
+  /*max-width: 100%;*/
+  /*width: 500px;*/
+}
+
+.carousel img {
+  min-width: 100%;
+  height: auto;
+  display: block;
 }
 
 .image {
   /* TODO */
 }
-

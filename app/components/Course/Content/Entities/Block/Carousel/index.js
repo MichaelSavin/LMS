@@ -69,41 +69,41 @@ class Carousel extends Component {
     } = this.state;
     return (
       <div onDoubleClick={this.editContent}>
-        <AntCarousel className={styles.carousel}>
-          {images.map((image, index) =>
-            <div key={index}>
-              <img
-                alt=""
-                src={image}
-                className={styles.image}
-              />
-            </div>
-          )}
-        </AntCarousel>
-        <AntPromt
-          type="textarea"
-          value={promt.value}
-          onSave={this.modifyContent}
-          visible={promt.open}
-          onChange={(event) => {
-            this.setState({
-              promt: {
-                ...promt,
-                value: event
-                  .target
-                  .value,
-              },
-            });
-          }}
-          onCancel={() => {
-            this.setState({
-              promt: {
-                ...promt,
-                open: false,
-              },
-            });
-          }}
-        />
+          <AntCarousel className={styles.carousel}>
+            {images.map((image, index) =>
+              <div key={index}>
+                <img
+                  alt=""
+                  src={image}
+                  className={styles.image}
+                />
+              </div>
+            )}
+          </AntCarousel>
+          <AntPromt
+            type="textarea"
+            value={promt.value}
+            onSave={this.modifyContent}
+            visible={promt.open}
+            onChange={(event) => {
+              this.setState({
+                promt: {
+                  ...promt,
+                  value: event
+                    .target
+                    .value,
+                },
+              });
+            }}
+            onCancel={() => {
+              this.setState({
+                promt: {
+                  ...promt,
+                  open: false,
+                },
+              });
+            }}
+          />
       </div>
     );
   }
