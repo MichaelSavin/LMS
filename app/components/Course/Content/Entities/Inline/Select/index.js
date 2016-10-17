@@ -2,21 +2,20 @@ import React, {
   PropTypes,
   Component,
 } from 'react';
-import { Select as AntSelect } from 'antd';
-const Option = AntSelect.Option;
+import { Select as AntSelect, Button } from 'antd';
 import AntPromt from 'components/UI/Promt';
 import { isEqual, uniq } from 'lodash';
-import { Button } from 'antd';
-import Immutable, { List } from 'immutable';
+import { List } from 'immutable';
 import { Entity } from 'draft-js';
 import styles from './styles.css';
+
+const Option = AntSelect.Option;
 
 class Select extends Component {
 
   constructor(props) {
     super(props);
     const {
-      answer,
       options,
     } = Entity
       .get(this.props.entityKey)
@@ -42,10 +41,7 @@ class Select extends Component {
     );
   }
 
-
-
   editOptions = (event) => {
-    console.log('edit');
     event.preventDefault();
     this.setState({
       promt: {
@@ -110,7 +106,7 @@ class Select extends Component {
     return (
       <div>
         <AntSelect
-        showSearch
+          showSearch
           style={{ width: 200 }}
           placeholder="Выберите вариант ответа"
           notFoundContent=""
@@ -120,7 +116,7 @@ class Select extends Component {
               event.target.selectedIndex
             )
           }
-          value={options.get(answer - 1)}
+          defaultValue={answer}
           className={styles.select}
         >
           {AntOptions}
