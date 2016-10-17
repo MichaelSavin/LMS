@@ -4,31 +4,31 @@ import { isEqual } from 'lodash';
 // import styles from './styles.css';
 
 const columns = [{
-  title: 'Имя',
+  title: 'Имератор',
   dataIndex: 'name',
 }, {
-  title: 'Возраст',
-  dataIndex: 'age',
+  title: 'Годы жизни',
+  dataIndex: 'years',
 }, {
-  title: 'Адрес',
-  dataIndex: 'address',
+  title: 'Годы правления',
+  dataIndex: 'reign',
 }];
 
 const data = [{
   key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
+  name: 'Пётр I Алексеевич',
+  years: '1672 — 1725',
+  reign: '1689 — 1725',
 }, {
   key: '2',
-  name: 'Jim Green',
-  age: 42,
-  address: 'London No. 1 Lake Park',
+  name: 'Александр III Александрович',
+  years: '1845 — 1894',
+  reign: '1881 — 1894',
 }, {
   key: '3',
-  name: 'Joe Black',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
+  name: 'Николай II Александрович',
+  years: '1868 — 1918',
+  reign: '1894 — 1917',
 }];
 
 class Table extends Component {
