@@ -65,7 +65,6 @@ class Select extends Component {
     const answers = this
       .state
       .answers
-      .slice(0, options.length);
     Entity.replaceData(
       this.props.entityKey, {
         content: {
