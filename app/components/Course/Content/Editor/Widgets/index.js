@@ -45,7 +45,14 @@ const menu = [
         name: 'Аудио',
       },
       {
-        name: 'Видео', // Video
+        name: 'Видео',
+        data: {
+          view: 'BLOCK',
+          type: 'VIDEO',
+          content: {
+            source: 'https://www.youtube.com/watch?v=2mjvfnUAfyo',
+          },
+        },
       },
       {
         name: 'Изображение',

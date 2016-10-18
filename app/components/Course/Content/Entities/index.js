@@ -19,6 +19,7 @@ import Alert from './Inline/Alert';
 import Input from './Inline/Input';
 import Radio from './Block/Radio';
 import Table from './Block/Table';
+import Video from './Block/Video';
 import Image from './Block/Image';
 import Slider from './Block/Slider';
 import Select from './Inline/Select';
@@ -189,6 +190,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'IMAGE':
       return (
         <Image
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'VIDEO':
+      return (
+        <Video
           content={content}
           entityKey={entityKey}
         />
