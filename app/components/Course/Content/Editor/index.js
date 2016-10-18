@@ -11,10 +11,6 @@ import {
   convertFromRaw,
   // AtomicBlockUtils,
 } from 'draft-js';
-// import createImagePlugin, {
-  // imageStyles,
-  // imageCreator,
-// } from 'draft-js-image-plugin';
 // import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
 // import createVideoPlugin from 'draft-js-video-plugin';
 // import Editor from 'draft-js-plugins-editor';
@@ -29,17 +25,7 @@ import {
   addEOLtoInlineEntity,
 } from '../Entities';
 
-// const imageTheme = {
-//   imageLoader: 'imageLoader',
-//   imageWrapper: 'imageWrapper',
-//   image: 'image',
-// };
-
 // const plugins = [
-//   createImagePlugin({
-//     theme: imageTheme,
-//     type: 'atomic',
-//   }),
 //   createVideoPlugin(),
 //   createEntityPropsPlugin(),
 // ];
@@ -185,30 +171,6 @@ class Draft extends Component {
         />
 
         { /*
-        <div className={styles.buttons}>
-          <Button
-            action={() => {
-              const url = prompt('URL изображения', 'http://www.google.com/logos/doodles/2016/mid-autumn-festival-2016-vietnam-5715224209391616-hp2x.jpg');
-              this.onChange(
-                AtomicBlockUtils.insertAtomicBlock(
-                  editorState,
-                  Entity.create(
-                    'block-image',
-                    'IMMUTABLE', {
-                      src: url,
-                      progress: -1,
-                      alt: '',
-                      width: 300,
-                      height: 300,
-                    }
-                  ),
-                  'Картинка'
-                ),
-              );
-            }}
-            name="Изображение"
-            icon="image"
-          />
           <Button
             action={() => alert('Видео')}
             name="Видео"

@@ -19,6 +19,7 @@ import Alert from './Inline/Alert';
 import Input from './Inline/Input';
 import Radio from './Block/Radio';
 import Table from './Block/Table';
+import Image from './Block/Image';
 import Slider from './Block/Slider';
 import Select from './Inline/Select';
 import Switch from './Inline/Switch';
@@ -181,6 +182,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     case 'COLLAPSE':
       return (
         <Collapse
+          content={content}
+          entityKey={entityKey}
+        />
+      );
+    case 'IMAGE':
+      return (
+        <Image
           content={content}
           entityKey={entityKey}
         />

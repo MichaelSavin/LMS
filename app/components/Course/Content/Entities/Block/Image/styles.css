@@ -1,0 +1,10 @@
+.card {
+  width: 500px;
+  padding: 0;
+}
+
+.text {
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+}

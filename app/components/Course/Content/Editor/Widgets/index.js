@@ -48,7 +48,15 @@ const menu = [
         name: 'Видео', // Video
       },
       {
-        name: 'Изображение', // Image
+        name: 'Изображение',
+        data: {
+          view: 'BLOCK',
+          type: 'IMAGE',
+          content: {
+            text: 'Изображение',
+            source: 'https://img3.goodfon.ru/original/1440x900/c/d3/uluru-ayers-rock-sandstone.jpg',
+          },
+        },
       },
     ],
   },
