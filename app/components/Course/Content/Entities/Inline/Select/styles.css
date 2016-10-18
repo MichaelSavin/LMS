@@ -1,7 +1,8 @@
 .select {
+  width: 200px;
   cursor: pointer;
   margin: 5px;
-  font-size: 14px;
+  font-size: 13px;
   user-select: none;
   -webkit-user-select: none;
 }
