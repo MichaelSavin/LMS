@@ -12,7 +12,6 @@ class Select extends Component {
 
   constructor(props) {
     super(props);
-    // console.log(props);
     const {
       answer,
       options,
@@ -20,7 +19,6 @@ class Select extends Component {
       .get(this.props.entityKey)
       .getData()
       .content;
-    console.log(options);
     this.state = {
       ...props.content,
       answer,
@@ -71,7 +69,6 @@ class Select extends Component {
         },
       }
     );
-    console.log('options ' + options, 'answer ' + answer);
     this.setState({
       options,
       answer,
@@ -82,10 +79,6 @@ class Select extends Component {
   }
 
   chooseAnswer = (value) => {
-    console.log(value);
-    // const {
-    //   value: answer,
-    // } = event.target;
     const answer = value;
     Entity.replaceData(
       this.props.entityKey, {
@@ -97,25 +90,8 @@ class Select extends Component {
         },
       },
     );
-    // console.log('answer ' + answer);
     this.setState({ answer });
   }
-
-
-  //
-  // chooseAnswer(optionIndex) {
-  //   console.log(optionIndex);
-  //   const newContent = {
-  //     ...this.state,
-  //     answer: optionIndex,
-  //   };
-  //   Entity.replaceData(
-  //     this.props.entityKey, {
-  //       content: newContent,
-  //     }
-  //   );
-  //   this.setState({ answer: optionIndex });
-  // }
 
   render() {
     const {
@@ -123,8 +99,7 @@ class Select extends Component {
       answer,
       options,
     } = this.state;
-    console.log('options ' + options + 'answer ' + answer);
-    const AntOptions = options.map((text, index) => <AntSelect.Option key={index} value={text}>{text}</AntSelect.Option>);
+
     return (
       <div>
         <AntSelect
@@ -134,7 +109,14 @@ class Select extends Component {
           defaultValue={answer}
           className={styles.select}
         >
-          {AntOptions}
+          {options.map((text, index) =>
+            <AntSelect.Option
+              key={index}
+              value={text}
+            >
+              {text}
+            </AntSelect.Option>
+          )}
         </AntSelect>
         <AntButton
           type="ghost"
@@ -173,10 +155,11 @@ class Select extends Component {
 Select.propTypes = {
   children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
-  // content: PropTypes.shape({
-  //   answer: PropTypes.number,
-  //   options: PropTypes.array.isRequired,
-  // }).isRequired,
+  content: PropTypes.shape({
+    answer: PropTypes.number,
+    options: PropTypes.array.isRequired,
+  }),
+  // content: PropTypes.object.isRequired,
 };
 
 export default Select;

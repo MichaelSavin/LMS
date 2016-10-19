@@ -94,6 +94,13 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
           entityKey={entityKey}
         />
       );
+    case 'SELECT':
+      return (
+        <Select
+          content={content}
+          entityKey={entityKey}
+        />
+      );
     case 'SLIDER':
       return (
         <Slider
