@@ -12,15 +12,19 @@ class Select extends Component {
 
   constructor(props) {
     super(props);
-    // const {
-    //   answer,
-    //   options,
-    // } = Entity
-    //   .get(this.props.entityKey)
-    //   .getData()
-    //   .content;
+    // console.log(props);
+    const {
+      answer,
+      options,
+    } = Entity
+      .get(this.props.entityKey)
+      .getData()
+      .content;
+    console.log(options);
     this.state = {
       ...props.content,
+      answer,
+      options,
       promt: {
         open: false,
         value: null,
@@ -77,12 +81,12 @@ class Select extends Component {
     });
   }
 
-  chooseAnswer = (event) => {
-    console.log('event ' + value, 'answer ' + answer);
-    const {
-      value: answer,
-    } = event.target;
-    console.log('event ' + value, 'answer ' + answer);
+  chooseAnswer = (value) => {
+    console.log(value);
+    // const {
+    //   value: answer,
+    // } = event.target;
+    const answer = value;
     Entity.replaceData(
       this.props.entityKey, {
         content: {
@@ -93,6 +97,7 @@ class Select extends Component {
         },
       },
     );
+    // console.log('answer ' + answer);
     this.setState({ answer });
   }
 
@@ -118,7 +123,8 @@ class Select extends Component {
       answer,
       options,
     } = this.state;
-    // const AntOptions = options.map((text, index) => <AntSelect.Option key={index}>{text}</AntSelect.Option>);
+    console.log('options ' + options + 'answer ' + answer);
+    const AntOptions = options.map((text, index) => <AntSelect.Option key={index} value={text}>{text}</AntSelect.Option>);
     return (
       <div>
         <AntSelect
@@ -128,8 +134,7 @@ class Select extends Component {
           defaultValue={answer}
           className={styles.select}
         >
-    
-          )}
+          {AntOptions}
         </AntSelect>
         <AntButton
           type="ghost"
