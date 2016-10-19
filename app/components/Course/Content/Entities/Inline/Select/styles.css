@@ -1,10 +1,10 @@
 .select {
+  width: 200px;
   cursor: pointer;
-  height: 22px;
-  border: 1px solid #CCC;
-  margin: 0 5px;
-  font-size: 14px;
-  user-select: none;
-  background-color: #EEE;
-  -webkit-user-select: none;
+  margin: 5px;
+  font-size: 13px;
+}
+
+.button {
+  margin-left: 10px;
 }

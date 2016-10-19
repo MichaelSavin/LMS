@@ -2,7 +2,12 @@ import React, {
   PropTypes,
   Component,
 } from 'react';
-import Immutable, { List } from 'immutable';
+import {
+  Select as AntSelect,
+  Button as AntButton,
+} from 'antd';
+import AntPromt from 'components/UI/Promt';
+import { isEqual, uniq } from 'lodash';
 import { Entity } from 'draft-js';
 import styles from './styles.css';
 
@@ -19,97 +24,130 @@ class Select extends Component {
       .content;
     this.state = {
       answer,
-      options: List(options),
+      options,
+      promt: {
+        open: false,
+        value: null,
+      },
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const [
-      currentOptions,
-      nextOptions,
-    ] = [
-      this.props,
-      nextProps,
-    ].map(props =>
-      props.entityKey
-    ).map(entity =>
-      Entity
-       .get(this.props.entityKey)
-       .getData(entity)
-       .content
-       .options
+  shouldComponentUpdate(
+    nextProps,
+    nextState
+  ) {
+    return !isEqual(
+      this.state,
+      nextState
     );
-    return this.state.answer !==
-      nextState.answer
-    ||
-      !Immutable.is(
-        this.state.options,
-        nextState.options,
-      )
-    ||
-      !Immutable.is(
-        currentOptions,
-        nextOptions
-      );
   }
 
-  editOptions() {
-    const { entityKey } = this.props;
-    const { content } = Entity
-      .get(entityKey)
-      .getData();
-    const options = content.options.join(',');
-    const newOptions = List((
-      prompt('Редактирование вопроса', options) || options
-    ).split(','));
-    const newContent = {
-      options: newOptions,
-      answer: content.answer,
-    };
-    Entity.replaceData(entityKey, { content: newContent });
-    this.setState({ options: newOptions });
+  editOptions = (event) => {
+    event.preventDefault();
+    this.setState({
+      promt: {
+        open: true,
+        value: this
+          .state
+          .options
+          .join(';'),
+      },
+    });
   }
 
-  chooseAnswer(optionIndex) {
-    const newContent = {
-      ...this.state,
-      answer: optionIndex,
-    };
+  modifyOptions = () => {
+    const options = uniq(
+      this.state.promt.value.split(';')
+    );
+    const answer =
+      this.state.answer > options.length - 1
+        ? undefined
+        : this.state.answer;
     Entity.replaceData(
       this.props.entityKey, {
-        content: newContent,
+        content: {
+          options,
+          answer,
+        },
       }
     );
-    this.setState({ answer: optionIndex });
+    this.setState({
+      options,
+      answer,
+      promt: {
+        open: false,
+      },
+    });
+  }
+
+  chooseAnswer = (answer) => {
+    Entity.replaceData(
+      this.props.entityKey, {
+        content: {
+          options: this
+            .state
+            .options,
+          answer,
+        },
+      },
+    );
+    this.setState({ answer });
   }
 
   render() {
     const {
-      options,
+      promt,
       answer,
+      options,
     } = this.state;
     return (
-      <select
-        onContextMenu={(event) => {
-          event.preventDefault();
-          return this.editOptions();
-        }}
-        onChange={event =>
-          this.chooseAnswer(
-            event.target.selectedIndex
-          )
-        }
-        contentEditable="false"
-        value={options.get(answer - 1)}
-        className={styles.select}
-      >
-        <option />
-        {options.map((text, index) =>
-          <option key={index}>
-            {text}
-          </option>
-        )}
-      </select>
+      <div>
+        <AntSelect
+          placeholder="Выберите вариант ответа"
+          filterOption={false}
+          onChange={this.chooseAnswer}
+          defaultValue={answer}
+          className={styles.select}
+        >
+          {options.map((text, index) =>
+            <AntSelect.Option
+              key={index}
+              value={text}
+            >
+              {text}
+            </AntSelect.Option>
+          )}
+        </AntSelect>
+        <AntButton
+          type="ghost"
+          shape="circle-outline"
+          icon="edit"
+          onClick={this.editOptions}
+        />
+        <AntPromt
+          value={promt.value}
+          onSave={this.modifyOptions}
+          visible={promt.open}
+          onChange={(event) => {
+            this.setState({
+              promt: {
+                ...promt,
+                value: event
+                  .target
+                  .value,
+              },
+            });
+          }}
+          onCancel={() => {
+            this.setState({
+              promt: {
+                ...promt,
+                open: false,
+              },
+            });
+          }}
+        />
+      </div>
     );
   }
 }
