@@ -6,10 +6,6 @@
     "type": "git",
     "url": "git://github.com/erohin/LMS.git"
   },
-  "engines": {
-    "npm": ">=3",
-    "node": ">=6"
-  },
   "author": "Evgeny Erohin",
   "license": "",
   "scripts": {
@@ -68,7 +64,6 @@
     "express": "4.14.0",
     "extensible-runtime": "4.0.1",
     "fontfaceobserver": "2.0.5",
-    "history": "4.3.0",
     "immutable": "3.8.1",
     "invariant": "2.2.1",
     "ip": "1.1.3",
