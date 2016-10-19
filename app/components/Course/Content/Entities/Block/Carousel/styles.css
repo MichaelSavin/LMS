@@ -1,6 +1,11 @@
+
+.carousel {
+  width: 720px;
+  height: 570px;
+}
 .carousel img {
-  min-width: 100%;
-  height: auto;
+  width: 720px;
+  height: 540px;
   display: block;
 }
 

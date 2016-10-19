@@ -12,16 +12,15 @@ class Select extends Component {
 
   constructor(props) {
     super(props);
-    const {
-      answer,
-      options,
-    } = Entity
-      .get(this.props.entityKey)
-      .getData()
-      .content;
+    // const {
+    //   answer,
+    //   options,
+    // } = Entity
+    //   .get(this.props.entityKey)
+    //   .getData()
+    //   .content;
     this.state = {
       ...props.content,
-      options,
       promt: {
         open: false,
         value: null,
@@ -68,6 +67,7 @@ class Select extends Component {
         },
       }
     );
+    console.log('options ' + options, 'answer ' + answer);
     this.setState({
       options,
       answer,
@@ -78,7 +78,7 @@ class Select extends Component {
   }
 
   chooseAnswer = (event) => {
-
+    console.log('event ' + value, 'answer ' + answer);
     const {
       value: answer,
     } = event.target;
@@ -95,6 +95,8 @@ class Select extends Component {
     );
     this.setState({ answer });
   }
+
+
   //
   // chooseAnswer(optionIndex) {
   //   console.log(optionIndex);
@@ -113,8 +115,8 @@ class Select extends Component {
   render() {
     const {
       promt,
-      options,
       answer,
+      options,
     } = this.state;
     // const AntOptions = options.map((text, index) => <AntSelect.Option key={index}>{text}</AntSelect.Option>);
     return (
@@ -126,12 +128,8 @@ class Select extends Component {
           defaultValue={answer}
           className={styles.select}
         >
-          {options.map((text, index) =>
-            <AntSelect.Option
-              key={index}
-            >
-             {text}
-            </AntSelect.Option>)}
+    
+          )}
         </AntSelect>
         <AntButton
           type="ghost"
@@ -170,6 +168,10 @@ class Select extends Component {
 Select.propTypes = {
   children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
+  // content: PropTypes.shape({
+  //   answer: PropTypes.number,
+  //   options: PropTypes.array.isRequired,
+  // }).isRequired,
 };
 
 export default Select;
