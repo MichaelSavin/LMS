@@ -20,7 +20,6 @@ class Select extends Component {
       .getData()
       .content;
     this.state = {
-      ...props.content,
       answer,
       options,
       promt: {
@@ -58,7 +57,7 @@ class Select extends Component {
       this.state.promt.value.split(';')
     );
     const answer =
-    this.state.answer > options.length - 1
+      this.state.answer > options.length - 1
         ? undefined
         : this.state.answer;
     Entity.replaceData(
@@ -99,7 +98,6 @@ class Select extends Component {
       answer,
       options,
     } = this.state;
-
     return (
       <div>
         <AntSelect
@@ -155,11 +153,6 @@ class Select extends Component {
 Select.propTypes = {
   children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
-  content: PropTypes.shape({
-    answer: PropTypes.number,
-    options: PropTypes.array.isRequired,
-  }),
-  // content: PropTypes.object.isRequired,
 };
 
 export default Select;
