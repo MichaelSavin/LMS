@@ -3,18 +3,12 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  // Entity,
   Editor,
   RichUtils,
   EditorState,
   convertToRaw,
   convertFromRaw,
-  // AtomicBlockUtils,
 } from 'draft-js';
-// import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
-// import createVideoPlugin from 'draft-js-video-plugin';
-// import Editor from 'draft-js-plugins-editor';
-// import Button from './Button';
 import Toolbar from './Toolbar';
 import Widgets from './Widgets';
 import styles from './styles.css';
@@ -24,11 +18,6 @@ import {
   entitiesDecorator,
   addEOLtoInlineEntity,
 } from '../Entities';
-
-// const plugins = [
-//   createVideoPlugin(),
-//   createEntityPropsPlugin(),
-// ];
 
 class Draft extends Component {
 
@@ -161,40 +150,12 @@ class Draft extends Component {
             editorState={editorState}
             onChange={this.onChange}
             spellCheck={false}
-            // plugins={plugins}
           />
         </div>
-
         <Widgets
           editorState={editorState}
           changeEditorState={this.onChange}
         />
-
-        { /*
-          <Button
-            action={() => alert('Видео')}
-            name="Видео"
-            icon="video"
-          />
-          <Button
-            action={() => {
-              editorState.getSelection().isCollapsed() // eslint-disable-line no-unused-expressions
-                ? alert('Выделите текст')
-                : this.onChange(
-                    RichUtils.toggleLink(
-                      editorState,
-                      editorState.getSelection(),
-                      Entity.create('LINK', 'IMMUTABLE', {
-                        url: prompt('Ссылка', 'http://www.ya.ru'),
-                      })
-                    )
-                  );
-            }}
-            name="Ссылка"
-            icon="link"
-          />
-        </div>
-        */}
       </div>
     );
   }
