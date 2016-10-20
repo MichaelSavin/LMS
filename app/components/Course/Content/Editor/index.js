@@ -12,7 +12,6 @@ import {
 import Toolbar from './Toolbar';
 import Widgets from './Widgets';
 import styles from './styles.css';
-
 import {
   blockRenderer,
   entitiesDecorator,

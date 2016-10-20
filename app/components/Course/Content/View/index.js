@@ -8,7 +8,6 @@ import {
   convertFromRaw,
 } from 'draft-js';
 import styles from './styles.css';
-
 import {
   blockRenderer,
   entitiesDecorator,

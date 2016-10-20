@@ -42,61 +42,61 @@ class Sidebar extends Component {
         selectedKeys={[this.state.current]}
         mode="inline"
       >
-        {sections.map((
-          {
-            name: sectionName,
-            subsections = List(),
-          },
+        {sections.map(({
+          name: sectionName,
+          subsections = List(),
+        },
           sectionIndex
         ) =>
-          subsections.isEmpty() ?
-            <Item key={sectionIndex}>{sectionName}</Item> :
-            <SubMenu
-              key={sectionIndex}
-              title={
-                <span>
-                  <Icon
-                    type="folder"
-                  />
-                  <span>{sectionName}</span>
-                </span>
-              }
-            >
-              {subsections.map((
-                {
+          subsections.isEmpty()
+            ? <Item key={sectionIndex}>{sectionName}</Item>
+            :
+              <SubMenu
+                key={sectionIndex}
+                title={
+                  <span>
+                    <Icon
+                      type="folder"
+                    />
+                    <span>{sectionName}</span>
+                  </span>
+                }
+              >
+                {subsections.map(({
                   name: subsectionName,
                   units = List(),
                 },
-                subsectionIndex
-              ) =>
-                units.isEmpty() ?
-                  <Item key={`${sectionIndex}.${subsectionIndex}`}>{subsectionName}</Item> :
-                  <SubMenu
-                    key={`${sectionIndex}.${subsectionIndex}`}
-                    title={
-                      <span>
-                        <Icon
-                          type="file-text"
-                        />
-                        <span>{subsectionName}</span>
-                      </span>
-                    }
-                  >
-                    {units.map((
-                      {
-                        name: unitName,
-                      },
-                      unitIndex,
-                    ) =>
-                      <Item
-                        key={`${sectionIndex}.${subsectionIndex}.${unitIndex}`}
+                  subsectionIndex
+                ) =>
+                  units.isEmpty()
+                    ? <Item key={`${sectionIndex}.${subsectionIndex}`}>{subsectionName}</Item>
+                    :
+                      <SubMenu
+                        key={`${sectionIndex}.${subsectionIndex}`}
+                        title={
+                          <span>
+                            <Icon
+                              type="file-text"
+                            />
+                            <span>{subsectionName}</span>
+                          </span>
+                        }
                       >
-                        {unitName}
-                      </Item>
-                    )}
-                  </SubMenu>
-              )}
-            </SubMenu>
+                        {units.map((
+                          {
+                            name: unitName,
+                          },
+                          unitIndex,
+                        ) =>
+                          <Item
+                            key={`${sectionIndex}.${subsectionIndex}.${unitIndex}`}
+                          >
+                            {unitName}
+                          </Item>
+                        )}
+                      </SubMenu>
+                )}
+              </SubMenu>
         )}
       </Menu>
     );
