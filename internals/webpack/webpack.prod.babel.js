@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 // Important modules this config uses
 const path = require('path');
 const webpack = require('webpack');

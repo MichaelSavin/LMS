@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * COMMON WEBPACK CONFIGURATION
  */
