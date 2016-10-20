@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-
 import styles from './styles.css';
 
 const Button = ({
@@ -9,7 +8,11 @@ const Button = ({
   isActive,
 }) => (
   <span
-    className={styles[isActive ? 'active' : 'inactive']}
+    className={styles[
+      isActive
+        ? 'active'
+        : 'inactive'
+    ]}
     onMouseDown={(event) => {
       event.preventDefault();
       onClick(style);
