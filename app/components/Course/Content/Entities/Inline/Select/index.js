@@ -159,7 +159,6 @@ Select.propTypes = {
     answer: PropTypes.number,
     options: PropTypes.array.isRequired,
   }),
-  // content: PropTypes.object.isRequired,
 };
 
 export default Select;
