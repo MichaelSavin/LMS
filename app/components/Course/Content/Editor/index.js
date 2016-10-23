@@ -9,8 +9,12 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
-import Toolbar from './Toolbar';
+
+// import Toolbar from './Toolbar';
+
 import Widgets from './Widgets';
+import Alignment from './Toolbar/Format/Alignment';
+
 import styles from './styles.css';
 import {
   blockRenderer,
@@ -52,12 +56,17 @@ class Draft extends Component {
       sectionId,
       subsectionId,
       unitId,
-      content: convertToRaw(editorState.getCurrentContent()),
+      content: convertToRaw(
+        editorState.getCurrentContent()
+      ),
     });
     // }
 
-    if (editorState.getLastChangeType() === 'undo'
-    || editorState.getLastChangeType() === 'redo') {
+    if (
+      editorState.getLastChangeType() === 'undo'
+      ||
+      editorState.getLastChangeType() === 'redo'
+    ) {
       this.setState({
         editorState: EditorState.set(
           editorState, {
@@ -80,11 +89,36 @@ class Draft extends Component {
         ),
       });
     }
+    this.focusEditor();
   }
 
-  handleKeyCommand(command) {
+  setReference = (ref) => {
+    this.editor = ref;
+  };
+
+  focusEditor = () => {
+    setTimeout(() => {
+      this.editor.focus();
+    });
+  };
+
+  blockStyleFn = (block) => {
+    const blockAlignment =
+      block.getData()
+      &&
+      block.getData().get('text-align');
+    return blockAlignment
+      ? `${blockAlignment}-aligned-block`
+      : '';
+  }
+
+  handleKeyCommand = (command) => {
     const { editorState } = this.state;
-    const newState = RichUtils.handleKeyCommand(editorState, command);
+    const newState = RichUtils
+      .handleKeyCommand(
+        editorState,
+        command
+      );
     if (newState) {
       this.onChange(newState);
       return true;
@@ -96,59 +130,25 @@ class Draft extends Component {
     const { editorState } = this.state;
     return (
       <div className={styles.editor}>
-        <Toolbar
-          isButtonActive={button =>
-            button.style ===
-            editorState
-              .getCurrentContent()
-              .getBlockForKey(
-                editorState
-                  .getSelection()
-                  .getStartKey()
-              )
-              .getType()
-          }
-          onButtonClick={(blockType) => {
-            this.onChange(
-              RichUtils.toggleBlockType(
-                editorState,
-                blockType
-              )
-            );
-          }}
-          buttons={[
-            { label: 'Заголовок', style: 'header-three' },
-            { label: 'Простой список', style: 'unordered-list-item' },
-            { label: 'Нумерованный список', style: 'ordered-list-item' },
-          ]}
-        />
-        <Toolbar
-          isButtonActive={button =>
-            editorState.getCurrentInlineStyle().has(button.style)
-          }
-          onButtonClick={(inlineStyle) => {
-            this.onChange(
-              RichUtils.toggleInlineStyle(
-                editorState,
-                inlineStyle
-              )
-            );
-          }}
-          buttons={[
-            { label: 'Жирный текст', style: 'BOLD' },
-            { label: 'Наклонный текст', style: 'ITALIC' },
-            { label: 'Подчеркнутый текст', style: 'UNDERLINE' },
-          ]}
-        />
+        <div className={styles.toolbar}>
+          <Alignment
+            editorState={editorState}
+            changeEditorState={this.onChange}
+          />
+        </div>
         <div
           className={styles.draft}
+          onClick={this.focusEditor}
         >
           <Editor
-            handleKeyCommand={this.handleKeyCommand.bind(this)}
+            handleKeyCommand={this.handleKeyCommand}
             blockRendererFn={blockRenderer}
+            blockRenderMap={this.customBlockRenderMap}
+            blockStyleFn={this.blockStyleFn}
             editorState={editorState}
+            spellCheck
             onChange={this.onChange}
-            spellCheck={false}
+            ref={this.setReference}
           />
         </div>
         <Widgets

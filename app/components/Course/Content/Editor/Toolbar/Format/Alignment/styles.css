@@ -1,0 +1,32 @@
+.alignment {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  width: 15px;
+  height: 15px;
+}
+
+:global .right-aligned-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+:global .left-aligned-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+:global .center-aligned-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+:global .justify-aligned-block {
+  display: flex;
+  flex-direction: row;
+}
