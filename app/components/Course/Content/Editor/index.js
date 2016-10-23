@@ -16,6 +16,7 @@ import Widgets from './Widgets';
 
 import Style from './Toolbar/Format/Style';
 import Align from './Toolbar/Format/Align';
+import Header from './Toolbar/Format/Header';
 
 import styles from './styles.css';
 import {
@@ -133,6 +134,10 @@ class Draft extends Component {
     return (
       <div className={styles.editor}>
         <div className={styles.toolbar}>
+          <Header
+            editorState={editorState}
+            changeEditorState={this.onChange}
+          />
           <Style
             editorState={editorState}
             changeEditorState={this.onChange}

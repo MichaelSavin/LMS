@@ -1,0 +1,48 @@
+.header {
+  align-items: center;
+  display: flex;
+}
+
+.unstyled {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.header-two {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.header-three {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.blockquote {
+  font-family: Georgia, serif;
+  font-weight: normal;
+  font-size: 15px;
+}
+
+blockquote {
+  line-height: 1.45;
+  font-family: Georgia, serif;
+  background: #ECECEC;
+  font-style: italic;
+  font-size: 18px;
+  position: relative;
+  padding: 0.25em 40px;
+  margin: 0.25em 0;
+  width: 450px;
+  color: #383838;
+}
+
+blockquote ::before {
+  font-size: 80px;
+  position: absolute;
+  display: block;
+  content: '\201C';
+  color: #7A7A7A;
+  left: -10px;
+  top: -10px;
+}
