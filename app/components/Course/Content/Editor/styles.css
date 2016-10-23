@@ -21,6 +21,11 @@
   margin-top: 10px;
 }
 
+.toolbar {
+  display: flex;
+  flex-direction: row;
+}
+
 /* .draft ul { // Конфликтует с Transfer
   margin: 10px;
   padding-left: 20px;
