@@ -9,7 +9,7 @@ import {
 import styles from './styles.css';
 import Option from '../Option';
 
-class Alignment extends Component {
+class Align extends Component {
 
   constructor(props) {
     super(props);
@@ -80,9 +80,9 @@ class Alignment extends Component {
   }
 }
 
-Alignment.propTypes = {
+Align.propTypes = {
   editorState: PropTypes.object.isRequired,
   changeEditorState: PropTypes.func.isRequired,
 };
 
-export default Alignment;
+export default Align;

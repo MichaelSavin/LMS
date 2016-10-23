@@ -15,7 +15,7 @@ import {
 import Widgets from './Widgets';
 
 import Style from './Toolbar/Format/Style';
-import Alignment from './Toolbar/Format/Alignment';
+import Align from './Toolbar/Format/Align';
 
 import styles from './styles.css';
 import {
@@ -137,7 +137,7 @@ class Draft extends Component {
             editorState={editorState}
             changeEditorState={this.onChange}
           />
-          <Alignment
+          <Align
             editorState={editorState}
             changeEditorState={this.onChange}
           />
