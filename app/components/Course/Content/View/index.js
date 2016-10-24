@@ -9,7 +9,8 @@ import {
 } from 'draft-js';
 import {
   Radio as AntRadio,
-  Icon as AntIcon } from 'antd';
+  Icon as AntIcon,
+} from 'antd';
 import styles from './styles.css';
 import {
   blockRenderer,
@@ -40,9 +41,13 @@ class View extends Component { // HMR
             onChange={this.changeViewport}
           >
             {['desktop',
-            'tablet',
-            'mobile'].map((type, index) =>
-              <AntRadio.Button value={type} key={index}>
+              'tablet',
+              'mobile',
+            ].map((type, index) =>
+              <AntRadio.Button
+                key={index}
+                value={type}
+              >
                 <AntIcon type={type} />
               </AntRadio.Button>
           )}

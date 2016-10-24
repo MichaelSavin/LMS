@@ -1,7 +1,7 @@
 .content {
-  display: flex;
   width: calc(100% - 370px);
   margin: 0 20px;
+  display: flex;
   flex-direction: column;
 }
 
@@ -9,11 +9,11 @@
   display: flex;
   padding: 10px;
   font-size: 16px;
+  background: #ECECEC;
+  align-items: center;
   border-radius: 4px 4px 0 0;
   flex-direction: row;
-  background: #ECECEC;
   justify-content: space-between;
-  align-items: center;
 }
 
 .selectors {
@@ -22,19 +22,20 @@
 }
 
 .selectors a {
+  color: #666;
   border: 1px solid;
-  border-color: #D9D9D9;
-  border-radius: 4px;
   display: inline-block;
   padding: 4px 15px;
-  color: #666;
+  font-size: 14px;
   transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  border-color: #D9D9D9;
+  border-radius: 4px;
 }
 
 .active {
   color: #FFF !important;
-  background-color: #57C5F7;
   border-color: #57C5F7 !important;
+  background-color: #57C5F7;
 }
 
 .selectors a:first-child {
