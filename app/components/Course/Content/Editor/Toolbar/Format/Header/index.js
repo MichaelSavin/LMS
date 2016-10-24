@@ -76,7 +76,9 @@ class Header extends Component {
              'ordered-list-item',
             ].includes(type)
               ? 'unstyled'
-              : type
+              : type === 'atomic'
+                ? 'Блочный элемент'
+                : type
           }
           style={{ width: 150 }}
           onChange={this.changeType}
