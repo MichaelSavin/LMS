@@ -7,8 +7,7 @@ import {
   EditorState,
   convertFromRaw,
 } from 'draft-js';
-import { Radio as AntRadio } from 'antd';
-import { Icon } from 'antd';
+import { Radio as AntRadio, Icon } from 'antd';
 // import createImagePlugin, {
   // imageStyles,
   // imageCreator,
@@ -49,12 +48,14 @@ class View extends Component { // HMR
   }
 
   handleChange = (event) => {
-    this.setState({type: event.target.value});
+    this.setState({
+      type: event.target.value,
+    });
   }
 
   render() {
     const {
-      type
+      type,
     } = this.state;
     return (
       <div className={styles.view}>
@@ -63,12 +64,18 @@ class View extends Component { // HMR
             defaultValue="desktop"
             onChange={this.handleChange}
           >
-            <AntRadio.Button value="desktop"><Icon type="desktop"/></AntRadio.Button>
-            <AntRadio.Button value="tablet"><Icon type="tablet"/></AntRadio.Button>
-            <AntRadio.Button value="mobile"><Icon type="mobile"/></AntRadio.Button>
+            <AntRadio.Button value="desktop">
+              <Icon type="desktop" />
+            </AntRadio.Button>
+            <AntRadio.Button value="tablet">
+              <Icon type="tablet" />
+            </AntRadio.Button>
+            <AntRadio.Button value="mobile">
+              <Icon type="mobile" />
+            </AntRadio.Button>
           </AntRadio.Group>
         </div>
-        <div className={styles.draft + ' ' + styles[type]}>
+        <div className={styles[type]}>
           <Editor
             // plugins={plugins}
             blockRendererFn={blockRenderer}
