@@ -1,33 +1,34 @@
 import React, { PropTypes } from 'react';
-import Button from './Button';
+
+import Style from './Style';
+import Align from './Align';
+import Header from './Header';
+
+import styles from './styles.css';
 
 const Toolbar = ({
-  buttons,
-  onButtonClick: onClick,
-  isButtonActive: isActive,
+  editorState,
+  changeEditorState,
 }) => (
-  <div className="toolbar">
-    {buttons.map(button =>
-      <Button
-        key={button.label}
-        label={button.label}
-        style={button.style}
-        onClick={onClick}
-        isActive={isActive(button)}
-      />
-    )}
+  <div className={styles.toolbar}>
+    <Header
+      editorState={editorState}
+      changeEditorState={changeEditorState}
+    />
+    <Style
+      editorState={editorState}
+      changeEditorState={changeEditorState}
+    />
+    <Align
+      editorState={editorState}
+      changeEditorState={changeEditorState}
+    />
   </div>
 );
 
 Toolbar.propTypes = {
-  buttons: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      style: PropTypes.string.isRequired,
-    }).isRequired,
-  ).isRequired,
-  onButtonClick: PropTypes.func.isRequired,
-  isButtonActive: PropTypes.func.isRequired,
+  editorState: PropTypes.object.isRequired,
+  changeEditorState: PropTypes.func.isRequired,
 };
 
 export default Toolbar;

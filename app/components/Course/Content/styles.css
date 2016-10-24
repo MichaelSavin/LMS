@@ -9,16 +9,16 @@
   display: flex;
   padding: 10px;
   font-size: 16px;
-  background: #ECECEC;
+  background: #EEE;
   align-items: center;
-  border-radius: 4px 4px 0 0;
+
+  /* border-radius: 4px 4px 0 0; */
   flex-direction: row;
   justify-content: space-between;
 }
 
 .selectors {
-  padding-left: 0;
-  padding-right: 20px;
+  /* ? */
 }
 
 .selectors a {
@@ -30,12 +30,13 @@
   transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   border-color: #D9D9D9;
   border-radius: 4px;
+  background-color: #F7F7F7;
 }
 
 .active {
   color: #FFF !important;
   border-color: #57C5F7 !important;
-  background-color: #57C5F7;
+  background-color: #57C5F7 !important;
 }
 
 .selectors a:first-child {

@@ -9,21 +9,15 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
-
-// import Toolbar from './Toolbar';
-
-import Widgets from './Widgets';
-
-import Style from './Toolbar/Format/Style';
-import Align from './Toolbar/Format/Align';
-import Header from './Toolbar/Format/Header';
-
-import styles from './styles.css';
 import {
   blockRenderer,
   entitiesDecorator,
   addEOLtoInlineEntity,
 } from '../Entities';
+
+import Toolbar from './Toolbar';
+import Widgets from './Widgets';
+import styles from './styles.css';
 
 class Draft extends Component {
 
@@ -133,20 +127,10 @@ class Draft extends Component {
     const { editorState } = this.state;
     return (
       <div className={styles.editor}>
-        <div className={styles.toolbar}>
-          <Header
-            editorState={editorState}
-            changeEditorState={this.onChange}
-          />
-          <Style
-            editorState={editorState}
-            changeEditorState={this.onChange}
-          />
-          <Align
-            editorState={editorState}
-            changeEditorState={this.onChange}
-          />
-        </div>
+        <Toolbar
+          editorState={editorState}
+          changeEditorState={this.onChange}
+        />
         <div
           className={styles.draft}
           onClick={this.focusEditor}

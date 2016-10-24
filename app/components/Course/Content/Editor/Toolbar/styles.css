@@ -1,4 +1,4 @@
 .toolbar {
-  margin-bottom: 5px;
-  user-select: none;
+  display: flex;
+  flex-direction: row;
 }
