@@ -9,7 +9,7 @@ import {
 } from 'draft-js';
 import {
   Radio as AntRadio,
-  Icon } from 'antd';
+  AntIcon } from 'antd';
 import styles from './styles.css';
 import {
   blockRenderer,
@@ -21,39 +21,34 @@ class View extends Component { // HMR
   constructor(props) {
     super(props);
     this.state = {
-      type: 'desktop',
+      viewport: 'desktop',
     };
   }
 
-  handleChange = (event) => {
+  changeViewport = (event) => {
     this.setState({
-      type: event.target.value,
+      viewport: event.target.value,
     });
   }
 
   render() {
-    const {
-    type,
-  } = this.state;
     return (
       <div className={styles.view}>
         <div className={styles.select}>
           <AntRadio.Group
             defaultValue="desktop"
-            onChange={this.handleChange}
+            onChange={this.changeViewport}
           >
-            <AntRadio.Button value="desktop">
-              <Icon type="desktop" />
-            </AntRadio.Button>
-            <AntRadio.Button value="tablet">
-              <Icon type="tablet" />
-            </AntRadio.Button>
-            <AntRadio.Button value="mobile">
-              <Icon type="mobile" />
-            </AntRadio.Button>
+            {['desktop',
+            'tablet',
+            'mobile'].map(type =>
+              <AntRadio.Button value={type}>
+                <AntIcon viewport={type} />
+              </AntRadio.Button>
+          )}
           </AntRadio.Group>
         </div>
-        <div className={styles[type]}>
+        <div className={styles[this.state.viewport]}>
           <Editor
             blockRendererFn={blockRenderer}
             editorState={EditorState
@@ -73,7 +68,6 @@ class View extends Component { // HMR
 
 View.propTypes = {
   content: PropTypes.object, // http://stackoverflow.com/a/33427304
-  type: PropTypes.string,
 };
 
 export default View;
