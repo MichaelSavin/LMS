@@ -9,30 +9,39 @@
   display: flex;
   padding: 10px;
   font-size: 16px;
-  margin-bottom: 10px;
+  border-radius: 4px 4px 0 0;
   flex-direction: row;
-  background-color: #EEE;
+  background: #ECECEC;
   justify-content: space-between;
+  align-items: center;
 }
 
 .selectors {
-  margin: -10px;
-  padding: 10px;
   padding-left: 0;
-  min-width: 195px;
   padding-right: 20px;
-  background-color: #FFE000;
 }
 
 .selectors a {
-  color: black;
+  border: 1px solid;
+  border-color: #D9D9D9;
+  border-radius: 4px;
+  display: inline-block;
+  padding: 4px 15px;
+  color: #666;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.active {
+  color: #FFF !important;
+  background-color: #57C5F7;
+  border-color: #57C5F7 !important;
+}
+
+.selectors a:first-child {
+  margin-right: 10px;
 }
 
 .selectors a:hover {
-  color: black;
-}
-
-.selector {
-  font-size: 14px;
-  padding-left: 20px;
+  color: #57C5F7;
+  border-color: #57C5F7;
 }

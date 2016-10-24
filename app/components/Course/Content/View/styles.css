@@ -1,15 +1,33 @@
 .view {
-  background-color: #FFE000;
   min-height: 240px;
-  min-width: 698.23px;
+  border-radius: 0 0 4px 4px;
 }
 
-.draft {
-  background-color: white;
-  font-size: 15px;
-  padding-top: 5px;
-  padding-left: 10px;
-  padding-bottom: 5px;
-  min-height: 300px;
-  margin: 10px;
+.desktop {
+  min-width: 100%;
+  padding: 10px;
+  border: 1px solid #E9E9E9;
+  border-top: none;
+}
+
+.tablet {
+  width: 1024px;
+  padding: 10px;
+  border: 1px solid #E9E9E9;
+  border-top: none;
+}
+
+.mobile {
+  width: 320px;
+  padding: 10px;
+  border: 1px solid #E9E9E9;
+  border-top: none;
+}
+
+.select {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border: 1px solid #E9E9E9;
+  padding: 10px;
 }
