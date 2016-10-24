@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 
+import List from './List';
 import Style from './Style';
 import Align from './Align';
 import Header from './Header';
@@ -20,6 +21,10 @@ const Toolbar = ({
       changeEditorState={changeEditorState}
     />
     <Align
+      editorState={editorState}
+      changeEditorState={changeEditorState}
+    />
+    <List
       editorState={editorState}
       changeEditorState={changeEditorState}
     />

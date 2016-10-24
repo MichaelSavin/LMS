@@ -1,0 +1,92 @@
+.list {
+  display: flex;
+  align-items: center;
+  border-left: 2px solid white;
+  padding-left: 5px;
+}
+
+.icon {
+  width: 15px;
+  height: 15px;
+}
+
+:global .public-DraftStyleDefault-ol {
+  list-style-type: disc;
+  margin: 10px;
+}
+
+:global .public-DraftStyleDefault-ul {
+  list-style-type: decimal;
+  margin: 10px;
+}
+
+:global .public-DraftStyleDefault-depth0 {
+  margin-left: 1.5em;
+}
+
+:global .public-DraftStyleDefault-depth1 {
+  margin-left: 3em;
+}
+
+:global .public-DraftStyleDefault-depth2 {
+  margin-left: 4.5em;
+}
+
+:global .public-DraftStyleDefault-depth3 {
+  margin-left: 6em;
+}
+
+/* :global .public-DraftStyleDefault-orderedListItem {
+  list-style-type: none;
+  position: relative;
+}
+
+:global .public-DraftStyleDefault-orderedListItem :global .public-DraftStyleDefault-listLTR ::before {
+  text-align: right;
+  position: absolute;
+  width: 30px;
+  left: -36px;
+}
+
+:global .public-DraftStyleDefault-orderedListItem :global .public-DraftStyleDefault-listRTL ::before {
+  position: absolute;
+  right: -36px;
+  text-align: left;
+  width: 30px;
+}
+
+:global .public-DraftStyleDefault-orderedListItem ::before {
+  content: counter(ol0) '. ';
+  counter-increment: ol0;
+}
+
+:global .public-DraftStyleDefault-orderedListItem :global .public-DraftStyleDefault-depth1 ::before {
+  content: counter(ol1) '. ';
+  counter-increment: ol1;
+}
+
+:global .public-DraftStyleDefault-orderedListItem :global .public-DraftStyleDefault-depth2 ::before {
+  content: counter(ol2) '. ';
+  counter-increment: ol2;
+}
+
+:global .public-DraftStyleDefault-orderedListItem :global .public-DraftStyleDefault-depth3 ::before {
+  content: counter(ol3) '. ';
+  counter-increment: ol3;
+}
+
+:global .public-DraftStyleDefault-depth0 :global .public-DraftStyleDefault-reset {
+  counter-reset: ol0;
+}
+
+:global .public-DraftStyleDefault-depth1 :global .public-DraftStyleDefault-reset {
+  counter-reset: ol1;
+}
+
+:global .public-DraftStyleDefault-depth2 :global .public-DraftStyleDefault-reset {
+  counter-reset: ol2;
+}
+
+:global .public-DraftStyleDefault-depth3 :global .public-DraftStyleDefault-reset {
+  counter-reset: ol3;
+} */

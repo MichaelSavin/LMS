@@ -9,6 +9,9 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
+// import {
+//   customStyleMap,
+// } from 'draftjs-utils';
 import {
   blockRenderer,
   entitiesDecorator,
@@ -138,6 +141,7 @@ class Draft extends Component {
           <Editor
             handleKeyCommand={this.handleKeyCommand}
             blockRendererFn={blockRenderer}
+            // customStyleMap={customStyleMap}
             blockRenderMap={this.customBlockRenderMap}
             blockStyleFn={this.blockStyleFn}
             editorState={editorState}
