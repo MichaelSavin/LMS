@@ -4,6 +4,7 @@ import Icon from 'components/UI/Icon';
 import styles from './styles.css';
 
 class Content extends Component {
+
   render() {
     const {
       actions: {
@@ -49,15 +50,13 @@ class Content extends Component {
           <div className={styles.selectors}>
             <Link
               to={`/${route}/editor`}
-              className={styles.selector}
-              activeStyle={{ textDecoration: 'underline' }}
+              activeClassName={styles.active}
             >
               Редактор
             </Link>
             <Link
               to={`/${route}/view`}
-              className={styles.selector}
-              activeStyle={{ textDecoration: 'underline' }}
+              activeClassName={styles.active}
             >
               Просмотр
             </Link>

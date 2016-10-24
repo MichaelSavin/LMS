@@ -1,7 +1,7 @@
 .content {
-  display: flex;
   width: calc(100% - 370px);
   margin: 0 20px;
+  display: flex;
   flex-direction: column;
 }
 
@@ -9,30 +9,40 @@
   display: flex;
   padding: 10px;
   font-size: 16px;
-  margin-bottom: 10px;
+  background: #ECECEC;
+  align-items: center;
+  border-radius: 4px 4px 0 0;
   flex-direction: row;
-  background-color: #EEE;
   justify-content: space-between;
 }
 
 .selectors {
-  margin: -10px;
-  padding: 10px;
   padding-left: 0;
-  min-width: 195px;
   padding-right: 20px;
-  background-color: #FFE000;
 }
 
 .selectors a {
-  color: black;
+  color: #666;
+  border: 1px solid;
+  display: inline-block;
+  padding: 4px 15px;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  border-color: #D9D9D9;
+  border-radius: 4px;
+}
+
+.active {
+  color: #FFF !important;
+  border-color: #57C5F7 !important;
+  background-color: #57C5F7;
+}
+
+.selectors a:first-child {
+  margin-right: 10px;
 }
 
 .selectors a:hover {
-  color: black;
-}
-
-.selector {
-  font-size: 14px;
-  padding-left: 20px;
+  color: #57C5F7;
+  border-color: #57C5F7;
 }
