@@ -1,0 +1,10 @@
+.history {
+  display: flex;
+  margin-left: auto;
+  align-items: center;
+}
+
+.icon {
+  width: 15px;
+  height: 15px;
+}

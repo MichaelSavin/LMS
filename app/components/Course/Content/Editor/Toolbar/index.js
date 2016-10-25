@@ -4,6 +4,7 @@ import List from './List';
 import Style from './Style';
 import Align from './Align';
 import Header from './Header';
+import History from './History';
 
 import styles from './styles.css';
 
@@ -25,6 +26,10 @@ const Toolbar = ({
       changeEditorState={changeEditorState}
     />
     <List
+      editorState={editorState}
+      changeEditorState={changeEditorState}
+    />
+    <History
       editorState={editorState}
       changeEditorState={changeEditorState}
     />
