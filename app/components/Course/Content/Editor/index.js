@@ -89,18 +89,18 @@ class Draft extends Component {
         ),
       });
     }
-    this.focusEditor();
+    // this.focusEditor();
   }
 
-  setReference = (ref) => {
-    this.editor = ref;
-  };
+  // setReference = (ref) => {
+  //   this.editor = ref;
+  // };
 
-  focusEditor = () => {
-    setTimeout(() => {
-      this.editor.focus();
-    });
-  };
+  // focusEditor = () => {
+  //   setTimeout(() => {
+  //     this.editor.focus();
+  //   });
+  // };
 
   blockStyleFn = (block) => {
     const blockAlignment =
@@ -136,7 +136,7 @@ class Draft extends Component {
         />
         <div
           className={styles.draft}
-          onClick={this.focusEditor}
+          onClick={() => this.refs.editor.focus()}
         >
           <Editor
             handleKeyCommand={this.handleKeyCommand}
@@ -147,7 +147,7 @@ class Draft extends Component {
             editorState={editorState}
             spellCheck
             onChange={this.onChange}
-            ref={this.setReference}
+            ref="editor"
           />
         </div>
         <Widgets
