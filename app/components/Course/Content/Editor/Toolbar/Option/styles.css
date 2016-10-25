@@ -8,11 +8,21 @@
   display: inline-block;
 }
 
+.option:hover {
+  border: 1px solid #DDD;
+}
+
 .active {
   background: #DDD;
   border: 1px solid #DDD;
 }
 
-.option:hover {
-  border: 1px solid #DDD;
+.disabled {
+  opacity: 0.3;
+  cursor: default;
 }
+
+.disabled:hover {
+  border: 1px solid #EEE;
+}
+
