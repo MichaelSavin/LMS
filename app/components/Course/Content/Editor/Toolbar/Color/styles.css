@@ -1,0 +1,17 @@
+.color {
+  display: flex;
+  align-items: center;
+  border-left: 2px solid white;
+  padding-left: 5px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  background: none !important;
+}
+
+.picker {
+  width: 20px;
+  height: 20px;
+}

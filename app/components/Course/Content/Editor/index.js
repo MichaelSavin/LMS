@@ -112,6 +112,25 @@ class Draft extends Component {
       : '';
   }
 
+  customStyleFn = (style) => {
+    console.log(style);
+    const [type, value] = (
+      style.last() || ''
+    ).split('-');
+    switch (type) {
+      case 'color':
+        return {
+          color: value,
+        };
+      case 'bgcolor':
+        return {
+          backgroundColor: value,
+        };
+      default:
+        return style;
+    }
+  }
+
   handleKeyCommand = (command) => {
     const { editorState } = this.state;
     const newState = RichUtils
@@ -144,9 +163,11 @@ class Draft extends Component {
             // customStyleMap={customStyleMap}
             blockRenderMap={this.customBlockRenderMap}
             blockStyleFn={this.blockStyleFn}
+            customStyleFn={this.customStyleFn}
             editorState={editorState}
-            spellCheck
+            // spellCheck
             onChange={this.onChange}
+            // ref={this.setEditorReference}
             ref="editor"
           />
         </div>
