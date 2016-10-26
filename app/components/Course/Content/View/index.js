@@ -33,6 +33,8 @@ class View extends Component { // HMR
   }
 
   render() {
+    const { viewport } = this.state;
+    const { content } = this.props;
     return (
       <div className={styles.view}>
         <div className={styles.select}>
@@ -53,13 +55,13 @@ class View extends Component { // HMR
           )}
           </AntRadio.Group>
         </div>
-        <div className={styles[this.state.viewport]}>
+        <div className={styles[viewport]}>
           <Editor
             blockRendererFn={blockRenderer}
             editorState={EditorState
               .createWithContent(
                 convertFromRaw(
-                  this.props.content
+                  content
                 ),
                 entitiesDecorator,
               )}

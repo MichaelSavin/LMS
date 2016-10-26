@@ -48,9 +48,7 @@ class Align extends Component {
   }
 
   render() {
-    const {
-      alignment,
-    } = this.state;
+    const { alignment } = this.state;
     return (
       <div className={styles.alignment}>
         {['left',

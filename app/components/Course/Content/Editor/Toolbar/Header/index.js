@@ -65,9 +65,7 @@ class Header extends Component {
   };
 
   render() {
-    const {
-      type,
-    } = this.state;
+    const { type } = this.state;
     return (
       <div className={styles.header}>
         <AntSelect

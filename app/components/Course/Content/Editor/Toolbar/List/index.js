@@ -84,9 +84,7 @@ class List extends Component {
   // };
 
   render() {
-    const {
-      type,
-    } = this.state;
+    const { type } = this.state;
     return (
       <div className={styles.list}>
         {[{

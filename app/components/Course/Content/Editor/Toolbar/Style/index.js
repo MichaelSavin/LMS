@@ -63,6 +63,9 @@ class Style extends Component {
   };
 
   render() {
+    const {
+      styles: textStyles,
+    } = this.state;
     return (
       <div className={styles.text}>
         {[{
@@ -87,7 +90,7 @@ class Style extends Component {
           <Option
             key={index}
             value={value}
-            active={this.state.styles[value]}
+            active={textStyles[value]}
             onClick={this.toggleStyle}
             className={styles.option}
           >
