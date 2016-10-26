@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import List from './List';
 import Style from './Style';
 import Align from './Align';
+import Color from './Color';
 import Header from './Header';
 import History from './History';
 
@@ -13,26 +14,22 @@ const Toolbar = ({
   changeEditorState,
 }) => (
   <div className={styles.toolbar}>
-    <Header
-      editorState={editorState}
-      changeEditorState={changeEditorState}
-    />
-    <Style
-      editorState={editorState}
-      changeEditorState={changeEditorState}
-    />
-    <Align
-      editorState={editorState}
-      changeEditorState={changeEditorState}
-    />
-    <List
-      editorState={editorState}
-      changeEditorState={changeEditorState}
-    />
-    <History
-      editorState={editorState}
-      changeEditorState={changeEditorState}
-    />
+    {[Header,
+      Style,
+      Align,
+      List,
+      Color,
+      History,
+    ].map((element, key) =>
+      React.createElement(
+        element, {
+          key,
+          editorState,
+          changeEditorState,
+        },
+        null
+      )
+    )}
   </div>
 );
 
