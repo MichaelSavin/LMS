@@ -46,4 +46,10 @@ Collapse.propTypes = {
   }).isRequired,
 };
 
+Collapse.defaultProps = {
+  content: {
+    rows: {},
+  },
+};
+
 export default Collapse;

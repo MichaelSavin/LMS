@@ -1,11 +1,11 @@
 import React, { PropTypes, Component } from 'react';
 import AntPromt from 'components/UI/Promt';
-import { Card as AntCard } from 'antd';
+import { Alert as AntAlert } from 'antd';
 import { Entity } from 'draft-js';
 import { isEqual } from 'lodash';
 import styles from './styles.css';
 
-class Card extends Component {
+class Alert extends Component {
 
   constructor(props) {
     super(props);
@@ -28,33 +28,30 @@ class Card extends Component {
     );
   }
 
-  editContent = () => {
+  editMessage = () => {
     this.setState({
       promt: {
         open: true,
         value: this
           .state
-          .text,
+          .message,
       },
     });
   }
 
-  modifyContent = () => {
+  modifyMessage = () => {
     const {
-      value: text,
+      value: message,
     } = this.state.promt;
     Entity.replaceData(
       this.props.entityKey, {
         content: {
-          text,
-          title: this
-            .state
-            .title,
+          message,
         },
       }
     );
     this.setState({
-      text,
+      message,
       promt: {
         open: false,
       },
@@ -63,25 +60,22 @@ class Card extends Component {
 
   render() {
     const {
-      text,
-      title,
       promt,
+      message,
     } = this.state;
     return (
-      <div className={styles.card}>
-        <AntCard
-          title={title}
-          onDoubleClick={this.editContent}
-        >
-          {text.split('\n')
-            .map((string, index) =>
-              <p key={index}>{string}</p>
-          )}
-        </AntCard>
+      <div
+        className={styles.alert}
+        onDoubleClick={this.editMessage}
+      >
+        <AntAlert
+          message={message}
+          type="info"
+          showIcon
+        />
         <AntPromt
-          type="textarea"
           value={promt.value}
-          onSave={this.modifyContent}
+          onSave={this.modifyMessage}
           visible={promt.open}
           onChange={(event) => {
             this.setState({
@@ -107,12 +101,17 @@ class Card extends Component {
   }
 }
 
-Card.propTypes = {
+Alert.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    text: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-export default Card;
+Alert.defaultProps = {
+  content: {
+    message: 'Обратите внимание',
+  },
+};
+
+export default Alert;

@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { Timeline as AntTimeline } from 'antd';
+import { Progress as AntProgress } from 'antd';
 import AntPromt from 'components/UI/Promt';
 import { Entity } from 'draft-js';
 import { isEqual } from 'lodash';
 // import styles from './styles.css';
 
-class Timeline extends Component {
+class Progress extends Component {
 
   constructor(props) {
     super(props);
@@ -28,34 +28,35 @@ class Timeline extends Component {
     );
   }
 
-  editTimeline = (event) => {
+  editPercent = (event) => {
     event.preventDefault();
     this.setState({
       promt: {
         open: true,
         value: this
           .state
-          .steps
-          .join('\n'),
+          .percent,
       },
     });
   }
 
-  modifyTimeline = () => {
-    const steps = this
-      .state
-      .promt
-      .value
-      .split('\n');
+  modifyPercent = () => {
+    const value = parseInt(
+      this.state.promt.value, 10
+    );
+    const percent =
+      isNaN(value) || value > 100
+        ? 100
+        : value;
     Entity.replaceData(
       this.props.entityKey, {
         content: {
-          steps,
+          percent,
         },
       }
     );
     this.setState({
-      steps,
+      percent,
       promt: {
         open: false,
       },
@@ -65,21 +66,14 @@ class Timeline extends Component {
   render() {
     const {
       promt,
-      steps,
+      percent,
     } = this.state;
     return (
-      <div onDoubleClick={this.editTimeline}>
-        <AntTimeline>
-          {steps.map((step, index) =>
-            <AntTimeline.Item key={index}>
-              {step}
-            </AntTimeline.Item>
-          )}
-        </AntTimeline>
+      <div onDoubleClick={this.editPercent}>
+        <AntProgress percent={percent} />
         <AntPromt
-          type="textarea"
           value={promt.value}
-          onSave={this.modifyTimeline}
+          onSave={this.modifyPercent}
           visible={promt.open}
           onChange={(event) => {
             this.setState({
@@ -105,11 +99,17 @@ class Timeline extends Component {
   }
 }
 
-Timeline.propTypes = {
+Progress.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    steps: PropTypes.array.isRequired,
+    percent: PropTypes.number.isRequired,
   }).isRequired,
 };
 
-export default Timeline;
+Progress.defaultProps = {
+  content: {
+    percent: 50,
+  },
+};
+
+export default Progress;

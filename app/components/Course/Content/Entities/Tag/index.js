@@ -1,16 +1,20 @@
-import React, { Component, PropTypes } from 'react';
-import { Progress as AntProgress } from 'antd';
+import React, { PropTypes, Component } from 'react';
 import AntPromt from 'components/UI/Promt';
+import { Tag as AntTag } from 'antd';
 import { Entity } from 'draft-js';
 import { isEqual } from 'lodash';
-// import styles from './styles.css';
+import styles from './styles.css';
 
-class Progress extends Component {
+class Tag extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      ...props.content,
+      text: (Entity
+        .get(this.props.entityKey)
+        .getData()
+        .content || {}
+      ).text || 'Тег',
       promt: {
         open: false,
         value: null,
@@ -28,35 +32,30 @@ class Progress extends Component {
     );
   }
 
-  editPercent = (event) => {
-    event.preventDefault();
+  editText = () => {
     this.setState({
       promt: {
         open: true,
         value: this
           .state
-          .percent,
+          .text,
       },
     });
   }
 
-  modifyPercent = () => {
-    const value = parseInt(
-      this.state.promt.value, 10
-    );
-    const percent =
-      isNaN(value) || value > 100
-        ? 100
-        : value;
+  modifyText = () => {
+    const {
+      value: text,
+    } = this.state.promt;
     Entity.replaceData(
       this.props.entityKey, {
         content: {
-          percent,
+          text,
         },
       }
     );
     this.setState({
-      percent,
+      text,
       promt: {
         open: false,
       },
@@ -65,15 +64,20 @@ class Progress extends Component {
 
   render() {
     const {
+      text,
       promt,
-      percent,
     } = this.state;
     return (
-      <div onDoubleClick={this.editPercent}>
-        <AntProgress percent={percent} />
+      <span className={styles.tag}>
+        <AntTag
+          color="green"
+          onDoubleClick={this.editText}
+        >
+          {text}
+        </AntTag>
         <AntPromt
           value={promt.value}
-          onSave={this.modifyPercent}
+          onSave={this.modifyText}
           visible={promt.open}
           onChange={(event) => {
             this.setState({
@@ -94,16 +98,14 @@ class Progress extends Component {
             });
           }}
         />
-      </div>
+      </span>
     );
   }
 }
 
-Progress.propTypes = {
+Tag.propTypes = {
+  children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
-  content: PropTypes.shape({
-    percent: PropTypes.number.isRequired,
-  }).isRequired,
 };
 
-export default Progress;
+export default Tag;

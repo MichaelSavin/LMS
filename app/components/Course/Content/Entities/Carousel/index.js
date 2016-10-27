@@ -1,11 +1,11 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { Carousel as AntCarousel } from 'antd';
 import AntPromt from 'components/UI/Promt';
-import { Alert as AntAlert } from 'antd';
 import { Entity } from 'draft-js';
 import { isEqual } from 'lodash';
 import styles from './styles.css';
 
-class Alert extends Component {
+class Carousel extends Component {
 
   constructor(props) {
     super(props);
@@ -28,30 +28,34 @@ class Alert extends Component {
     );
   }
 
-  editMessage = () => {
+  editContent = (event) => {
+    event.preventDefault();
     this.setState({
       promt: {
         open: true,
         value: this
           .state
-          .message,
+          .images
+          .join('\n'),
       },
     });
   }
 
-  modifyMessage = () => {
-    const {
-      value: message,
-    } = this.state.promt;
+  modifyContent = () => {
+    const images = this
+      .state
+      .promt
+      .value
+      .split('\n');
     Entity.replaceData(
       this.props.entityKey, {
         content: {
-          message,
+          images,
         },
       }
     );
     this.setState({
-      message,
+      images,
       promt: {
         open: false,
       },
@@ -61,21 +65,25 @@ class Alert extends Component {
   render() {
     const {
       promt,
-      message,
+      images,
     } = this.state;
     return (
-      <div
-        className={styles.alert}
-        onDoubleClick={this.editMessage}
-      >
-        <AntAlert
-          message={message}
-          type="info"
-          showIcon
-        />
+      <div onDoubleClick={this.editContent}>
+        <AntCarousel className={styles.carousel}>
+          {images.map((image, index) =>
+            <div key={index}>
+              <img
+                alt=""
+                src={image}
+                className={styles.image}
+              />
+            </div>
+          )}
+        </AntCarousel>
         <AntPromt
+          type="textarea"
           value={promt.value}
-          onSave={this.modifyMessage}
+          onSave={this.modifyContent}
           visible={promt.open}
           onChange={(event) => {
             this.setState({
@@ -101,11 +109,22 @@ class Alert extends Component {
   }
 }
 
-Alert.propTypes = {
+Carousel.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    message: PropTypes.string.isRequired,
+    images: PropTypes.array.isRequired,
   }).isRequired,
 };
 
-export default Alert;
+Carousel.defaultProps = {
+  content: {
+    images: [
+      'https://img2.goodfon.ru/wallpaper/middle/b/4e/treehouse-point-ssha.jpg',
+      'https://img3.goodfon.ru/wallpaper/middle/7/e6/kedr-shishki-hvoya-zelen-cedar.jpg',
+      'https://img1.goodfon.ru/wallpaper/middle/a/8b/zemlyanika-polevye-cvety-trava.jpg',
+      'https://img1.goodfon.ru/wallpaper/middle/a/98/griby-boroviki-parochka.jpg',
+    ],
+  },
+};
+
+export default Carousel;

@@ -50,4 +50,10 @@ Tree.propTypes = {
   }).isRequired,
 };
 
+Tree.defaultProps = {
+  content: {
+    tree: {},
+  },
+};
+
 export default Tree;

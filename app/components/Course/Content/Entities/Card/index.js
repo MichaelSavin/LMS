@@ -1,11 +1,11 @@
-import React, { Component, PropTypes } from 'react';
-import { Carousel as AntCarousel } from 'antd';
+import React, { PropTypes, Component } from 'react';
 import AntPromt from 'components/UI/Promt';
+import { Card as AntCard } from 'antd';
 import { Entity } from 'draft-js';
 import { isEqual } from 'lodash';
 import styles from './styles.css';
 
-class Carousel extends Component {
+class Card extends Component {
 
   constructor(props) {
     super(props);
@@ -28,34 +28,33 @@ class Carousel extends Component {
     );
   }
 
-  editContent = (event) => {
-    event.preventDefault();
+  editContent = () => {
     this.setState({
       promt: {
         open: true,
         value: this
           .state
-          .images
-          .join('\n'),
+          .text,
       },
     });
   }
 
   modifyContent = () => {
-    const images = this
-      .state
-      .promt
-      .value
-      .split('\n');
+    const {
+      value: text,
+    } = this.state.promt;
     Entity.replaceData(
       this.props.entityKey, {
         content: {
-          images,
+          text,
+          title: this
+            .state
+            .title,
         },
       }
     );
     this.setState({
-      images,
+      text,
       promt: {
         open: false,
       },
@@ -64,22 +63,21 @@ class Carousel extends Component {
 
   render() {
     const {
+      text,
+      title,
       promt,
-      images,
     } = this.state;
     return (
-      <div onDoubleClick={this.editContent}>
-        <AntCarousel className={styles.carousel}>
-          {images.map((image, index) =>
-            <div key={index}>
-              <img
-                alt=""
-                src={image}
-                className={styles.image}
-              />
-            </div>
+      <div className={styles.card}>
+        <AntCard
+          title={title}
+          onDoubleClick={this.editContent}
+        >
+          {text.split('\n')
+            .map((string, index) =>
+              <p key={index}>{string}</p>
           )}
-        </AntCarousel>
+        </AntCard>
         <AntPromt
           type="textarea"
           value={promt.value}
@@ -109,11 +107,19 @@ class Carousel extends Component {
   }
 }
 
-Carousel.propTypes = {
+Card.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    images: PropTypes.array.isRequired,
+    text: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-export default Carousel;
+Card.defaultProps = {
+  content: {
+    title: 'Информация',
+    text: 'Контент',
+  },
+};
+
+export default Card;
