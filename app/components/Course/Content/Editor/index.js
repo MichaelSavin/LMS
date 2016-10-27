@@ -113,7 +113,6 @@ class Draft extends Component {
   }
 
   customStyleFn = (style) => {
-    console.log(style);
     const [type, value] = (
       style.last() || ''
     ).split('-');
