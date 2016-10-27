@@ -1,4 +1,23 @@
 .toolbar {
+  /* ...  */
+}
+
+.pane {
   display: flex;
   flex-direction: row;
+}
+
+.item {
+  align-self: center;
+  cursor: pointer;
+  font-size: 13px;
+  margin: 20px;
+}
+
+:global .ant-tabs-bar {
+  margin-bottom: 10px;
+}
+
+:global .ant-tabs-tabpane {
+  /* ... */
 }
