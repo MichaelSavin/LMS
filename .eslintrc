@@ -99,7 +99,9 @@
     "fp/no-mutation": [2, {
       "allowThis": true,
       "exceptions": [{ 
-        "property": "propTypes" 
+        "property": "propTypes"
+      }, { 
+        "property": "defaultProps"
       }]
     }]
   },
