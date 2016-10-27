@@ -1,7 +1,10 @@
 .editor {
   background-color: #EEE;
+  margin-top: -10px;
   min-height: 230px;
   padding: 10px;
+
+  /* padding-top: 0; */
 }
 
 .buttons {

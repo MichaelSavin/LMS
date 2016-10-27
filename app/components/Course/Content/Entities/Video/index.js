@@ -1,16 +1,18 @@
 import React, { PropTypes, Component } from 'react';
 import AntPromt from 'components/UI/Promt';
-import { Card as AntCard } from 'antd';
+import ReactPlayer from 'react-player';
+import { Icon as AntIcon } from 'antd';
 import { Entity } from 'draft-js';
 import { isEqual } from 'lodash';
 import styles from './styles.css';
 
-class Image extends Component {
+class Video extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       ...props.content,
+      settings: false,
       promt: {
         open: false,
         value: null,
@@ -28,7 +30,8 @@ class Image extends Component {
     );
   }
 
-  editContent = () => {
+  editContent = (event) => {
+    event.preventDefault();
     this.setState({
       promt: {
         open: true,
@@ -47,9 +50,6 @@ class Image extends Component {
       this.props.entityKey, {
         content: {
           source,
-          text: this
-            .state
-            .text,
         },
       }
     );
@@ -63,30 +63,23 @@ class Image extends Component {
 
   render() {
     const {
-      text,
       source,
       promt,
     } = this.state;
     return (
-      <div>
-        <AntCard
-          className={styles.card}
-          bodyStyle={{ padding: 0 }}
-          onDoubleClick={this.editContent}
-        >
-          <div className={styles.image}>
-            <img
-              alt="example"
-              width="100%"
-              src={source}
-            />
-          </div>
-          <div className={styles.text}>
-            <p>{text}</p>
-          </div>
-        </AntCard>
+      <div
+        className={styles.video}
+      >
+        <ReactPlayer
+          url={source}
+          controls
+        />
+        <AntIcon
+          type="setting"
+          className={styles.icon}
+          onClick={this.editContent}
+        />
         <AntPromt
-          type="textarea"
           value={promt.value}
           onSave={this.modifyContent}
           visible={promt.open}
@@ -114,12 +107,17 @@ class Image extends Component {
   }
 }
 
-Image.propTypes = {
+Video.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    text: PropTypes.string.isRequired,
     source: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-export default Image;
+Video.defaultProps = {
+  content: {
+    source: 'https://www.youtube.com/watch?v=XFF2ECZ8m1A',
+  },
+};
+
+export default Video;

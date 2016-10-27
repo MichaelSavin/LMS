@@ -19,7 +19,7 @@ import {
 } from '../Entities';
 
 import Toolbar from './Toolbar';
-import Widgets from './Widgets';
+// import Widgets from './Widgets';
 import styles from './styles.css';
 
 class Draft extends Component {
@@ -170,10 +170,12 @@ class Draft extends Component {
             ref="editor"
           />
         </div>
+        { /*
         <Widgets
           editorState={editorState}
           changeEditorState={this.onChange}
         />
+        */ }
       </div>
     );
   }

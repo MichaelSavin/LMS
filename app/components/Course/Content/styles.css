@@ -11,6 +11,8 @@
   font-size: 16px;
   background: #EEE;
   align-items: center;
+  font-weight: 500;
+  padding-left: 20px;
 
   /* border-radius: 4px 4px 0 0; */
   flex-direction: row;

@@ -1,18 +1,16 @@
 import React, { PropTypes, Component } from 'react';
 import AntPromt from 'components/UI/Promt';
-import ReactPlayer from 'react-player';
-import { Icon as AntIcon } from 'antd';
+import { Card as AntCard } from 'antd';
 import { Entity } from 'draft-js';
 import { isEqual } from 'lodash';
 import styles from './styles.css';
 
-class Video extends Component {
+class Image extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       ...props.content,
-      settings: false,
       promt: {
         open: false,
         value: null,
@@ -30,8 +28,7 @@ class Video extends Component {
     );
   }
 
-  editContent = (event) => {
-    event.preventDefault();
+  editContent = () => {
     this.setState({
       promt: {
         open: true,
@@ -50,6 +47,9 @@ class Video extends Component {
       this.props.entityKey, {
         content: {
           source,
+          text: this
+            .state
+            .text,
         },
       }
     );
@@ -63,23 +63,30 @@ class Video extends Component {
 
   render() {
     const {
+      text,
       source,
       promt,
     } = this.state;
     return (
-      <div
-        className={styles.video}
-      >
-        <ReactPlayer
-          url={source}
-          controls
-        />
-        <AntIcon
-          type="setting"
-          className={styles.icon}
-          onClick={this.editContent}
-        />
+      <div>
+        <AntCard
+          className={styles.card}
+          bodyStyle={{ padding: 0 }}
+          onDoubleClick={this.editContent}
+        >
+          <div className={styles.image}>
+            <img
+              alt="example"
+              width="100%"
+              src={source}
+            />
+          </div>
+          <div className={styles.text}>
+            <p>{text}</p>
+          </div>
+        </AntCard>
         <AntPromt
+          type="textarea"
           value={promt.value}
           onSave={this.modifyContent}
           visible={promt.open}
@@ -107,11 +114,19 @@ class Video extends Component {
   }
 }
 
-Video.propTypes = {
+Image.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
+    text: PropTypes.string.isRequired,
     source: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-export default Video;
+Image.defaultProps = {
+  content: {
+    text: 'Изображение',
+    source: 'https://img3.goodfon.ru/original/1440x900/c/d3/uluru-ayers-rock-sandstone.jpg',
+  },
+};
+
+export default Image;

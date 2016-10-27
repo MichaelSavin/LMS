@@ -12,6 +12,17 @@ import { insertEntity } from '../../Entities';
 
 import styles from './styles.css';
 
+const media = [{
+  name: 'Файл',
+  type: 'UPLOAD',
+}, {
+  name: 'Видео',
+  type: 'VIDEO',
+}, {
+  name: 'Изображение',
+  type: 'IMAGE',
+}];
+
 const widgets = [{
   name: 'Тег',
   type: 'TAG',
@@ -53,63 +64,73 @@ const Toolbar = ({
       defaultActiveKey="1"
       onChange={() => {}}
     >
-      <AntTabs.TabPane
-        className={styles.pane}
-        tab="Форматирование"
-        key="1"
-      >
-        {[Header,
-          Style,
-          Align,
-          List,
-          Color,
-          History,
-        ].map((element, key) =>
-          React.createElement(
-            element, {
-              key,
-              editorState,
-              changeEditorState,
-            },
-            null
-          )
-        )}
-      </AntTabs.TabPane>
-      { /* <AntTabs.TabPane
-        key="2"
-        tab="Медиа"
-      >
-        ...
-      </AntTabs.TabPane>
-      */ }
-      <AntTabs.TabPane
-        key="3"
-        tab="Виджеты"
-      >
-        {widgets.map(({
-          name,
-          type: entityType,
-        }, index) =>
-          <span
-            key={index}
-            onClick={() => {
-              insertEntity(
-                entityType,
+      {[
+        <AntTabs.TabPane
+          className={styles.pane}
+          tab="Форматирование"
+          key="1"
+        >
+          {[Header,
+            Style,
+            Align,
+            List,
+            Color,
+            History,
+          ].map((element, key) =>
+            React.createElement(
+              element, {
+                key,
                 editorState,
                 changeEditorState,
-              );
-            }}
-            className={styles.item}
+              },
+              null
+            )
+          )}
+        </AntTabs.TabPane>,
+
+        ...Object.entries({
+          Медиа: media,
+          Виджеты: widgets,
+        }).map(([
+          tabName,
+          entities,
+        ],
+          tabIndex
+        ) =>
+          <AntTabs.TabPane
+            key={tabIndex + 2}
+            tab={tabName}
           >
-            {name}
-          </span>
-        )}
-      </AntTabs.TabPane>
-      { /*
+            {entities.map(({
+              name: entityName,
+              type: entityType,
+            },
+              entityIndex,
+            ) =>
+              <span
+                key={entityIndex}
+                onClick={() => {
+                  insertEntity(
+                    entityType,
+                    editorState,
+                    changeEditorState,
+                  );
+                }}
+                className={styles.item}
+              >
+                {entityName}
+              </span>
+            )}
+          </AntTabs.TabPane>
+        ),
+      ]}
+
+      {/*
       <AntTabs.TabPane tab="Задания" key="4">
         ...
       </AntTabs.TabPane>
-      */ }
+      */}
+
     </AntTabs>
   </div>
 );
