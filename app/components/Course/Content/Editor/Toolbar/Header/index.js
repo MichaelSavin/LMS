@@ -69,14 +69,14 @@ class Header extends Component {
     return (
       <div className={styles.header}>
         <AntSelect
-          value={
-            ['unordered-list-item',
-             'ordered-list-item',
-            ].includes(type)
-              ? 'unstyled'
-              : type === 'atomic'
-                ? 'Блочный элемент'
-                : type
+          value={[
+            'unordered-list-item',
+            'ordered-list-item',
+          ].includes(type)
+            ? 'unstyled'
+            : type === 'atomic'
+              ? 'Блочный элемент'
+              : type
           }
           style={{ width: 150 }}
           onChange={this.changeType}
