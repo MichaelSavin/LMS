@@ -8,30 +8,84 @@ import {
   CompositeDecorator,
 } from 'draft-js';
 
-import Tag from './Inline/Tag';
-import TeX from './Inline/TeX';
-import Link from './Inline/Link';
-import Tree from './Block/Tree';
-import Card from './Block/Card';
-import Hint from './Block/Hint';
-import Rate from './Inline/Rate';
-import Alert from './Inline/Alert';
-import Input from './Inline/Input';
-import Radio from './Block/Radio';
-import Table from './Block/Table';
-import Video from './Block/Video';
-import Image from './Block/Image';
-import Slider from './Block/Slider';
-import Select from './Inline/Select';
-import Switch from './Inline/Switch';
-import Upload from './Block/Upload';
-import Collapse from './Block/Collapse';
-import Transfer from './Block/Transfer';
-import Progress from './Block/Progress';
-import Carousel from './Block/Carousel';
-import Timeline from './Block/Timeline';
-import Checkbox from './Block/Checkbox';
-import Textarea from './Block/Textarea';
+import Tag from './Tag';
+import TeX from './TeX';
+import Link from './Link';
+import Tree from './Tree';
+import Card from './Card';
+import Hint from './Hint';
+import Rate from './Rate';
+import Alert from './Alert';
+import Input from './Input';
+import Radio from './Radio';
+import Table from './Table';
+import Video from './Video';
+import Image from './Image';
+import Slider from './Slider';
+import Select from './Select';
+import Switch from './Switch';
+import Upload from './Upload';
+import Collapse from './Collapse';
+import Transfer from './Transfer';
+import Progress from './Progress';
+import Carousel from './Carousel';
+import Timeline from './Timeline';
+import Checkbox from './Checkbox';
+import Textarea from './Textarea';
+
+const components = { // можно использовать require()
+  TAG: Tag,
+  TEX: TeX,
+  LINK: Link,
+  TREE: Tree,
+  CARD: Card,
+  HINT: Hint,
+  RATE: Rate,
+  ALERT: Alert,
+  INPUT: Input,
+  RADIO: Radio,
+  TABLE: Table,
+  VIDEO: Video,
+  IMAGE: Image,
+  SLIDER: Slider,
+  UPLOAD: Upload,
+  SELECT: Select,
+  SWITCH: Switch,
+  COLLAPSE: Collapse,
+  TRANSFER: Transfer,
+  PROGRESS: Progress,
+  CAROUSEL: Carousel,
+  TIMELINE: Timeline,
+  CHECKBOX: Checkbox,
+  TEXTAREA: Textarea,
+};
+
+const views = {
+  TREE: 'BLOCK',
+  CARD: 'BLOCK',
+  HINT: 'BLOCK',
+  ALERT: 'BLOCK',
+  RADIO: 'BLOCK',
+  TABLE: 'BLOCK',
+  VIDEO: 'BLOCK',
+  IMAGE: 'BLOCK',
+  SLIDER: 'BLOCK',
+  UPLOAD: 'BLOCK',
+  COLLAPSE: 'BLOCK',
+  TRANSFER: 'BLOCK',
+  PROGRESS: 'BLOCK',
+  CAROUSEL: 'BLOCK',
+  TIMELINE: 'BLOCK',
+  CHECKBOX: 'BLOCK',
+  TEXTAREA: 'BLOCK',
+  LINK: 'INLINE',
+  TEX: 'INLINE',
+  TAG: 'INLINE',
+  RATE: 'INLINE',
+  INPUT: 'INLINE',
+  SWITCH: 'INLINE',
+  SELECT: 'INLINE',
+};
 
 const findEntities = type => (
   contentBlock,
@@ -49,28 +103,14 @@ const findEntities = type => (
   );
 };
 
-const entitiesDecorator = new CompositeDecorator([{
-  strategy: findEntities('LINK'),
-  component: Link,
-}, {
-  strategy: findEntities('TEX'),
-  component: TeX,
-}, {
-  strategy: findEntities('TAG'),
-  component: Tag,
-}, {
-  strategy: findEntities('RATE'),
-  component: Rate,
-}, {
-  strategy: findEntities('INPUT'),
-  component: Input,
-}, {
-  strategy: findEntities('SWITCH'),
-  component: Switch,
-}, {
-  strategy: findEntities('SELECT'),
-  component: Select,
-}]);
+const entitiesDecorator = new CompositeDecorator(
+  Object.keys(views)
+    .filter(type => views[type] === 'INLINE')
+    .map(type => ({
+      strategy: findEntities(type),
+      component: components[type],
+    }))
+);
 
 const blockRenderer = block =>
   block.getType() === 'atomic'
@@ -81,129 +121,15 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
   const entityKey = block.getEntityAt(0);
   const entity = Entity.get(entityKey);
   const { content } = entity.getData();
-  switch (entity.getType()) {
-    case 'TEXTAREA':
-      return (
-        <Textarea
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'RADIO':
-      return (
-        <Radio
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'SLIDER':
-      return (
-        <Slider
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'CHECKBOX':
-      return (
-        <Checkbox
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'HINT':
-      return (
-        <Hint
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'ALERT':
-      return (
-        <Alert
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'TIMELINE':
-      return (
-        <Timeline
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'CAROUSEL':
-      return (
-        <Carousel
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'PROGRESS':
-      return (
-        <Progress
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'UPLOAD':
-      return (
-        <Upload
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'CARD':
-      return (
-        <Card
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'TRANSFER':
-      return (
-        <Transfer
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'TREE':
-      return (
-        <Tree
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'TABLE':
-      return (
-        <Table
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'COLLAPSE':
-      return (
-        <Collapse
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'IMAGE':
-      return (
-        <Image
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    case 'VIDEO':
-      return (
-        <Video
-          content={content}
-          entityKey={entityKey}
-        />
-      );
-    default:
-      return undefined;
-  }
+  return React.createElement(
+    components[
+      entity.getType()
+    ], {
+      content,
+      entityKey,
+    },
+    null
+  );
 };
 
 const addEOLtoInlineEntity = (editorState, block) => { // REFACTORING
@@ -254,8 +180,7 @@ const addEOLtoInlineEntity = (editorState, block) => { // REFACTORING
 };
 
 const insertBlockEntity = (
-  type,
-  content,
+  entityType,
   editorState,
   changeEditorState
 ) => {
@@ -264,9 +189,9 @@ const insertBlockEntity = (
       .insertAtomicBlock(
         editorState,
         Entity.create(
-          type,
+          entityType,
           'IMMUTABLE',
-          { content },
+          { },
         ),
       ' '
     )
@@ -274,8 +199,7 @@ const insertBlockEntity = (
 };
 
 const insertInlineEntity = (
-  type,
-  content,
+  entityType,
   editorState,
   changeEditorState,
 ) => {
@@ -288,9 +212,9 @@ const insertInlineEntity = (
         ' ',
         null,
         Entity.create(
-          type,
+          entityType,
           'IMMUTABLE',
-          { content }
+          { }
         ),
       ),
       'insert-text'
@@ -299,20 +223,16 @@ const insertInlineEntity = (
 };
 
 const insertEntity = (
+  entityType,
   editorState,
-  changeEditorState
-) => ({
-  view: entityView,
-  type: entityType,
-  content: entityContent,
-}) => {
+  changeEditorState,
+) => {
   const args = [
     entityType,
-    entityContent,
     editorState,
     changeEditorState,
   ];
-  switch (entityView) {
+  switch (views[entityType]) {
     case 'BLOCK':
       return insertBlockEntity(...args);
     case 'INLINE':
