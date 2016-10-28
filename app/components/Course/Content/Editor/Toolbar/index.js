@@ -21,17 +21,11 @@ const Toolbar = props =>
         component: Formats,
       }, {
         name: 'Медиа',
-        props: {
-          ...props,
-          insertEntity,
-        },
+        props: { ...props, insertEntity },
         component: Media,
       }, {
         name: 'Виджеты',
-        props: {
-          ...props,
-          insertEntity,
-        },
+        props: { ...props, insertEntity },
         component: Widgets,
       }].map(({
         name,
