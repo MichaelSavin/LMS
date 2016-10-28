@@ -12,40 +12,41 @@ import { insertEntity } from '../../Entities';
 const Toolbar = props =>
   <div className={styles.toolbar}>
     <AntTabs
-      defaultActiveKey="0"
+      defaultActiveKey="1"
       onChange={() => {}}
     >
-      {[{
-        name: 'Форматирование',
-        props,
-        component: Formats,
-      }, {
-        name: 'Медиа',
-        props: { ...props, insertEntity },
-        component: Media,
-      }, {
-        name: 'Виджеты',
-        props: { ...props, insertEntity },
-        component: Widgets,
-      }].map(({
-        name,
-        props: childProps,
-        component,
-      },
-        key,
-      ) =>
-        <AntTabs.TabPane
-          key={key}
-          tab={name}
-          className={styles.pane}
-        >
-          {React.createElement(
-            component,
-            childProps,
-            null
-          )}
-        </AntTabs.TabPane>
-      )}
+      <AntTabs.TabPane
+        key="1"
+        tab="Форматирование"
+        className={styles.pane}
+      >
+        <Formats
+          {...props}
+        />
+      </AntTabs.TabPane>
+
+      <AntTabs.TabPane
+        key="2"
+        tab="Медиа"
+        className={styles.pane}
+      >
+        <Media
+          {...props}
+          insertEntity={insertEntity}
+        />
+      </AntTabs.TabPane>
+
+      <AntTabs.TabPane
+        key="3"
+        tab="Виджеты"
+        className={styles.pane}
+      >
+        <Widgets
+          {... props}
+          insertEntity={insertEntity}
+        />
+      </AntTabs.TabPane>
+
     </AntTabs>
   </div>;
 
