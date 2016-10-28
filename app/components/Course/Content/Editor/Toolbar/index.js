@@ -1,139 +1,59 @@
 import React, { PropTypes } from 'react';
 import { Tabs as AntTabs } from 'antd';
+import styles from './styles.css';
 
-import List from './List';
-import Style from './Style';
-import Align from './Align';
-import Color from './Color';
-import Header from './Header';
-import History from './History';
+import Formats from './Formats';
+import Widgets from './Widgets';
+import Media from './Media';
+// import Tasks from './Tasks';
 
 import { insertEntity } from '../../Entities';
 
-import styles from './styles.css';
-
-const media = [{
-  name: 'Файл',
-  type: 'UPLOAD',
-}, {
-  name: 'Видео',
-  type: 'VIDEO',
-}, {
-  name: 'Изображение',
-  type: 'IMAGE',
-}];
-
-const widgets = [{
-  name: 'Тег',
-  type: 'TAG',
-}, {
-  name: 'Оценка',
-  type: 'RATE',
-}, {
-  name: 'Дерево',
-  type: 'TREE',
-}, {
-  name: 'Таблица',
-  type: 'TABLE',
-}, {
-  name: 'Карточка',
-  type: 'CARD',
-}, {
-  name: 'Карусель',
-  type: 'CAROUSEL',
-}, {
-  name: 'Прогресс',
-  type: 'PROGRESS',
-}, {
-  name: 'Развернуть',
-  type: 'COLLAPSE',
-}, {
-  name: 'Шкала времени',
-  type: 'TIMELINE',
-}, {
-  name: 'Обратите внимание',
-  type: 'ALERT',
-}];
-
-const Toolbar = ({
-  editorState,
-  changeEditorState,
-}) => (
+const Toolbar = props =>
   <div className={styles.toolbar}>
     <AntTabs
-      defaultActiveKey="1"
+      defaultActiveKey="0"
       onChange={() => {}}
     >
-      {[
+      {[{
+        name: 'Форматирование',
+        props,
+        component: Formats,
+      }, {
+        name: 'Медиа',
+        props: {
+          ...props,
+          insertEntity,
+        },
+        component: Media,
+      }, {
+        name: 'Виджеты',
+        props: {
+          ...props,
+          insertEntity,
+        },
+        component: Widgets,
+      }].map(({
+        name,
+        props: childProps,
+        component,
+      },
+        key,
+      ) =>
         <AntTabs.TabPane
+          key={key}
+          tab={name}
           className={styles.pane}
-          tab="Форматирование"
-          key="1"
         >
-          {[Header,
-            Style,
-            Align,
-            List,
-            Color,
-            History,
-          ].map((element, key) =>
-            React.createElement(
-              element, {
-                key,
-                editorState,
-                changeEditorState,
-              },
-              null
-            )
+          {React.createElement(
+            component,
+            childProps,
+            null
           )}
-        </AntTabs.TabPane>,
-
-        ...Object.entries({
-          Медиа: media,
-          Виджеты: widgets,
-        }).map(([
-          tabName,
-          entities,
-        ],
-          tabIndex
-        ) =>
-          <AntTabs.TabPane
-            key={tabIndex + 2}
-            tab={tabName}
-          >
-            {entities.map(({
-              name: entityName,
-              type: entityType,
-            },
-              entityIndex,
-            ) =>
-              <span
-                key={entityIndex}
-                onClick={() => {
-                  insertEntity(
-                    entityType,
-                    editorState,
-                    changeEditorState,
-                  );
-                }}
-                className={styles.item}
-              >
-                {entityName}
-              </span>
-            )}
-          </AntTabs.TabPane>
-        ),
-      ]}
-
-      {/*
-      <AntTabs.TabPane tab="Задания" key="4">
-        ...
-      </AntTabs.TabPane>
-      */}
-
+        </AntTabs.TabPane>
+      )}
     </AntTabs>
-  </div>
-);
+  </div>;
 
 Toolbar.propTypes = {
   editorState: PropTypes.object.isRequired,
