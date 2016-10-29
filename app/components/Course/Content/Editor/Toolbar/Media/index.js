@@ -7,8 +7,7 @@ const Media = ({
   changeEditorState,
 }) =>
   <div className={styles.media}>
-    {[
-      { name: 'Файл', type: 'UPLOAD' },
+    {[{ name: 'Файл', type: 'UPLOAD' },
       { name: 'Видео', type: 'VIDEO' },
       { name: 'Изображение', type: 'IMAGE' },
     ].map(({

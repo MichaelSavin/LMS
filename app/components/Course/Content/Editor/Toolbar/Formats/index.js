@@ -10,8 +10,7 @@ import History from './History';
 
 const Formats = props =>
   <span className={styles.formats}>
-    {[
-      Header,
+    {[Header,
       Style,
       Align,
       List,

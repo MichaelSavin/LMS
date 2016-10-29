@@ -7,8 +7,7 @@ const Widgets = ({
   changeEditorState,
 }) =>
   <div className={styles.widgets}>
-    {[
-      { name: 'Тег', type: 'TAG' },
+    {[{ name: 'Тег', type: 'TAG' },
       { name: 'Оценка', type: 'RATE' },
       { name: 'Дерево', type: 'TREE' },
       { name: 'Таблица', type: 'TABLE' },
