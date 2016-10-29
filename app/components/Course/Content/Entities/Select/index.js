@@ -21,7 +21,17 @@ class Select extends Component {
     } = Entity
       .get(this.props.entityKey)
       .getData()
-      .content;
+      .content
+      ||
+      { answer: undefined,
+        options: [
+          'Вариант 1',
+          'Вариант 2',
+          'Вариант 3',
+          'Вариант 4',
+        ],
+      }
+      ;
     this.state = {
       answer,
       options,

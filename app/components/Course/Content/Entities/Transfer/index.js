@@ -9,17 +9,15 @@ class Transfer extends Component {
 
   constructor(props) {
     super(props);
-    const options = props
-      .content
-      .options
-      .map((option, index) => ({
-        key: index,
-        title: option,
-        chosen: false,
-      }));
     this.state = {
-      ...props.content,
-      options,
+      options: props
+        .content
+        .options
+        .map((option, index) => ({
+          key: index,
+          title: option,
+          chosen: false,
+        })),
       promt: {
         open: false,
         value: null,
@@ -47,8 +45,7 @@ class Transfer extends Component {
           .options
           .map(option =>
             option.title
-          )
-          .join('\n'),
+          ).join('\n'),
       },
     });
   }
@@ -122,11 +119,11 @@ class Transfer extends Component {
       >
         <AntTransfer
           titles={titles}
+          render={item => item.title}
+          onChange={this.moveOption}
           targetKeys={keys}
           dataSource={options}
-          onChange={this.moveOption}
           notFoundContent="Список пуст"
-          render={item => item.title}
         />
         <AntPromt
           type="textarea"
@@ -164,6 +161,26 @@ Transfer.propTypes = {
     titles: PropTypes.array.isRequired,
     options: PropTypes.array.isRequired,
   }).isRequired,
+};
+
+Transfer.defaultProps = {
+  content: {
+    keys: [],
+    titles: [
+      'Бельгия',
+      'Швейцария',
+    ],
+    options: [
+      'Берн',
+      'Лозанна',
+      'Давос',
+      'Базель',
+      'Брюгге',
+      'Льеж',
+      'Гент',
+      'Шарлеруа',
+    ],
+  },
 };
 
 export default Transfer;

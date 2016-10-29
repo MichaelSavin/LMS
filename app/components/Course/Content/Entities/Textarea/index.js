@@ -107,4 +107,10 @@ Textarea.propTypes = {
   }).isRequired,
 };
 
+Textarea.defaultProps = {
+  content: {
+    value: '',
+  },
+};
+
 export default Textarea;

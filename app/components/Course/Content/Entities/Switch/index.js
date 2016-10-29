@@ -9,11 +9,12 @@ class Switch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: Entity
-        .get(this.props.entityKey)
-        .getData()
-        .content
-        .checked,
+      checked: (
+        Entity
+          .get(this.props.entityKey)
+          .getData()
+          .content || {}
+        ).checked || false,
     };
   }
 

@@ -147,4 +147,16 @@ Radio.propTypes = {
   }).isRequired,
 };
 
+Radio.defaultProps = {
+  content: {
+    answer: undefined,
+    options: [
+      'Вариант 1',
+      'Вариант 2',
+      'Вариант 3',
+      'Вариант 4',
+    ],
+  },
+};
+
 export default Radio;

@@ -142,4 +142,16 @@ Checkbox.propTypes = {
   }).isRequired,
 };
 
+Checkbox.defaultProps = {
+  content: {
+    answers: [],
+    options: [
+      'Вариант 1',
+      'Вариант 2',
+      'Вариант 3',
+      'Вариант 4',
+    ],
+  },
+};
+
 export default Checkbox;

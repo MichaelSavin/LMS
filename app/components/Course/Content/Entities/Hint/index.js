@@ -146,4 +146,10 @@ Hint.propTypes = {
   }).isRequired,
 };
 
+Hint.defaultProps = {
+  content: {
+    text: 'Подсказка',
+  },
+};
+
 export default Hint;

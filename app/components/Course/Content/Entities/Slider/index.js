@@ -144,4 +144,11 @@ Slider.propTypes = {
   }).isRequired,
 };
 
+Slider.defaultProps = {
+  content: {
+    value: 50,
+    scale: [0, 100],
+  },
+};
+
 export default Slider;
