@@ -12,5 +12,6 @@
 }
 
 :global .ant-tabs-tabpane {
-  /* ... */
+  height: 30px;
+  align-items: center;
 }

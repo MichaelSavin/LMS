@@ -6,7 +6,6 @@ import Style from './Style';
 import Align from './Align';
 import Color from './Color';
 import Header from './Header';
-import History from './History';
 
 const Formats = props =>
   <span className={styles.formats}>
@@ -15,7 +14,6 @@ const Formats = props =>
       Align,
       List,
       Color,
-      History,
     ].map((element, key) =>
       React.createElement(
         element, {

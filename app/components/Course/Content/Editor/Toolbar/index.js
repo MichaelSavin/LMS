@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Tabs as AntTabs } from 'antd';
 import styles from './styles.css';
 
+import History from './History';
 import Formats from './Formats';
 import Widgets from './Widgets';
 import Media from './Media';
@@ -24,7 +25,6 @@ const Toolbar = props =>
           {...props}
         />
       </AntTabs.TabPane>
-
       <AntTabs.TabPane
         key="2"
         tab="Медиа"
@@ -35,7 +35,6 @@ const Toolbar = props =>
           insertEntity={insertEntity}
         />
       </AntTabs.TabPane>
-
       <AntTabs.TabPane
         key="3"
         tab="Виджеты"
@@ -46,7 +45,6 @@ const Toolbar = props =>
           insertEntity={insertEntity}
         />
       </AntTabs.TabPane>
-
       <AntTabs.TabPane
         key="4"
         tab="Задания"
@@ -57,8 +55,8 @@ const Toolbar = props =>
           insertEntity={insertEntity}
         />
       </AntTabs.TabPane>
-
     </AntTabs>
+    <History {...props} />
   </div>;
 
 Toolbar.propTypes = {

@@ -1,0 +1,10 @@
+.history {
+  position: relative;
+  float: right;
+  margin-top: -70px;
+}
+
+.icon {
+  width: 15px;
+  height: 15px;
+}

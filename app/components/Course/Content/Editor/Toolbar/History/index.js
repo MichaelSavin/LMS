@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 import { EditorState } from 'draft-js';
 import styles from './styles.css';
-import Option from '../Option';
+import Option from '../Formats/Option';
 
 class History extends Component {
 
@@ -89,7 +89,7 @@ class History extends Component {
       redo,
     } = this.state;
     return (
-      <div className={styles.history}>
+      <span className={styles.history}>
         {[{
           icon: 'undo',
           onClick: this.undo,
@@ -113,7 +113,7 @@ class History extends Component {
           </Option>
         )
       }
-      </div>
+      </span>
     );
   }
 }
