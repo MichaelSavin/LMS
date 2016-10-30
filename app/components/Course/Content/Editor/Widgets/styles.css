@@ -1,8 +1,0 @@
-.widgets {
-  width: 300px;
-  display: flex;
-  margin-top: 8px;
-  align-items: center;
-  flex-direction: row;
-  justify-content: space-between;
-}
