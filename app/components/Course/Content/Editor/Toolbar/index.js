@@ -5,7 +5,7 @@ import styles from './styles.css';
 import Formats from './Formats';
 import Widgets from './Widgets';
 import Media from './Media';
-// import Tasks from './Tasks';
+import Tasks from './Tasks';
 
 import { insertEntity } from '../../Entities';
 
@@ -42,7 +42,18 @@ const Toolbar = props =>
         className={styles.pane}
       >
         <Widgets
-          {... props}
+          {...props}
+          insertEntity={insertEntity}
+        />
+      </AntTabs.TabPane>
+
+      <AntTabs.TabPane
+        key="4"
+        tab="Задания"
+        className={styles.pane}
+      >
+        <Tasks
+          {...props}
           insertEntity={insertEntity}
         />
       </AntTabs.TabPane>
