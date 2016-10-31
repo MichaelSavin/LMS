@@ -5,7 +5,11 @@ import React, {
 import {
   getSelectionInlineStyle,
 } from 'draftjs-utils';
-import { RichUtils } from 'draft-js';
+import {
+  Modifier,
+  RichUtils,
+  EditorState,
+} from 'draft-js';
 import styles from './styles.css';
 import Option from '../Option';
 
@@ -57,9 +61,21 @@ class Style extends Component {
         editorState,
         style
       );
-    if (newState) {
-      changeEditorState(newState);
-    }
+    changeEditorState(
+      style === 'SUBSCRIPT' || style === 'SUPERSCRIPT'
+        ? EditorState.push(
+            newState,
+            Modifier.removeInlineStyle(
+              newState.getCurrentContent(),
+              newState.getSelection(),
+              style === 'SUBSCRIPT'
+                ? 'SUPERSCRIPT'
+                : 'SUBSCRIPT',
+            ),
+            'change-inline-style'
+          )
+        : newState
+    );
   };
 
   render() {
@@ -83,6 +99,12 @@ class Style extends Component {
         }, {
           value: 'CODE',
           icon: 'monospace',
+        }, {
+          value: 'SUPERSCRIPT',
+          icon: 'superscript',
+        }, {
+          value: 'SUBSCRIPT',
+          icon: 'subscript',
         }].map(({
           value,
           icon,

@@ -9,17 +9,15 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
-// import {
-//   customStyleMap,
-// } from 'draftjs-utils';
+import {
+  customStyleMap,
+} from 'draftjs-utils';
 import {
   blockRenderer,
   entitiesDecorator,
   addEOLtoInlineEntity,
 } from '../Entities';
-
 import Toolbar from './Toolbar';
-// import Widgets from './Widgets';
 import styles from './styles.css';
 
 class Draft extends Component {
@@ -159,7 +157,7 @@ class Draft extends Component {
           <Editor
             handleKeyCommand={this.handleKeyCommand}
             blockRendererFn={blockRenderer}
-            // customStyleMap={customStyleMap}
+            customStyleMap={customStyleMap}
             blockRenderMap={this.customBlockRenderMap}
             blockStyleFn={this.blockStyleFn}
             customStyleFn={this.customStyleFn}
