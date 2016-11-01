@@ -1,73 +1,59 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
 import Icon from 'components/UI/Icon';
 import styles from './styles.css';
 
 const Unit = ({
-  data: {
-    id,
-    name,
-    content,
-    sectionId,
-    subsectionId,
-  },
+  id,
+  name,
+  content,
+  sectionId,
+  subsectionId,
   actions: {
     addUnit,
     removeUnit,
   },
-}) => (
-  <div className={styles.unit}>
-    <div className={styles.title}>
-      <div className={styles.name}>
-        <Link
-          activeStyle={{ textDecoration: 'underline' }}
-          to={`/${sectionId}-${subsectionId}-${id}`}
-        >
-          {name}
-        </Link>
-      </div>
-      <div className={styles.actions}>
-        <Icon
-          size={12.5}
-          type="clone"
-          action={() =>
-            addUnit({
-              sectionId,
-              subsectionId,
-              unit: {
-                name: `${name} Копия`,
-                content,
-              },
-            })
-          }
-        />
-        <Icon
-          size={15}
-          type="remove"
-          action={() =>
-            removeUnit({
-              sectionId,
-              subsectionId,
-              unitId: id,
-            })
-          }
-        />
-      </div>
-    </div>
-  </div>
-);
+}) =>
+  <span className={styles.unit}>
+    <span className={styles.name}>
+      {name}
+    </span>
+    <span className={styles.actions}>
+      <Icon
+        size={15}
+        type="clone"
+        action={() =>
+          addUnit({
+            sectionId,
+            subsectionId,
+            unit: {
+              name: `${name} Копия`,
+              content,
+            },
+          })
+        }
+      />
+      <Icon
+        size={15}
+        type="remove"
+        action={() =>
+          removeUnit({
+            unitId: id,
+            sectionId,
+            subsectionId,
+          })
+        }
+      />
+    </span>
+  </span>;
 
 Unit.propTypes = {
-  data: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    content: PropTypes.object.isRequired,
-    sectionId: PropTypes.number.isRequired,
-    subsectionId: PropTypes.number.isRequired,
-  }).isRequired,
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  content: PropTypes.object.isRequired,
+  sectionId: PropTypes.number.isRequired,
+  subsectionId: PropTypes.number.isRequired,
   actions: PropTypes.shape({
     addUnit: PropTypes.func.isRequired,
-    renameUnit: PropTypes.func.isRequired,
     removeUnit: PropTypes.func.isRequired,
   }).isRequired,
 };

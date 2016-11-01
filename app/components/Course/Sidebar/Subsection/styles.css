@@ -1,25 +1,17 @@
 .section {
-  display: flex;
-  flex-direction: column;
-  background-color: #474647;
+  /* ... */
 }
 
 .title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  background-color: #6967C4;
-  justify-content: space-between;
+  /* ... */
 }
 
 .name {
-  color: white;
-  padding: 7.5px;
   font-size: 14px;
-  padding-left: 10px;
 }
 
 .actions {
-  color: white;
+  display: none;
+  color: black;
   margin-right: 10px;
 }

@@ -12,12 +12,17 @@ class Course extends Component { // HMR
     const {
       data,
       actions,
+      location,
       children,
     } = this.props;
     return (
       <div className={styles.course}>
         <Sidebar
-          data={data.toJS()}
+          data={data}
+          route={location
+            .pathname
+            .split('/')[1]
+          }
           actions={actions}
         />
         {children &&
@@ -42,6 +47,7 @@ const mapDispatchToProps = dispatch => ({
 Course.propTypes = {
   data: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
   children: PropTypes.element,
 };
 

@@ -60,11 +60,9 @@ class Draft extends Component {
     });
     // }
 
-    if (
-      editorState.getLastChangeType() === 'undo'
-      ||
-      editorState.getLastChangeType() === 'redo'
-    ) {
+    if (['undo', 'redo'].includes(
+      editorState.getLastChangeType()
+    )) {
       this.setState({
         editorState: EditorState.set(
           editorState, {

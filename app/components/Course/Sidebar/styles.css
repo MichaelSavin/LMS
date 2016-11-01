@@ -1,25 +1,39 @@
 .sidebar {
-  min-width: 350px;
-  display: flex;
-  flex-direction: column;
+  width: 350px;
 }
 
-.name {
-  padding: 10px;
-  display: none;
+:global .ant-menu {
+  background: #EEE !important;
 }
 
-.info {
-  background-color: #EEE;
-  padding-left: 10px;
-  font-size: 12px;
-  display: none;
+:global .ant-menu-item {
+  background: #EEE !important;
 }
 
-.sidebar a {
-  color: black;
+:global .ant-menu-item-active {
+  background: #EEE !important;
 }
 
-.sidebar a:hover {
-  color: black;
+:global .ant-menu-item-selected {
+  background: #E8E8E8 !important;
+}
+
+:global .ant-menu-submenu {
+  background: #EEE !important;
+}
+
+:global .ant-menu-submenu-open {
+  background: #EEE !important;
+}
+
+:global .ant-menu-submenu-active {
+  background: #EEE !important;
+}
+
+:global .ant-menu-submenu-selected {
+  background: #EEE !important;
+}
+
+:global .ant-menu-submenu-inline {
+  background: #EEE !important;
 }

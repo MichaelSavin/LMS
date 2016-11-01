@@ -1,32 +1,18 @@
 .unit {
-  display: flex;
-  flex-direction: column;
-  background-color: #EEE;
+  /* ... */
 }
 
 .title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  /* ... */
 }
 
 .name {
-  padding: 5.35px;
-  font-size: 14px;
-  padding-left: 10px;
-}
-
-.link {
-  text-decoration: underline;
+  font-size: 13px;
 }
 
 .actions {
+  display: none;
   color: black;
   margin-right: 10px;
 }
 
-a {
-  color: black;
-  text-decoration: none;
-}
