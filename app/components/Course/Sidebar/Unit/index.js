@@ -23,14 +23,16 @@ const Unit = ({
         type="clone"
         action={(event) => {
           event.stopPropagation();
-          return addUnit({
-            sectionId,
-            subsectionId,
-            unit: {
-              name: `${name} Копия`,
-              content,
-            },
-          });
+          if (confirm('Клонировать блок?')) {
+            addUnit({
+              sectionId,
+              subsectionId,
+              unit: {
+                name: `${name} Копия`,
+                content,
+              },
+            });
+          }
         }}
       />
       <Icon
@@ -38,11 +40,13 @@ const Unit = ({
         type="remove"
         action={(event) => {
           event.stopPropagation();
-          removeUnit({
-            unitId: id,
-            sectionId,
-            subsectionId,
-          });
+          if (confirm('Удалить блок?')) {
+            removeUnit({
+              unitId: id,
+              sectionId,
+              subsectionId,
+            });
+          }
         }}
       />
     </span>

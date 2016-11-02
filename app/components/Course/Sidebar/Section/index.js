@@ -9,7 +9,7 @@ const Section = ({
   actions: {
     addSection,
     renameSection,
-    removeSection,
+    // removeSection,
     addSubsection,
   },
 }) =>
@@ -23,12 +23,14 @@ const Section = ({
         type="add"
         action={(event) => {
           event.stopPropagation();
-          addSubsection({
-            sectionId: id,
-            subsection: {
-              name: 'Новый подраздел',
-            },
-          });
+          if (confirm('Создать новый подраздел?')) {
+            addSubsection({
+              sectionId: id,
+              subsection: {
+                name: 'Новый подраздел',
+              },
+            });
+          }
         }}
       />
       <Icon
@@ -47,24 +49,30 @@ const Section = ({
         type="clone"
         action={(event) => {
           event.stopPropagation();
-          addSection({
-            section: {
-              name: `${name} Копия`,
-              subsections,
-            },
-          });
+          if (confirm('Клонировать раздел?')) {
+            addSection({
+              section: {
+                name: `${name} Копия`,
+                subsections,
+              },
+            });
+          }
         }}
       />
+      { /*
       <Icon
         size={15}
         type="remove"
         action={(event) => {
           event.stopPropagation();
-          removeSection({
-            sectionId: id,
-          });
+          if (confirm('Удалить раздел?')) {
+            removeSection({
+              sectionId: id,
+            });
+          }
         }}
       />
+      */ }
     </span>
   </span>;
 

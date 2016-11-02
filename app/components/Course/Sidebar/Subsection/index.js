@@ -25,16 +25,18 @@ const Subsection = ({
         type="add"
         action={(event) => {
           event.stopPropagation();
-          return addUnit({
-            sectionId,
-            subsectionId: id,
-            unit: {
-              name: 'Новый блок',
-              content: convertToRaw(
-                ContentState.createFromText('')
-              ),
-            },
-          });
+          if (confirm('Создать новый блок?')) {
+            addUnit({
+              sectionId,
+              subsectionId: id,
+              unit: {
+                name: 'Новый блок',
+                content: convertToRaw(
+                  ContentState.createFromText('')
+                ),
+              },
+            });
+          }
         }}
       />
       <Icon
@@ -42,10 +44,10 @@ const Subsection = ({
         type="edit"
         action={(event) => {
           event.stopPropagation();
-          return renameSubsection({
+          renameSubsection({
             sectionId,
             subsectionId: id,
-            name: prompt('Название подсекции', name) || name,
+            name: prompt('Название подраздела', name) || name,
           });
         }}
       />
@@ -54,13 +56,15 @@ const Subsection = ({
         type="clone"
         action={(event) => {
           event.stopPropagation();
-          return addSubsection({
-            sectionId,
-            subsection: {
-              name: `${name} Копия`,
-              units,
-            },
-          });
+          if (confirm('Клонировать подраздел?')) {
+            addSubsection({
+              sectionId,
+              subsection: {
+                name: `${name} Копия`,
+                units,
+              },
+            });
+          }
         }}
       />
       <Icon
@@ -68,10 +72,12 @@ const Subsection = ({
         type="remove"
         action={(event) => {
           event.stopPropagation();
-          return removeSubsection({
-            sectionId,
-            subsectionId: id,
-          });
+          if (confirm('Удалить подраздел?')) {
+            removeSubsection({
+              sectionId,
+              subsectionId: id,
+            });
+          }
         }}
       />
     </span>
