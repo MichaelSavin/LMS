@@ -47,7 +47,20 @@ class Sidebar extends Component {
         mode="inline"
         theme="light"
         onClick={this.onClick}
-        // openKeys={[this.state.path]}
+        defaultOpenKeys={
+          this.state.path
+            .split('-')
+            .reduce((
+              previousValue,
+              currentValue,
+              index,
+            ) => [
+              ...previousValue, [
+                previousValue[index - 1],
+                currentValue,
+              ].join('-'),
+            ])
+        }
         className={styles.sidebar}
         selectedKeys={[this.state.path]}
       >
