@@ -2,10 +2,6 @@
   width: 350px;
 }
 
-:global .ant-menu {
-  background: #EEE !important;
-}
-
 :global .ant-menu-item {
   background: #EEE !important;
 }
@@ -35,5 +31,9 @@
 }
 
 :global .ant-menu-submenu-inline {
+  background: #EEE !important;
+}
+
+:global .ant-menu-submenu-title:hover {
   background: #EEE !important;
 }

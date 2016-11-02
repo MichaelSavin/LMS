@@ -21,10 +21,11 @@ const Subsection = ({
     </span>
     <span className={styles.actions}>
       <Icon
-        size={15}
+        size={20}
         type="add"
-        action={() =>
-          addUnit({
+        action={(event) => {
+          event.stopPropagation();
+          return addUnit({
             sectionId,
             subsectionId: id,
             unit: {
@@ -33,42 +34,45 @@ const Subsection = ({
                 ContentState.createFromText('')
               ),
             },
-          })
-        }
+          });
+        }}
       />
       <Icon
-        size={15}
+        size={17.5}
         type="edit"
-        action={() =>
-          renameSubsection({
+        action={(event) => {
+          event.stopPropagation();
+          return renameSubsection({
             sectionId,
             subsectionId: id,
             name: prompt('Название подсекции', name) || name,
-          })
-        }
+          });
+        }}
       />
       <Icon
-        size={15}
+        size={17.5}
         type="clone"
-        action={() =>
-          addSubsection({
+        action={(event) => {
+          event.stopPropagation();
+          return addSubsection({
             sectionId,
             subsection: {
               name: `${name} Копия`,
               units,
             },
-          })
-        }
+          });
+        }}
       />
       <Icon
-        size={15}
+        size={17.5}
         type="remove"
-        action={() =>
-          removeSubsection({
+        action={(event) => {
+          event.stopPropagation();
+          return removeSubsection({
             sectionId,
             subsectionId: id,
-          })
-        }
+          });
+        }}
       />
     </span>
   </span>;

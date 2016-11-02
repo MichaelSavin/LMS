@@ -19,29 +19,31 @@ const Unit = ({
     </span>
     <span className={styles.actions}>
       <Icon
-        size={15}
+        size={17.5}
         type="clone"
-        action={() =>
-          addUnit({
+        action={(event) => {
+          event.stopPropagation();
+          return addUnit({
             sectionId,
             subsectionId,
             unit: {
               name: `${name} Копия`,
               content,
             },
-          })
-        }
+          });
+        }}
       />
       <Icon
-        size={15}
+        size={17.5}
         type="remove"
-        action={() =>
+        action={(event) => {
+          event.stopPropagation();
           removeUnit({
             unitId: id,
             sectionId,
             subsectionId,
-          })
-        }
+          });
+        }}
       />
     </span>
   </span>;

@@ -19,47 +19,51 @@ const Section = ({
     </span>
     <span className={styles.actions}>
       <Icon
-        size={15}
+        size={20}
         type="add"
-        action={() =>
+        action={(event) => {
+          event.stopPropagation();
           addSubsection({
             sectionId: id,
             subsection: {
               name: 'Новый подраздел',
             },
-          })
-        }
+          });
+        }}
       />
       <Icon
-        size={15}
+        size={17.5}
         type="edit"
-        action={() =>
+        action={(event) => {
+          event.stopPropagation();
           renameSection({
             sectionId: id,
             name: prompt('Название раздела', name) || name,
-          })
-        }
+          });
+        }}
       />
       <Icon
-        size={15}
+        size={17.5}
         type="clone"
-        action={() =>
+        action={(event) => {
+          event.stopPropagation();
           addSection({
             section: {
               name: `${name} Копия`,
               subsections,
             },
-          })
-        }
+          });
+        }}
       />
       <Icon
-        size={15}
+        size={17.5}
         type="remove"
-        action={() =>
+        action={(event) => {
+          event.stopPropagation();
           removeSection({
             sectionId: id,
-          })
-        }
+          });
+        }}
       />
     </span>
   </span>;

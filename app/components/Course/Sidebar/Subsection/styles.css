@@ -1,5 +1,6 @@
-.section {
-  /* ... */
+.subsection {
+  display: flex;
+  justify-content: space-between;
 }
 
 .title {
@@ -13,5 +14,9 @@
 .actions {
   display: none;
   color: black;
-  margin-right: 10px;
+  margin-right: 20px;
+}
+
+.subsection:hover .actions {
+  display: inline;
 }
