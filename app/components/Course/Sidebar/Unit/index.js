@@ -19,7 +19,7 @@ const Unit = ({
     </span>
     <span className={styles.actions}>
       <Icon
-        size={17.5}
+        size={15}
         type="clone"
         action={(event) => {
           event.stopPropagation();
@@ -34,7 +34,7 @@ const Unit = ({
         }}
       />
       <Icon
-        size={17.5}
+        size={15}
         type="remove"
         action={(event) => {
           event.stopPropagation();

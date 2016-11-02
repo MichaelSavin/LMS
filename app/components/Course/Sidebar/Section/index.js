@@ -19,7 +19,7 @@ const Section = ({
     </span>
     <span className={styles.actions}>
       <Icon
-        size={20}
+        size={17.5}
         type="add"
         action={(event) => {
           event.stopPropagation();
@@ -32,7 +32,7 @@ const Section = ({
         }}
       />
       <Icon
-        size={17.5}
+        size={15}
         type="edit"
         action={(event) => {
           event.stopPropagation();
@@ -43,7 +43,7 @@ const Section = ({
         }}
       />
       <Icon
-        size={17.5}
+        size={15}
         type="clone"
         action={(event) => {
           event.stopPropagation();
@@ -56,7 +56,7 @@ const Section = ({
         }}
       />
       <Icon
-        size={17.5}
+        size={15}
         type="remove"
         action={(event) => {
           event.stopPropagation();

@@ -37,3 +37,8 @@
 :global .ant-menu-submenu-title:hover {
   background: #EEE !important;
 }
+
+:global .ant-menu-submenu-title::after {
+  font-size: 16px !important;
+  font-weight: bold;
+}
