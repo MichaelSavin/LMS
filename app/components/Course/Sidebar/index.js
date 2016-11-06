@@ -20,7 +20,7 @@ class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      path: props.route,
+      route: props.route,
     };
   }
 
@@ -31,7 +31,7 @@ class Sidebar extends Component {
         .push(`/${key}`);
     }
     this.setState({
-      path: key,
+      route: key,
     });
   }
 
@@ -42,27 +42,32 @@ class Sidebar extends Component {
       },
       actions,
     } = this.props;
+    const {
+      route,
+    } = this.state;
     return (
       <AntMenu
         mode="inline"
         theme="light"
         onClick={this.onClick}
         defaultOpenKeys={
-          this.state.path
-            .split('-')
-            .reduce((
-              previousValue,
-              currentValue,
-              index,
-            ) => [
-              ...previousValue, [
-                previousValue[index - 1],
+          route
+            ? route
+              .split('-')
+              .reduce((
+                previousValue,
                 currentValue,
-              ].join('-'),
-            ])
+                index,
+              ) => [
+                ...previousValue, [
+                  previousValue[index - 1],
+                  currentValue,
+                ].join('-'),
+              ])
+            : []
         }
         className={styles.sidebar}
-        selectedKeys={[this.state.path]}
+        selectedKeys={[route]}
       >
         {sections.map(({
           name: sectionName,
