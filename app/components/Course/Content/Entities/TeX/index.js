@@ -13,11 +13,12 @@ class TeX extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: Entity
-        .get(this.props.entityKey)
-        .getData()
-        .content
-        .value,
+      value: (
+        Entity
+          .get(this.props.entityKey)
+          .getData()
+          .content || {}
+        ).value || 'e=mc^2',
       promt: {
         open: false,
         value: null,

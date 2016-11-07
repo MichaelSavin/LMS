@@ -21,7 +21,9 @@ const tasks = [{
   ],
 }, {
   section: 'Математические',
-  items: [],
+  items: [
+    { name: 'Формула', type: 'TEX' },
+  ],
 }, {
   section: 'Другие',
   items: [],
