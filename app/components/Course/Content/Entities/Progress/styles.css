@@ -1,3 +1,18 @@
 .progress {
   /* ... */
 }
+
+.preview {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+
+.preview .title {
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
