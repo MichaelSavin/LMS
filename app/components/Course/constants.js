@@ -8,3 +8,4 @@ export const REMOVE_SECTION = 'Course/REMOVE_SECTION';
 export const ADD_SUBSECTION = 'Course/ADD_SUBSECTION';
 export const RENAME_SUBSECTION = 'Course/RENAME_SUBSECTION';
 export const REMOVE_SUBSECTION = 'Course/REMOVE_SUBSECTION';
+export const IMPORT_COURSE = 'Course/IMPORT';

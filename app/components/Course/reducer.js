@@ -12,6 +12,7 @@ import {
   ADD_SUBSECTION,
   RENAME_SUBSECTION,
   REMOVE_SUBSECTION,
+  IMPORT_COURSE,
 } from './constants';
 
 const initialState = fromJS(mock);
@@ -123,6 +124,9 @@ const courseReducer = (course = initialState, action) => {
         'units',
         action.unitId,
       ]);
+
+    case IMPORT_COURSE:
+      return fromJS(action.course);
 
     default:
       return course;

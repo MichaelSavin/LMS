@@ -9,6 +9,7 @@ import {
   ADD_SUBSECTION,
   RENAME_SUBSECTION,
   REMOVE_SUBSECTION,
+  IMPORT_COURSE,
 } from './constants';
 
 export const addSection = ({
@@ -109,4 +110,11 @@ export const removeUnit = ({
   sectionId,
   subsectionId,
   unitId,
+});
+
+export const importCourse = ({
+  course,
+}) => ({
+  type: IMPORT_COURSE,
+  course,
 });

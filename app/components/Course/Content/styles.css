@@ -1,5 +1,5 @@
 .content {
-  width: calc(100% - 370px);
+  width: 1050px;
   margin: 0 20px;
   display: flex;
   flex-direction: column;
