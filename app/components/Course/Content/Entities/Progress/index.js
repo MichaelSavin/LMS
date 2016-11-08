@@ -102,11 +102,7 @@ class Progress extends Component {
 
   render() {
     const {
-      temp: {
-        type,
-        status,
-        percent,
-      },
+      temp,
       modal,
       content,
     } = this.state;
@@ -130,37 +126,41 @@ class Progress extends Component {
             <AntForm horizontal>
               <AntForm.Item label="Вид">
                 <AntRadio.Group
+                  value={temp.type}
                   onChange={this.changeType}
-                  value={type}
                 >
-                  <AntRadio.Button value="line">
-                    Линейный
-                  </AntRadio.Button>
-                  <AntRadio.Button value="circle">
-                    Радиальный
-                  </AntRadio.Button>
+                  {[{ type: 'line', name: 'Линейный' },
+                    { type: 'circle', name: 'Радиальный' },
+                  ].map(({ type, name }, index) =>
+                    <AntRadio.Button
+                      key={index}
+                      value={type}
+                    > {name}
+                    </AntRadio.Button>
+                  )}
                 </AntRadio.Group>
               </AntForm.Item>
               <AntForm.Item label="Цвет">
                 <AntRadio.Group
+                  value={temp.status}
                   onChange={this.changeStatus}
-                  value={status}
                 >
-                  <AntRadio.Button value="default">
-                    Синий
-                  </AntRadio.Button>
-                  <AntRadio.Button value="success">
-                    Зеленый
-                  </AntRadio.Button>
-                  <AntRadio.Button value="exception">
-                    Красный
-                  </AntRadio.Button>
+                  {[{ type: 'normal', name: 'Синий' },
+                    { type: 'success', name: 'Зеленый' },
+                    { type: 'exception', name: 'Красный' },
+                  ].map(({ type, name }, index) =>
+                    <AntRadio.Button
+                      key={index}
+                      value={type}
+                    > {name}
+                    </AntRadio.Button>
+                  )}
                 </AntRadio.Group>
               </AntForm.Item>
               <AntForm.Item label="Процент">
                 <AntSlider
                   onChange={this.changePercent}
-                  value={percent}
+                  value={temp.percent}
                 />
               </AntForm.Item>
             </AntForm>
@@ -169,10 +169,10 @@ class Progress extends Component {
                 Предосмотр
               </span>
               <AntProgress
-                type={type}
-                status={status}
-                percent={percent}
-                format={() => `${percent}%`}
+                type={temp.type}
+                status={temp.status}
+                percent={temp.percent}
+                format={() => `${temp.percent}%`}
               />
             </div>
           </div>
@@ -192,7 +192,7 @@ Progress.propTypes = {
 Progress.defaultProps = {
   content: {
     type: 'line',
-    status: 'default',
+    status: 'normal',
     percent: 50,
   },
 };
