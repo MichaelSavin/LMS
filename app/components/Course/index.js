@@ -20,6 +20,13 @@ class Course extends Component { // HMR
             reader.result
           ),
         });
+      this.context // eslint-disable-line
+        .router
+        .push(this
+          .props
+          .location
+          .pathname
+        );
     };
     reader.readAsText(blob);
   }
@@ -71,6 +78,7 @@ class Course extends Component { // HMR
           {children &&
             React.cloneElement(
               children, {
+                // key: Math.random(),
                 data: data.toJS(),
                 actions,
               }
@@ -93,6 +101,10 @@ Course.propTypes = {
   actions: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   children: PropTypes.element,
+};
+
+Course.contextTypes = {
+  router: React.PropTypes.object.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Course);
