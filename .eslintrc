@@ -88,6 +88,7 @@
     "fp/no-unused-expression": 0,
     "fp/no-mutating-methods": [2, {
       "allowedObjects": [
+        "list",
         "List",
         "EditorState"
       ]

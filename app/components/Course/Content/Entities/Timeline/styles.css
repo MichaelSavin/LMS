@@ -1,3 +1,83 @@
 .timeline {
   /* ... */
 }
+
+.step {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.title {
+  display: flex;
+  padding-right: 30px;
+  justify-content: space-between;
+}
+
+.circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 7.5px;
+}
+
+.color {
+  width: 50px;
+}
+
+.blue {
+  composes: circle;
+  border: 2px solid #2DB7F5;
+}
+
+.green {
+  composes: circle;
+  border: 2px solid #87D068;
+}
+
+.red {
+  composes: circle;
+  border: 2px solid #F50;
+}
+
+.text {
+  /* ... */
+  width: 400px;
+}
+
+.image {
+  /* ... */
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+
+.preview .title {
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.remove {
+  cursor: pointer;
+}
+
+:global .ant-select-selection__rendered {
+  display: flex !important;
+  align-items: center !important;
+}
+
+:global .ant-timeline-item-last {
+  padding-bottom: 0 !important;
+}
+
+:global .ant-timeline-item-last :global .ant-timeline-item-content {
+  min-height: 0 !important;
+}
