@@ -187,6 +187,15 @@ Progress.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     percent: PropTypes.number.isRequired,
+    type: PropTypes.oneOf([
+      'line',
+      'circle',
+    ]).isRequired,
+    status: PropTypes.oneOf([
+      'normal',
+      'success',
+      'exception',
+    ]).isRequired,
   }).isRequired,
 };
 
