@@ -34,15 +34,6 @@ class Progress extends Component {
     );
   }
 
-  openModal = () => {
-    this.setState({
-      modal: true,
-      temp: this
-        .state
-        .content,
-    });
-  }
-
   changeType = (event) => {
     this.setState({
       temp: {
@@ -77,6 +68,15 @@ class Progress extends Component {
           .temp,
         percent: value,
       },
+    });
+  }
+
+  openModal = () => {
+    this.setState({
+      modal: true,
+      temp: this
+        .state
+        .content,
     });
   }
 
