@@ -152,6 +152,7 @@ class Progress extends Component {
                     <AntRadio.Button
                       key={index}
                       value={type}
+                      className={styles[type]}
                     > {name}
                     </AntRadio.Button>
                   )}
