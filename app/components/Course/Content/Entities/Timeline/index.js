@@ -173,7 +173,7 @@ class Timeline extends Component {
           onCancel={this.closeModal}
           cancelText="Отмена"
         >
-          <Components.SortableList
+          <Sortable.List
             onSortEnd={this.dragStep}
             useDragHandle
           >
@@ -182,12 +182,12 @@ class Timeline extends Component {
                 step,
                 index
               ) =>
-                <Components.SortableItem
+                <Sortable.Item
                   key={index}
                   index={index}
                 >
                   <div className={styles.step}>
-                    <Components.SortableHandler />
+                    <Sortable.Handler />
                     <AntSelect
                       value={step.color}
                       className={styles.color}
@@ -228,7 +228,7 @@ class Timeline extends Component {
                       />
                     </AntPopconfirm>
                   </div>
-                </Components.SortableItem>
+                </Sortable.Item>
               )}
               <div className={styles.preview}>
                 <span className={styles.title}>
@@ -237,7 +237,7 @@ class Timeline extends Component {
                 <Components.Timeline data={temp} />
               </div>
             </div>
-          </Components.SortableList>
+          </Sortable.List>
         </AntModal>
       </div>
     );
@@ -294,13 +294,16 @@ const Components = {
         </AntTimeline.Item>
       )}
     </AntTimeline>,
-  SortableList: SortableContainer(
+};
+
+const Sortable = {
+  List: SortableContainer(
     ({ children }) => <ul>{children}</ul>
   ),
-  SortableItem: SortableElement(
+  Item: SortableElement(
     ({ children }) => <li>{children}</li>
   ),
-  SortableHandler: SortableHandle(() =>
+  Handler: SortableHandle(() =>
     <AntIcon
       type="appstore-o"
       className={styles.drag}
