@@ -12,21 +12,21 @@ import {
   Popconfirm as AntPopconfirm,
 } from 'antd';
 import { Entity } from 'draft-js';
-import { fromJS, List } from 'immutable';
-import { isEqual } from 'lodash';
+// import { fromJS, List } from 'immutable';
+import { isEqual, set, update, remove } from 'lodash/fp';
+// import { sortable } from 'react-sortable';
 import styles from './styles.css';
 
 class Timeline extends Component {
 
   constructor(props) {
     super(props);
-    const data = fromJS(
-      props.content
-    );
+    const { content } = props;
     this.state = {
-      content: data,
+      // drag: null,
+      temp: content,
       modal: false,
-      temp: data,
+      content,
     };
   }
 
@@ -58,7 +58,7 @@ class Timeline extends Component {
     });
     Entity.replaceData(
       this.props.entityKey, {
-        content: content.toJS(),
+        content,
       }
     );
   }
@@ -71,56 +71,61 @@ class Timeline extends Component {
 
   changeColor = index => (value) => {
     this.setState({
-      temp: this.state
-        .temp.setIn([
-          'steps',
-          index,
-          'color',
-        ],
-          value
-        ),
+      temp: set([
+        'steps',
+        index,
+        'color',
+      ],
+        value,
+        this.state.temp,
+      ),
     });
   }
 
   changeText = index => (event) => {
     this.setState({
-      temp: this.state
-        .temp.setIn([
-          'steps',
-          index,
-          'text',
-        ],
-          event
-            .target
-            .value,
-        ),
+      temp: set([
+        'steps',
+        index,
+        'text',
+      ],
+        event.target.value,
+        this.state.temp,
+      ),
     });
   }
 
   addStep = () => {
     this.setState({
-      temp: this.state
-        .temp.updateIn([
-          'steps',
-        ],
-          List.of(),
-          list => list.push(fromJS({
-            text: 'Новое событие',
-            color: 'blue',
-          }))
-        ),
+      temp: update(
+        'steps',
+        steps => steps.concat([{
+          text: 'Новое событие',
+          color: 'blue',
+        }]),
+        this.state.temp,
+      ),
     });
   }
 
   removeStep = index => () => {
     this.setState({
-      temp: this.state
-        .temp.deleteIn([
-          'steps',
-          index,
-        ]),
+      temp: update(
+        'steps',
+        steps => remove(
+          step => steps.indexOf(
+            step
+          ) === index,
+          steps,
+        ),
+        this.state.temp,
+      ),
     });
   }
+
+  // dragStep = (state) => {
+  //   this.setState(state);
+  // }
 
   render() {
     const {
@@ -130,7 +135,7 @@ class Timeline extends Component {
     } = this.state;
     return (
       <div onDoubleClick={this.openModal}>
-        <Element data={content} />
+        <Components.Timeline data={content} />
         <AntModal
           onOk={this.saveSettings}
           title={
@@ -152,38 +157,33 @@ class Timeline extends Component {
           cancelText="Отмена"
         >
           <div className={styles.steps}>
-            {temp.get('steps').map((
+            {temp.steps.map((
               step,
               index
             ) =>
-              <div
-                key={index}
-                className={styles.step}
-              >
-                <div>
-                  <AntSelect
-                    value={step.get('color')}
-                    className={styles.color}
-                    onChange={this.changeColor(index)}
-                  >
-                    {['blue',
-                      'red',
-                      'green',
-                      ].map((color, _index) =>
-                        <AntSelect.Option
-                          key={_index}
-                          value={color}
-                        >
-                          <div
-                            className={styles[color]}
-                          />
-                        </AntSelect.Option>
-                    )}
-                  </AntSelect>
-                </div>
+              <div className={styles.step} key={index}>
+                <AntSelect
+                  value={step.color}
+                  className={styles.color}
+                  onChange={this.changeColor(index)}
+                >
+                  {['blue',
+                    'red',
+                    'green',
+                    ].map((color, _index) =>
+                      <AntSelect.Option
+                        key={_index}
+                        value={color}
+                      >
+                        <div
+                          className={styles[color]}
+                        />
+                      </AntSelect.Option>
+                  )}
+                </AntSelect>
                 <div className={styles.text}>
                   <AntInput
-                    value={step.get('text')}
+                    value={step.text}
                     onChange={this.changeText(index)}
                   />
                 </div>
@@ -207,7 +207,7 @@ class Timeline extends Component {
               <span className={styles.title}>
                 Предосмотр
               </span>
-              <Element data={temp} />
+              <Components.Timeline data={temp} />
             </div>
           </div>
         </AntModal>
@@ -244,12 +244,13 @@ Timeline.defaultProps = {
   },
 };
 
-const Element = ({ data }) => // eslint-disable-line
-  <AntTimeline>
-    {data.toJS().steps.map(({
-      text,
-      color,
-      image,
+const Components = {
+  Timeline: ({ data }) => // eslint-disable-line
+    <AntTimeline>
+      {data.steps.map(({
+        text,
+        color,
+        image,
       }, index) =>
         <AntTimeline.Item
           key={index}
@@ -263,7 +264,10 @@ const Element = ({ data }) => // eslint-disable-line
             />
           }
         </AntTimeline.Item>
-    )}
-  </AntTimeline>;
+      )}
+    </AntTimeline>,
+  // Sortable: sortable(({ children }) =>
+  //   <div>{children}</div>),
+};
 
 export default Timeline;
