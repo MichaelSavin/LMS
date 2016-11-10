@@ -2,12 +2,23 @@
   /* ... */
 }
 
+body > li {
+  z-index: 9999;
+  list-style: none;
+}
+
 .step {
-  margin: 10px 0;
+  padding: 5px 0;
   display: flex;
+  user-select: none;
   align-items: center;
   flex-direction: row;
   justify-content: space-around;
+}
+
+.drag {
+  margin-right: 5px;
+  cursor: grab;
 }
 
 .title {
@@ -43,7 +54,7 @@
 
 .text {
   /* ... */
-  width: 400px;
+  width: 380px;
 }
 
 .image {
