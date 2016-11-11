@@ -143,71 +143,20 @@ class Sample extends Component {
     } = this.state;
     return (
       <div>
-        {editor
-          ?
-            <div className={styles.editor}>
-              <Sortable.List
-                onSortEnd={this.dragStep}
-                useDragHandle
-              >
-                <div className={styles.steps}>
-                  {temp.steps.map((
-                    step,
-                    index
-                  ) =>
-                    <Sortable.Item
-                      key={index}
-                      index={index}
-                    >
-                      <div className={styles.step}>
-                        <Sortable.Handler />
-                        <AntSelect
-                          value={step.color}
-                          className={styles.color}
-                          onChange={this.changeColor(index)}
-                        >
-                          {['blue',
-                            'red',
-                            'green',
-                            ].map((color, _index) =>
-                              <AntSelect.Option
-                                key={_index}
-                                value={color}
-                              >
-                                <div
-                                  className={styles[color]}
-                                />
-                              </AntSelect.Option>
-                          )}
-                        </AntSelect>
-                        <div className={styles.text}>
-                          <AntInput
-                            value={step.text}
-                            onChange={this.changeText(index)}
-                          />
-                        </div>
-                        { /* <div className={styles.image}>
-                          Картинка
-                        </div> */ }
-                        <AntPopconfirm
-                          title="Удалить событие?"
-                          okText="Да"
-                          onConfirm={this.removeStep(index)}
-                          cancelText="Нет"
-                        >
-                          <AntIcon
-                            type="close"
-                            className={styles.remove}
-                          />
-                        </AntPopconfirm>
-                      </div>
-                    </Sortable.Item>
-                  )}
-                </div>
-              </Sortable.List>
-            </div>
-          :
-            <Components.Timeline data={content} />
+        <Components.Preview
+          data={editor
+            ? temp
+            : content
+          }
+        />
+        {editor &&
+          <Components.Editor
+            data={temp}
+            dragStep={this.dragStep}
+            removeStep={this.removeStep}
+            changeText={this.changeText}
+            changeColor={this.changeColor}
+          />
         }
         <div className={styles.actions}>
           <AntButton
@@ -269,7 +218,7 @@ Sample.defaultProps = {
 };
 
 const Components = {
-  Timeline: ({ data }) => // eslint-disable-line
+  Preview: ({ data }) => // eslint-disable-line
     <AntTimeline>
       {data.steps.map(({
         text,
@@ -290,6 +239,74 @@ const Components = {
         </AntTimeline.Item>
       )}
     </AntTimeline>,
+  Editor: ({ // eslint-disable-line
+    data, // eslint-disable-line
+    dragStep, // eslint-disable-line
+    removeStep, // eslint-disable-line
+    changeText, // eslint-disable-line
+    changeColor, // eslint-disable-line
+  }) =>
+    <div className={styles.editor}>
+      <Sortable.List
+        onSortEnd={dragStep}
+        useDragHandle
+      >
+        <div className={styles.steps}>
+          {data.steps.map((
+            step,
+            index
+          ) =>
+            <Sortable.Item
+              key={index}
+              index={index}
+            >
+              <div className={styles.step}>
+                <Sortable.Handler />
+                <AntSelect
+                  value={step.color}
+                  className={styles.color}
+                  onChange={changeColor(index)}
+                >
+                  {['blue',
+                    'red',
+                    'green',
+                    ].map((color, _index) =>
+                      <AntSelect.Option
+                        key={_index}
+                        value={color}
+                      >
+                        <div
+                          className={styles[color]}
+                        />
+                      </AntSelect.Option>
+                  )}
+                </AntSelect>
+                <div className={styles.text}>
+                  <AntInput
+                    value={step.text}
+                    onChange={changeText(index)}
+                  />
+                </div>
+                { /* <div className={styles.image}>
+                  Картинка
+                </div> */ }
+                <AntPopconfirm
+                  title="Удалить событие?"
+                  okText="Да"
+                  onConfirm={removeStep(index)}
+                  cancelText="Нет"
+                >
+                  <AntIcon
+                    type="close"
+                    className={styles.remove}
+                  />
+                </AntPopconfirm>
+              </div>
+            </Sortable.Item>
+          )}
+        </div>
+      </Sortable.List>
+    </div>,
 };
 
 const Sortable = {
