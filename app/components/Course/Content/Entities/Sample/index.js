@@ -10,19 +10,13 @@ import {
 } from 'lodash/fp';
 import {
   arrayMove,
-  SortableHandle,
-  SortableElement,
-  SortableContainer,
 } from 'react-sortable-hoc';
 import {
-  Icon as AntIcon,
-  Input as AntInput,
-  Select as AntSelect,
   Button as AntButton,
-  Timeline as AntTimeline,
-  Popconfirm as AntPopconfirm,
 } from 'antd';
 import { Entity } from 'draft-js';
+import Editor from './Editor';
+import Preview from './Preview';
 import styles from './styles.css';
 
 class Sample extends Component {
@@ -31,8 +25,8 @@ class Sample extends Component {
     super(props);
     const { content } = props;
     this.state = {
-      drag: null,
       temp: content,
+      drag: null,
       editor: false,
       content,
     };
@@ -50,8 +44,8 @@ class Sample extends Component {
 
   toggleEditor = () => {
     this.setState({
-      editor: !this.state.editor,
       temp: this.state.content,
+      editor: !this.state.editor,
     });
   }
 
@@ -128,8 +122,7 @@ class Sample extends Component {
       temp: {
         steps: arrayMove(
           this.state.temp.steps,
-          oldIndex,
-          newIndex,
+          oldIndex, newIndex,
         ),
       },
     });
@@ -143,14 +136,14 @@ class Sample extends Component {
     } = this.state;
     return (
       <div>
-        <Components.Preview
+        <Preview
           data={editor
             ? temp
             : content
           }
         />
         {editor &&
-          <Components.Editor
+          <Editor
             data={temp}
             dragStep={this.dragStep}
             removeStep={this.removeStep}
@@ -215,113 +208,6 @@ Sample.defaultProps = {
       { text: 'Четвертое событие', color: 'blue', image: '' },
     ],
   },
-};
-
-const Components = {
-  Preview: ({ data }) => // eslint-disable-line
-    <AntTimeline>
-      {data.steps.map(({
-        text,
-        color,
-        image,
-      }, index) =>
-        <AntTimeline.Item
-          key={index}
-          color={color}
-        >
-          {text}
-          {image &&
-            <img
-              src={image}
-              role="presentation"
-            />
-          }
-        </AntTimeline.Item>
-      )}
-    </AntTimeline>,
-  Editor: ({ // eslint-disable-line
-    data, // eslint-disable-line
-    dragStep, // eslint-disable-line
-    removeStep, // eslint-disable-line
-    changeText, // eslint-disable-line
-    changeColor, // eslint-disable-line
-  }) =>
-    <div className={styles.editor}>
-      <Sortable.List
-        onSortEnd={dragStep}
-        useDragHandle
-      >
-        <div className={styles.steps}>
-          {data.steps.map((
-            step,
-            index
-          ) =>
-            <Sortable.Item
-              key={index}
-              index={index}
-            >
-              <div className={styles.step}>
-                <Sortable.Handler />
-                <AntSelect
-                  value={step.color}
-                  className={styles.color}
-                  onChange={changeColor(index)}
-                >
-                  {['blue',
-                    'red',
-                    'green',
-                    ].map((color, _index) =>
-                      <AntSelect.Option
-                        key={_index}
-                        value={color}
-                      >
-                        <div
-                          className={styles[color]}
-                        />
-                      </AntSelect.Option>
-                  )}
-                </AntSelect>
-                <div className={styles.text}>
-                  <AntInput
-                    value={step.text}
-                    onChange={changeText(index)}
-                  />
-                </div>
-                { /* <div className={styles.image}>
-                  Картинка
-                </div> */ }
-                <AntPopconfirm
-                  title="Удалить событие?"
-                  okText="Да"
-                  onConfirm={removeStep(index)}
-                  cancelText="Нет"
-                >
-                  <AntIcon
-                    type="close"
-                    className={styles.remove}
-                  />
-                </AntPopconfirm>
-              </div>
-            </Sortable.Item>
-          )}
-        </div>
-      </Sortable.List>
-    </div>,
-};
-
-const Sortable = {
-  List: SortableContainer(
-    ({ children }) => <ul>{children}</ul>
-  ),
-  Item: SortableElement(
-    ({ children }) => <li>{children}</li>
-  ),
-  Handler: SortableHandle(() =>
-    <AntIcon
-      type="appstore-o"
-      className={styles.drag}
-    />
-  ),
 };
 
 export default Sample;
