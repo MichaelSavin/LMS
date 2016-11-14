@@ -23,6 +23,8 @@ import {
   Timeline as AntTimeline,
   Popconfirm as AntPopconfirm,
 } from 'antd';
+import Icon from 'components/UI/Icon';
+import Dropzone from 'react-dropzone';
 import { Entity } from 'draft-js';
 import styles from './styles.css';
 
@@ -78,7 +80,7 @@ class Timeline extends Component {
     });
   }
 
-  changeColor = index => (value) => {
+  changeColor = (index) => (value) => {
     this.setState({
       temp: set([
         'steps',
@@ -91,7 +93,7 @@ class Timeline extends Component {
     });
   }
 
-  changeText = index => (event) => {
+  changeText = (index) => (event) => {
     this.setState({
       temp: set([
         'steps',
@@ -108,7 +110,7 @@ class Timeline extends Component {
     this.setState({
       temp: update(
         'steps',
-        steps => steps.concat([{
+        (steps) => steps.concat([{
           text: 'Новое событие',
           color: 'blue',
         }]),
@@ -117,12 +119,12 @@ class Timeline extends Component {
     });
   }
 
-  removeStep = index => () => {
+  removeStep = (index) => () => {
     this.setState({
       temp: update(
         'steps',
-        steps => remove(
-          step => steps.indexOf(
+        (steps) => remove(
+          (step) => steps.indexOf(
             step
           ) === index,
           steps,
@@ -143,6 +145,24 @@ class Timeline extends Component {
       },
     });
   };
+
+  uploadImage = (index) => (files) => {
+    const file = files[0].slice(0);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => { // eslint-disable-line
+      this.setState({
+        temp: set([
+          'steps',
+          index,
+          'image',
+        ],
+          reader.result,
+          this.state.temp,
+        ),
+      });
+    };
+  }
 
   render() {
     const {
@@ -213,9 +233,29 @@ class Timeline extends Component {
                         onChange={this.changeText(index)}
                       />
                     </div>
-                    { /* <div className={styles.image}>
-                      Картинка
-                    </div> */ }
+                    <div className={styles.image}>
+                      <Dropzone
+                        multiple={false}
+                        onDrop={this.uploadImage(index)}
+                        className={styles.upload}
+                      >
+                        {step.image
+                          ?
+                            <img
+                              src={step.image}
+                              role="presentation"
+                              height={25}
+                              width={25}
+                            />
+                          :
+                            <Icon
+                              size={20}
+                              type="photo"
+
+                            />
+                        }
+                      </Dropzone>
+                    </div>
                     <AntPopconfirm
                       title="Удалить событие?"
                       okText="Да"
@@ -264,10 +304,10 @@ Timeline.propTypes = {
 Timeline.defaultProps = {
   content: {
     steps: [
-      { text: 'Первое событие', color: 'blue', image: '' },
-      { text: 'Второе событие', color: 'blue', image: '' },
-      { text: 'Третье событие', color: 'blue', image: '' },
-      { text: 'Четвертое событие', color: 'blue', image: '' },
+      { text: 'Первое событие', color: 'blue', image: null },
+      { text: 'Второе событие', color: 'blue', image: null },
+      { text: 'Третье событие', color: 'blue', image: null },
+      { text: 'Четвертое событие', color: 'blue', image: null },
     ],
   },
 };
@@ -284,13 +324,16 @@ const Components = {
           key={index}
           color={color}
         >
-          {text}
-          {image &&
-            <img
-              src={image}
-              role="presentation"
-            />
-          }
+          <div>{text}</div>
+          <div>
+            {image &&
+              <img
+                src={image}
+                width={250}
+                role="presentation"
+              />
+            }
+          </div>
         </AntTimeline.Item>
       )}
     </AntTimeline>,
@@ -298,10 +341,10 @@ const Components = {
 
 const Sortable = {
   List: SortableContainer(
-    ({ children }) => <ul>{children}</ul>
+    (props) => <ul>{props.children}</ul>
   ),
   Item: SortableElement(
-    ({ children }) => <li>{children}</li>
+    (props) => <li>{props.children}</li>
   ),
   Handler: SortableHandle(() =>
     <AntIcon

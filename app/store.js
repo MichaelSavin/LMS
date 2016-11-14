@@ -16,10 +16,13 @@ const configureStore = (reducers, router) => {
   const engineMiddleware = storage.createMiddleware(engine);
   // const sagaMiddleware = createSagaMiddleware();
   const createStoreWithMiddleware = compose(
-    applyMiddleware(engineMiddleware, routerMiddleware(browserHistory)), // , sagaMiddleware),
+    applyMiddleware(
+      engineMiddleware,
+      routerMiddleware(browserHistory)),
+      // sagaMiddleware,
       window.devToolsExtension
         ? window.devToolsExtension({ actionsBlacklist: ['REDUX_STORAGE_LOAD', 'REDUX_STORAGE_SAVE'] })
-        : f => f,
+        : (f) => f,
   )(createStore);
   const store = createStoreWithMiddleware(reducer);
   const load = storage.createLoader(engine);
