@@ -1,7 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
+import { Icon as AntIcon } from 'antd';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
+import localForage from 'localforage';
+import JSZip from 'jszip';
+import FileSaver from 'file-saver';
 import * as actionCreators from './actions';
 import courseSelector from './selectors';
 import styles from './styles.css';
@@ -9,7 +13,14 @@ import Sidebar from './Sidebar';
 
 class Course extends Component { // HMR
 
-  uploadCourse = (files) => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      exporting: false,
+    };
+  }
+
+  importCourse = (files) => {
     const blob = files[0].slice(0);
     const reader = new FileReader();
     reader.onloadend = () => { // eslint-disable-line
@@ -31,6 +42,32 @@ class Course extends Component { // HMR
     reader.readAsText(blob);
   }
 
+  exportCourse = () => {
+    this.setState({ exporting: true });
+    const images = {};
+    const zip = new JSZip();
+    const state = JSON.stringify(this.props.data.toJS());
+    localForage.iterate((value, key) => {
+      const regex = new RegExp(key, 'g');
+      if (!state.match(regex)) {
+        localForage.removeItem(key);
+      } else {
+        images[key] = value; // eslint-disable-line
+      }
+    }).then(() => {
+      Object.keys(images).forEach((image) => {
+        zip.file(image, images[image]);
+      });
+      zip.file('Data', state);
+      zip.generateAsync({ type: 'blob' })
+        .then((content) => {
+          FileSaver.saveAs(content, 'Курс.zip');
+        }).then(() => {
+          this.setState({ exporting: false });
+        });
+    });
+  }
+
   render() {
     const {
       data,
@@ -38,6 +75,9 @@ class Course extends Component { // HMR
       location,
       children,
     } = this.props;
+    const {
+      exporting,
+    } = this.state;
     return (
       <div className={styles.course}>
         <div className={styles.sidebar}>
@@ -51,19 +91,18 @@ class Course extends Component { // HMR
             actions={actions}
           />
           <div className={styles.actions}>
-            <a
-              href={`data:application/json;charset=utf-8,${
-                encodeURIComponent(
-                  JSON.stringify(
-                    data.toJS()
-                  )
-                )
-              }`}
+            <span
               className={styles.export}
-              download="Курс.json"
+              onClick={exporting
+                ? () => {}
+                : this.exportCourse
+              }
             >
-              Экспорт курса
-            </a>
+              {exporting
+                ? <AntIcon type="loading" />
+                : <span>Экспорт курса</span>
+              }
+            </span>
             <Dropzone
               multiple={false}
               title="Upload state"
@@ -92,7 +131,7 @@ class Course extends Component { // HMR
 
 const mapStateToProps = courseSelector();
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actionCreators, dispatch),
 });
 

@@ -52,7 +52,7 @@
       }
     ],
     "newline-per-chained-call": [2, { 
-      "ignoreChainWithDepth": 2 
+      "ignoreChainWithDepth": 3 
     }],
     "no-console": 1,
     "arrow-parens": [2, "always"],

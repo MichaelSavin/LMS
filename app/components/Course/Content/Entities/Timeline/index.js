@@ -70,21 +70,6 @@ class Timeline extends Component {
     );
   }
 
-  receiveImages = (state) => {
-    state.temp.steps.forEach(({
-      image,
-    }) => {
-      if (image) {
-        localForage
-          .getItem(image)
-          .then((value) => {
-            this.images[image] = value;
-            this.forceUpdate();
-          });
-      }
-    });
-  }
-
   openModal = () => {
     this.setState({
       modal: true,
@@ -180,6 +165,21 @@ class Timeline extends Component {
     });
   };
 
+  receiveImages = (state) => {
+    state.temp.steps.forEach(({
+      image,
+    }) => {
+      if (image) {
+        localForage
+          .getItem(image)
+          .then((value) => {
+            this.images[image] = value;
+            this.forceUpdate();
+          });
+      }
+    });
+  }
+
   uploadImage = (index) => (files) => {
     const file = files[0].slice(0);
     const name = [
@@ -190,19 +190,22 @@ class Timeline extends Component {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => { // eslint-disable-line
-      this.images[name] = reader.result;
       localForage.setItem(
-        name, reader.result,
-      );
-      this.setState({
-        temp: set([
-          'steps',
-          index,
-          'image',
-        ],
-          name,
-          this.state.temp,
-        ),
+        name,
+        reader.result,
+      ).then(() => {
+        this.setState({
+          temp: set([
+            'steps',
+            index,
+            'image',
+          ],
+            name,
+            this.state.temp,
+          ),
+        });
+        this.images[name] = reader.result;
+        this.forceUpdate();
       });
     };
   }
@@ -213,7 +216,6 @@ class Timeline extends Component {
       modal,
       content,
     } = this.state;
-    console.log('rerender');
     return (
       <div onDoubleClick={this.openModal}>
         <Components.Timeline
