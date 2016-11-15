@@ -23,6 +23,7 @@ import {
   Timeline as AntTimeline,
   Popconfirm as AntPopconfirm,
 } from 'antd';
+import localForage from 'localforage';
 import Icon from 'components/UI/Icon';
 import Dropzone from 'react-dropzone';
 import { Entity } from 'draft-js';
@@ -39,16 +40,49 @@ class Timeline extends Component {
       modal: false,
       content,
     };
+    this.images = {};
+  }
+
+  componentDidMount() {
+    this.receiveImages(this.state);
   }
 
   shouldComponentUpdate(
     nextProps,
     nextState
   ) {
+    if (!isEqual(
+    ...[this.state, nextState]
+      .map((state) => state
+        .temp
+        .steps
+        .map((step) =>
+          step.image
+        )
+      )
+    )) {
+      this.receiveImages(this.state);
+      return false;
+    }
     return !isEqual(
       this.state,
       nextState
     );
+  }
+
+  receiveImages = (state) => {
+    state.temp.steps.forEach(({
+      image,
+    }) => {
+      if (image) {
+        localForage
+          .getItem(image)
+          .then((value) => {
+            this.images[image] = value;
+            this.forceUpdate();
+          });
+      }
+    });
   }
 
   openModal = () => {
@@ -148,16 +182,25 @@ class Timeline extends Component {
 
   uploadImage = (index) => (files) => {
     const file = files[0].slice(0);
+    const name = [
+      files[0].lastModified,
+      files[0].size,
+      files[0].name,
+    ].join('');
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => { // eslint-disable-line
+      this.images[name] = reader.result;
+      localForage.setItem(
+        name, reader.result,
+      );
       this.setState({
         temp: set([
           'steps',
           index,
           'image',
         ],
-          reader.result,
+          name,
           this.state.temp,
         ),
       });
@@ -170,9 +213,13 @@ class Timeline extends Component {
       modal,
       content,
     } = this.state;
+    console.log('rerender');
     return (
       <div onDoubleClick={this.openModal}>
-        <Components.Timeline data={content} />
+        <Components.Timeline
+          data={content}
+          images={this.images}
+        />
         <AntModal
           onOk={this.saveSettings}
           title={
@@ -242,7 +289,7 @@ class Timeline extends Component {
                         {step.image
                           ?
                             <img
-                              src={step.image}
+                              src={this.images[step.image]}
                               role="presentation"
                               height={25}
                               width={25}
@@ -274,7 +321,10 @@ class Timeline extends Component {
                 <span className={styles.title}>
                   Предосмотр
                 </span>
-                <Components.Timeline data={temp} />
+                <Components.Timeline
+                  data={temp}
+                  images={this.images}
+                />
               </div>
             </div>
           </Sortable.List>
@@ -313,7 +363,7 @@ Timeline.defaultProps = {
 };
 
 const Components = {
-  Timeline: ({ data }) => // eslint-disable-line
+  Timeline: ({ data, images }) => // eslint-disable-line
     <AntTimeline>
       {data.steps.map(({
         text,
@@ -328,9 +378,9 @@ const Components = {
           <div>
             {image &&
               <img
-                src={image}
-                width={250}
+                src={images[image]}
                 role="presentation"
+                width={250}
               />
             }
           </div>
