@@ -17,29 +17,50 @@ class Course extends Component { // HMR
     super(props);
     this.state = {
       exporting: false,
+      importing: false,
     };
   }
 
-  importCourse = (files) => {
-    const blob = files[0].slice(0);
+  importCourse = (download) => {
+    const blob = download[0].slice(0);
     const reader = new FileReader();
-    reader.onloadend = () => { // eslint-disable-line
-      this.props
-        .actions
-        .importCourse({
-          course: JSON.parse(
-            reader.result
-          ),
-        });
-      this.context // eslint-disable-line
-        .router
-        .push(this
-          .props
-          .location
-          .pathname
-        );
+    reader.onloadstart = () => { // eslint-disable-line
+      this.setState({ importing: true });
     };
-    reader.readAsText(blob);
+    reader.onloadend = () => { // eslint-disable-line
+      JSZip.loadAsync(reader.result).then((zip) => {
+        const files = Object.keys(zip.files)
+          .filter((name) => name !== 'Data')
+          .map((name) => ({
+            name,
+            data: zip.files[name].async('text'),
+          }));
+        Promise.all(files.map((file) => file.data))
+          .then((filesData) =>
+            Promise.all(filesData.map((data, index) =>
+              localForage.setItem(files[index].name, data)
+            ))
+          )
+          .then(() => zip.file('Data').async('text'))
+          .then((courseData) => {
+            this.props.actions
+              .importCourse({
+                course: JSON.parse(
+                  courseData
+                ),
+              });
+            this.context // eslint-disable-line
+              .router
+              .push(this
+                .props
+                .location
+                .pathname
+              );
+            this.setState({ importing: false });
+          });
+      });
+    };
+    reader.readAsArrayBuffer(blob);
   }
 
   exportCourse = () => {
@@ -77,6 +98,7 @@ class Course extends Component { // HMR
     } = this.props;
     const {
       exporting,
+      importing,
     } = this.state;
     return (
       <div className={styles.course}>
@@ -105,11 +127,17 @@ class Course extends Component { // HMR
             </span>
             <Dropzone
               multiple={false}
-              title="Upload state"
-              onDrop={this.uploadCourse}
+              title=""
+              onDrop={exporting
+                ? () => {}
+                : this.importCourse
+              }
               className={styles.import}
             >
-              Импорт курса
+              {importing
+                ? <AntIcon type="loading" />
+                : <span>Импорт курса</span>
+              }
             </Dropzone>
           </div>
         </div>
@@ -117,7 +145,6 @@ class Course extends Component { // HMR
           {children &&
             React.cloneElement(
               children, {
-                // key: Math.random(),
                 data: data.toJS(),
                 actions,
               }

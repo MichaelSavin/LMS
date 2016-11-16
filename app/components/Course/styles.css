@@ -39,6 +39,7 @@ body {
 .export {
   width: 120px;
   color: black !important;
+  cursor: pointer;
   margin: 10px;
   padding: 5px;
   font-size: 14px;
