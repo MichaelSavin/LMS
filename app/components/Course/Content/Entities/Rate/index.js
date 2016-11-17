@@ -1,17 +1,20 @@
 import React, { PropTypes } from 'react';
 import { Rate as AntRate } from 'antd';
-// import styles from './styles.css';
+import styles from './styles.css';
 
 const Rate = () =>
-  <AntRate
-    allowHalf
-    style={{
-      margin: 0,
-      padding: 0,
-    }}
-    contentEditable={false}
-    defaultValue={0}
-  />;
+  <span
+    className={styles.rate}
+  >
+    <AntRate
+      allowHalf
+      style={{
+        margin: 0,
+        padding: 0,
+      }}
+      defaultValue={0}
+    />
+  </span>;
 
 Rate.propTypes = {
   children: PropTypes.array.isRequired,
