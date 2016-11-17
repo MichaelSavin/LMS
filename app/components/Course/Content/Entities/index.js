@@ -90,7 +90,7 @@ const views = {
   SAMPLE: 'BLOCK',
 };
 
-const findEntities = type => (
+const findEntities = (type) => (
   contentBlock,
   callback
 ) => {
@@ -108,14 +108,14 @@ const findEntities = type => (
 
 const entitiesDecorator = new CompositeDecorator(
   Object.keys(views)
-    .filter(type => views[type] === 'INLINE')
-    .map(type => ({
+    .filter((type) => views[type] === 'INLINE')
+    .map((type) => ({
       strategy: findEntities(type),
       component: components[type],
     }))
 );
 
-const blockRenderer = block =>
+const blockRenderer = (block) =>
   block.getType() === 'atomic'
     ? { component: Block, editable: false }
     : undefined;
@@ -197,7 +197,7 @@ const insertBlockEntity = (
           { },
         ),
       ' '
-    )
+    ),
   );
 };
 
@@ -220,8 +220,8 @@ const insertInlineEntity = (
           { }
         ),
       ),
-      'insert-text'
-    )
+      ' '
+    ),
   );
 };
 

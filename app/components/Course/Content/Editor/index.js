@@ -60,43 +60,25 @@ class Draft extends Component {
     });
     // }
 
-    if (['undo', 'redo'].includes(
-      editorState.getLastChangeType()
-    )) {
-      this.setState({
-        editorState: EditorState.set(
-          editorState, {
-            decorator: entitiesDecorator,
-          }
-        ),
-      });
-    } else {
-      const currentContent = editorState.getCurrentContent();
-      const blocks = currentContent.blockMap;
-      const newEditorState = blocks.reduce(
-        addEOLtoInlineEntity,
-        editorState
-      );
-      this.setState({
-        editorState: EditorState.set(
-          newEditorState, {
-            decorator: entitiesDecorator,
-          }
-        ),
-      });
-    }
-    // this.focusEditor();
+    const newEditorState =
+      ['undo', 'redo'].includes(
+        editorState.getLastChangeType())
+        ? editorState
+        : editorState.getCurrentContent()
+          .blockMap.reduce(
+            addEOLtoInlineEntity,
+            editorState
+          );
+
+    this.setState({
+      editorState: EditorState.set(
+        newEditorState, {
+          decorator: entitiesDecorator,
+        }
+      ),
+    }); // , () => { setTimeout(() => this.focusEditor(), 0); });
   }
 
-  // setReference = (ref) => {
-  //   this.editor = ref;
-  // };
-
-  // focusEditor = () => {
-  //   setTimeout(() => {
-  //     this.editor.focus();
-  //   });
-  // };
 
   blockStyleFn = (block) => {
     const blockAlignment =
@@ -140,6 +122,8 @@ class Draft extends Component {
     return false;
   }
 
+  focusEditor = () => this.refs.editor.focus();
+
   render() {
     const { editorState } = this.state;
     return (
@@ -150,28 +134,21 @@ class Draft extends Component {
         />
         <div
           className={styles.draft}
-          onClick={() => this.refs.editor.focus()}
         >
           <Editor
             handleKeyCommand={this.handleKeyCommand}
             blockRendererFn={blockRenderer}
             customStyleMap={customStyleMap}
             blockRenderMap={this.customBlockRenderMap}
-            blockStyleFn={this.blockStyleFn}
             customStyleFn={this.customStyleFn}
+            blockStyleFn={this.blockStyleFn}
             editorState={editorState}
-            // spellCheck
             onChange={this.onChange}
-            // ref={this.setEditorReference}
+            // ref={this.setReference}
             ref="editor"
+            // spellCheck
           />
         </div>
-        { /*
-        <Widgets
-          editorState={editorState}
-          changeEditorState={this.onChange}
-        />
-        */ }
       </div>
     );
   }

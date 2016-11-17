@@ -10,7 +10,7 @@ import Tasks from './Tasks';
 
 import { insertEntity } from '../../Entities';
 
-const Toolbar = props =>
+const Toolbar = (props) =>
   <div className={styles.toolbar}>
     <AntTabs
       defaultActiveKey="1"
