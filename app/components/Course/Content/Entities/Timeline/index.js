@@ -10,24 +10,12 @@ import {
 } from 'lodash/fp';
 import {
   arrayMove,
-  SortableHandle,
-  SortableElement,
-  SortableContainer,
 } from 'react-sortable-hoc';
-import {
-  Icon as AntIcon,
-  Input as AntInput,
-  Modal as AntModal,
-  Select as AntSelect,
-  Button as AntButton,
-  Timeline as AntTimeline,
-  Popconfirm as AntPopconfirm,
-} from 'antd';
 import localForage from 'localforage';
-import Icon from 'components/UI/Icon';
-import Dropzone from 'react-dropzone';
 import { Entity } from 'draft-js';
-import styles from './styles.css';
+import Preview from './Preview';
+import Editor from './Editor';
+import './styles.css';
 
 class Timeline extends Component {
 
@@ -218,119 +206,23 @@ class Timeline extends Component {
     } = this.state;
     return (
       <div onDoubleClick={this.openModal}>
-        <Components.Timeline
+        <Preview
           data={content}
           images={this.images}
         />
-        <AntModal
-          onOk={this.saveSettings}
-          title={
-            <div className={styles.title}>
-              <span>Шкала времени</span>
-              <AntButton
-                type="default"
-                icon="plus"
-                size="small"
-                onClick={this.addStep}
-              >
-                Добавить новое событие
-              </AntButton>
-            </div>
-          }
-          okText="Сохранить"
-          visible={modal}
-          onCancel={this.closeModal}
-          cancelText="Отмена"
-        >
-          <Sortable.List
-            onSortEnd={this.dragStep}
-            useDragHandle
-          >
-            <div className={styles.steps}>
-              {temp.steps.map((
-                step,
-                index
-              ) =>
-                <Sortable.Item
-                  key={index}
-                  index={index}
-                >
-                  <div className={styles.step}>
-                    <Sortable.Handler />
-                    <AntSelect
-                      value={step.color}
-                      className={styles.color}
-                      onChange={this.changeColor(index)}
-                    >
-                      {['blue',
-                        'red',
-                        'green',
-                        ].map((color, _index) =>
-                          <AntSelect.Option
-                            key={_index}
-                            value={color}
-                          >
-                            <div
-                              className={styles[color]}
-                            />
-                          </AntSelect.Option>
-                      )}
-                    </AntSelect>
-                    <div className={styles.text}>
-                      <AntInput
-                        value={step.text}
-                        onChange={this.changeText(index)}
-                      />
-                    </div>
-                    <div className={styles.image}>
-                      <Dropzone
-                        multiple={false}
-                        onDrop={this.uploadImage(index)}
-                        className={styles.upload}
-                      >
-                        {step.image
-                          ?
-                            <img
-                              src={this.images[step.image]}
-                              role="presentation"
-                              height={25}
-                              width={25}
-                            />
-                          :
-                            <Icon
-                              size={20}
-                              type="photo"
-
-                            />
-                        }
-                      </Dropzone>
-                    </div>
-                    <AntPopconfirm
-                      title="Удалить событие?"
-                      okText="Да"
-                      onConfirm={this.removeStep(index)}
-                      cancelText="Нет"
-                    >
-                      <AntIcon
-                        type="close"
-                        className={styles.remove}
-                      />
-                    </AntPopconfirm>
-                  </div>
-                </Sortable.Item>
-              )}
-              <div className={styles.preview}>
-                <span className={styles.title}>
-                  Предосмотр
-                </span>
-                <Components.Timeline
-                  data={temp}
-                  images={this.images}
-                />
-              </div>
-            </div>
-          </Sortable.List>
-        </AntModal>
+        <Editor
+          data={temp}
+          isOpen={modal}
+          images={this.images}
+          addStep={this.addStep}
+          dragStep={this.dragStep}
+          closeModal={this.closeModal}
+          removeStep={this.removeStep}
+          changeText={this.changeText}
+          uploadImage={this.uploadImage}
+          changeColor={this.changeColor}
+          saveSettings={this.saveSettings}
+        />
       </div>
     );
   }
@@ -348,7 +240,7 @@ Timeline.propTypes = {
           'red',
           'green',
         ]).isRequired,
-      }).isRequired
+      }).isRequired,
     ).isRequired,
   }).isRequired,
 };
@@ -362,48 +254,6 @@ Timeline.defaultProps = {
       { text: 'Четвертое событие', color: 'blue', image: null },
     ],
   },
-};
-
-const Components = {
-  Timeline: ({ data, images }) => // eslint-disable-line
-    <AntTimeline>
-      {data.steps.map(({
-        text,
-        color,
-        image,
-      }, index) =>
-        <AntTimeline.Item
-          key={index}
-          color={color}
-        >
-          <div>{text}</div>
-          <div>
-            {image &&
-              <img
-                src={images[image]}
-                role="presentation"
-                width={250}
-              />
-            }
-          </div>
-        </AntTimeline.Item>
-      )}
-    </AntTimeline>,
-};
-
-const Sortable = {
-  List: SortableContainer(
-    (props) => <ul>{props.children}</ul>
-  ),
-  Item: SortableElement(
-    (props) => <li>{props.children}</li>
-  ),
-  Handler: SortableHandle(() =>
-    <AntIcon
-      type="appstore-o"
-      className={styles.drag}
-    />
-  ),
 };
 
 export default Timeline;
