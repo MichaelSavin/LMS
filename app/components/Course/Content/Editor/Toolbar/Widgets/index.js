@@ -17,6 +17,7 @@ const Widgets = ({
       { name: 'Развернуть', type: 'COLLAPSE' },
       { name: 'Шкала времени', type: 'TIMELINE' },
       { name: 'Обратите внимание', type: 'ALERT' },
+      { name: 'Флаг', type: 'FLAG' },
       { name: '🔩', type: 'SAMPLE' },
     ].map(({
       name: entityName,

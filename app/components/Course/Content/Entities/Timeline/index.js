@@ -33,6 +33,7 @@ class Timeline extends Component {
   constructor(props) {
     super(props);
     const { content } = props;
+    console.log(props);
     this.state = {
       drag: null,
       temp: content,

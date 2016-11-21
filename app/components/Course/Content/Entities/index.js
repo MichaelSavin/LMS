@@ -33,6 +33,7 @@ import Timeline from './Timeline';
 import Checkbox from './Checkbox';
 import Textarea from './Textarea';
 import Sample from './Sample';
+import Flag from './Flag';
 
 const components = { // можно использовать require()
   TAG: Tag,
@@ -59,6 +60,7 @@ const components = { // можно использовать require()
   TIMELINE: Timeline,
   CHECKBOX: Checkbox,
   TEXTAREA: Textarea,
+  FLAG: Flag,
   SAMPLE: Sample,
 };
 
@@ -87,6 +89,7 @@ const views = {
   INPUT: 'INLINE',
   SWITCH: 'INLINE',
   SELECT: 'INLINE',
+  FLAG: 'INLINE',
   SAMPLE: 'BLOCK',
 };
 
