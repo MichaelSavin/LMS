@@ -1,0 +1,77 @@
+.editor {
+  /* ... */
+}
+
+.header {
+  display: flex;
+  padding-right: 30px;
+  justify-content: space-between;
+}
+
+.rows {
+  /* ... */
+}
+
+.row {
+  display: flex;
+  user-select: none;
+  align-items: top;
+  margin-bottom: 25px;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.row .drag {
+  margin-right: 5px;
+  margin-top: 10px;
+  cursor: grab;
+}
+
+.row .content {
+  width: 425px;
+  flex-direction: column;
+}
+
+.row .title {
+  /* ... */
+}
+
+.row .text {
+  /* ... */
+}
+
+.row .remove {
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+
+.preview .title {
+  width: 90%;
+  margin: 10px 0 30px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+  line-height: 0.1em;
+  border-bottom: 1px solid #CCC;
+}
+
+.preview .title .text {
+  padding: 0 10px;
+  background: #FFF;
+}
+
+.preview .component {
+  width: 450px;
+}
+
+:global .ant-form-item {
+  margin-bottom: 5px;
+}

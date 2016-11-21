@@ -1,4 +1,17 @@
-.collapse {
-  font-size: 13px;
+body > li {
+  z-index: 9999;
+  list-style: none;
 }
 
+:global .ant-select-selection__rendered {
+  display: flex !important;
+  align-items: center !important;
+}
+
+:global .ant-timeline-item-last {
+  padding-bottom: 0 !important;
+}
+
+:global .ant-timeline-item-last :global .ant-timeline-item-content {
+  min-height: 0 !important;
+}
