@@ -4,16 +4,16 @@ import styles from './styles.css';
 import List from './List';
 import Style from './Style';
 import Align from './Align';
-import Color from './Color';
+// import Color from './Color';
 import Header from './Header';
 
-const Formats = props =>
+const Formats = (props) =>
   <span className={styles.formats}>
     {[Header,
       Style,
       Align,
       List,
-      Color,
+      // Color,
     ].map((element, key) =>
       React.createElement(
         element, {

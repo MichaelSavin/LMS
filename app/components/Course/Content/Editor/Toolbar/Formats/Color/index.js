@@ -6,7 +6,7 @@ import {
   toggleInlineStyle,
   getSelectionCustomInlineStyle,
 } from 'draftjs-utils';
-import _ from 'rc-color-picker/assets/index.css'; // eslint-disable-line
+// import _ from 'rc-color-picker/assets/index.css'; // eslint-disable-line
 import Picker from 'rc-color-picker';
 import styles from './styles.css';
 import Option from '../Option';
@@ -87,7 +87,7 @@ class Color extends Component {
           >
             <Picker
               className={styles.picker}
-              onChange={picker =>
+              onChange={(picker) =>
                 this.changeColor(
                   picker.color,
                   type,
