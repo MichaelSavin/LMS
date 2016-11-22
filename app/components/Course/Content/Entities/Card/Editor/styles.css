@@ -1,0 +1,71 @@
+.editor {
+  /* ... */
+}
+
+.header {
+  display: flex;
+  padding-right: 30px;
+  justify-content: space-between;
+}
+
+.content {
+  flex-direction: column;
+}
+
+.content .image {
+  padding: 0;
+}
+
+.image .icon {
+  color: #57C5F7;
+  margin: -5px 0 50px 0;
+  height: 60px;
+  font-size: 80px;
+  margin-top: -5px;
+}
+
+.image .hint {
+  font-size: 13px;
+  margin: 20px 0;
+}
+
+.content .title {
+  padding: 10px 0;
+}
+
+.text {
+  padding: 0;
+}
+
+.preview {
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+
+.preview .title {
+  width: 100%;
+  margin: 30px 0 35px;
+  font-size: 13px;
+  text-align: center;
+  font-weight: bold;
+  line-height: 0.1em;
+  border-bottom: 1px solid #EEE;
+}
+
+.title .text {
+  padding: 0 10px;
+  background: #FFF;
+}
+
+.component {
+  display: flex;
+  justify-content: center;
+}
+
+.preview .image {
+  /* ... */
+}
+
+:global .ant-form-item {
+  margin-bottom: 5px;
+}

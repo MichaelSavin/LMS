@@ -1,0 +1,22 @@
+.preview {
+  width: 350px;
+  font-size: 13px;
+}
+
+.image {
+  width: 300px;
+  border-bottom: 1px solid #E9E9E9;
+  margin-bottom: 15px;
+  padding-bottom: 20px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.text {
+  /* ... */
+}
+

@@ -1,21 +1,31 @@
-import React, { PropTypes, Component } from 'react';
-import AntPromt from 'components/UI/Promt';
-import { Card as AntCard } from 'antd';
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
+import localForage from 'localforage';
+import { isEqual } from 'lodash/fp';
 import { Entity } from 'draft-js';
-import { isEqual } from 'lodash';
-import styles from './styles.css';
+import Preview from './Preview';
+import Editor from './Editor';
+import './styles.css';
 
 class Card extends Component {
 
   constructor(props) {
     super(props);
+    const { content } = props;
     this.state = {
-      ...props.content,
-      promt: {
-        open: false,
-        value: null,
-      },
+      temp: content,
+      modal: false,
+      content,
     };
+    this.storage = {};
+  }
+
+  componentDidMount() {
+    this.receiveImage(
+      this.state.content.image
+    );
   }
 
   shouldComponentUpdate(
@@ -28,79 +38,103 @@ class Card extends Component {
     );
   }
 
-  editContent = () => {
+  openModal = () => {
     this.setState({
-      promt: {
-        open: true,
-        value: this
-          .state
-          .text,
+      modal: true,
+      temp: this
+        .state
+        .content,
+    });
+  }
+
+  saveSettings = () => {
+    const content =
+      this.state.temp;
+    this.setState({
+      modal: false,
+      content,
+    });
+    Entity.replaceData(
+      this.props.entityKey, {
+        content,
+      }
+    );
+  }
+
+  closeModal = () => {
+    this.setState({
+      modal: false,
+    });
+  }
+
+  changeData = (field) => (event) => {
+    this.setState({
+      temp: {
+        ...this.state.temp,
+        [field]: event.target.value,
       },
     });
   }
 
-  modifyContent = () => {
-    const {
-      value: text,
-    } = this.state.promt;
-    Entity.replaceData(
-      this.props.entityKey, {
-        content: {
-          text,
-          title: this
-            .state
-            .title,
-        },
-      }
-    );
-    this.setState({
-      text,
-      promt: {
-        open: false,
-      },
-    });
+  uploadImage = ({ file }) => {
+    if (file.status === 'error') { // Загрузка на сервер
+      const name = [
+        file.lastModified,
+        file.size,
+        file.name,
+      ].join('');
+      const reader = new FileReader();
+      reader.readAsDataURL(file.originFileObj);
+      reader.onloadend = () => { // eslint-disable-line
+        localForage.setItem(
+          name,
+          reader.result,
+        ).then(() => {
+          this.setState({
+            temp: {
+              ...this.state.temp,
+              image: name,
+            },
+          });
+          this.storage[name] = reader.result;
+          this.forceUpdate();
+        });
+      };
+    }
+  }
+
+  receiveImage = (image) => {
+    if (image) {
+      localForage
+        .getItem(image)
+        .then((value) => {
+          this.storage[image] = value;
+          this.forceUpdate();
+        });
+    }
   }
 
   render() {
     const {
-      text,
-      title,
-      promt,
+      temp,
+      modal,
+      content,
     } = this.state;
     return (
-      <div className={styles.card}>
-        <AntCard
-          title={title}
-          onDoubleClick={this.editContent}
-        >
-          {text.split('\n')
-            .map((string, index) =>
-              <p key={index}>{string}</p>
-          )}
-        </AntCard>
-        <AntPromt
-          type="textarea"
-          value={promt.value}
-          onSave={this.modifyContent}
-          visible={promt.open}
-          onChange={(event) => {
-            this.setState({
-              promt: {
-                ...promt,
-                value: event
-                  .target
-                  .value,
-              },
-            });
-          }}
-          onCancel={() => {
-            this.setState({
-              promt: {
-                ...promt,
-                open: false,
-              },
-            });
-          }}
+      <div onDoubleClick={this.openModal}>
+        <Preview
+          data={content}
+          storage={this.storage}
+        />
+        <Editor
+          data={temp}
+          isOpen={modal}
+          storage={this.storage}
+          closeModal={this.closeModal}
+          changeText={this.changeData('text')}
+          changeTitle={this.changeData('title')}
+          uploadImage={this.uploadImage}
+          saveSettings={this.saveSettings}
         />
       </div>
     );
@@ -111,14 +145,16 @@ Card.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     text: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
+    image: PropTypes.string,
+    title: PropTypes.string,
   }).isRequired,
 };
 
 Card.defaultProps = {
   content: {
-    title: 'Информация',
-    text: 'Контент',
+    text: 'Текст',
+    image: null,
+    title: 'Заголовок',
   },
 };
 
