@@ -16,7 +16,7 @@
   top: 0;
   right: 0;
   width: 0;
-	height: 0;
+  height: 0;
   border-top: 17px solid transparent;
   border-right: 10px solid white;
   border-bottom: 17px solid transparent;
@@ -30,10 +30,10 @@
 .modal:hover {
   cursor: pointer;
 }
+
 .modal:hover .btn {
   display: inline-block;
 }
-
 
 .btn {
   display: none;
@@ -43,7 +43,7 @@
 }
 
 .btn:hover {
-  color: #57c5f7;
+  color: #57C5F7;
   transform: scale(1.4);
 }
 
@@ -56,19 +56,19 @@
 }
 
 .info-color {
-  background-color: #eaf8fe;
+  background-color: #EAF8FE;
 }
 
 .error-color {
-  background-color: #fff7e6;
+  background-color: #FFF7E6;
 }
 
 .warning-color {
-  background-color: #ffeee6;
+  background-color: #FFEEE6;
 }
 
 .sucess-color {
-  background-color: #f3faf0;
+  background-color: #F3FAF0;
 }
 
 .anticonflag {
@@ -84,19 +84,19 @@
 }
 
 .anticon-check-circle {
-  color: #87d068;
+  color: #87D068;
 }
 
 .anticon-info-circle {
-  color: #2db7f5;
+  color: #2DB7F5;
 }
 
 .anticon-exclamation-circle {
-  color: #fa0;
+  color: #FA0;
 }
 
 .anticon-cross-circle {
-  color: #f50;
+  color: #F50;
 }
 
 .form {
@@ -111,7 +111,7 @@
   bottom: 0;
   width: calc(100% + 32px);
   height: 1px;
-  background-color: #e9e9e9;
+  background-color: #E9E9E9;
   visibility: visible;
 }
 
@@ -125,5 +125,5 @@
   left: 0;
   top: -10px;
   padding: 1px 8px;
-  background-color: #fff;
+  background-color: #FFF;
 }

@@ -61,7 +61,10 @@ class FlagOptions extends Component {
                       initialValue: colors,
                     })(
                       <AntSelect onChange={onChooseColor}>
-                        {['info-color', 'sucess-color', 'error-color', 'warning-color'].map((color, index) =>
+                        {['info-color',
+                        'sucess-color',
+                        'error-color',
+                        'warning-color'].map((color, index) =>
                           <AntSelect.Option value={color} key={index}>
                             <div
                               className={cx(
@@ -82,7 +85,10 @@ class FlagOptions extends Component {
                       initialValue: icons,
                     })(
                       <AntSelect onChange={onChooseIcon} >
-                        {['anticon-check-circle', 'anticon-info-circle', 'anticon-exclamation-circle', 'anticon-cross-circle'].map((icon, index) =>
+                        {['anticon-check-circle',
+                        'anticon-info-circle',
+                        'anticon-exclamation-circle',
+                        'anticon-cross-circle'].map((icon, index) =>
                           <AntSelect.Option value={icon} key={index}>
                             <i
                               className={cx(
@@ -160,9 +166,6 @@ class FlagOptions extends Component {
   }
 }
 
-
-FlagOptions = AntForm.create({})(FlagOptions);
-
 FlagOptions.propTypes = {
   form: PropTypes.object,
   onCancel: React.PropTypes.func,
@@ -171,10 +174,10 @@ FlagOptions.propTypes = {
   onChooseColor: React.PropTypes.func,
   onEditMessage: React.PropTypes.func,
   promt: PropTypes.object,
-  modal: PropTypes.boolean,
+  modal: PropTypes.func,
   message: PropTypes.string,
   icons: PropTypes.string,
   colors: PropTypes.string,
 };
 
-export default FlagOptions;
+export default AntForm.create({})(FlagOptions);

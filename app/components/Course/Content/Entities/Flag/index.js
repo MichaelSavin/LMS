@@ -17,7 +17,11 @@ class Flag extends Component {
     } = Entity
       .get(this.props.entityKey)
       .getData()
-      .content;
+      .content || {
+        colors: 'info-color',
+        icons: 'anticon-info-circle',
+        message: 'Флаг',
+      };
     this.state = {
       colors,
       icons,
@@ -173,6 +177,10 @@ Flag.defaultProps = {
 
 Flag.propTypes = {
   entityKey: PropTypes.string.isRequired,
+  modal: PropTypes.func,
+  message: PropTypes.string,
+  icons: PropTypes.string,
+  colors: PropTypes.string,
 };
 
 export default Flag;
