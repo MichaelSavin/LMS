@@ -30,6 +30,7 @@ const Editor = ({
   removeStep,
   changeText,
   uploadImage,
+  removeImage,
   changeColor,
   saveSettings,
   form: {
@@ -48,49 +49,50 @@ const Editor = ({
     closeModal();
   };
   return (
-    <AntModal
-      onOk={validateAndSave}
-      title={
-        <div className={styles.title}>
-          <span>Шкала времени</span>
-          <AntButton
-            icon="plus"
-            size="small"
-            type="default"
-            onClick={addStep}
-          >
-            Добавить новое событие
-          </AntButton>
-        </div>
-      }
-      okText="Сохранить"
-      visible={isOpen}
-      onCancel={resetAndClose}
-      cancelText="Отмена"
-    >
-      <Sortable.List
-        onSortEnd={dragStep}
-        useDragHandle
-      >
-        <div className={styles.steps}>
-          {data.steps.map((
-            step,
-            stepIndex
-          ) =>
-            <Sortable.Item
-              key={stepIndex}
-              index={stepIndex}
+    <div className={styles.timeline}>
+      <AntModal
+        onOk={validateAndSave}
+        title={
+          <div className={styles.title}>
+            <span>Шкала времени</span>
+            <AntButton
+              icon="plus"
+              size="small"
+              type="default"
+              onClick={addStep}
             >
-              <div className={styles.step}>
-                <Sortable.Handler />
-                <AntSelect
-                  value={step.color}
-                  className={styles.color}
-                  onChange={changeColor(stepIndex)}
-                >
-                  {['blue',
-                    'red',
-                    'green',
+              Добавить новое событие
+            </AntButton>
+          </div>
+        }
+        okText="Сохранить"
+        visible={isOpen}
+        onCancel={resetAndClose}
+        cancelText="Отмена"
+      >
+        <Sortable.List
+          onSortEnd={dragStep}
+          useDragHandle
+        >
+          <div className={styles.steps}>
+            {data.steps.map((
+              step,
+              stepIndex
+            ) =>
+              <Sortable.Item
+                key={stepIndex}
+                index={stepIndex}
+              >
+                <div className={styles.step}>
+                  <Sortable.Handler />
+                  <AntSelect
+                    value={step.color}
+                    onChange={changeColor(stepIndex)}
+                    className={styles.color}
+                  >
+                    {['blue',
+                      'red',
+                      'green',
                     ].map((color, optionIndex) =>
                       <AntSelect.Option
                         key={optionIndex}
@@ -100,74 +102,83 @@ const Editor = ({
                           className={styles[color]}
                         />
                       </AntSelect.Option>
-                  )}
-                </AntSelect>
-                <div className={styles.text}>
-                  <AntForm.Item>
-                    {getFieldDecorator(`text.${stepIndex}`, {
-                      rules: [{
-                        required: true,
-                        message: 'Это поле не может быть пустым!',
-                      }],
-                      initialValue: step.text,
-                    })(
-                      <AntInput
-                        size="default"
-                        onChange={changeText(stepIndex)}
-                      />
                     )}
-                  </AntForm.Item>
-                </div>
-                <div className={styles.image}>
-                  <Dropzone
-                    multiple={false}
-                    onDrop={uploadImage(stepIndex)}
-                    className={styles.upload}
-                  >
-                    {step.image
-                      ?
-                        <img
-                          src={images[step.image]}
-                          role="presentation"
-                          height={25}
-                          width={25}
+                  </AntSelect>
+                  <div className={styles.text}>
+                    <AntForm.Item>
+                      {getFieldDecorator(`text.${stepIndex}`, {
+                        rules: [{
+                          required: true,
+                          message: 'Это поле не может быть пустым!',
+                        }],
+                        initialValue: step.text,
+                      })(
+                        <AntInput
+                          size="default"
+                          onChange={changeText(stepIndex)}
                         />
-                      :
-                        <div className={styles.icon}>
-                          <Icon
-                            size={20}
-                            type="photo"
-                          />
-                        </div>
-                    }
-                  </Dropzone>
+                      )}
+                    </AntForm.Item>
+                  </div>
+                  <div>
+                    <Dropzone
+                      onDrop={uploadImage(stepIndex)}
+                      multiple={false}
+                      className={styles.upload}
+                    >
+                      {step.image
+                        ?
+                          <div className={styles.presentation}>
+                            <AntIcon
+                              type="close-circle-o"
+                              onClick={removeImage(stepIndex)}
+                              className={styles.remove}
+                            />
+                            <img
+                              src={images[step.image]}
+                              role="presentation"
+                              width={28}
+                              height={28}
+                              className={styles.image}
+                            />
+                          </div>
+                        :
+                          <div className={styles.icon}>
+                            <Icon
+                              size={20}
+                              type="photo"
+                            />
+                          </div>
+                      }
+                    </Dropzone>
+                  </div>
+                  <AntPopconfirm
+                    title="Удалить событие?"
+                    okText="Да"
+                    onConfirm={removeStep(stepIndex)}
+                    cancelText="Нет"
+                  >
+                    <AntIcon
+                      type="close"
+                      className={styles.remove}
+                    />
+                  </AntPopconfirm>
                 </div>
-                <AntPopconfirm
-                  title="Удалить событие?"
-                  okText="Да"
-                  onConfirm={removeStep(stepIndex)}
-                  cancelText="Нет"
-                >
-                  <AntIcon
-                    type="close"
-                    className={styles.remove}
-                  />
-                </AntPopconfirm>
-              </div>
-            </Sortable.Item>
-          )}
-          <div className={styles.preview}>
-            <span className={styles.title}>
-              Предосмотр
-            </span>
-            <Preview
-              data={data}
-              images={images}
-            />
+              </Sortable.Item>
+            )}
+            <div className={styles.preview}>
+              <span className={styles.title}>
+                Предосмотр
+              </span>
+              <Preview
+                data={data}
+                images={images}
+              />
+            </div>
           </div>
-        </div>
-      </Sortable.List>
-    </AntModal>
+        </Sortable.List>
+      </AntModal>
+    </div>
   );
 };
 
@@ -200,6 +211,7 @@ Editor.propTypes = {
   removeStep: PropTypes.func.isRequired,
   changeText: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
+  removeImage: PropTypes.func.isRequired,
   changeColor: PropTypes.func.isRequired,
   saveSettings: PropTypes.func.isRequired,
   data: PropTypes.shape({

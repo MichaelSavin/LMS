@@ -198,6 +198,20 @@ class Timeline extends Component {
     };
   }
 
+  removeImage = (index) => (event) => {
+    event.stopPropagation();
+    this.setState({
+      temp: set([
+        'steps',
+        index,
+        'image',
+      ],
+        undefined,
+        this.state.temp,
+      ),
+    });
+  }
+
   render() {
     const {
       temp,
@@ -220,6 +234,7 @@ class Timeline extends Component {
           removeStep={this.removeStep}
           changeText={this.changeText}
           uploadImage={this.uploadImage}
+          removeImage={this.removeImage}
           changeColor={this.changeColor}
           saveSettings={this.saveSettings}
         />
