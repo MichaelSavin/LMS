@@ -133,7 +133,7 @@ class FlagOptions extends Component {
                         styles[icons],
                       )}
                     />
-                    {message}
+                    <span className={styles.noselect}>{message}</span>
                   </div>
                 }
               </Col>
@@ -143,7 +143,7 @@ class FlagOptions extends Component {
                 <AntButton
                   htmlType="button"
                   className="login-form-button"
-                  onSubmit={onCancel}
+                  onClick={onCancel}
                 >
                   Отмена
                 </AntButton>

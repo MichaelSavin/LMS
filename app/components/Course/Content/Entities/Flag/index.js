@@ -106,6 +106,8 @@ class Flag extends Component {
       modal: true,
       temp: {
         message: this.state.message,
+        icons: this.state.icons,
+        colors: this.state.colors,
       },
     });
   }
@@ -144,8 +146,8 @@ class Flag extends Component {
             ref={this.saveFormRef}
             modal={modal}
             message={temp.message}
-            colors={colors}
-            icons={icons}
+            colors={temp.colors}
+            icons={temp.icons}
             onCancel={this.closeFlagOptions}
             onCreate={this.saveOptions}
             onChooseIcon={this.chooseIcon}
