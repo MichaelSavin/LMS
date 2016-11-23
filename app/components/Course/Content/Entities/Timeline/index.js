@@ -200,6 +200,12 @@ class Timeline extends Component {
 
   removeImage = (index) => (event) => {
     event.stopPropagation();
+    this.images[
+      this.state
+        .temp
+        .steps[index]
+        .image
+    ] = undefined;
     this.setState({
       temp: set([
         'steps',
