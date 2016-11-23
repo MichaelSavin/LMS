@@ -12,11 +12,17 @@ import Preview from '../Preview';
 import styles from './styles.css';
 
 const Editor = ({
-  data,
+  data: {
+    text,
+    title,
+    image,
+  },
   isOpen,
+  storage,
   changeText,
   closeModal,
   uploadImage,
+  removeImage,
   changeTitle,
   saveSettings,
   form: {
@@ -24,7 +30,7 @@ const Editor = ({
     validateFields,
     getFieldDecorator,
  },
- storage,
+ data,
 }) => {
   const validateAndSave = () => {
     validateFields((err) => {
@@ -36,38 +42,56 @@ const Editor = ({
     closeModal();
   };
   return (
-    <div className={styles.editor}>
-      <AntModal
-        onOk={validateAndSave}
-        title={
-          <div className={styles.header}>
-            <span>Карточка</span>
-          </div>
-        }
-        okText="Сохранить"
-        visible={isOpen}
-        onCancel={resetAndClose}
-        cancelText="Отмена"
-      >
+    <AntModal
+      onOk={validateAndSave}
+      title={
+        <div className={styles.header}>
+          <span>Карточка</span>
+        </div>
+      }
+      okText="Сохранить"
+      visible={isOpen}
+      onCancel={resetAndClose}
+      cancelText="Отмена"
+    >
+      <div className={styles.editor}>
         <div className={styles.content}>
-          <div className={styles.image}>
+          <div className={styles.uploader}>
             <AntUpload.Dragger
               accept="image/*"
               onChange={uploadImage}
               showUploadList={false}
             >
-              <div className={styles.icon}>
-                <AntIcon type="inbox" />
-              </div>
-              <div className={styles.hint}>
-                Нажмите или перетащите файлы для загрузки
-              </div>
+              {image
+                ?
+                  <div className={styles.preview}>
+                    <img
+                      src={storage[image]}
+                      role="presentation"
+                      className={styles.image}
+                    />
+                    <AntIcon
+                      type="close"
+                      onClick={removeImage}
+                      className={styles.remove}
+                    />
+                  </div>
+                :
+                  <div className={styles.upload}>
+                    <div className={styles.icon}>
+                      <AntIcon type="inbox" />
+                    </div>
+                    <div className={styles.hint}>
+                      Нажмите или перетащите файлы для загрузки
+                    </div>
+                  </div>
+              }
             </AntUpload.Dragger>
           </div>
           <div className={styles.title}>
             <AntInput
               size="default"
-              value={data.title}
+              value={title}
               onChange={changeTitle}
             />
           </div>
@@ -78,7 +102,7 @@ const Editor = ({
                   required: true,
                   message: 'Это поле не может быть пустым!',
                 }],
-                initialValue: data.text,
+                initialValue: text,
               })(
                 <AntInput
                   rows={4}
@@ -105,8 +129,8 @@ const Editor = ({
             />
           </div>
         </div>
-      </AntModal>
-    </div>
+      </div>
+    </AntModal>
   );
 };
 
@@ -116,6 +140,7 @@ Editor.propTypes = {
   changeText: PropTypes.func.isRequired,
   changeTitle: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
+  removeImage: PropTypes.func.isRequired,
   saveSettings: PropTypes.func.isRequired,
   data: PropTypes.shape({
     text: PropTypes.string.isRequired,

@@ -114,6 +114,21 @@ class Card extends Component {
     }
   }
 
+  removeImage = (event) => {
+    event.stopPropagation();
+    this.storage[
+      this.state
+        .temp
+        .image
+    ] = undefined;
+    this.setState({
+      temp: {
+        ...this.state.temp,
+        image: undefined,
+      },
+    });
+  }
+
   render() {
     const {
       temp,
@@ -134,6 +149,7 @@ class Card extends Component {
           changeText={this.changeData('text')}
           changeTitle={this.changeData('title')}
           uploadImage={this.uploadImage}
+          removeImage={this.removeImage}
           saveSettings={this.saveSettings}
         />
       </div>
