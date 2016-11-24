@@ -116,11 +116,6 @@ class Card extends Component {
 
   removeImage = (event) => {
     event.stopPropagation();
-    this.storage[
-      this.state
-        .temp
-        .image
-    ] = undefined;
     this.setState({
       temp: {
         ...this.state.temp,
