@@ -1,24 +1,45 @@
-import React, { PropTypes, Component } from 'react';
-import AntPromt from 'components/UI/Promt';
-import { Tag as AntTag } from 'antd';
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
+import {
+  set,
+  update,
+  remove,
+  isEqual,
+} from 'lodash/fp';
+import {
+  arrayMove,
+} from 'react-sortable-hoc';
+import { message } from 'antd';
 import { Entity } from 'draft-js';
-import { isEqual } from 'lodash';
-import styles from './styles.css';
+import Preview from './Preview';
+import Editor from './Editor';
+import './styles.css';
 
 class Tag extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      text: (Entity
+    const data = {
+      default: {
+        tags: [{
+          text: 'Тэг',
+          color: 'green',
+        }],
+      },
+      entity: Entity
         .get(this.props.entityKey)
         .getData()
-        .content || {}
-      ).text || 'Тег',
-      promt: {
-        open: false,
-        value: null,
-      },
+        .content,
+    };
+    const content =
+      data.entity || data.default;
+    this.state = {
+      drag: null,
+      temp: content,
+      modal: false,
+      content,
     };
   }
 
@@ -32,71 +53,124 @@ class Tag extends Component {
     );
   }
 
-  editText = () => {
+  openModal = () => {
     this.setState({
-      promt: {
-        open: true,
-        value: this
-          .state
-          .text,
-      },
+      modal: true,
+      temp: this
+        .state
+        .content,
     });
   }
 
-  modifyText = () => {
-    const {
-      value: text,
-    } = this.state.promt;
+  saveSettings = () => {
+    const content =
+      this.state.temp;
+    this.setState({
+      modal: false,
+      content,
+    });
     Entity.replaceData(
       this.props.entityKey, {
-        content: {
-          text,
-        },
+        content,
       }
     );
+  }
+
+  closeModal = () => {
     this.setState({
-      text,
-      promt: {
-        open: false,
-      },
+      modal: false,
     });
   }
+
+  changeTagColor = (index) => (value) => {
+    this.setState({
+      temp: set([
+        'tags',
+        index,
+        'color',
+      ],
+        value,
+        this.state.temp,
+      ),
+    });
+  }
+
+  changeTagText = (index) => (event) => {
+    this.setState({
+      temp: set([
+        'tags',
+        index,
+        'text',
+      ],
+        event.target.value,
+        this.state.temp,
+      ),
+    });
+  }
+
+  addTag = () => {
+    this.setState({
+      temp: update(
+        'tags',
+        (tags) => tags.concat([{
+          text: 'Тэг',
+          color: 'blue',
+        }]),
+        this.state.temp,
+      ),
+    });
+  }
+
+  removeTag = (index) => () => {
+    if (this.state.temp.tags.length > 1) {
+      this.setState({
+        temp: update(
+          'tags',
+          (tags) => remove(
+            (tag) => tags.indexOf(
+              tag
+            ) === index,
+            tags,
+          ),
+          this.state.temp,
+        ),
+      });
+    } else {
+      message.error('Нельзя удалить единственный элемент');
+    }
+  }
+
+  dragTag = ({ oldIndex, newIndex }) => {
+    this.setState({
+      temp: {
+        tags: arrayMove(
+          this.state.temp.tags,
+          oldIndex,
+          newIndex,
+        ),
+      },
+    });
+  };
 
   render() {
     const {
-      text,
-      promt,
+      temp,
+      modal,
+      content,
     } = this.state;
     return (
-      <span className={styles.tag}>
-        <AntTag
-          color="green"
-          onDoubleClick={this.editText}
-        >
-          {text}
-        </AntTag>
-        <AntPromt
-          value={promt.value}
-          onSave={this.modifyText}
-          visible={promt.open}
-          onChange={(event) => {
-            this.setState({
-              promt: {
-                ...promt,
-                value: event
-                  .target
-                  .value,
-              },
-            });
-          }}
-          onCancel={() => {
-            this.setState({
-              promt: {
-                ...promt,
-                open: false,
-              },
-            });
-          }}
+      <span onDoubleClick={this.openModal}>
+        <Preview data={content} />
+        <Editor
+          data={temp}
+          isOpen={modal}
+          addTag={this.addTag}
+          dragTag={this.dragTag}
+          removeTag={this.removeTag}
+          closeModal={this.closeModal}
+          changeTagText={this.changeTagText}
+          changeTagColor={this.changeTagColor}
+          saveSettings={this.saveSettings}
         />
       </span>
     );
