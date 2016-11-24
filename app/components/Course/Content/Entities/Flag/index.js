@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import cx from 'classnames';
+import classNames from 'classnames';
 import { Icon as AntIcon, Popconfirm as AntPopconfirm } from 'antd';
 import { Entity } from 'draft-js';
 import { isEqual } from 'lodash';
@@ -10,27 +10,10 @@ class Flag extends Component {
 
   constructor(props) {
     super(props);
-    const {
-      icons,
-      colors,
-      message,
-    } = Entity
-      .get(this.props.entityKey)
-      .getData()
-      .content || {
-        colors: 'info-color',
-        icons: 'anticon-info-circle',
-        message: 'Флаг',
-      };
+    const { content } = props;
     this.state = {
-      colors,
-      icons,
-      message,
-      temp: {
-        colors,
-        icons,
-        message,
-      },
+      content,
+      temp: content,
       modal: false,
     };
   }
@@ -57,29 +40,24 @@ class Flag extends Component {
   saveOptions = (e) => {
     e.preventDefault();
     const form = this.form;
+    const content =
+      this.state.temp;
     form.validateFields((err) => {
-      if (err) {
-        return;
+      if (!err) {
+        Entity.replaceData(
+          this.props.entityKey, {
+            content,
+          }
+        );
+        this.setState({
+          content,
+          modal: false,
+        });
       }
-      Entity.replaceData(
-        this.props.entityKey, {
-          content: {
-            message: form.getFieldValue('message'),
-            icons: form.getFieldValue('icons'),
-            colors: form.getFieldValue('colors'),
-          },
-        }
-      );
-      this.setState({
-        message: form.getFieldValue('message'),
-        colors: form.getFieldValue('colors'),
-        icons: form.getFieldValue('icons'),
-        modal: false,
-      });
     });
   }
 
-  chooseColor = (colors) => {
+  chooseColors = (colors) => {
     this.setState({
       temp: {
         ...this.state.temp,
@@ -88,7 +66,7 @@ class Flag extends Component {
     });
   }
 
-  chooseIcon = (icons) => {
+  chooseIcons = (icons) => {
     this.setState({
       temp: {
         ...this.state.temp,
@@ -104,11 +82,7 @@ class Flag extends Component {
   openFlagOptions = () => {
     this.setState({
       modal: true,
-      temp: {
-        message: this.state.message,
-        icons: this.state.icons,
-        colors: this.state.colors,
-      },
+      temp: this.state.content,
     });
   }
 
@@ -121,49 +95,45 @@ class Flag extends Component {
   render() {
     const {
       modal,
-      icons,
-      colors,
-      message,
       temp,
+      content,
     } = this.state;
     return (
       <div className={styles.modal}>
         <div
-          className={cx(
+          className={classNames(
             styles.flag,
-            styles[colors],
+            styles[content.colors],
           )}
         >
           <i
-            className={cx(
-              { [`anticon ${icons}`]: true },
+            className={classNames(
+              { [`anticon ${content.icons}`]: true },
               styles.anticonflag,
-              styles[icons],
+              styles[content.icons],
             )}
           />
-          <span className={styles.message}>{message}</span>
+          <span className={styles.message}>{content.message}</span>
           <FlagOptions
             ref={this.saveFormRef}
+            data={temp}
             modal={modal}
-            message={temp.message}
-            colors={temp.colors}
-            icons={temp.icons}
             onCancel={this.closeFlagOptions}
             onCreate={this.saveOptions}
-            onChooseIcon={this.chooseIcon}
-            onChooseColor={this.chooseColor}
+            onChooseIcons={this.chooseIcons}
+            onChooseColors={this.chooseColors}
             onEditMessage={this.editMessage}
           />
         </div>
         <AntIcon
           type="edit"
-          className={styles.btn}
+          className={styles.button}
           onClick={this.openFlagOptions}
         />
         <AntPopconfirm title="Вы уверены?" okText="Да" cancelText="Нет">
           <AntIcon
             type="close"
-            className={styles.btn}
+            className={styles.button}
           />
         </AntPopconfirm>
       </div>
@@ -172,17 +142,20 @@ class Flag extends Component {
 }
 
 Flag.defaultProps = {
-  message: 'flag',
-  icons: 'anticon-check-circle',
-  colors: 'info-color',
+  content: {
+    message: 'flag-new',
+    icons: 'anticon-check-circle',
+    colors: 'info-color',
+  },
 };
 
 Flag.propTypes = {
   entityKey: PropTypes.string.isRequired,
-  modal: PropTypes.func,
-  message: PropTypes.string,
-  icons: PropTypes.string,
-  colors: PropTypes.string,
+  content: PropTypes.shape({
+    message: PropTypes.string,
+    icons: PropTypes.string,
+    colors: PropTypes.string,
+  }).isRequired,
 };
 
 export default Flag;

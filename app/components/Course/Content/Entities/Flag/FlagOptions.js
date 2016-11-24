@@ -1,16 +1,17 @@
 import React, { PropTypes, Component } from 'react';
-import cx from 'classnames';
+import classNames from 'classnames';
 import {
   Button as AntButton,
   Input as AntInput,
   Form as AntForm,
   Select as AntSelect,
-  Col, Row,
+  Col as AntCol,
+  Row as AntRow,
   Modal as AntModal } from 'antd';
 import styles from './styles.css';
 
 
-const FormItem = AntForm.Item;
+const AntFormItem = AntForm.Item;
 
 class FlagOptions extends Component {
   constructor() {
@@ -30,18 +31,20 @@ class FlagOptions extends Component {
     });
   }
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, resetFields } = this.props.form;
     const {
       modal,
-      message,
-      colors,
-      icons,
+      data,
       onCancel,
       onCreate,
-      onChooseIcon,
-      onChooseColor,
+      onChooseIcons,
+      onChooseColors,
       onEditMessage,
     } = this.props;
+    const resetAndClose = () => {
+      resetFields();
+      onCancel();
+    };
     const { disabled } = this.state;
     return (
       <div>
@@ -49,101 +52,101 @@ class FlagOptions extends Component {
           title="Флаг"
           visible={modal}
           okText="Create"
-          onCancel={onCancel}
+          onCancel={resetAndClose}
           footer={null}
         >
           <AntForm onSubmit={onCreate} onChange={this.disableButton}>
-            <Row className={styles.form}>
-              <FormItem>
-                <Col span="3">
-                  <FormItem>
+            <AntRow className={styles.form}>
+              <AntFormItem>
+                <AntCol span="3">
+                  <AntFormItem>
                     {getFieldDecorator('colors', {
-                      initialValue: colors,
+                      initialValue: 'info-color',
                     })(
-                      <AntSelect onChange={onChooseColor}>
+                      <AntSelect onChange={onChooseColors}>
                         {['info-color',
-                        'sucess-color',
-                        'error-color',
-                        'warning-color'].map((color, index) =>
-                          <AntSelect.Option value={color} key={index}>
-                            <div
-                              className={cx(
-                                styles.rounded,
-                                styles[color],
-                              )}
-                            />
-                          </AntSelect.Option>
+                          'sucess-color',
+                          'error-color',
+                          'warning-color'].map((color, index) =>
+                            <AntSelect.Option value={color} key={index}>
+                              <div
+                                className={classNames(
+                                  styles.rounded,
+                                  styles[data.color],
+                                )}
+                              />
+                            </AntSelect.Option>
                         )}
                       </AntSelect>
                     )}
-                  </FormItem>
-                </Col>
-                <Col span="1" />
-                <Col span="3">
-                  <FormItem>
+                  </AntFormItem>
+                </AntCol>
+                <AntCol span="1" />
+                <AntCol span="3">
+                  <AntFormItem>
                     {getFieldDecorator('icons', {
-                      initialValue: icons,
+                      initialValue: data.icons,
                     })(
-                      <AntSelect onChange={onChooseIcon} >
+                      <AntSelect onChange={onChooseIcons} >
                         {['anticon-check-circle',
-                        'anticon-info-circle',
-                        'anticon-exclamation-circle',
-                        'anticon-cross-circle'].map((icon, index) =>
-                          <AntSelect.Option value={icon} key={index}>
-                            <i
-                              className={cx(
-                                { [`anticon ${icon}`]: true },
-                                styles.anticonflagselect,
-                                styles[icon]
-                              )}
-                            />
-                          </AntSelect.Option>
+                          'anticon-info-circle',
+                          'anticon-exclamation-circle',
+                          'anticon-cross-circle'].map((icon, index) =>
+                            <AntSelect.Option value={icon} key={index}>
+                              <i
+                                className={classNames(
+                                  { [`anticon ${icon}`]: true },
+                                  styles.anticonflagselect,
+                                  styles[data.icon]
+                                )}
+                              />
+                            </AntSelect.Option>
                         )}
                       </AntSelect>
                       )}
-                  </FormItem>
-                </Col>
-                <Col span="1" />
-                <Col span="16">
-                  <FormItem>
+                  </AntFormItem>
+                </AntCol>
+                <AntCol span="1" />
+                <AntCol span="16">
+                  <AntFormItem>
                     {getFieldDecorator('message', {
                       rules: [{ required: true, message: 'Поле должно быть заполнено!' }],
-                      initialValue: message,
+                      initialValue: data.message,
                     })(
                       <AntInput onChange={onEditMessage} />
                     )}
-                  </FormItem>
-                </Col>
-              </FormItem>
-            </Row>
-            <Row>
-              <Col span="24" className={styles.preview}>
+                  </AntFormItem>
+                </AntCol>
+              </AntFormItem>
+            </AntRow>
+            <AntRow>
+              <AntCol span="24" className={styles.preview}>
                 <span className={styles.title}>Предпросмотр</span>
-                {disabled === false &&
+                {!disabled &&
                   <div
-                    className={cx(
+                    className={classNames(
                       styles.flag,
-                      styles[colors],
+                      styles[data.colors],
                     )}
                   >
                     <i
-                      className={cx(
-                        { [`anticon ${icons}`]: true },
+                      className={classNames(
+                        { [`anticon ${data.icons}`]: true },
                         styles.anticonflag,
-                        styles[icons],
+                        styles[data.icons],
                       )}
                     />
-                    <span className={styles.noselect}>{message}</span>
+                    <span className={styles.noselect}>{data.message}</span>
                   </div>
                 }
-              </Col>
-            </Row>
-            <Row style={{ textAlign: 'right' }}>
-              <Col span="24">
+              </AntCol>
+            </AntRow>
+            <AntRow style={{ textAlign: 'right' }}>
+              <AntCol span="24">
                 <AntButton
                   htmlType="button"
                   className="login-form-button"
-                  onClick={onCancel}
+                  onClick={resetAndClose}
                 >
                   Отмена
                 </AntButton>
@@ -157,8 +160,8 @@ class FlagOptions extends Component {
                 >
                   Сохранить
                 </AntButton>
-              </Col>
-            </Row>
+              </AntCol>
+            </AntRow>
           </AntForm>
         </AntModal>
       </div>
@@ -170,14 +173,11 @@ FlagOptions.propTypes = {
   form: PropTypes.object,
   onCancel: React.PropTypes.func,
   onCreate: React.PropTypes.func,
-  onChooseIcon: React.PropTypes.func,
-  onChooseColor: React.PropTypes.func,
+  onChooseIcons: React.PropTypes.func,
+  onChooseColors: React.PropTypes.func,
   onEditMessage: React.PropTypes.func,
-  promt: PropTypes.object,
-  modal: PropTypes.func,
-  message: PropTypes.string,
-  icons: PropTypes.string,
-  colors: PropTypes.string,
+  modal: PropTypes.bool.isRequired,
+  data: PropTypes.object.isRequired,
 };
 
 export default AntForm.create({})(FlagOptions);

@@ -82,6 +82,7 @@ const views = {
   TIMELINE: 'BLOCK',
   CHECKBOX: 'BLOCK',
   TEXTAREA: 'BLOCK',
+  FLAG: 'BLOCK',
   LINK: 'INLINE',
   TEX: 'INLINE',
   TAG: 'INLINE',
@@ -89,7 +90,6 @@ const views = {
   INPUT: 'INLINE',
   SWITCH: 'INLINE',
   SELECT: 'INLINE',
-  FLAG: 'INLINE',
   SAMPLE: 'BLOCK',
 };
 

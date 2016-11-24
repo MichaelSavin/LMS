@@ -12,8 +12,11 @@ class Radio extends Component {
 
   constructor(props) {
     super(props);
+    const { content } = props;
     this.state = {
       ...props.content,
+      temp: content,
+      content,
       promt: {
         open: false,
         value: null,
@@ -96,7 +99,7 @@ class Radio extends Component {
     return (
       <div
         className={styles.radio}
-        onContextMenu={this.editOptions}
+        onDoubleClick={this.editOptions}
       >
         <AntRadio.Group
           onChange={this.chooseAnswer}
@@ -151,7 +154,7 @@ Radio.defaultProps = {
   content: {
     answer: undefined,
     options: [
-      'Вариант 1',
+      'Вариант radio',
       'Вариант 2',
       'Вариант 3',
       'Вариант 4',

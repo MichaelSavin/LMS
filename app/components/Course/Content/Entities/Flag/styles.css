@@ -33,19 +33,19 @@
   align-items: center;
 }
 
-.modal:hover .btn {
+.modal:hover .button {
   display: inline-block;
   cursor: pointer;
 }
 
-.btn {
+.button {
   display: none;
   transition: all 0.3s;
   margin: 0 3px;
   font-size: 20px;
 }
 
-.btn:hover {
+.button:hover {
   color: #57C5F7;
   transform: scale(1.4);
 }
