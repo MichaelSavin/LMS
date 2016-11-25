@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import { Icon as AntIcon, Popconfirm as AntPopconfirm } from 'antd';
 import { Entity } from 'draft-js';
 import { isEqual } from 'lodash';
+import rgb from 'color-space/rgb';
+import hsl from 'color-space/hsl';
 import FlagOptions from './FlagOptions';
 import styles from './styles.css';
 
@@ -57,11 +59,41 @@ class Flag extends Component {
     });
   }
 
+  componentToHex = (c) => {
+    const hex = c.toString(16);
+    return hex.length === 1 ? `0${hex}` : hex;
+  }
+
+  convertRGBtoHSL = (c) => {
+    const hex = c.replace('#', '');
+    const RGB = {
+      r: parseInt(hex.substring(0, 2), 16),
+      g: parseInt(hex.substring(2, 4), 16),
+      b: parseInt(hex.substring(4, 6), 16),
+    };
+    const HSL = rgb.hsl([RGB.r, RGB.g, RGB.b]);
+    return HSL;
+  }
+
+  convertHex = (hex) => {
+    const HSL = this.convertRGBtoHSL(hex);
+    const color = HSL[0];
+    const saturation = HSL[1] - 3;
+    const lightness = HSL[2] + 35;
+    const RGB = hsl.rgb([color, saturation, lightness]);
+    const RGBr = this.componentToHex(Math.round(RGB[0]));
+    const RGBg = this.componentToHex(Math.round(RGB[1]));
+    const RGBb = this.componentToHex(Math.round(RGB[2]));
+    return `#${RGBr}${RGBg}${RGBb}`;
+  }
+
   chooseColor = (color) => {
+    const bgcolor = this.convertHex(color);
     this.setState({
       temp: {
         ...this.state.temp,
         color,
+        bgcolor,
       },
     });
   }
@@ -98,19 +130,20 @@ class Flag extends Component {
       temp,
       content,
     } = this.state;
+    console.log(temp.bgcolor);
     return (
       <div className={styles.modal}>
         <div
+          style={{ backgroundColor: temp.bgcolor }}
           className={classNames(
             styles.flag,
-            styles[content.color],
           )}
         >
           <i
+            style={{ color: temp.color }}
             className={classNames(
-              { [`anticon ${content.icon}`]: true },
+              { [`anticon ${temp.icon}`]: true },
               styles.anticonflag,
-              styles[content.icon],
             )}
           />
           <span className={styles.message}>{content.message}</span>
@@ -144,8 +177,9 @@ class Flag extends Component {
 Flag.defaultProps = {
   content: {
     message: 'Это Флаг',
-    icon: 'anticon-check-circle',
-    color: 'info-color',
+    icon: 'anticon-info-circle',
+    color: '#87D068',
+    bgcolor: '#F3FAF0',
   },
 };
 
@@ -155,6 +189,7 @@ Flag.propTypes = {
     message: PropTypes.string,
     icon: PropTypes.string,
     color: PropTypes.string,
+    bgcolor: PropTypes.string,
   }).isRequired,
 };
 

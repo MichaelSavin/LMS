@@ -58,15 +58,15 @@ class FlagOptions extends Component {
                 <AntCol span="3">
                   <AntForm.Item>
                     <AntSelect onChange={onChooseColor} defaultValue={data.color}>
-                      {['info-color',
-                        'sucess-color',
-                        'error-color',
-                        'warning-color'].map((color, index) =>
+                      {['#87D068',
+                        '#2DB7F5',
+                        '#FFAA00',
+                        '#FF5500'].map((color, index) =>
                           <AntSelect.Option value={color} key={index}>
                             <div
+                              style={{ backgroundColor: color }}
                               className={classNames(
                                 styles.rounded,
-                                styles[color],
                               )}
                             />
                           </AntSelect.Option>
@@ -87,7 +87,6 @@ class FlagOptions extends Component {
                               className={classNames(
                                 { [`anticon ${icon}`]: true },
                                 styles.anticonflagselect,
-                                styles[icon]
                               )}
                             />
                           </AntSelect.Option>
@@ -113,16 +112,16 @@ class FlagOptions extends Component {
                 <span className={styles.title}>Предпросмотр</span>
                 {!disabled &&
                   <div
+                    style={{ backgroundColor: data.bgcolor }}
                     className={classNames(
                       styles.flag,
-                      styles[data.color],
                     )}
                   >
                     <i
+                      style={{ color: data.color }}
                       className={classNames(
                         { [`anticon ${data.icon}`]: true },
                         styles.anticonflag,
-                        styles[data.icon],
                       )}
                     />
                     <span className={styles.noselect}>{data.message}</span>
