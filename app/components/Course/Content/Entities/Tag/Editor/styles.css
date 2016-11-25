@@ -4,9 +4,11 @@
   justify-content: space-between;
 }
 
+/* При прямом наследовании от .editor направильно работает DnD */
+
 /* .editor { */
 
-.step {
+.tag {
   display: flex;
   user-select: none;
   flex-direction: row !important;

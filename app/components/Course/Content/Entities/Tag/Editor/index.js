@@ -78,7 +78,7 @@ const Editor = ({
                 key={tagIndex}
                 index={tagIndex}
               >
-                <div className={styles.step}>
+                <div className={styles.tag}>
                   <Sortable.Handler />
                   <AntSelect
                     value={tag.color}
