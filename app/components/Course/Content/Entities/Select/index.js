@@ -25,7 +25,7 @@ class Select extends Component {
       ||
       { answer: undefined,
         options: [
-          'Вариант 3',
+          'Вариант 1',
           'Вариант 2',
           'Вариант 3',
           'Вариант 4',
