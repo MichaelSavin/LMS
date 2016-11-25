@@ -57,20 +57,20 @@ class Flag extends Component {
     });
   }
 
-  chooseColors = (colors) => {
+  chooseColor = (color) => {
     this.setState({
       temp: {
         ...this.state.temp,
-        colors,
+        color,
       },
     });
   }
 
-  chooseIcons = (icons) => {
+  chooseIcon = (icon) => {
     this.setState({
       temp: {
         ...this.state.temp,
-        icons,
+        icon,
       },
     });
   }
@@ -103,14 +103,14 @@ class Flag extends Component {
         <div
           className={classNames(
             styles.flag,
-            styles[content.colors],
+            styles[content.color],
           )}
         >
           <i
             className={classNames(
-              { [`anticon ${content.icons}`]: true },
+              { [`anticon ${content.icon}`]: true },
               styles.anticonflag,
-              styles[content.icons],
+              styles[content.icon],
             )}
           />
           <span className={styles.message}>{content.message}</span>
@@ -120,8 +120,8 @@ class Flag extends Component {
             modal={modal}
             onCancel={this.closeFlagOptions}
             onCreate={this.saveOptions}
-            onChooseIcons={this.chooseIcons}
-            onChooseColors={this.chooseColors}
+            onChooseIcon={this.chooseIcon}
+            onChooseColor={this.chooseColor}
             onEditMessage={this.editMessage}
           />
         </div>
@@ -143,9 +143,9 @@ class Flag extends Component {
 
 Flag.defaultProps = {
   content: {
-    message: 'flag-new',
-    icons: 'anticon-check-circle',
-    colors: 'info-color',
+    message: 'Это Флаг',
+    icon: 'anticon-check-circle',
+    color: 'info-color',
   },
 };
 
@@ -153,8 +153,8 @@ Flag.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     message: PropTypes.string,
-    icons: PropTypes.string,
-    colors: PropTypes.string,
+    icon: PropTypes.string,
+    color: PropTypes.string,
   }).isRequired,
 };
 

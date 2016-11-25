@@ -10,9 +10,6 @@ import {
   Modal as AntModal } from 'antd';
 import styles from './styles.css';
 
-
-const AntFormItem = AntForm.Item;
-
 class FlagOptions extends Component {
   constructor() {
     super();
@@ -37,8 +34,8 @@ class FlagOptions extends Component {
       data,
       onCancel,
       onCreate,
-      onChooseIcons,
-      onChooseColors,
+      onChooseIcon,
+      onChooseColor,
       onEditMessage,
     } = this.props;
     const resetAndClose = () => {
@@ -57,67 +54,59 @@ class FlagOptions extends Component {
         >
           <AntForm onSubmit={onCreate} onChange={this.disableButton}>
             <AntRow className={styles.form}>
-              <AntFormItem>
+              <AntForm.Item>
                 <AntCol span="3">
-                  <AntFormItem>
-                    {getFieldDecorator('colors', {
-                      initialValue: 'info-color',
-                    })(
-                      <AntSelect onChange={onChooseColors}>
-                        {['info-color',
-                          'sucess-color',
-                          'error-color',
-                          'warning-color'].map((color, index) =>
-                            <AntSelect.Option value={color} key={index}>
-                              <div
-                                className={classNames(
-                                  styles.rounded,
-                                  styles[data.color],
-                                )}
-                              />
-                            </AntSelect.Option>
-                        )}
-                      </AntSelect>
-                    )}
-                  </AntFormItem>
+                  <AntForm.Item>
+                    <AntSelect onChange={onChooseColor} defaultValue={data.color}>
+                      {['info-color',
+                        'sucess-color',
+                        'error-color',
+                        'warning-color'].map((color, index) =>
+                          <AntSelect.Option value={color} key={index}>
+                            <div
+                              className={classNames(
+                                styles.rounded,
+                                styles[color],
+                              )}
+                            />
+                          </AntSelect.Option>
+                      )}
+                    </AntSelect>
+                  </AntForm.Item>
                 </AntCol>
                 <AntCol span="1" />
                 <AntCol span="3">
-                  <AntFormItem>
-                    {getFieldDecorator('icons', {
-                      initialValue: data.icons,
-                    })(
-                      <AntSelect onChange={onChooseIcons} >
-                        {['anticon-check-circle',
-                          'anticon-info-circle',
-                          'anticon-exclamation-circle',
-                          'anticon-cross-circle'].map((icon, index) =>
-                            <AntSelect.Option value={icon} key={index}>
-                              <i
-                                className={classNames(
-                                  { [`anticon ${icon}`]: true },
-                                  styles.anticonflagselect,
-                                  styles[data.icon]
-                                )}
-                              />
-                            </AntSelect.Option>
-                        )}
-                      </AntSelect>
+                  <AntForm.Item>
+                    <AntSelect onChange={onChooseIcon} defaultValue={data.icon}>
+                      {['anticon-check-circle',
+                        'anticon-info-circle',
+                        'anticon-exclamation-circle',
+                        'anticon-cross-circle'].map((icon, index) =>
+                          <AntSelect.Option value={icon} key={index}>
+                            <i
+                              className={classNames(
+                                { [`anticon ${icon}`]: true },
+                                styles.anticonflagselect,
+                                styles[icon]
+                              )}
+                            />
+                          </AntSelect.Option>
                       )}
-                  </AntFormItem>
+                    </AntSelect>
+                  </AntForm.Item>
                 </AntCol>
                 <AntCol span="1" />
                 <AntCol span="16">
-                  <AntFormItem>
+                  <AntForm.Item>
                     {getFieldDecorator('message', {
                       rules: [{ required: true, message: 'Поле должно быть заполнено!' }],
                       initialValue: data.message,
                     })(
                       <AntInput onChange={onEditMessage} />
                     )}
-                  </AntFormItem>
+                  </AntForm.Item>
                 </AntCol>
-              </AntFormItem>
+              </AntForm.Item>
             </AntRow>
             <AntRow>
               <AntCol span="24" className={styles.preview}>
@@ -126,14 +115,14 @@ class FlagOptions extends Component {
                   <div
                     className={classNames(
                       styles.flag,
-                      styles[data.colors],
+                      styles[data.color],
                     )}
                   >
                     <i
                       className={classNames(
-                        { [`anticon ${data.icons}`]: true },
+                        { [`anticon ${data.icon}`]: true },
                         styles.anticonflag,
-                        styles[data.icons],
+                        styles[data.icon],
                       )}
                     />
                     <span className={styles.noselect}>{data.message}</span>
@@ -170,12 +159,12 @@ class FlagOptions extends Component {
 }
 
 FlagOptions.propTypes = {
-  form: PropTypes.object,
-  onCancel: React.PropTypes.func,
-  onCreate: React.PropTypes.func,
-  onChooseIcons: React.PropTypes.func,
-  onChooseColors: React.PropTypes.func,
-  onEditMessage: React.PropTypes.func,
+  form: PropTypes.object.isRequired,
+  onCancel: React.PropTypes.func.isRequired,
+  onCreate: React.PropTypes.func.isRequired,
+  onChooseIcon: React.PropTypes.func.isRequired,
+  onChooseColor: React.PropTypes.func.isRequired,
+  onEditMessage: React.PropTypes.func.isRequired,
   modal: PropTypes.bool.isRequired,
   data: PropTypes.object.isRequired,
 };
