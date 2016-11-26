@@ -1,36 +1,33 @@
 import React, {
-  PropTypes,
   Component,
+  PropTypes,
 } from 'react';
-import katex from 'katex';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash/fp';
 import { Entity } from 'draft-js';
-import AntPromt from 'components/UI/Promt';
-import styles from 'katex/dist/katex.min.css'; // eslint-disable-line no-unused-vars
+import Preview from './Preview';
+import Editor from './Editor';
+import './styles.css';
 
 class TeX extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      value: (
-        Entity
-          .get(this.props.entityKey)
-          .getData()
-          .content || {}
-        ).value || 'e=mc^2',
-      promt: {
-        open: false,
-        value: null,
+    const data = {
+      default: {
+        tex: 'e = mc^2',
       },
+      entity: Entity
+        .get(this.props.entityKey)
+        .getData()
+        .content,
     };
-  }
-
-  componentDidMount() {
-    katex.render(
-      this.state.value,
-      this.refs.math
-    );
+    const content =
+      data.entity || data.default;
+    this.state = {
+      temp: content,
+      modal: false,
+      content,
+    };
   }
 
   shouldComponentUpdate(
@@ -43,78 +40,59 @@ class TeX extends Component {
     );
   }
 
-  editValue = () => {
+  openModal = () => {
     this.setState({
-      promt: {
-        open: true,
-        value: this
-          .state
-          .value,
-      },
+      modal: true,
+      temp: this
+        .state
+        .content,
     });
   }
 
-  modifyValue = () => {
-    const {
-      value,
-    } = this.state.promt;
+  saveSettings = () => {
+    const content =
+      this.state.temp;
+    this.setState({
+      modal: false,
+      content,
+    });
     Entity.replaceData(
       this.props.entityKey, {
-        content: {
-          value,
-        },
+        content,
       }
     );
-    katex.render(
-      value,
-      this.refs.math
-    );
+  }
+
+  closeModal = () => {
     this.setState({
-      value,
-      promt: {
-        open: false,
+      modal: false,
+    });
+  }
+
+  changeTeX = (event) => {
+    this.setState({
+      temp: {
+        ...this.state.temp,
+        tex: event.target.value,
       },
     });
   }
 
   render() {
     const {
-      promt,
+      temp,
+      modal,
+      content,
     } = this.state;
     return (
-      <span className="TeX">
-        <span
-          ref="math"
-          onDoubleClick={this.editValue}
-          contentEditable="false"
-          style={{
-            cursor: 'pointer',
-            padding: '2.5px 5px',
-            WebkitUserSelect: 'none',
-          }}
-        />
-        <AntPromt
-          value={promt.value}
-          onSave={this.modifyValue}
-          visible={promt.open}
-          onChange={(event) => {
-            this.setState({
-              promt: {
-                ...promt,
-                value: event
-                  .target
-                  .value,
-              },
-            });
-          }}
-          onCancel={() => {
-            this.setState({
-              promt: {
-                ...promt,
-                open: false,
-              },
-            });
-          }}
+      <span onDoubleClick={this.openModal}>
+        <Preview data={content} />
+        <Editor
+          data={temp}
+          isOpen={modal}
+          changeTeX={this.changeTeX}
+          closeModal={this.closeModal}
+          saveSettings={this.saveSettings}
         />
       </span>
     );
