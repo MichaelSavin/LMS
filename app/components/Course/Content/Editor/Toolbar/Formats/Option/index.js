@@ -12,10 +12,15 @@ const Option = ({
 }) =>
   <div
     className={classNames(
-      isPopup ? styles.popupOption : styles.option, {
-        [isPopup ? styles.popupActive : styles.active]: active,
-        [styles.disabled]: disabled,
-      }
+      isPopup
+        ? styles.popupOption
+        : styles.option, {
+          [isPopup
+            ? styles.popupActive
+            : styles.active
+          ]: active,
+          [styles.disabled]: disabled,
+        }
     )}
     onClick={() => onClick(value)}
   >
