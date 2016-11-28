@@ -12,6 +12,8 @@ import {
 } from 'draft-js';
 import styles from './styles.css';
 import Option from '../Option';
+import * as icons from '../../../../../../UI/Icon/IconsSvg';
+
 
 class Style extends Component {
 
@@ -118,9 +120,9 @@ class Style extends Component {
             onClick={this.toggleStyle}
             isPopup={isPopup}
           >
-            <svg className={styles.icon}>
-              <use xlinkHref={`#${icon}`} />
-            </svg>
+            <span className={styles.icon}>
+              {icons[icon]}
+            </span>
           </Option>
         )
       }
