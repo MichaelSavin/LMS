@@ -1,0 +1,40 @@
+.header {
+  display: flex;
+  padding-right: 30px;
+  justify-content: space-between;
+}
+
+.editor {
+  & .tex {
+    padding: 0;
+  }
+}
+
+.preview {
+  flex-direction: column;
+  padding: 10px 0;
+
+  & .title {
+    width: 100%;
+    margin: 30px 0 35px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: bold;
+    line-height: 0.1em;
+    border-bottom: 1px solid #EEE;
+
+    & .text {
+      padding: 0 10px;
+      background: #FFF;
+    }
+  }
+
+  & .component {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+:global .ant-form-item {
+  margin-bottom: 5px;
+}

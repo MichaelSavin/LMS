@@ -1,0 +1,9 @@
+.preview {
+  & .tex {
+    cursor: pointer;
+    padding: 2.5px 5px;
+    font-size: 16px;
+    user-select: none;
+  }
+}
+
