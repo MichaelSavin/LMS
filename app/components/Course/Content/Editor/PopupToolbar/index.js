@@ -24,15 +24,6 @@ export default class PopupToolbar extends Component {
       });
     }
   }
-  // componentWillReceiveProps(nextProps) {
-  //   if (!nextProps.editorState.getSelection().isCollapsed()) {
-  //     this.setBarPosition(nextProps);
-  //   } else if (this.state.show) {
-  //     this.setState({
-  //       show: false,
-  //     });
-  //   }
-  // }
 
   setBarPosition = () => {
     const editor = this.props.editor.refs.editor;
@@ -93,6 +84,7 @@ export default class PopupToolbar extends Component {
             <Style
               editorState={this.props.editorState}
               changeEditorState={this.props.changeEditorState}
+              isPopup
             />
           </div>
         </div>

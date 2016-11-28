@@ -82,6 +82,8 @@ class Style extends Component {
     const {
       styles: textStyles,
     } = this.state;
+    const { isPopup } = this.props;
+
     return (
       <div className={styles.text}>
         {[{
@@ -114,15 +116,11 @@ class Style extends Component {
             value={value}
             active={textStyles[value]}
             onClick={this.toggleStyle}
-            className={styles.option}
+            isPopup={isPopup}
           >
-            <img
-              src={require( // eslint-disable-line
-                `components/UI/SVG/${icon}.svg`
-              )}
-              role="presentation"
-              className={styles.icon}
-            />
+            <svg className={styles.icon}>
+              <use xlinkHref={`#${icon}`} />
+            </svg>
           </Option>
         )
       }
@@ -134,6 +132,7 @@ class Style extends Component {
 Style.propTypes = {
   editorState: PropTypes.object.isRequired,
   changeEditorState: PropTypes.func.isRequired,
+  isPopup: PropTypes.bool,
 };
 
 export default Style;

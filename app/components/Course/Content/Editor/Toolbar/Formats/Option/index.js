@@ -8,11 +8,12 @@ const Option = ({
   onClick,
   children,
   disabled,
+  isPopup,
 }) =>
   <div
     className={classNames(
-      styles.option, {
-        [styles.active]: active,
+      isPopup ? styles.popupOption : styles.option, {
+        [isPopup ? styles.popupActive : styles.active]: active,
         [styles.disabled]: disabled,
       }
     )}
@@ -27,6 +28,7 @@ Option.propTypes = {
   active: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
+  isPopup: PropTypes.bool,
   children: PropTypes.any.isRequired,
 };
 
