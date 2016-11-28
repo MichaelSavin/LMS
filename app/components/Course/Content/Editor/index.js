@@ -26,6 +26,7 @@ class Draft extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isFocused: true,
       editorState: EditorState.moveFocusToEnd(
         EditorState.createWithContent(
           convertFromRaw(this.props.content),
@@ -80,6 +81,7 @@ class Draft extends Component {
     }); // , () => { setTimeout(() => this.focusEditor(), 0); });
   }
 
+  setFocusStatus = (e) => this.setState({ isFocused: e.type === 'focus' })
 
   blockStyleFn = (block) => {
     const blockAlignment =
@@ -147,15 +149,15 @@ class Draft extends Component {
             onChange={this.onChange}
             // ref={this.setReference}
             ref="editor"
-            onBlur={(e) => { console.log(e, 1); }}
+            onBlur={this.setFocusStatus}
+            onFocus={this.setFocusStatus}
             // spellCheck
           />
           <PopupToolbar
-            {...this.props}
-            actions={[]}
             editor={this.refs.editor}
             editorState={editorState}
             changeEditorState={this.onChange}
+            isFocused={this.state.isFocused}
           />
         </div>
       </div>

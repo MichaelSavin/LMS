@@ -5,25 +5,7 @@ import Style from '../Toolbar/Formats/Style';
 /* eslint better/no-ifs:0 */
 /* eslint react/no-set-state:0 */
 /* eslint react/no-string-refs:0 */
-
-const getSelectionCoords = (editor, toolbar) => {
-  const editorBounds = editor.getBoundingClientRect();
-  const rangeBounds = getVisibleSelectionRect(window);
-
-  if (!rangeBounds || !toolbar) {
-    return null;
-  }
-
-  const rangeWidth = rangeBounds.right - rangeBounds.left;
-
-  const toolbarHeight = toolbar.offsetHeight;
-  // const rangeHeight = rangeBounds.bottom - rangeBounds.top;
-  const offsetLeft = (rangeBounds.left - editorBounds.left)
-    + (rangeWidth / 2);
-  const offsetTop = rangeBounds.top - editorBounds.top - (toolbarHeight + 14);
-  return { offsetLeft, offsetTop };
-};
-
+/* eslint react/no-did-update-set-state:0 */
 
 export default class PopupToolbar extends Component {
   constructor(props) {
@@ -33,23 +15,29 @@ export default class PopupToolbar extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.editorState.getSelection().isCollapsed()) {
-      console.log(1);
-      this.setBarPosition(nextProps);
+  componentDidUpdate() {
+    if (!this.props.editorState.getSelection().isCollapsed()) {
+      this.setBarPosition();
     } else if (this.state.show) {
-      console.log(2);
       this.setState({
         show: false,
       });
     }
   }
+  // componentWillReceiveProps(nextProps) {
+  //   if (!nextProps.editorState.getSelection().isCollapsed()) {
+  //     this.setBarPosition(nextProps);
+  //   } else if (this.state.show) {
+  //     this.setState({
+  //       show: false,
+  //     });
+  //   }
+  // }
 
-
-  setBarPosition = (props = this.props) => {
-    const editor = props.editor.refs.editor;
+  setBarPosition = () => {
+    const editor = this.props.editor.refs.editor;
     const toolbar = this.refs.toolbar;
-    const selectionCoords = getSelectionCoords(editor, toolbar);
+    const selectionCoords = this.getSelectionCoords(editor, toolbar);
 
     if (!selectionCoords) {
       return null;
@@ -70,16 +58,26 @@ export default class PopupToolbar extends Component {
     return null;
   }
 
-  renderToolList() {
-    return (
-      <ul className="toolbar__list" onMouseDown={(x) => { x.preventDefault(); }}>
-        <Style {...this.props} />
-      </ul>
-    );
-  }
+  getSelectionCoords = (editor, toolbar) => {
+    const editorBounds = editor.getBoundingClientRect();
+    const rangeBounds = getVisibleSelectionRect(window);
+
+    if (!rangeBounds || !toolbar) {
+      return null;
+    }
+
+    const rangeWidth = rangeBounds.right - rangeBounds.left;
+
+    const toolbarHeight = toolbar.offsetHeight;
+    const toolbarWidth = toolbar.offsetWidth;
+    const offsetLeft = (rangeBounds.left - editorBounds.left)
+      + ((rangeWidth - toolbarWidth) / 2) + 10;
+    const offsetTop = rangeBounds.top - editorBounds.top - (toolbarHeight + 6);
+    return { offsetLeft, offsetTop };
+  };
 
   render() {
-    if (this.props.readOnly) {
+    if (!this.props.isFocused) {
       return null;
     }
     const toolbarClass = `ant-tooltip ant-tooltip-placement-top ${this.state.show ? '' : 'ant-tooltip-hidden'}`;
@@ -89,23 +87,23 @@ export default class PopupToolbar extends Component {
         className={toolbarClass}
         style={this.state.position}
       >
-        <div className="toolbar__wrapper" ref="toolbar">
-          {this.renderToolList()}
-          <span className="toolbar__arrow" />
+        <div className="ant-tooltip-content">
+          <div className="ant-tooltip-arrow" />
+          <div className="ant-tooltip-inner" ref="toolbar" onMouseDown={(e) => { e.preventDefault(); }}>
+            <Style
+              editorState={this.props.editorState}
+              changeEditorState={this.props.changeEditorState}
+            />
+          </div>
         </div>
       </div>
     );
   }
 }
+
 PopupToolbar.propTypes = {
-  actions: PropTypes.array,
-  // unit: PropTypes.shape({
-  //   sectionId: PropTypes.string.isRequired,
-  //   subsectionId: PropTypes.string.isRequired,
-  //   unitId: PropTypes.string.isRequired,
-  // }),
   editor: PropTypes.object,
   editorState: PropTypes.object,
-  onChange: PropTypes.func,
-  readOnly: PropTypes.bool,
+  changeEditorState: PropTypes.func,
+  isFocused: PropTypes.bool,
 };
