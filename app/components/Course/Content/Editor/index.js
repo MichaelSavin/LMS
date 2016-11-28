@@ -18,6 +18,7 @@ import {
   addEOLtoInlineEntity,
 } from '../Entities';
 import Toolbar from './Toolbar';
+import PopupToolbar from './PopupToolbar';
 import styles from './styles.css';
 
 class Draft extends Component {
@@ -146,7 +147,15 @@ class Draft extends Component {
             onChange={this.onChange}
             // ref={this.setReference}
             ref="editor"
+            onBlur={(e) => { console.log(e, 1); }}
             // spellCheck
+          />
+          <PopupToolbar
+            {...this.props}
+            actions={[]}
+            editor={this.refs.editor}
+            editorState={editorState}
+            changeEditorState={this.onChange}
           />
         </div>
       </div>
