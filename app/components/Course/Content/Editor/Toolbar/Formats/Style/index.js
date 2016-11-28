@@ -12,7 +12,7 @@ import {
 } from 'draft-js';
 import styles from './styles.css';
 import Option from '../Option';
-import * as icons from '../../../../../../UI/Icon/IconsSvg';
+import * as icons from '../../../../../../UI/Icon';
 
 
 class Style extends Component {
