@@ -75,7 +75,7 @@ const Editor = ({
               tagIndex
             ) =>
               <Sortable.Item
-                key={tagIndex}
+                key={tag.id}
                 index={tagIndex}
               >
                 <div className={styles.tag}>
@@ -88,9 +88,9 @@ const Editor = ({
                     {['blue',
                       'red',
                       'green',
-                    ].map((color, colorIndex) =>
+                    ].map((color) =>
                       <AntSelect.Option
-                        key={colorIndex}
+                        key={color}
                         value={color}
                       >
                         <div className={styles[color]} />
@@ -99,7 +99,7 @@ const Editor = ({
                   </AntSelect>
                   <div className={styles.text}>
                     <AntForm.Item>
-                      {getFieldDecorator(`text.${tagIndex}`, {
+                      {getFieldDecorator(`text.${tag.id}`, {
                         rules: [{
                           required: true,
                           message: 'Это поле не может быть пустым!',

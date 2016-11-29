@@ -7,6 +7,7 @@ import {
   update,
   remove,
   isEqual,
+  random,
 } from 'lodash/fp';
 import {
   arrayMove,
@@ -26,6 +27,7 @@ class Tag extends Component {
         tags: [{
           text: 'Тэг',
           color: 'green',
+          id: `id${random(0, 99999)}`,
         }],
       },
       entity: Entity
@@ -115,6 +117,7 @@ class Tag extends Component {
         (tags) => tags.concat([{
           text: 'Тэг',
           color: 'blue',
+          id: `id${random(0, 99999)}`,
         }]),
         this.state.temp,
       ),
