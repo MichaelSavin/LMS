@@ -8,6 +8,15 @@
   display: inline-block;
 }
 
+.popupOption {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  margin: 0 4px;
+  padding: 2px 4px;
+  display: inline-block;
+}
+
 .option:hover {
   border: 1px solid #DDD;
 }
@@ -15,6 +24,10 @@
 .active {
   background: #DDD;
   border: 1px solid #DDD;
+}
+
+.popupActive {
+  color: #2DB7F5;
 }
 
 .disabled {
@@ -25,4 +38,3 @@
 .disabled:hover {
   border: 1px solid #EEE;
 }
-

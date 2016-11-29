@@ -17,14 +17,16 @@ import {
   entitiesDecorator,
   addEOLtoInlineEntity,
 } from '../Entities';
-import Toolbar from './Toolbar';
+import Popup from './Popup';
 import styles from './styles.css';
+import Toolbar from './Toolbar';
 
 class Draft extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      isFocused: true,
       editorState: EditorState.moveFocusToEnd(
         EditorState.createWithContent(
           convertFromRaw(this.props.content),
@@ -79,6 +81,9 @@ class Draft extends Component {
     }); // , () => { setTimeout(() => this.focusEditor(), 0); });
   }
 
+  setFocusStatus = (e) => this.setState({
+    isFocused: e.type === 'focus',
+  })
 
   blockStyleFn = (block) => {
     const blockAlignment =
@@ -125,7 +130,10 @@ class Draft extends Component {
   focusEditor = () => this.refs.editor.focus();
 
   render() {
-    const { editorState } = this.state;
+    const {
+      isFocused,
+      editorState,
+    } = this.state;
     return (
       <div className={styles.editor}>
         <Toolbar
@@ -136,17 +144,25 @@ class Draft extends Component {
           className={styles.draft}
         >
           <Editor
-            handleKeyCommand={this.handleKeyCommand}
-            blockRendererFn={blockRenderer}
-            customStyleMap={customStyleMap}
-            blockRenderMap={this.customBlockRenderMap}
-            customStyleFn={this.customStyleFn}
-            blockStyleFn={this.blockStyleFn}
-            editorState={editorState}
-            onChange={this.onChange}
-            // ref={this.setReference}
             ref="editor"
+            onBlur={this.setFocusStatus}
+            onFocus={this.setFocusStatus}
+            onChange={this.onChange}
+            editorState={editorState}
+            blockStyleFn={this.blockStyleFn}
+            customStyleFn={this.customStyleFn}
+            blockRenderMap={this.customBlockRenderMap}
+            customStyleMap={customStyleMap}
+            blockRendererFn={blockRenderer}
+            handleKeyCommand={this.handleKeyCommand}
+            // ref={this.setReference}
             // spellCheck
+          />
+          <Popup
+            isFocused={isFocused}
+            editorRef={this.refs.editor}
+            editorState={editorState}
+            changeEditorState={this.onChange}
           />
         </div>
       </div>

@@ -5,16 +5,22 @@ import styles from './styles.css';
 const Option = ({
   value,
   active,
+  inPopup,
   onClick,
   children,
   disabled,
 }) =>
   <div
     className={classNames(
-      styles.option, {
-        [styles.active]: active,
-        [styles.disabled]: disabled,
-      }
+      inPopup
+        ? styles.popupOption
+        : styles.option, {
+          [inPopup
+            ? styles.popupActive
+            : styles.active
+          ]: active,
+          [styles.disabled]: disabled,
+        }
     )}
     onClick={() => onClick(value)}
   >
@@ -26,6 +32,7 @@ Option.propTypes = {
   value: PropTypes.string,
   active: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
+  inPopup: PropTypes.bool,
   disabled: PropTypes.bool,
   children: PropTypes.any.isRequired,
 };
