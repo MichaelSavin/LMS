@@ -10,9 +10,9 @@ import {
   RichUtils,
   EditorState,
 } from 'draft-js';
+import Icon from 'components/UI/Icon';
 import styles from './styles.css';
 import Option from '../Option';
-import Icon from '../../../../../../UI/Icon';
 
 
 class Style extends Component {
@@ -40,8 +40,7 @@ class Style extends Component {
 
   componentWillReceiveProps(props) {
     if (
-      props.editorState
-      !==
+      props.editorState !==
       this.props.editorState
     ) {
       this.setState({
@@ -84,8 +83,9 @@ class Style extends Component {
     const {
       styles: textStyles,
     } = this.state;
-    const { isPopup } = this.props;
-
+    const {
+      inPopup,
+    } = this.props;
     return (
       <div className={styles.text}>
         {[{
@@ -118,7 +118,7 @@ class Style extends Component {
             value={value}
             active={textStyles[value]}
             onClick={this.toggleStyle}
-            isPopup={isPopup}
+            inPopup={inPopup}
           >
             <span className={styles.icon}>
               <Icon type={icon} size={16} />
@@ -132,9 +132,9 @@ class Style extends Component {
 }
 
 Style.propTypes = {
+  inPopup: PropTypes.bool,
   editorState: PropTypes.object.isRequired,
   changeEditorState: PropTypes.func.isRequired,
-  isPopup: PropTypes.bool,
 };
 
 export default Style;

@@ -5,17 +5,17 @@ import styles from './styles.css';
 const Option = ({
   value,
   active,
+  inPopup,
   onClick,
   children,
   disabled,
-  isPopup,
 }) =>
   <div
     className={classNames(
-      isPopup
+      inPopup
         ? styles.popupOption
         : styles.option, {
-          [isPopup
+          [inPopup
             ? styles.popupActive
             : styles.active
           ]: active,
@@ -32,8 +32,8 @@ Option.propTypes = {
   value: PropTypes.string,
   active: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
+  inPopup: PropTypes.bool,
   disabled: PropTypes.bool,
-  isPopup: PropTypes.bool,
   children: PropTypes.any.isRequired,
 };
 
