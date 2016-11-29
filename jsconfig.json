@@ -7,8 +7,8 @@
 		"allowSyntheticDefaultImports": true
 	},
 	"exclude": [
-		"build",
-		"internals",
-		"node_modules"
+		"/build/",
+		"/internals/",
+		"/node_modules/"
 	]
 }

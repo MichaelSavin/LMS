@@ -1,14 +1,22 @@
-.carousel {
-  width: 720px;
-  height: 570px;
+body > li {
+  z-index: 9999;
+  list-style: none;
 }
 
-.carousel img {
-  width: 720px;
-  height: 540px;
-  display: block;
+:global .ant-select-selection__rendered {
+  display: flex !important;
+  align-items: center !important;
 }
 
-.image {
-  /* TODO */
+:global .ant-timeline-item-last {
+  padding-bottom: 0 !important;
+}
+
+:global .ant-timeline-item-last :global .ant-timeline-item-content {
+  min-height: 0 !important;
+}
+
+:global .ant-switch {
+  border-color: #2DB7F5;
+  background-color: #2DB7F5;
 }

@@ -1,108 +1,260 @@
-import React, { Component, PropTypes } from 'react';
-import { Carousel as AntCarousel } from 'antd';
-import AntPromt from 'components/UI/Promt';
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
+import {
+  set,
+  update,
+  remove,
+  isEqual,
+} from 'lodash/fp';
+import {
+  arrayMove,
+} from 'react-sortable-hoc';
+import localForage from 'localforage';
 import { Entity } from 'draft-js';
-import { isEqual } from 'lodash';
-import styles from './styles.css';
+import { message } from 'antd';
+import Preview from './Preview';
+import Editor from './Editor';
+import './styles.css';
 
 class Carousel extends Component {
 
   constructor(props) {
     super(props);
+    const { content } = props;
     this.state = {
-      ...props.content,
-      promt: {
-        open: false,
-        value: null,
-      },
+      drag: null,
+      temp: content,
+      modal: false,
+      content,
     };
+    this.cache = {};
+  }
+
+  componentDidMount() {
+    this.receiveImages(this.state);
   }
 
   shouldComponentUpdate(
     nextProps,
     nextState
   ) {
-    return !isEqual(
-      this.state,
-      nextState
-    );
+    if (!isEqual(
+    ...[this.state, nextState]
+      .map((state) => state
+        .temp
+        .slides
+        .map((slide) =>
+          slide.image.source
+        )
+      )
+    )) {
+      this.receiveImages(this.state);
+      return false;
+    } else {
+      return !isEqual(
+        this.state,
+        nextState
+      );
+    }
   }
 
-  editContent = (event) => {
-    event.preventDefault();
+  openModal = () => {
     this.setState({
-      promt: {
-        open: true,
-        value: this
-          .state
-          .images
-          .join('\n'),
-      },
+      modal: true,
+      temp: this
+        .state
+        .content,
     });
   }
 
-  modifyContent = () => {
-    const images = this
-      .state
-      .promt
-      .value
-      .split('\n');
+  closeModal = () => {
+    this.setState({
+      modal: false,
+    });
+  }
+
+  changeSlideText = (index) => (event) => {
+    this.setState({
+      temp: set([
+        'slides',
+        index,
+        'text',
+      ],
+        event.target.value,
+        this.state.temp,
+      ),
+    });
+  }
+
+  changeSlideType = (index) => (checked) => {
+    this.setState({
+      temp: set([
+        'slides',
+        index,
+        'type',
+      ], {
+        true: 'text',
+        false: 'image',
+      }[
+        checked
+      ],
+        this.state.temp,
+      ),
+    });
+  }
+
+  addSlide = () => {
+    this.setState({
+      temp: update(
+        'slides',
+        (slides) => slides.concat([{
+          type: 'image',
+          text: 'Текстовый слайд',
+          image: {
+            source: undefined,
+            text: undefined,
+          },
+        }]),
+        this.state.temp,
+      ),
+    }, () => this.forceUpdate()); // Странный баг - не вызывается render()
+  }
+
+  removeSlide = (index) => () => {
+    if (this.state.temp.slides.length > 1) {
+      this.setState({
+        temp: update(
+          'slides',
+          (slides) => remove(
+            (slide) => slides.indexOf(
+              slide
+            ) === index,
+            slides,
+          ),
+          this.state.temp,
+        ),
+      }, () => this.forceUpdate()); // Странный баг - не вызывается render()
+    } else {
+      message.error('Нельзя удалить единственный элемент');
+    }
+  }
+
+  dragSlide = ({ oldIndex, newIndex }) => {
+    this.setState({
+      temp: {
+        slides: arrayMove(
+          this.state.temp.slides,
+          oldIndex,
+          newIndex,
+        ),
+      },
+    });
+  };
+
+  uploadSlideImage = (index) => ({ file }) => {
+    if (file.status === 'error') { // Загрузка на сервер
+      const name = [
+        file.lastModified,
+        file.size,
+        file.name,
+      ].join('');
+      const reader = new FileReader();
+      reader.readAsDataURL(file.originFileObj);
+      reader.onloadend = () => { // eslint-disable-line
+        localForage.setItem(
+          name,
+          reader.result,
+        ).then(() => {
+          this.setState({
+            temp: set([
+              'slides',
+              index,
+              'image',
+              'source',
+            ],
+              name,
+              this.state.temp,
+            ),
+          });
+          this.cache[name] = reader.result;
+          this.forceUpdate();
+        });
+      };
+    }
+  }
+
+  removeSlideImage = (index) => (event) => {
+    event.stopPropagation();
+    this.setState({
+      temp: set([
+        'slides',
+        index,
+        'image',
+      ], {
+        source: undefined,
+        text: undefined,
+      },
+        this.state.temp,
+      ),
+    });
+  }
+
+  receiveImages = (state) => {
+    state.temp.slides.forEach(({
+      image: { source: image },
+    }) => {
+      if (image) {
+        localForage
+          .getItem(image)
+          .then((value) => {
+            this.cache[image] = value;
+            this.forceUpdate();
+          });
+      }
+    });
+  }
+
+  saveSettings = () => {
+    const content =
+      this.state.temp;
+    this.setState({
+      modal: false,
+      content,
+    }, () => this.forceUpdate()); // Странный баг - не вызывается render()
     Entity.replaceData(
       this.props.entityKey, {
-        content: {
-          images,
-        },
+        content,
       }
     );
-    this.setState({
-      images,
-      promt: {
-        open: false,
-      },
-    });
   }
 
   render() {
     const {
-      promt,
-      images,
+      temp,
+      modal,
+      content,
     } = this.state;
     return (
-      <div onDoubleClick={this.editContent}>
-        <AntCarousel className={styles.carousel}>
-          {images.map((image, index) =>
-            <div key={index}>
-              <img
-                alt=""
-                src={image}
-                className={styles.image}
-              />
-            </div>
-          )}
-        </AntCarousel>
-        <AntPromt
-          type="textarea"
-          value={promt.value}
-          onSave={this.modifyContent}
-          visible={promt.open}
-          onChange={(event) => {
-            this.setState({
-              promt: {
-                ...promt,
-                value: event
-                  .target
-                  .value,
-              },
-            });
-          }}
-          onCancel={() => {
-            this.setState({
-              promt: {
-                ...promt,
-                open: false,
-              },
-            });
-          }}
+      <div onDoubleClick={this.openModal}>
+        <Preview
+          data={content}
+          cache={this.cache}
+        />
+        <Editor
+          data={temp}
+          cache={this.cache}
+          isOpen={modal}
+          addSlide={this.addSlide}
+          dragSlide={this.dragSlide}
+          closeModal={this.closeModal}
+          removeSlide={this.removeSlide}
+          saveSettings={this.saveSettings}
+          changeSlideText={this.changeSlideText}
+          changeSlideType={this.changeSlideType}
+          uploadSlideImage={this.uploadSlideImage}
+          removeSlideImage={this.removeSlideImage}
         />
       </div>
     );
@@ -112,18 +264,32 @@ class Carousel extends Component {
 Carousel.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    images: PropTypes.array.isRequired,
+    slides: PropTypes.arrayOf(
+      PropTypes.shape({
+        type: PropTypes.oneOf([
+          'text',
+          'image',
+        ]).isRequired,
+        text: PropTypes.string,
+        image: PropTypes.shape({
+          source: PropTypes.string,
+          text: PropTypes.string,
+        }),
+      }).isRequired,
+    ).isRequired,
   }).isRequired,
 };
 
 Carousel.defaultProps = {
   content: {
-    images: [
-      'https://img2.goodfon.ru/wallpaper/middle/b/4e/treehouse-point-ssha.jpg',
-      'https://img3.goodfon.ru/wallpaper/middle/7/e6/kedr-shishki-hvoya-zelen-cedar.jpg',
-      'https://img1.goodfon.ru/wallpaper/middle/a/8b/zemlyanika-polevye-cvety-trava.jpg',
-      'https://img1.goodfon.ru/wallpaper/middle/a/98/griby-boroviki-parochka.jpg',
-    ],
+    slides: [{
+      type: 'image',
+      text: 'Текстовый слайд',
+      image: {
+        source: undefined,
+        text: undefined,
+      },
+    }],
   },
 };
 
