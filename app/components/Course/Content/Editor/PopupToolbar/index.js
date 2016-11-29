@@ -2,8 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { getVisibleSelectionRect } from 'draft-js';
 import Style from '../Toolbar/Formats/Style';
 
-/* eslint react/no-set-state:0 */
-/* eslint react/no-string-refs:0 */
 /* eslint react/no-did-update-set-state:0 */
 
 export default class PopupToolbar extends Component {

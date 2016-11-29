@@ -12,7 +12,7 @@ import {
 } from 'draft-js';
 import styles from './styles.css';
 import Option from '../Option';
-import * as icons from '../../../../../../UI/Icon';
+import Icon from '../../../../../../UI/Icon';
 
 
 class Style extends Component {
@@ -121,7 +121,7 @@ class Style extends Component {
             isPopup={isPopup}
           >
             <span className={styles.icon}>
-              {icons[icon]}
+              <Icon type={icon} size={16} />
             </span>
           </Option>
         )
