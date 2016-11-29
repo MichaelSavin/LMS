@@ -113,60 +113,58 @@ const Editor = ({
                         />
                       </AntPopconfirm>
                     </div>
-                    {slide.type === 'image'
-                      ?
-                        <div className={styles.image}>
-                          <AntUpload.Dragger
-                            accept="image/*"
-                            onChange={uploadSlideImage(index)}
-                            showUploadList={false}
-                          >
-                            {slide.image.source
-                              ?
-                                <div className={styles.preview}>
-                                  <img
-                                    src={cache[slide.image.source]}
-                                    role="presentation"
-                                  />
-                                  <AntIcon
-                                    type="close"
-                                    onClick={removeSlideImage(index)}
-                                    className={styles.remove}
-                                  />
-                                </div>
-                              :
-                                <div className={styles.upload}>
-                                  <div className={styles.icon}>
-                                    <AntIcon type="inbox" />
-                                  </div>
-                                  <div className={styles.hint}>
-                                    Нажмите или перетащите файлы для загрузки
-                                  </div>
-                                </div>
-                            }
-                          </AntUpload.Dragger>
-                        </div>
-                      : slide.type === 'text'
-                        ?
-                          <div className={styles.text}>
-                            <AntForm.Item>
-                              {getFieldDecorator(`text.${index}`, {
-                                rules: [{
-                                  required: true,
-                                  message: 'Это поле не может быть пустым!',
-                                }],
-                                initialValue: slide.text,
-                              })(
-                                <AntInput
-                                  size="default"
-                                  type="textarea"
-                                  rows={7}
-                                  onChange={changeSlideText(index)}
+                    {slide.type === 'image' &&
+                      <div className={styles.image}>
+                        <AntUpload.Dragger
+                          accept="image/*"
+                          onChange={uploadSlideImage(index)}
+                          showUploadList={false}
+                        >
+                          {slide.image.source
+                            ?
+                              <div className={styles.preview}>
+                                <img
+                                  src={cache[slide.image.source]}
+                                  role="presentation"
                                 />
-                              )}
-                            </AntForm.Item>
-                          </div>
-                        : undefined
+                                <AntIcon
+                                  type="close"
+                                  onClick={removeSlideImage(index)}
+                                  className={styles.remove}
+                                />
+                              </div>
+                            :
+                              <div className={styles.upload}>
+                                <div className={styles.icon}>
+                                  <AntIcon type="inbox" />
+                                </div>
+                                <div className={styles.hint}>
+                                  Нажмите или перетащите файлы для загрузки
+                                </div>
+                              </div>
+                          }
+                        </AntUpload.Dragger>
+                      </div>
+                    }
+                    {slide.type === 'text' &&
+                      <div className={styles.text}>
+                        <AntForm.Item>
+                          {getFieldDecorator(`text.${index}`, {
+                            rules: [{
+                              required: true,
+                              message: 'Это поле не может быть пустым!',
+                            }],
+                            initialValue: slide.text,
+                          })(
+                            <AntInput
+                              size="default"
+                              type="textarea"
+                              rows={7}
+                              onChange={changeSlideText(index)}
+                            />
+                          )}
+                        </AntForm.Item>
+                      </div>
                     }
                   </div>
                 </Sortable.Item>

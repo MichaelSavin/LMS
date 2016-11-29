@@ -119,7 +119,7 @@ class Carousel extends Component {
         }]),
         this.state.temp,
       ),
-    }, () => this.forceUpdate()); // Странный баг - не вызывается render()
+    }, this.forceUpdate); // Странный баг - не вызывается render()
   }
 
   removeSlide = (index) => () => {
@@ -135,7 +135,7 @@ class Carousel extends Component {
           ),
           this.state.temp,
         ),
-      }, () => this.forceUpdate()); // Странный баг - не вызывается render()
+      }, this.forceUpdate); // Странный баг - не вызывается render()
     } else {
       message.error('Нельзя удалить единственный элемент');
     }
@@ -222,7 +222,7 @@ class Carousel extends Component {
     this.setState({
       modal: false,
       content,
-    }, () => this.forceUpdate()); // Странный баг - не вызывается render()
+    }, this.forceUpdate); // Странный баг - не вызывается render()
     Entity.replaceData(
       this.props.entityKey, {
         content,
