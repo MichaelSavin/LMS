@@ -15,6 +15,7 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
+import { get } from 'lodash/fp';
 import Preview from '../Preview';
 import SimpleEditor from '../../../Editor/SimpleEditor';
 import styles from './styles.css';
@@ -32,7 +33,7 @@ const Editor = ({
   form: {
     resetFields,
     validateFields,
-    // getFieldDecorator,
+    getFieldDecorator,
  },
 }) => {
   const validateAndSave = () => {
@@ -76,10 +77,9 @@ const Editor = ({
               tagIndex
             ) =>
               <Sortable.Item
-                key={tag.id}
                 index={tagIndex}
               >
-                <div className={styles.tag}>
+                <div className={styles.tag} key={tag.id}>
                   <Sortable.Handler />
                   <AntSelect
                     value={tag.color}
@@ -99,27 +99,26 @@ const Editor = ({
                     )}
                   </AntSelect>
                   <div className={styles.text}>
-                    <div className="ant-Input">
-                      <SimpleEditor
-                        size="default"
-                        onChange={changeTagText(tagIndex)}
-                        content={tag.content}
-                      />
-                    </div>
-                    {/* <AntForm.Item>
-                      {getFieldDecorator(`text.${tag.id}`, {
+                    <AntForm.Item>
+                      {getFieldDecorator(`text.${tagIndex}`, {
                         rules: [{
                           required: true,
-                          message: 'Это поле не может быть пустым!',
+                          message: 'Please select time!',
                         }],
-                        initialValue: tag.text,
+                        initialValue: tag.content,
+                        id: tagIndex,
+                        getValueFromEvent: (cont) => get(
+                          'blocks[0]text', cont
+                        ),
                       })(
-                        <AntInput
+                        <SimpleEditor
                           size="default"
                           onChange={changeTagText(tagIndex)}
+                          content={tag.content}
+                          className={styles.input}
                         />
                       )}
-                    </AntForm.Item>*/}
+                    </AntForm.Item>
                   </div>
                   <AntPopconfirm
                     title="Удалить событие?"

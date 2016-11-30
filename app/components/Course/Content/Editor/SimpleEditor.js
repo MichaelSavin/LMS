@@ -95,8 +95,9 @@ class SimpleEditor extends Component {
       isFocused,
       editorState,
     } = this.state;
+    const { className } = this.props;
     return (
-      <div>
+      <div className={className}>
         <Editor
           ref="editor"
           onBlur={this.setFocusStatus}
@@ -124,6 +125,7 @@ class SimpleEditor extends Component {
 SimpleEditor.propTypes = {
   content: PropTypes.object,
   onChange: PropTypes.func.isRequired,
+  className: PropTypes.func.string,
 };
 
 export default SimpleEditor;

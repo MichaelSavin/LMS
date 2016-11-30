@@ -27,10 +27,13 @@
 
   & .text {
     width: 375px;
+  }
+
+  & .input {
+    width: 100%;
     position: relative;
     display: inline-block;
     padding: 4px 7px;
-    height: 28px;
     cursor: text;
     font-size: 12px;
     line-height: 1.5;
