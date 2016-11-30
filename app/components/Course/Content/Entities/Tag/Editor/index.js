@@ -14,7 +14,9 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
-import { get } from 'lodash/fp';
+import {
+  convertFromRaw,
+} from 'draft-js';
 import Preview from '../Preview';
 import SimpleEditor from '../../../Editor/SimpleEditor';
 import styles from './styles.css';
@@ -44,6 +46,15 @@ const Editor = ({
     resetFields();
     closeModal();
   };
+  const getValidateOptions = (tag) => ({
+    rules: [{
+      required: true,
+      message: 'Please select time!',
+    }],
+    initialValue: tag.content,
+    id: tag.id,
+    getValueFromEvent: (cont) => convertFromRaw(cont).getPlainText(),
+  });
   return (
     <span className={styles.tags}>
       <AntModal
@@ -100,17 +111,7 @@ const Editor = ({
                   </AntSelect>
                   <div className={styles.text}>
                     <AntForm.Item>
-                      {getFieldDecorator(`text.${tag.id}`, {
-                        rules: [{
-                          required: true,
-                          message: 'Please select time!',
-                        }],
-                        initialValue: tag.content,
-                        id: tag.id,
-                        getValueFromEvent: (cont) => get(
-                          'blocks[0]text', cont
-                        ),
-                      })(
+                      {getFieldDecorator(`text.${tag.id}`, getValidateOptions(tag))(
                         <SimpleEditor
                           size="default"
                           onChange={changeTagText(tagIndex)}
@@ -182,7 +183,7 @@ Editor.propTypes = {
   data: PropTypes.shape({
     tags: PropTypes.arrayOf(
       PropTypes.shape({
-        text: PropTypes.string.isRequired,
+        content: PropTypes.object.isRequired,
         color: PropTypes.oneOf([
           'blue',
           'red',

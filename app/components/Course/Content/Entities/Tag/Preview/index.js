@@ -13,7 +13,6 @@ import styles from './styles.css';
 const Preview = ({ data }) =>
   <div className={styles.preview}>
     {data.tags.map(({
-      text,
       color,
       content,
     }, index) =>
@@ -42,7 +41,7 @@ Preview.propTypes = {
   data: PropTypes.shape({
     tags: PropTypes.arrayOf(
       PropTypes.shape({
-        text: PropTypes.string.isRequired,
+        content: PropTypes.object.isRequired,
         color: PropTypes.oneOf([
           'blue',
           'green',

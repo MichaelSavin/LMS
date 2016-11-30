@@ -10,10 +10,14 @@ import {
   random,
 } from 'lodash/fp';
 import {
+  Entity,
+  convertToRaw,
+  ContentState,
+} from 'draft-js';
+import {
   arrayMove,
 } from 'react-sortable-hoc';
 import { message } from 'antd';
-import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
 import './styles.css';
@@ -25,7 +29,7 @@ class Tag extends Component {
     const data = {
       default: {
         tags: [{
-          text: 'Тэг',
+          content: convertToRaw(ContentState.createFromText('Тэг')),
           color: 'green',
           id: `id${random(0, 99999)}`,
         }],
@@ -115,7 +119,7 @@ class Tag extends Component {
       temp: update(
         'tags',
         (tags) => tags.concat([{
-          text: 'Тэг',
+          content: convertToRaw(ContentState.createFromText('Тэг')),
           color: 'blue',
           id: `id${random(0, 99999)}`,
         }]),
