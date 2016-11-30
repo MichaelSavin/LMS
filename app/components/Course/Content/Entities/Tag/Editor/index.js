@@ -4,7 +4,7 @@ import React, {
 import {
   Icon as AntIcon,
   Form as AntForm,
-  Input as AntInput,
+  // Input as AntInput,
   Modal as AntModal,
   Select as AntSelect,
   Button as AntButton,
@@ -16,6 +16,7 @@ import {
   SortableContainer,
 } from 'react-sortable-hoc';
 import Preview from '../Preview';
+import SimpleEditor from '../../../Editor/SimpleEditor';
 import styles from './styles.css';
 
 const Editor = ({
@@ -31,7 +32,7 @@ const Editor = ({
   form: {
     resetFields,
     validateFields,
-    getFieldDecorator,
+    // getFieldDecorator,
  },
 }) => {
   const validateAndSave = () => {
@@ -98,7 +99,14 @@ const Editor = ({
                     )}
                   </AntSelect>
                   <div className={styles.text}>
-                    <AntForm.Item>
+                    <div className="ant-Input">
+                      <SimpleEditor
+                        size="default"
+                        onChange={changeTagText(tagIndex)}
+                        content={tag.content}
+                      />
+                    </div>
+                    {/* <AntForm.Item>
                       {getFieldDecorator(`text.${tag.id}`, {
                         rules: [{
                           required: true,
@@ -111,7 +119,7 @@ const Editor = ({
                           onChange={changeTagText(tagIndex)}
                         />
                       )}
-                    </AntForm.Item>
+                    </AntForm.Item>*/}
                   </div>
                   <AntPopconfirm
                     title="Удалить событие?"

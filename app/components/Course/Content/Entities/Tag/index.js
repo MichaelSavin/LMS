@@ -97,14 +97,14 @@ class Tag extends Component {
     });
   }
 
-  changeTagText = (index) => (event) => {
+  changeTagText = (index) => (content) => {
     this.setState({
       temp: set([
         'tags',
         index,
-        'text',
+        'content',
       ],
-        event.target.value,
+        content,
         this.state.temp,
       ),
     });
