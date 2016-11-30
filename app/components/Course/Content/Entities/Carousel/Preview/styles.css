@@ -1,0 +1,36 @@
+.preview {
+  width: 350px;
+
+  & .text {
+    width: 350px;
+    height: 250px;
+    display: flex;
+    padding: 0 10px;
+    font-size: 15px;
+    text-align: center;
+    align-items: center;
+    white-space: pre-wrap;
+    justify-content: center;
+    background-color: #EEE;
+  }
+
+  & img {
+    width: 350px;
+    height: 250px;
+  }
+
+  & .empty {
+    color: #DDD;
+    width: 350px;
+    height: 250px;
+    border: 1px solid #EEE;
+    display: flex;
+    padding: 0 10px;
+    font-size: 20px;
+    text-align: center;
+    align-items: center;
+    white-space: pre-wrap;
+    justify-content: center;
+    background-color: white;
+  }
+}
