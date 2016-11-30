@@ -4,7 +4,6 @@ import React, {
 import {
   Icon as AntIcon,
   Form as AntForm,
-  // Input as AntInput,
   Modal as AntModal,
   Select as AntSelect,
   Button as AntButton,
@@ -78,6 +77,7 @@ const Editor = ({
             ) =>
               <Sortable.Item
                 index={tagIndex}
+                key={tag.id}
               >
                 <div className={styles.tag} key={tag.id}>
                   <Sortable.Handler />
@@ -100,13 +100,13 @@ const Editor = ({
                   </AntSelect>
                   <div className={styles.text}>
                     <AntForm.Item>
-                      {getFieldDecorator(`text.${tagIndex}`, {
+                      {getFieldDecorator(`text.${tag.id}`, {
                         rules: [{
                           required: true,
                           message: 'Please select time!',
                         }],
                         initialValue: tag.content,
-                        id: tagIndex,
+                        id: tag.id,
                         getValueFromEvent: (cont) => get(
                           'blocks[0]text', cont
                         ),

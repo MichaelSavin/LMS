@@ -27,6 +27,7 @@ const Preview = ({ data }) =>
         contentEditable={false}
       >
         <Editor
+          readOnly
           customStyleMap={customStyleMap}
           editorState={content
             ? EditorState.createWithContent(

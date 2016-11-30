@@ -125,7 +125,7 @@ class SimpleEditor extends Component {
 SimpleEditor.propTypes = {
   content: PropTypes.object,
   onChange: PropTypes.func.isRequired,
-  className: PropTypes.func.string,
+  className: PropTypes.string,
 };
 
 export default SimpleEditor;
