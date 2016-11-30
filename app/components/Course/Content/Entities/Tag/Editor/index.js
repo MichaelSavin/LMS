@@ -49,11 +49,13 @@ const Editor = ({
   const getValidateOptions = (tag) => ({
     rules: [{
       required: true,
-      message: 'Please select time!',
+      message: 'Это поле не может быть пустым!',
     }],
     initialValue: tag.content,
     id: tag.id,
-    getValueFromEvent: (cont) => convertFromRaw(cont).getPlainText(),
+    getValueFromEvent(content) {
+      return convertFromRaw(content).getPlainText();
+    },
   });
   return (
     <span className={styles.tags}>
