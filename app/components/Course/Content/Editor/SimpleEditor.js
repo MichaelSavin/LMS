@@ -13,7 +13,6 @@ import {
   customStyleMap,
 } from 'draftjs-utils';
 import {
-  blockRenderer,
   entitiesDecorator,
 } from '../Entities';
 import Popup from './Popup';
@@ -24,13 +23,18 @@ class SimpleEditor extends Component {
     super(props);
     this.state = {
       isFocused: true,
-      editorState: this.props.content ? EditorState.moveFocusToEnd(
-        EditorState.createWithContent(
-          convertFromRaw(this.props.content),
+      editorState: props.content ? EditorState
+        .createWithContent(
+          convertFromRaw(props.content),
           entitiesDecorator,
-        ),
-      ) : EditorState.createEmpty(),
+        ) : EditorState.createEmpty(),
     };
+  }
+
+  componentDidMount() {
+    this.props.onChange(convertToRaw(
+      this.state.editorState.getCurrentContent()
+    ));
   }
 
   onChange = (editorState) => {
@@ -45,34 +49,6 @@ class SimpleEditor extends Component {
   setFocusStatus = (e) => this.setState({
     isFocused: e.type === 'focus',
   })
-
-  blockStyleFn = (block) => {
-    const blockAlignment =
-      block.getData()
-      &&
-      block.getData().get('text-align');
-    return blockAlignment
-      ? `${blockAlignment}-aligned-block`
-      : '';
-  }
-
-  customStyleFn = (style) => {
-    const [type, value] = (
-      style.last() || ''
-    ).split('-');
-    switch (type) {
-      case 'color':
-        return {
-          color: value,
-        };
-      case 'bgcolor':
-        return {
-          backgroundColor: value,
-        };
-      default:
-        return style;
-    }
-  }
 
   handleKeyCommand = (command) => {
     const { editorState } = this.state;
@@ -104,11 +80,8 @@ class SimpleEditor extends Component {
           onFocus={this.setFocusStatus}
           onChange={this.onChange}
           editorState={editorState}
-          blockStyleFn={this.blockStyleFn}
-          customStyleFn={this.customStyleFn}
           blockRenderMap={this.customBlockRenderMap}
           customStyleMap={customStyleMap}
-          blockRendererFn={blockRenderer}
           handleKeyCommand={this.handleKeyCommand}
         />
         <Popup

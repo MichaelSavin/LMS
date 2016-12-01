@@ -46,17 +46,6 @@ const Editor = ({
     resetFields();
     closeModal();
   };
-  const getValidateOptions = (tag) => ({
-    rules: [{
-      required: true,
-      message: 'Это поле не может быть пустым!',
-    }],
-    initialValue: tag.content,
-    id: tag.id,
-    getValueFromEvent(content) {
-      return convertFromRaw(content).getPlainText();
-    },
-  });
   return (
     <span className={styles.tags}>
       <AntModal
@@ -86,17 +75,17 @@ const Editor = ({
           >
             {data.tags.map((
               tag,
-              tagIndex
+              index
             ) =>
               <Sortable.Item
-                index={tagIndex}
+                index={index}
                 key={tag.id}
               >
                 <div className={styles.tag} key={tag.id}>
                   <Sortable.Handler />
                   <AntSelect
                     value={tag.color}
-                    onChange={changeTagColor(tagIndex)}
+                    onChange={changeTagColor(index)}
                     className={styles.color}
                   >
                     {['blue',
@@ -113,10 +102,22 @@ const Editor = ({
                   </AntSelect>
                   <div className={styles.text}>
                     <AntForm.Item>
-                      {getFieldDecorator(`text.${tag.id}`, getValidateOptions(tag))(
+                      {getFieldDecorator(`text.${tag.id}`, {
+                        rules: [{
+                          required: true,
+                          message: 'Это поле не может быть пустым!',
+                        }],
+                        initialValue: tag.content,
+                        id: tag.id,
+                        getValueFromEvent(contentValue) {
+                          const ans = convertFromRaw(contentValue).getPlainText();
+                          console.log(ans);
+                          return ans;
+                        },
+                      })(
                         <SimpleEditor
                           size="default"
-                          onChange={changeTagText(tagIndex)}
+                          onChange={changeTagText(index)}
                           content={tag.content}
                           className={styles.input}
                         />
@@ -126,7 +127,7 @@ const Editor = ({
                   <AntPopconfirm
                     title="Удалить событие?"
                     okText="Да"
-                    onConfirm={removeTag(tagIndex)}
+                    onConfirm={removeTag(index)}
                     cancelText="Нет"
                   >
                     <AntIcon
