@@ -29,9 +29,11 @@ class Tag extends Component {
     const data = {
       default: {
         tags: [{
-          content: convertToRaw(ContentState.createFromText('Тэг')),
+          id: `${random(0, 999)}`,
           color: 'green',
-          id: `id${random(0, 99999)}`,
+          content: convertToRaw(
+            ContentState.createFromText('Тэг')
+          ),
         }],
       },
       entity: Entity
@@ -119,9 +121,11 @@ class Tag extends Component {
       temp: update(
         'tags',
         (tags) => tags.concat([{
-          content: convertToRaw(ContentState.createFromText('Тэг')),
+          id: `${random(0, 999)}`,
           color: 'blue',
-          id: `id${random(0, 99999)}`,
+          content: convertToRaw(
+            ContentState.createFromText('Тэг')
+          ),
         }]),
         this.state.temp,
       ),
@@ -175,9 +179,9 @@ class Tag extends Component {
           dragTag={this.dragTag}
           removeTag={this.removeTag}
           closeModal={this.closeModal}
+          saveSettings={this.saveSettings}
           changeTagText={this.changeTagText}
           changeTagColor={this.changeTagColor}
-          saveSettings={this.saveSettings}
         />
       </span>
     );

@@ -18,8 +18,8 @@ import {
   convertFromRaw,
 } from 'draft-js';
 import Preview from '../Preview';
-import SimpleEditor from '../../../Editor/SimpleEditor';
 import styles from './styles.css';
+import { Input as Draft } from '../../../Editor';
 
 const Editor = ({
   data,
@@ -37,6 +37,8 @@ const Editor = ({
     getFieldDecorator,
  },
 }) => {
+  const getText = (content) =>
+    convertFromRaw(content).getPlainText();
   const validateAndSave = () => {
     validateFields((err) => {
       if (!err) { saveSettings(); }
@@ -81,7 +83,7 @@ const Editor = ({
                 index={index}
                 key={tag.id}
               >
-                <div className={styles.tag} key={tag.id}>
+                <div className={styles.tag}>
                   <Sortable.Handler />
                   <AntSelect
                     value={tag.color}
@@ -103,21 +105,20 @@ const Editor = ({
                   <div className={styles.text}>
                     <AntForm.Item>
                       {getFieldDecorator(`text.${tag.id}`, {
+                        id: tag.id,
                         rules: [{
                           required: true,
                           message: 'Это поле не может быть пустым!',
                         }],
-                        initialValue: tag.content,
-                        id: tag.id,
-                        getValueFromEvent(contentValue) {
-                          return convertFromRaw(contentValue).getPlainText();
+                        initialValue: getText(tag.content),
+                        getValueFromEvent(content) {
+                          return getText(content);
                         },
                       })(
-                        <SimpleEditor
+                        <Draft
                           size="default"
-                          onChange={changeTagText(index)}
                           content={tag.content}
-                          className={styles.input}
+                          onChange={changeTagText(index)}
                         />
                       )}
                     </AntForm.Item>

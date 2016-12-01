@@ -3,7 +3,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Editor,
+  Editor as Draft,
   RichUtils,
   EditorState,
   convertToRaw,
@@ -16,39 +16,51 @@ import {
   entitiesDecorator,
 } from '../Entities';
 import Popup from './Popup';
+import styles from './styles.css';
 
-class SimpleEditor extends Component {
+class Editor extends Component {
 
   constructor(props) {
     super(props);
+    const { content } = props;
     this.state = {
       isFocused: true,
-      editorState: props.content ? EditorState
-        .createWithContent(
-          convertFromRaw(props.content),
-          entitiesDecorator,
-        ) : EditorState.createEmpty(),
+      editorState: content
+        ? EditorState.createWithContent(
+            convertFromRaw(content),
+            entitiesDecorator,
+          )
+        : EditorState.createEmpty(),
     };
   }
 
   componentDidMount() {
-    this.props.onChange(convertToRaw(
-      this.state.editorState.getCurrentContent()
-    ));
+    this.props.onChange(
+      convertToRaw(
+        this.state
+          .editorState
+          .getCurrentContent()
+      )
+    );
   }
 
   onChange = (editorState) => {
     this.setState({
       editorState,
     });
-    this.props.onChange(convertToRaw(
-      editorState.getCurrentContent()
-    ));
+    this.props.onChange(
+      convertToRaw(
+        editorState
+          .getCurrentContent()
+      )
+    );
   }
 
-  setFocusStatus = (e) => this.setState({
-    isFocused: e.type === 'focus',
-  })
+  setFocusStatus = (event) => {
+    this.setState({
+      isFocused: event.type === 'focus',
+    });
+  }
 
   handleKeyCommand = (command) => {
     const { editorState } = this.state;
@@ -71,16 +83,14 @@ class SimpleEditor extends Component {
       isFocused,
       editorState,
     } = this.state;
-    const { className } = this.props;
     return (
-      <div className={className}>
-        <Editor
+      <div className={styles.input}>
+        <Draft
           ref="editor"
           onBlur={this.setFocusStatus}
           onFocus={this.setFocusStatus}
           onChange={this.onChange}
           editorState={editorState}
-          blockRenderMap={this.customBlockRenderMap}
           customStyleMap={customStyleMap}
           handleKeyCommand={this.handleKeyCommand}
         />
@@ -95,10 +105,9 @@ class SimpleEditor extends Component {
   }
 }
 
-SimpleEditor.propTypes = {
+Editor.propTypes = {
   content: PropTypes.object,
   onChange: PropTypes.func.isRequired,
-  className: PropTypes.string,
 };
 
-export default SimpleEditor;
+export default Editor;
