@@ -46,7 +46,7 @@ const Editor = ({
     resetFields();
     closeModal();
   };
-  return (
+  return isOpen ? (
     <span className={styles.tags}>
       <AntModal
         onOk={validateAndSave}
@@ -110,9 +110,7 @@ const Editor = ({
                         initialValue: tag.content,
                         id: tag.id,
                         getValueFromEvent(contentValue) {
-                          const ans = convertFromRaw(contentValue).getPlainText();
-                          console.log(ans);
-                          return ans;
+                          return convertFromRaw(contentValue).getPlainText();
                         },
                       })(
                         <SimpleEditor
@@ -151,7 +149,7 @@ const Editor = ({
         </div>
       </AntModal>
     </span>
-  );
+  ) : null;
 };
 
 const Sortable = {
