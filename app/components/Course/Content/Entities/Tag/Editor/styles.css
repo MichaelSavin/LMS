@@ -29,6 +29,22 @@
     width: 375px;
   }
 
+  & .input {
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    padding: 4px 7px;
+    cursor: text;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #666;
+    background-color: #FFF;
+    background-image: none;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+    margin: 2px;
+  }
+
   & .remove {
     color: red;
     cursor: pointer;

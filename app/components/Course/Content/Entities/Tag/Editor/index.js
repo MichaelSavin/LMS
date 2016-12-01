@@ -4,7 +4,6 @@ import React, {
 import {
   Icon as AntIcon,
   Form as AntForm,
-  Input as AntInput,
   Modal as AntModal,
   Select as AntSelect,
   Button as AntButton,
@@ -15,8 +14,12 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
+import {
+  convertFromRaw,
+} from 'draft-js';
 import Preview from '../Preview';
 import styles from './styles.css';
+import { Input as Draft } from '../../../Editor';
 
 const Editor = ({
   data,
@@ -34,6 +37,8 @@ const Editor = ({
     getFieldDecorator,
  },
 }) => {
+  const getText = (content) =>
+    convertFromRaw(content).getPlainText();
   const validateAndSave = () => {
     validateFields((err) => {
       if (!err) { saveSettings(); }
@@ -43,7 +48,7 @@ const Editor = ({
     resetFields();
     closeModal();
   };
-  return (
+  return isOpen ? (
     <span className={styles.tags}>
       <AntModal
         onOk={validateAndSave}
@@ -72,25 +77,25 @@ const Editor = ({
           >
             {data.tags.map((
               tag,
-              tagIndex
+              index
             ) =>
               <Sortable.Item
-                key={tagIndex}
-                index={tagIndex}
+                index={index}
+                key={tag.id}
               >
                 <div className={styles.tag}>
                   <Sortable.Handler />
                   <AntSelect
                     value={tag.color}
-                    onChange={changeTagColor(tagIndex)}
+                    onChange={changeTagColor(index)}
                     className={styles.color}
                   >
                     {['blue',
                       'red',
                       'green',
-                    ].map((color, colorIndex) =>
+                    ].map((color) =>
                       <AntSelect.Option
-                        key={colorIndex}
+                        key={color}
                         value={color}
                       >
                         <div className={styles[color]} />
@@ -99,16 +104,21 @@ const Editor = ({
                   </AntSelect>
                   <div className={styles.text}>
                     <AntForm.Item>
-                      {getFieldDecorator(`text.${tagIndex}`, {
+                      {getFieldDecorator(`text.${tag.id}`, {
+                        id: tag.id,
                         rules: [{
                           required: true,
                           message: 'Это поле не может быть пустым!',
                         }],
-                        initialValue: tag.text,
+                        initialValue: getText(tag.content),
+                        getValueFromEvent(content) {
+                          return getText(content);
+                        },
                       })(
-                        <AntInput
+                        <Draft
                           size="default"
-                          onChange={changeTagText(tagIndex)}
+                          content={tag.content}
+                          onChange={changeTagText(index)}
                         />
                       )}
                     </AntForm.Item>
@@ -116,7 +126,7 @@ const Editor = ({
                   <AntPopconfirm
                     title="Удалить событие?"
                     okText="Да"
-                    onConfirm={removeTag(tagIndex)}
+                    onConfirm={removeTag(index)}
                     cancelText="Нет"
                   >
                     <AntIcon
@@ -140,7 +150,7 @@ const Editor = ({
         </div>
       </AntModal>
     </span>
-  );
+  ) : null;
 };
 
 const Sortable = {
@@ -175,7 +185,7 @@ Editor.propTypes = {
   data: PropTypes.shape({
     tags: PropTypes.arrayOf(
       PropTypes.shape({
-        text: PropTypes.string.isRequired,
+        content: PropTypes.object.isRequired,
         color: PropTypes.oneOf([
           'blue',
           'red',

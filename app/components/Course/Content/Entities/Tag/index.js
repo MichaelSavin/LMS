@@ -7,12 +7,17 @@ import {
   update,
   remove,
   isEqual,
+  random,
 } from 'lodash/fp';
+import {
+  Entity,
+  convertToRaw,
+  ContentState,
+} from 'draft-js';
 import {
   arrayMove,
 } from 'react-sortable-hoc';
 import { message } from 'antd';
-import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
 import './styles.css';
@@ -24,8 +29,11 @@ class Tag extends Component {
     const data = {
       default: {
         tags: [{
-          text: 'Тэг',
+          id: `${random(0, 999)}`,
           color: 'green',
+          content: convertToRaw(
+            ContentState.createFromText('Тэг')
+          ),
         }],
       },
       entity: Entity
@@ -95,14 +103,14 @@ class Tag extends Component {
     });
   }
 
-  changeTagText = (index) => (event) => {
+  changeTagText = (index) => (content) => {
     this.setState({
       temp: set([
         'tags',
         index,
-        'text',
+        'content',
       ],
-        event.target.value,
+        content,
         this.state.temp,
       ),
     });
@@ -113,8 +121,11 @@ class Tag extends Component {
       temp: update(
         'tags',
         (tags) => tags.concat([{
-          text: 'Тэг',
+          id: `${random(0, 999)}`,
           color: 'blue',
+          content: convertToRaw(
+            ContentState.createFromText('Тэг')
+          ),
         }]),
         this.state.temp,
       ),
@@ -168,9 +179,9 @@ class Tag extends Component {
           dragTag={this.dragTag}
           removeTag={this.removeTag}
           closeModal={this.closeModal}
+          saveSettings={this.saveSettings}
           changeTagText={this.changeTagText}
           changeTagColor={this.changeTagColor}
-          saveSettings={this.saveSettings}
         />
       </span>
     );

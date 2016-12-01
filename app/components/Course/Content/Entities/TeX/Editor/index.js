@@ -41,7 +41,6 @@ const Editor = ({
       callback('Неверный формат KaTeX. Исправьте формулу или отмените изменения');
     }
   };
-
   return (
     <AntModal
       onOk={validateAndSave}

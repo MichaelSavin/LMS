@@ -11,7 +11,9 @@ import {
 
 import Course from 'components/Course';
 import Content from 'components/Course/Content';
-import Editor from 'components/Course/Content/Editor';
+import {
+  Complex as Editor,
+} from 'components/Course/Content/Editor';
 import View from 'components/Course/Content/View';
 
 const routes = (
