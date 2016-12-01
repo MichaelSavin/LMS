@@ -32,6 +32,7 @@ const Editor = ({
   changeSlideType,
   uploadSlideImage,
   removeSlideImage,
+  changeSlideImageText,
   form: {
     resetFields,
     validateFields,
@@ -124,8 +125,9 @@ const Editor = ({
                             ?
                               <div className={styles.preview}>
                                 <img
+                                  alt={slide.image.text}
                                   src={cache[slide.image.source]}
-                                  role="presentation"
+                                  title={slide.image.text}
                                 />
                                 <AntIcon
                                   type="close"
@@ -144,6 +146,25 @@ const Editor = ({
                               </div>
                           }
                         </AntUpload.Dragger>
+                        <div className={styles.text}>
+                          <div className={styles.placeholder}>
+                            Альтернативный текст
+                          </div>
+                          <AntForm.Item>
+                            {getFieldDecorator(`image.text.${index}`, {
+                              rules: [{
+                                required: true,
+                                message: 'Это поле не может быть пустым!',
+                              }],
+                              initialValue: slide.image.text,
+                            })(
+                              <AntInput
+                                size="default"
+                                onChange={changeSlideImageText(index)}
+                              />
+                            )}
+                          </AntForm.Item>
+                        </div>
                       </div>
                     }
                     {slide.type === 'text' &&
@@ -182,6 +203,7 @@ const Editor = ({
           <Preview
             data={data}
             cache={cache}
+            placement="modal"
           />
         </div>
       </AntModal>
@@ -221,6 +243,7 @@ Editor.propTypes = {
   changeSlideType: PropTypes.func.isRequired,
   uploadSlideImage: PropTypes.func.isRequired,
   removeSlideImage: PropTypes.func.isRequired,
+  changeSlideImageText: PropTypes.func.isRequired,
   data: PropTypes.shape({
     slides: PropTypes.arrayOf(
       PropTypes.shape({

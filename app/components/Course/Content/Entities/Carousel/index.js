@@ -60,6 +60,22 @@ class Carousel extends Component {
     }
   }
 
+  toggleView = () => {
+    const content = {
+      ...this.state.content,
+      fullscreen: !this
+        .state
+        .content
+        .fullscreen,
+    };
+    this.setState({ content });
+    Entity.replaceData(
+      this.props.entityKey, {
+        content,
+      }
+    );
+  }
+
   openModal = () => {
     this.setState({
       modal: true,
@@ -97,9 +113,21 @@ class Carousel extends Component {
       ], {
         true: 'text',
         false: 'image',
-      }[
-        checked
+      }[checked],
+        this.state.temp,
+      ),
+    });
+  }
+
+  changeSlideImageText = (index) => (event) => {
+    this.setState({
+      temp: set([
+        'slides',
+        index,
+        'image',
+        'text',
       ],
+        event.target.value,
         this.state.temp,
       ),
     });
@@ -241,6 +269,9 @@ class Carousel extends Component {
         <Preview
           data={content}
           cache={this.cache}
+          placement="editor"
+          fullscreen={content.fullscreen}
+          toggleView={this.toggleView}
         />
         <Editor
           data={temp}
@@ -255,6 +286,7 @@ class Carousel extends Component {
           changeSlideType={this.changeSlideType}
           uploadSlideImage={this.uploadSlideImage}
           removeSlideImage={this.removeSlideImage}
+          changeSlideImageText={this.changeSlideImageText}
         />
       </div>
     );
@@ -290,6 +322,7 @@ Carousel.defaultProps = {
         text: undefined,
       },
     }],
+    fullscreen: false,
   },
 };
 

@@ -2,15 +2,28 @@ import React, {
   PropTypes,
 } from 'react';
 import {
+  Icon as AntIcon,
   Carousel as AntCarousel,
 } from 'antd';
+import classNames from 'classnames';
 import styles from './styles.css';
 
 const Preview = ({
   data,
   cache,
+  placement,
+  fullscreen,
+  toggleView,
 }) =>
-  <div className={styles.preview}>
+  <div
+    className={
+      classNames(
+        styles.preview, {
+          [styles.fullscreen]: fullscreen,
+        }
+      )
+    }
+  >
     <AntCarousel>
       {data.slides.map(({
         type,
@@ -38,10 +51,20 @@ const Preview = ({
         </div>
       )}
     </AntCarousel>
+    {placement === 'editor' &&
+      <span className={styles.resize}>
+        <AntIcon
+          type={fullscreen
+            ? 'shrink'
+            : 'arrows-alt'
+          }
+          onClick={toggleView}
+        />
+      </span>
+    }
   </div>;
 
 Preview.propTypes = {
-  cache: PropTypes.object.isRequired,
   data: PropTypes.shape({
     slides: PropTypes.arrayOf(
       PropTypes.shape({
@@ -57,6 +80,13 @@ Preview.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
+  cache: PropTypes.object.isRequired,
+  placement: PropTypes.oneOf([
+    'modal',
+    'editor',
+  ]).isRequired,
+  fullscreen: PropTypes.bool,
+  toggleView: PropTypes.func,
 };
 
 export default Preview;

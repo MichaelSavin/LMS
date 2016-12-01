@@ -81,7 +81,12 @@
     }
 
     & .text {
-      /* ... */
+      margin-top: 10px;
+
+      & .placeholder {
+        padding: 5px 0;
+        font-weight: 500;
+      }
     }
   }
 

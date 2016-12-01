@@ -1,3 +1,17 @@
+.preview.fullscreen {
+  width: 1000px !important;
+  height: 715px !important;
+
+  & img {
+    width: 1000px !important;
+    height: 750px !important;
+  }
+
+  & .resize {
+    margin-bottom: 35px;
+  }
+}
+
 .preview {
   width: 350px;
 
@@ -32,5 +46,16 @@
     white-space: pre-wrap;
     justify-content: center;
     background-color: white;
+  }
+
+  & .resize {
+    width: 15px;
+    cursor: pointer;
+    display: flex;
+    position: relative;
+    background: white;
+    margin-top: -25px;
+    margin-left: 10px;
+    margin-bottom: 15px;
   }
 }
