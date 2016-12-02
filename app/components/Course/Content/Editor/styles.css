@@ -40,7 +40,7 @@
 }
 
 .input {
-  width: 100%;
+  width: 355px;
   position: relative;
   display: inline-block;
   padding: 4px 7px;
@@ -53,4 +53,15 @@
   border: 1px solid #D9D9D9;
   border-radius: 6px;
   margin: 2px;
+}
+
+.icon {
+  position: absolute;
+  right: -25px;
+  top: -1px;
+}
+
+.btnChild {
+  width: 10px;
+  height: 30px;
 }

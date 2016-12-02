@@ -12,6 +12,8 @@ import {
 import {
   customStyleMap,
 } from 'draftjs-utils';
+import { Button } from 'antd';
+import Icon from 'components/UI/Icon';
 import {
   entitiesDecorator,
 } from '../Entities';
@@ -94,6 +96,11 @@ class Editor extends Component {
           customStyleMap={customStyleMap}
           handleKeyCommand={this.handleKeyCommand}
         />
+        <div className={styles.icon}>
+          <Button size="small">
+            <Icon type="function" />
+          </Button>
+        </div>
         <Popup
           isFocused={isFocused}
           editorRef={this.refs.editor}
