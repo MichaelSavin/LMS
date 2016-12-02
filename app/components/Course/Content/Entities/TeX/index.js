@@ -30,6 +30,21 @@ class TeX extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { entityKey } = nextProps;
+    if (entityKey && entityKey !== this.props.entityKey) {
+      const content = Entity
+        .get(entityKey)
+        .getData()
+        .content;
+
+      this.setState({
+        content,
+      });
+    }
+  }
+
+
   shouldComponentUpdate(
     nextProps,
     nextState
