@@ -8,10 +8,14 @@ import {
 import {
   customStyleMap,
 } from 'draftjs-utils';
+import {
+  entitiesDecorator,
+} from '../../../Entities';
 import styles from './styles.css';
 
-const Preview = ({ data }) =>
-  <div className={styles.preview}>
+const Preview = ({ data }) => {
+  console.log(data.tags);
+  return (<div className={styles.preview}>
     {data.tags.map(({
       color,
       content,
@@ -30,12 +34,15 @@ const Preview = ({ data }) =>
           customStyleMap={customStyleMap}
           editorState={content
             ? EditorState.createWithContent(
-              convertFromRaw(content)
-            ) : EditorState.createEmpty()}
+              convertFromRaw(content),
+              entitiesDecorator
+            ) : EditorState.createEmpty()
+          }
         />
       </AntTag>
     )}
-  </div>;
+  </div>);
+};
 
 Preview.propTypes = {
   data: PropTypes.shape({
