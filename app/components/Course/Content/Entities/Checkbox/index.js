@@ -6,19 +6,21 @@ import { Checkbox as AntCheckbox } from 'antd';
 import AntPromt from 'components/UI/Promt';
 import { isEqual, uniq } from 'lodash';
 import { Entity } from 'draft-js';
+import Editor from './Editor';
+import Preview from './Preview';
 import styles from './styles.css';
 
 class Checkbox extends Component {
 
   constructor(props) {
     super(props);
+    const { content } = props;
     this.state = {
-      ...props.content,
-      promt: {
-        open: false,
-        value: null,
-      },
+      modal: false,
+      temp: content,
+      content,
     };
+    this.images = {};
   }
 
   shouldComponentUpdate(
@@ -31,16 +33,19 @@ class Checkbox extends Component {
     );
   }
 
-  editOptions = (event) => {
-    event.preventDefault();
+
+  openModal = () => {
     this.setState({
-      promt: {
-        open: true,
-        value: this
-          .state
-          .options
-          .join(';'),
-      },
+      modal: true,
+      temp: this
+        .state
+        .content,
+    });
+  }
+
+  closeModal = () => {
+    this.setState({
+      modal: false,
     });
   }
 
@@ -91,65 +96,37 @@ class Checkbox extends Component {
 
   render() {
     const {
-      promt,
-      options,
-      answers = [],
+      content,
+      modal,
+      temp,
     } = this.state;
     return (
       <div
         className={styles.checkbox}
-        onContextMenu={this.editOptions}
+        onDoubleClick={this.openModal}
       >
-        <AntCheckbox.Group
-          options={options}
-          defaultValue={answers}
-          onChange={this.toggleAnswer}
+        <Preview
+          data={content}
         />
-
-        <AntPromt
-          value={promt.value}
-          onSave={this.modifyOptions}
-          visible={promt.open}
-          onChange={(event) => {
-            this.setState({
-              promt: {
-                ...promt,
-                value: event
-                  .target
-                  .value,
-              },
-            });
-          }}
-          onCancel={() => {
-            this.setState({
-              promt: {
-                ...promt,
-                open: false,
-              },
-            });
-          }}
+        <Editor
+          data={temp}
+          isOpen={modal}
+          closeModal={this.closeModal}
+          saveSettings={this.saveSettings}
         />
       </div>
     );
   }
 }
 
-Checkbox.propTypes = {
-  entityKey: PropTypes.string.isRequired,
-  content: PropTypes.shape({
-    answers: PropTypes.array.isRequired,
-    options: PropTypes.array.isRequired,
-  }).isRequired,
-};
-
 Checkbox.defaultProps = {
   content: {
-    answers: [],
-    options: [
-      'Вариант 1',
-      'Вариант 2',
-      'Вариант 3',
-      'Вариант 4',
+    question: 'Где могут жить утки?',
+    answers: [
+      { value: 'Здесь', checked: false, image: null },
+      { value: 'Тут', checked: true, image: null },
+      { value: 'Вот же', checked: true, image: null },
+      { value: 'Ага, вот отличное место', checked: true, image: null },
     ],
   },
 };
