@@ -40,7 +40,7 @@
 }
 
 .input {
-  width: 355px;
+  width: 340px;
   position: relative;
   display: inline-block;
   padding: 4px 7px;
@@ -57,7 +57,7 @@
 
 .icon {
   position: absolute;
-  right: -25px;
+  right: -40px;
   top: -1px;
 }
 

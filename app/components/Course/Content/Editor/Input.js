@@ -16,7 +16,9 @@ import { Button } from 'antd';
 import Icon from 'components/UI/Icon';
 import {
   entitiesDecorator,
+  insertEntity,
 } from '../Entities';
+
 import Popup from './Popup';
 import styles from './styles.css';
 
@@ -97,7 +99,16 @@ class Editor extends Component {
           handleKeyCommand={this.handleKeyCommand}
         />
         <div className={styles.icon}>
-          <Button size="small">
+          <Button
+            size="small"
+            onClick={() => {
+              insertEntity(
+                'TEX',
+                editorState,
+                this.onChange
+              );
+            }}
+          >
             <Icon type="function" />
           </Button>
         </div>
