@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 import {
   Editor as Draft,
-  RichUtils,
   EditorState,
   convertToRaw,
   convertFromRaw,
@@ -17,6 +16,7 @@ import Icon from 'components/UI/Icon';
 import {
   entitiesDecorator,
   insertEntity,
+  addEOLtoInlineEntity,
 } from '../Entities';
 
 import Popup from './Popup';
@@ -50,14 +50,19 @@ class Editor extends Component {
 
   onChange = (editorState) => {
     this.setState({
-      editorState,
-    });
-    this.props.onChange(
+      editorState: editorState.getCurrentContent()
+        .blockMap.reduce(
+          addEOLtoInlineEntity,
+          editorState
+        ),
+    }, () => {
+      this.props.onChange(
       convertToRaw(
-        editorState
+        this.state.editorState
           .getCurrentContent()
-      )
-    );
+        )
+      );
+    });
   }
 
   setFocusStatus = (event) => {
@@ -65,22 +70,6 @@ class Editor extends Component {
       isFocused: event.type === 'focus',
     });
   }
-
-  handleKeyCommand = (command) => {
-    const { editorState } = this.state;
-    const newState = RichUtils
-      .handleKeyCommand(
-        editorState,
-        command
-      );
-    if (newState) {
-      this.onChange(newState);
-      return true;
-    }
-    return false;
-  }
-
-  focusEditor = () => this.refs.editor.focus();
 
   render() {
     const {
@@ -96,7 +85,6 @@ class Editor extends Component {
           onChange={this.onChange}
           editorState={editorState}
           customStyleMap={customStyleMap}
-          handleKeyCommand={this.handleKeyCommand}
         />
         <div className={styles.icon}>
           <Button
