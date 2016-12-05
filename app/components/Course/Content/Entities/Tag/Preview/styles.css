@@ -1,4 +1,17 @@
 .preview {
   display: inline;
   user-select: none;
+  position: relative;
+}
+
+.clicker {
+  top: -2px;
+  left: 0;
+  position: absolute;
+  background: red;
+  opacity: 0;
+  width: 95%;
+  height: 150%;
+  z-index: 1;
+  cursor: pointer;
 }

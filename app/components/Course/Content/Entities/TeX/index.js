@@ -6,6 +6,7 @@ import { isEqual } from 'lodash/fp';
 import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
+// import Popup from './Popup';
 import './styles.css';
 
 class TeX extends Component {
@@ -55,7 +56,17 @@ class TeX extends Component {
     );
   }
 
-  openModal = () => {
+  openModal = (e) => {
+    e.preventDefault();
+    this.setState({
+      modal: true,
+      temp: this
+        .state
+        .content,
+    });
+  }
+
+  openPopup = () => {
     this.setState({
       modal: true,
       temp: this
@@ -101,6 +112,7 @@ class TeX extends Component {
     } = this.state;
     return (
       <span onDoubleClick={this.openModal}>
+        {/* <Popup isPopped />*/}
         <Preview data={content} />
         <Editor
           data={temp}

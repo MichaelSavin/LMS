@@ -13,9 +13,9 @@ import {
 } from '../../../Entities';
 import styles from './styles.css';
 
-const Preview = ({ data }) => {
-  console.log(data.tags);
-  return (<div className={styles.preview}>
+const Preview = ({ data, onDoubleClick }) => (
+  <div className={styles.preview}>
+    <div className={styles.clicker} onDoubleClick={onDoubleClick} />
     {data.tags.map(({
       color,
       content,
@@ -41,10 +41,12 @@ const Preview = ({ data }) => {
         />
       </AntTag>
     )}
-  </div>);
-};
+  </div>
+);
+
 
 Preview.propTypes = {
+  onDoubleClick: PropTypes.func,
   data: PropTypes.shape({
     tags: PropTypes.arrayOf(
       PropTypes.shape({
