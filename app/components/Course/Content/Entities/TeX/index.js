@@ -59,7 +59,7 @@ class TeX extends Component {
   }
 
   openModal = (e) => {
-    e.preventDefault();
+    console.log(e);
     this.setState({
       modal: true,
       temp: this
