@@ -5,54 +5,54 @@ import React, {
 import {
   getVisibleSelectionRect,
 } from 'draft-js';
-import classNames from 'classnames';
+import styles from './styles.css';
 
 class Popup extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false,
+      isOpen: true,
       position: {
-        top: undefined,
+        top: '-70px',
         left: undefined,
       },
     };
   }
 
   componentDidUpdate() {
-    if (!this.props.editorState
-      .getSelection()
-      .isCollapsed()
-    ) {
-      this.setBarPosition();
-    } else if (this.state.isOpen) {
-      this.setState({ // eslint-disable-line react/no-did-update-set-state
-        isOpen: false,
-      });
-    }
+    // if (!this.props.editorState
+    //   .getSelection()
+    //   .isCollapsed()
+    // ) {
+    //   this.setBarPosition();
+    // } else if (this.state.isOpen) {
+    //   this.setState({ // eslint-disable-line react/no-did-update-set-state
+    //     isOpen: false,
+    //   });
+    // }
   }
 
   setBarPosition = () => {
-    const { editor } = this.props.editorRef.refs;
-    const { toolbar } = this.refs;
-    const selectionCoords = this
-      .getSelectionCoords(editor, toolbar);
-    if (selectionCoords && (
-      !this.state.position ||
-      this.state.position.top !==
-      selectionCoords.offsetTop ||
-      this.state.position.left !==
-      selectionCoords.offsetLeft
-    )) {
-      this.setState({
-        isOpen: true,
-        position: {
-          top: selectionCoords.offsetTop,
-          left: selectionCoords.offsetLeft,
-        },
-      });
-    }
+    // const { editor } = this.props.editorRef.refs;
+    // const { toolbar } = this.refs;
+    // const selectionCoords = this
+    //   .getSelectionCoords(editor, toolbar);
+    // if (selectionCoords && (
+    //   !this.state.position ||
+    //   this.state.position.top !==
+    //   selectionCoords.offsetTop ||
+    //   this.state.position.left !==
+    //   selectionCoords.offsetLeft
+    // )) {
+    //   this.setState({
+    //     isOpen: true,
+    //     position: {
+    //       top: selectionCoords.offsetTop,
+    //       left: selectionCoords.offsetLeft,
+    //     },
+    //   });
+    // }
   }
 
   getSelectionCoords = (editor, toolbar) => {
@@ -79,25 +79,22 @@ class Popup extends Component {
 
   render() {
     const {
-      isPopped,
-      editorState,
-      changeEditorState,
+      popup,
+      // editorState,
+      // changeEditorState,
     } = this.props;
     const {
-      isOpen,
+      // isOpen,
       position,
     } = this.state;
-    return isPopped ? (
+    return popup ? (
       <div
-        className={classNames(
-          'ant-tooltip',
-          'ant-tooltip-placement-top',
-          !isOpen ? 'ant-tooltip-hidden' : ''
-        )}
+        className={styles.tooltip}
         style={position}
       >
+        <input placeholder="где ты" />
         <div className="ant-tooltip-content">
-          <div className="ant-tooltip-arrow" />
+          <div className={styles.arrow} />
           <div
             ref="toolbar"
             className="ant-tooltip-inner"
@@ -105,13 +102,7 @@ class Popup extends Component {
               event.preventDefault()
             }
           >
-            <input
-              placeholder="Basic usage"
-              inPopup
-              editorState={editorState}
-              onChange={(e, val) => { console.log(e, val); }}
-              changeEditorState={changeEditorState}
-            />
+            <input placeholder="где ты" />
           </div>
         </div>
       </div>
@@ -120,10 +111,10 @@ class Popup extends Component {
 }
 
 Popup.propTypes = {
-  isPopped: PropTypes.bool,
-  editorRef: PropTypes.object,
-  editorState: PropTypes.object.isRequired,
-  changeEditorState: PropTypes.func.isRequired,
+  popup: PropTypes.bool,
+  // editorRef: PropTypes.object,
+  // editorState: PropTypes.object.isRequired,
+  // changeEditorState: PropTypes.func.isRequired,
 };
 
 export default Popup;

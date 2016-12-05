@@ -1,0 +1,22 @@
+.tooltip {
+  position: absolute;
+  z-index: 1060;
+  display: block;
+  visibility: visible;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.arrow {
+  left: 50%;
+  margin-left: -5px;
+  bottom: -5px;
+  border-width: 5px 5px 0;
+  border-color: transparent;
+  border-top-color: rgba(64, 64, 64, 0.85);
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+

@@ -6,7 +6,7 @@ import { isEqual } from 'lodash/fp';
 import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
-// import Popup from './Popup';
+import Popup from './Popup';
 import './styles.css';
 
 class TeX extends Component {
@@ -28,25 +28,25 @@ class TeX extends Component {
     this.state = {
       temp: content,
       modal: false,
+      popup: false,
       content,
+      location,
     };
-    console.log(location);
   }
 
   componentWillReceiveProps(nextProps) {
     const { entityKey } = nextProps;
     if (entityKey && entityKey !== this.props.entityKey) {
-      const content = Entity
+      const { content, location } = Entity
         .get(entityKey)
-        .getData()
-        .content;
+        .getData();
 
       this.setState({
         content,
+        location,
       });
     }
   }
-
 
   shouldComponentUpdate(
     nextProps,
@@ -58,23 +58,23 @@ class TeX extends Component {
     );
   }
 
-  openModal = (e) => {
-    console.log(e);
-    this.setState({
-      modal: true,
-      temp: this
-        .state
-        .content,
-    });
-  }
-
-  openPopup = () => {
-    this.setState({
-      modal: true,
-      temp: this
-        .state
-        .content,
-    });
+  openEdit = () => {
+    const { location } = this.state;
+    if (location === 'INPUT') {
+      this.setState({
+        popup: true,
+        temp: this
+          .state
+          .content,
+      });
+    } else {
+      this.setState({
+        modal: true,
+        temp: this
+          .state
+          .content,
+      });
+    }
   }
 
   saveSettings = () => {
@@ -110,11 +110,12 @@ class TeX extends Component {
     const {
       temp,
       modal,
+      popup,
       content,
     } = this.state;
     return (
-      <span onDoubleClick={this.openModal}>
-        {/* <Popup isPopped />*/}
+      <span onDoubleClick={this.openEdit}>
+        <Popup popup={popup} />
         <Preview data={content} />
         <Editor
           data={temp}
