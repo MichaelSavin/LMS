@@ -18,16 +18,16 @@ import {
   insertEntity,
   addEOLtoInlineEntity,
 } from '../Entities';
-
 import Popup from './Popup';
 import styles from './styles.css';
 
-class Editor extends Component {
+class DraftInput extends Component {
 
   constructor(props) {
     super(props);
     const { content } = props;
     this.state = {
+      readOnly: false,
       isFocused: true,
       editorState: content
         ? EditorState.createWithContent(
@@ -35,6 +35,13 @@ class Editor extends Component {
             entitiesDecorator,
           )
         : EditorState.createEmpty(),
+    };
+  }
+
+  getChildContext() {
+    return {
+      addReadOnlyFlag: this.addReadOnlyFlag,
+      removeReadOnlyFlag: this.removeReadOnlyFlag,
     };
   }
 
@@ -71,15 +78,30 @@ class Editor extends Component {
     });
   }
 
+  addReadOnlyFlag = () => {
+    this.setState({
+      readOnly: true,
+    });
+  }
+
+  removeReadOnlyFlag = () => {
+    this.setState({
+      readOnly: true,
+    });
+  }
+
+
   render() {
     const {
       isFocused,
       editorState,
+      readOnly,
     } = this.state;
     return (
       <div className={styles.input}>
         <Draft
           ref="editor"
+          readOnly={readOnly}
           onBlur={this.setFocusStatus}
           onFocus={this.setFocusStatus}
           onChange={this.onChange}
@@ -112,9 +134,14 @@ class Editor extends Component {
   }
 }
 
-Editor.propTypes = {
+DraftInput.childContextTypes = { // eslint-disable-line fp/no-mutation
+  addReadOnlyFlag: PropTypes.func.isRequired,
+  removeReadOnlyFlag: PropTypes.func.isRequired,
+};
+
+DraftInput.propTypes = {
   content: PropTypes.object,
   onChange: PropTypes.func.isRequired,
 };
 
-export default Editor;
+export default DraftInput;

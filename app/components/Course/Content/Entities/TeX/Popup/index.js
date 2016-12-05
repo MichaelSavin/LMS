@@ -92,15 +92,11 @@ class Popup extends Component {
         className={styles.tooltip}
         style={position}
       >
-        <input placeholder="где ты" />
         <div className="ant-tooltip-content">
           <div className={styles.arrow} />
           <div
             ref="toolbar"
             className="ant-tooltip-inner"
-            onMouseDown={(event) =>
-              event.preventDefault()
-            }
           >
             <input placeholder="где ты" />
           </div>

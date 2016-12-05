@@ -19,7 +19,7 @@ import {
 } from 'draft-js';
 import Preview from '../Preview';
 import styles from './styles.css';
-import { Input as Draft } from '../../../Editor';
+import { Input as DraftInput } from '../../../Editor';
 
 const Editor = ({
   data,
@@ -115,7 +115,7 @@ const Editor = ({
                           return getText(content);
                         },
                       })(
-                        <Draft
+                        <DraftInput
                           size="default"
                           content={tag.content}
                           onChange={changeTagText(index)}

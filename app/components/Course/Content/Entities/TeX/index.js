@@ -60,13 +60,14 @@ class TeX extends Component {
 
   openEdit = () => {
     const { location } = this.state;
+    const { addReadOnlyFlag } = this.context;
     if (location === 'INPUT') {
       this.setState({
         popup: true,
         temp: this
           .state
           .content,
-      });
+      }, addReadOnlyFlag);
     } else {
       this.setState({
         modal: true,
@@ -132,6 +133,10 @@ class TeX extends Component {
 TeX.propTypes = {
   children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
+};
+TeX.contextTypes = {
+  addReadOnlyFlag: PropTypes.func,
+  removeReadOnlyFlag: PropTypes.func,
 };
 
 export default TeX;
