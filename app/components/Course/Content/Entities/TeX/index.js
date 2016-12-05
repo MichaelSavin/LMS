@@ -13,15 +13,16 @@ class TeX extends Component {
 
   constructor(props) {
     super(props);
+    const entity = Entity
+      .get(this.props.entityKey)
+      .getData();
     const data = {
       default: {
         tex: 'e = mc^2',
       },
-      entity: Entity
-        .get(this.props.entityKey)
-        .getData()
-        .content,
+      entity: entity.content,
     };
+    const { location } = entity;
     const content =
       data.entity || data.default;
     this.state = {
@@ -29,6 +30,7 @@ class TeX extends Component {
       modal: false,
       content,
     };
+    console.log(location);
   }
 
   componentWillReceiveProps(nextProps) {

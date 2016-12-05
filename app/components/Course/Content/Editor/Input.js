@@ -93,7 +93,8 @@ class Editor extends Component {
               insertEntity(
                 'TEX',
                 editorState,
-                this.onChange
+                this.onChange,
+                'INPUT'
               );
             }}
           >

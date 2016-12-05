@@ -185,7 +185,8 @@ const addEOLtoInlineEntity = (editorState, block) => { // REFACTORING
 const insertBlockEntity = (
   entityType,
   editorState,
-  changeEditorState
+  changeEditorState,
+  location = undefined,
 ) => {
   changeEditorState(
     AtomicBlockUtils
@@ -194,7 +195,7 @@ const insertBlockEntity = (
         Entity.create(
           entityType,
           'IMMUTABLE',
-          { },
+          { location },
         ),
       ' '
     ),
@@ -205,6 +206,7 @@ const insertInlineEntity = (
   entityType,
   editorState,
   changeEditorState,
+  location = undefined,
 ) => {
   changeEditorState(
     EditorState.push(
@@ -217,7 +219,7 @@ const insertInlineEntity = (
         Entity.create(
           entityType,
           'IMMUTABLE',
-          { }
+          { location }
         ),
       ),
       ' '
@@ -229,11 +231,13 @@ const insertEntity = (
   entityType,
   editorState,
   changeEditorState,
+  location = undefined,
 ) => {
   const args = [
     entityType,
     editorState,
     changeEditorState,
+    location,
   ];
   switch (views[entityType]) {
     case 'BLOCK':
