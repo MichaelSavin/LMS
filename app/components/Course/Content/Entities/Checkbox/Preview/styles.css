@@ -1,0 +1,13 @@
+.question {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.answer {
+  display: block;
+  margin: 0 0 8px;
+}
+
+:global .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+  margin-left: 0 !important;
+}

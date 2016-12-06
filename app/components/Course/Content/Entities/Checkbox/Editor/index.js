@@ -7,14 +7,17 @@ import {
   Input as AntInput,
   Modal as AntModal,
   Select as AntSelect,
+  Checkbox as AntCheckbox,
   Button as AntButton,
   Popconfirm as AntPopconfirm,
+  Row, Col,
 } from 'antd';
 import {
   SortableHandle,
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
+import Dropzone from 'react-dropzone';
 
 import styles from './styles.css';
 
@@ -22,12 +25,17 @@ const Editor = ({
   data,
   isOpen,
   closeModal,
+  images,
+  uploadImage,
+  isRight,
+  saveSettings,
 }) => {
   const resetAndClose = () => {
     closeModal();
   };
   return (
     <AntModal
+      onOk={saveSettings}
       title={
         <div className={styles.title}>
           <span>Шкала времени</span>
@@ -48,16 +56,70 @@ const Editor = ({
       <Sortable.List
         useDragHandle
       >
-        {data.answers.map((answer, index) =>
-          <Sortable.Item
-            key={index}
-            index={index}
-          >
-            <AntInput
-              size="default" value={answer.value}
-            />
-          </Sortable.Item>
-        )}
+        <div>
+          {data.answers.map((answer, index) =>
+            <Row>
+              <Sortable.Item
+                key={index}
+                index={index}
+              >
+                <div className={styles.answer}>
+                  <Col span={1}>
+                    <Sortable.Handler />
+                  </Col>
+                  <Col span={18}>
+                    <AntInput
+                      size="default" value={answer.value}
+                    />
+                  </Col>
+                  <Col span={2} offset={1}>
+                    <Dropzone
+                      multiple={false}
+                      className={styles.upload}
+                      onDrop={uploadImage(index)}
+                    >
+                      {answer.image
+                        ?
+                          <img
+                            src={images[answer.image]}
+                            role="presentation"
+                            height={25}
+                            width={25}
+                          />
+                        :
+                            <div className={styles.icon}>
+                              <AntIcon
+                                size={20}
+                                type="photo"
+                              />
+                            </div>
+                      }
+                    </Dropzone>
+                  </Col>
+                  <Col span={1}>
+                    <AntCheckbox
+                      key={index}
+                      checked={answer.isRight}
+                      onChange={isRight(index)}
+                    />
+                  </Col>
+                  <Col span={1}>
+                    <AntPopconfirm
+                      title="Удалить событие?"
+                      okText="Да"
+                      cancelText="Нет"
+                    >
+                      <AntIcon
+                        type="close"
+                        className={styles.remove}
+                      />
+                    </AntPopconfirm>
+                  </Col>
+                </div>
+              </Sortable.Item>
+            </Row>
+          )}
+        </div>
       </Sortable.List>
     </AntModal>
   );
