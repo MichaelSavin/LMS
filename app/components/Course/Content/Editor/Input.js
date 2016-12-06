@@ -86,7 +86,7 @@ class DraftInput extends Component {
 
   removeReadOnlyFlag = () => {
     this.setState({
-      readOnly: true,
+      readOnly: false,
     });
   }
 

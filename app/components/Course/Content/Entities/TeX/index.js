@@ -37,9 +37,15 @@ class TeX extends Component {
   componentWillReceiveProps(nextProps) {
     const { entityKey } = nextProps;
     if (entityKey && entityKey !== this.props.entityKey) {
-      const { content, location } = Entity
+      const {
+        content = {
+          tex: 'e = mc^2',
+        },
+        location,
+      } = Entity
         .get(entityKey)
         .getData();
+      console.log(content, location);
 
       this.setState({
         content,
@@ -60,14 +66,14 @@ class TeX extends Component {
 
   openEdit = () => {
     const { location } = this.state;
-    // const { addReadOnlyFlag } = this.context;
+    const { addReadOnlyFlag } = this.context;
     if (location === 'INPUT') {
       this.setState({
         popup: true,
         temp: this
           .state
           .content,
-      }/* , addReadOnlyFlag*/);
+      }, addReadOnlyFlag);
     } else {
       this.setState({
         modal: true,
@@ -81,13 +87,15 @@ class TeX extends Component {
   saveSettings = () => {
     const content =
       this.state.temp;
+    const { location } = this.state;
+    console.log(content);
     this.setState({
       modal: false,
       content,
     });
     Entity.replaceData(
       this.props.entityKey, {
-        content,
+        content, location,
       }
     );
   }
@@ -98,12 +106,24 @@ class TeX extends Component {
     });
   }
 
+  hidePopup = () => {
+    this.setState({
+      popup: false,
+    }, () => {
+      this.context.removeReadOnlyFlag();
+      this.saveSettings();
+    });
+  }
+
   changeTeX = (event) => {
+    const { location } = this.state;
     this.setState({
       temp: {
         ...this.state.temp,
         tex: event.target.value,
       },
+    }, () => {
+      if (location === 'INPUT') this.saveSettings();
     });
   }
 
@@ -115,8 +135,8 @@ class TeX extends Component {
       content,
     } = this.state;
     return (
-      <span onDoubleClick={this.openEdit}>
-        <Popup popup={popup} />
+      <span onDoubleClick={this.openEdit} style={{ position: 'relative' }}>
+        <Popup popup={popup} onBlur={this.hidePopup} data={temp} changeTeX={this.changeTeX} />
         <Preview data={content} />
         <Editor
           data={temp}

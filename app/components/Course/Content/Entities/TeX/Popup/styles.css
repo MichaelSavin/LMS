@@ -5,6 +5,8 @@
   visibility: visible;
   font-size: 12px;
   line-height: 1.5;
+  top: -45px;
+  left: -50%;
 }
 
 .arrow {
