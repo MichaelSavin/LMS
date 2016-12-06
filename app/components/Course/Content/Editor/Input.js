@@ -78,6 +78,12 @@ class DraftInput extends Component {
     });
   }
 
+  setFocus = () => {
+    this.setState({
+      isFocused: event.type === 'focus',
+    });
+  }
+
   addReadOnlyFlag = () => {
     this.setState({
       readOnly: true,
@@ -87,9 +93,10 @@ class DraftInput extends Component {
   removeReadOnlyFlag = () => {
     this.setState({
       readOnly: false,
-    });
+    }, this.focusEditor);
   }
 
+  focusEditor = () => this.refs.editor.focus();
 
   render() {
     const {
