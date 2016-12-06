@@ -60,14 +60,14 @@ class TeX extends Component {
 
   openEdit = () => {
     const { location } = this.state;
-    const { addReadOnlyFlag } = this.context;
+    // const { addReadOnlyFlag } = this.context;
     if (location === 'INPUT') {
       this.setState({
         popup: true,
         temp: this
           .state
           .content,
-      }, addReadOnlyFlag);
+      }/* , addReadOnlyFlag*/);
     } else {
       this.setState({
         modal: true,

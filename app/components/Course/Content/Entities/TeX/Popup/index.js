@@ -6,6 +6,7 @@ import {
   getVisibleSelectionRect,
 } from 'draft-js';
 import styles from './styles.css';
+import { Input } from '../../../Editor';
 
 class Popup extends Component {
 
@@ -78,6 +79,7 @@ class Popup extends Component {
   };
 
   render() {
+    console.log(Input);
     const {
       popup,
       // editorState,
@@ -98,7 +100,7 @@ class Popup extends Component {
             ref="toolbar"
             className="ant-tooltip-inner"
           >
-            <input placeholder="где ты" />
+            <Input />
           </div>
         </div>
       </div>
