@@ -27,12 +27,19 @@ class Editor extends Component {
     super(props);
     this.state = {
       isFocused: true,
+      isReadOnly: false,
       editorState: EditorState.moveFocusToEnd(
         EditorState.createWithContent(
           convertFromRaw(this.props.content),
           entitiesDecorator,
         ),
       ),
+    };
+  }
+
+  getChildContext() {
+    return {
+      toggleReadOnly: this.toggleReadOnly,
     };
   }
 
@@ -85,6 +92,12 @@ class Editor extends Component {
     isFocused: e.type === 'focus',
   })
 
+  toggleReadOnly = () => {
+    this.setState({
+      isReadOnly: !this.state.isReadOnly,
+    });
+  }
+
   blockStyleFn = (block) => {
     const blockAlignment =
       block.getData()
@@ -132,6 +145,7 @@ class Editor extends Component {
   render() {
     const {
       isFocused,
+      isReadOnly,
       editorState,
     } = this.state;
     return (
@@ -148,6 +162,7 @@ class Editor extends Component {
             onBlur={this.setFocusStatus}
             onFocus={this.setFocusStatus}
             onChange={this.onChange}
+            readOnly={isReadOnly}
             editorState={editorState}
             blockStyleFn={this.blockStyleFn}
             customStyleFn={this.customStyleFn}
@@ -169,6 +184,10 @@ class Editor extends Component {
     );
   }
 }
+
+Editor.childContextTypes = {
+  toggleReadOnly: PropTypes.func.isRequired,
+};
 
 Editor.propTypes = {
   actions: PropTypes.object, // http://stackoverflow.com/a/33427304
