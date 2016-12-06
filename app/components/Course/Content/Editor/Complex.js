@@ -17,7 +17,7 @@ import {
   entitiesDecorator,
   addEOLtoInlineEntity,
 } from '../Entities';
-import Popup from './Popup';
+// import Popup from './Popup';
 import styles from './styles.css';
 import Toolbar from './Toolbar';
 
@@ -144,7 +144,7 @@ class Editor extends Component {
 
   render() {
     const {
-      isFocused,
+      // isFocused,
       isReadOnly,
       editorState,
     } = this.state;
@@ -173,12 +173,14 @@ class Editor extends Component {
             // ref={this.setReference}
             // spellCheck
           />
-          <Popup
-            isFocused={isFocused}
-            editorRef={this.refs.editor}
-            editorState={editorState}
-            changeEditorState={this.onChange}
-          />
+          { /*
+            <Popup
+              isFocused={isFocused}
+              editorRef={this.refs.editor}
+              editorState={editorState}
+              changeEditorState={this.onChange}
+            />
+          */ }
         </div>
       </div>
     );
