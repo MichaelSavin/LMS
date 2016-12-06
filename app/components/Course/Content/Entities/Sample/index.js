@@ -47,6 +47,7 @@ class Sample extends Component {
       temp: this.state.content,
       editor: !this.state.editor,
     });
+    this.context.toggleReadOnly();
   }
 
   saveSettings = () => {
@@ -208,6 +209,10 @@ Sample.defaultProps = {
       { text: 'Четвертое событие', color: 'blue', image: '' },
     ],
   },
+};
+
+Sample.contextTypes = {
+  toggleReadOnly: PropTypes.func.isRequired,
 };
 
 export default Sample;
