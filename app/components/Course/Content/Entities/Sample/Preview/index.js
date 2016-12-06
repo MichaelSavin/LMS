@@ -1,28 +1,34 @@
-import React, { PropTypes } from 'react';
-import { Timeline as AntTimeline } from 'antd';
-// import styles from './styles.css';
+import React, {
+  PropTypes,
+} from 'react';
+import {
+  Timeline as AntTimeline,
+} from 'antd';
+import styles from './styles.css';
 
 const Preview = ({ data }) =>
-  <AntTimeline>
-    {data.steps.map(({
-      text,
-      color,
-      image,
-    }, index) =>
-      <AntTimeline.Item
-        key={index}
-        color={color}
-      >
-        {text}
-        {image &&
-          <img
-            src={image}
-            role="presentation"
-          />
-        }
-      </AntTimeline.Item>
-    )}
-  </AntTimeline>;
+  <div className={styles.preview}>
+    <AntTimeline>
+      {data.steps.map(({
+        text,
+        color,
+        image,
+      }, index) =>
+        <AntTimeline.Item
+          key={index}
+          color={color}
+        >
+          {text}
+          {image &&
+            <img
+              src={image}
+              role="presentation"
+            />
+          }
+        </AntTimeline.Item>
+      )}
+    </AntTimeline>
+  </div>;
 
 Preview.propTypes = {
   data: PropTypes.shape({
