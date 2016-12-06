@@ -25,17 +25,19 @@ const Preview = ({ data }) =>
   </AntTimeline>;
 
 Preview.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      text: PropTypes.string,
-      image: PropTypes.string,
-      color: PropTypes.oneOf([
-        'blue',
-        'red',
-        'green',
-      ]).isRequired,
-    }).isRequired
-  ).isRequired,
+  data: PropTypes.shape({
+    steps: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string,
+        image: PropTypes.string,
+        color: PropTypes.oneOf([
+          'blue',
+          'red',
+          'green',
+        ]).isRequired,
+      }).isRequired
+    ).isRequired,
+  }).isRequired,
 };
 
 export default Preview;
