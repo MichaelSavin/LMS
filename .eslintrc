@@ -107,6 +107,8 @@
         "property": "defaultProps"
       }, { 
         "property": "contextTypes"
+      }, { 
+        "property": "childContextTypes"
       }]
     }]
   },

@@ -47,6 +47,7 @@ class Sample extends Component {
       temp: this.state.content,
       editor: !this.state.editor,
     });
+    this.context.toggleReadOnly();
   }
 
   saveSettings = () => {
@@ -63,7 +64,7 @@ class Sample extends Component {
     );
   }
 
-  changeColor = index => (value) => {
+  changeColor = (index) => (value) => {
     this.setState({
       temp: set([
         'steps',
@@ -76,7 +77,7 @@ class Sample extends Component {
     });
   }
 
-  changeText = index => (event) => {
+  changeText = (index) => (event) => {
     this.setState({
       temp: set([
         'steps',
@@ -93,7 +94,7 @@ class Sample extends Component {
     this.setState({
       temp: update(
         'steps',
-        steps => steps.concat([{
+        (steps) => steps.concat([{
           text: 'Новое событие',
           color: 'blue',
         }]),
@@ -102,12 +103,12 @@ class Sample extends Component {
     });
   }
 
-  removeStep = index => () => {
+  removeStep = (index) => () => {
     this.setState({
       temp: update(
         'steps',
-        steps => remove(
-          step => steps.indexOf(
+        (steps) => remove(
+          (step) => steps.indexOf(
             step
           ) === index,
           steps,
@@ -208,6 +209,10 @@ Sample.defaultProps = {
       { text: 'Четвертое событие', color: 'blue', image: '' },
     ],
   },
+};
+
+Sample.contextTypes = {
+  toggleReadOnly: PropTypes.func.isRequired,
 };
 
 export default Sample;

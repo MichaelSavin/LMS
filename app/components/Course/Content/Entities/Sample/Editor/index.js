@@ -13,86 +13,88 @@ import {
 import styles from './styles.css';
 
 const Editor = ({
-    data,
-    dragStep,
-    removeStep,
-    changeText,
-    changeColor,
-  }) =>
-    <div className={styles.editor}>
-      <Sortable.List
-        onSortEnd={dragStep}
-        useDragHandle
-      >
-        <div className={styles.steps}>
-          {data.steps.map((
-            step,
-            stepIndex
-          ) =>
-            <Sortable.Item
-              key={stepIndex}
-              index={stepIndex}
-            >
-              <div className={styles.step}>
-                <Sortable.Handler />
-                <AntSelect
-                  value={step.color}
-                  className={styles.color}
-                  onChange={changeColor(stepIndex)}
-                >
-                  {['blue',
-                    'red',
-                    'green',
-                    ].map((color, colorIndex) =>
-                      <AntSelect.Option
-                        key={colorIndex}
-                        value={color}
-                      >
-                        <div
-                          className={styles[color]}
-                        />
-                      </AntSelect.Option>
-                  )}
-                </AntSelect>
-                <div className={styles.text}>
-                  <AntInput
-                    value={step.text}
-                    onChange={changeText(stepIndex)}
-                  />
-                </div>
-                { /* <div className={styles.image}>
-                  Картинка
-                </div> */ }
-                <AntPopconfirm
-                  title="Удалить событие?"
-                  okText="Да"
-                  onConfirm={removeStep(stepIndex)}
-                  cancelText="Нет"
-                >
-                  <AntIcon
-                    type="close"
-                    className={styles.remove}
-                  />
-                </AntPopconfirm>
+  data,
+  dragStep,
+  removeStep,
+  changeText,
+  changeColor,
+}) =>
+  <div className={styles.editor}>
+    <Sortable.List
+      onSortEnd={dragStep}
+      useDragHandle
+    >
+      <div className={styles.steps}>
+        {data.steps.map((
+          step,
+          stepIndex
+        ) =>
+          <Sortable.Item
+            key={stepIndex}
+            index={stepIndex}
+          >
+            <div className={styles.step}>
+              <Sortable.Handler />
+              <AntSelect
+                value={step.color}
+                className={styles.color}
+                onChange={changeColor(stepIndex)}
+              >
+                {['blue',
+                  'red',
+                  'green',
+                ].map((color, colorIndex) =>
+                  <AntSelect.Option
+                    key={colorIndex}
+                    value={color}
+                  >
+                    <div
+                      className={styles[color]}
+                    />
+                  </AntSelect.Option>
+                )}
+              </AntSelect>
+              <div className={styles.text}>
+                <AntInput
+                  value={step.text}
+                  onChange={changeText(stepIndex)}
+                />
               </div>
-            </Sortable.Item>
-          )}
-        </div>
-      </Sortable.List>
-    </div>;
+              { /* <div className={styles.image}>
+                Картинка
+              </div> */ }
+              <AntPopconfirm
+                title="Удалить событие?"
+                okText="Да"
+                onConfirm={removeStep(stepIndex)}
+                cancelText="Нет"
+              >
+                <AntIcon
+                  type="close"
+                  className={styles.remove}
+                />
+              </AntPopconfirm>
+            </div>
+          </Sortable.Item>
+        )}
+      </div>
+    </Sortable.List>
+  </div>;
 
 Editor.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      text: PropTypes.string,
-      image: PropTypes.string,
-      color: PropTypes.oneOf([
-        'blue',
-        'red',
-        'green',
-      ]).isRequired,
-    }).isRequired
-  ).isRequired,
+  data: PropTypes.shape({
+    steps: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string,
+        image: PropTypes.string,
+        color: PropTypes.oneOf([
+          'blue',
+          'red',
+          'green',
+        ]).isRequired,
+      }).isRequired
+    ).isRequired,
+  }).isRequired,
   dragStep: PropTypes.func.isRequired,
   removeStep: PropTypes.func.isRequired,
   changeText: PropTypes.func.isRequired,
@@ -101,10 +103,10 @@ Editor.propTypes = {
 
 const Sortable = {
   List: SortableContainer(
-    props => <ul>{props.children}</ul>
+    (props) => <ul>{props.children}</ul>
   ),
   Item: SortableElement(
-    props => <li>{props.children}</li>
+    (props) => <li>{props.children}</li>
   ),
   Handler: SortableHandle(() =>
     <AntIcon
