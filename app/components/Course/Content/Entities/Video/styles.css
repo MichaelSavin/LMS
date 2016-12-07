@@ -1,10 +1,38 @@
 .video {
   display: flex;
   flex-direction: row;
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+}
+
+.video iframe,
+.video object,
+.video embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .icon {
-  margin-left: 5px;
+  display: flex;
+  flex-direction: row;
+  position: absolute;
   cursor: pointer;
+  padding: 5px;
+  right: 0;
+  color: #FFF;
+}
+
+.icon:active,
+.icon:hover {
+  border-radius: 10px;
+  background: #2DB7F5;
+  backface-visibility: 0.3;
+  color: #000;
+  padding: 5px;
 }
 
