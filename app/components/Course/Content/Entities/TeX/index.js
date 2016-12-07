@@ -99,7 +99,6 @@ class TeX extends Component {
     const content =
       this.state.temp;
     const { location } = this.state;
-    console.log(this.state);
     this.setState({
       modal: false,
       content,
@@ -143,7 +142,6 @@ class TeX extends Component {
       if (location === 'INPUT') {
         try {
           katex.__parse(value); // eslint-disable-line no-underscore-dangle
-          console.log('все ок');
           this.setState({
             popupError: false,
           });
@@ -152,8 +150,8 @@ class TeX extends Component {
             popupError: error,
           });
         }
+        this.saveSettings();
       }
-      this.saveSettings();
     });
   }
 
