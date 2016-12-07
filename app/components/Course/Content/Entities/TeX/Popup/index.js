@@ -2,6 +2,7 @@ import React, {
   Component,
   PropTypes,
 } from 'react';
+import { Icon } from 'antd';
 import styles from './styles.css';
 
 class Popup extends Component {
@@ -16,7 +17,9 @@ class Popup extends Component {
   render() {
     const {
       popup,
-      onBlur,
+      popupError,
+      onCancel,
+      onSave,
       changeTeX,
       data: { tex },
     } = this.props;
@@ -26,14 +29,18 @@ class Popup extends Component {
       >
         <div className="ant-tooltip-content">
           <div className={styles.arrow} />
-          <div className="ant-tooltip-inner">
+          <div className={styles.tooltipInner}>
             <input
+              className={popupError.message && styles.error}
               autoFocus
               placeholder="asdf"
               onChange={changeTeX}
-              onBlur={onBlur}
               defaultValue={tex}
             />
+            &nbsp;&nbsp;
+            <Icon onClick={onCancel} className={styles.cancelBtn} type="close" />
+            &nbsp;
+            {!popupError.message && <Icon onClick={onSave} className={styles.confirmBtn} type="check" />}
           </div>
         </div>
       </div>
@@ -43,7 +50,9 @@ class Popup extends Component {
 
 Popup.propTypes = {
   popup: PropTypes.bool,
-  onBlur: PropTypes.func.isRequired,
+  popupError: PropTypes.object.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
   changeTeX: PropTypes.func.isRequired,
   data: PropTypes.shape({
     tex: PropTypes.string.isRequired,

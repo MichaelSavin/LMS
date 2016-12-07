@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import { isEqual } from 'lodash/fp';
 import { Entity } from 'draft-js';
+import katex from 'katex';
 import Preview from './Preview';
 import Editor from './Editor';
 import Popup from './Popup';
@@ -27,8 +28,10 @@ class TeX extends Component {
       data.entity || data.default;
     this.state = {
       temp: content,
+      original: content,
       modal: false,
       popup: false,
+      popupError: {},
       content,
       location,
     };
@@ -45,8 +48,6 @@ class TeX extends Component {
       } = Entity
         .get(entityKey)
         .getData();
-      console.log(content, location);
-
       this.setState({
         content,
         location,
@@ -61,6 +62,52 @@ class TeX extends Component {
     return !isEqual(
       this.state,
       nextState
+    );
+  }
+
+  onSavePopup = () => {
+    this.setState({
+      popup: false,
+      content: this.state.temp,
+      original: this.state.temp,
+    }, () => {
+      this.saveSettings();
+      this.context.removeReadOnlyFlag();
+    });
+  }
+
+  onCancelPopup = () => {
+    this.setState({
+      popup: false,
+      content: this.state.original,
+      temp: this.state.original,
+      popupError: {},
+    }, () => {
+      this.saveSettings();
+      this.context.removeReadOnlyFlag();
+    });
+  }
+
+
+  closeModal = () => {
+    this.setState({
+      modal: false,
+    });
+  }
+
+  saveSettings = () => {
+    const content =
+      this.state.temp;
+    const { location } = this.state;
+    console.log(this.state);
+    this.setState({
+      modal: false,
+      content,
+    });
+    Entity.replaceData(
+      this.props.entityKey, {
+        content, location,
+      }
     );
   }
 
@@ -84,46 +131,29 @@ class TeX extends Component {
     }
   }
 
-  saveSettings = () => {
-    const content =
-      this.state.temp;
-    const { location } = this.state;
-    console.log(content);
-    this.setState({
-      modal: false,
-      content,
-    });
-    Entity.replaceData(
-      this.props.entityKey, {
-        content, location,
-      }
-    );
-  }
-
-  closeModal = () => {
-    this.setState({
-      modal: false,
-    });
-  }
-
-  hidePopup = () => {
-    this.setState({
-      popup: false,
-    }, () => {
-      this.context.removeReadOnlyFlag();
-      this.saveSettings();
-    });
-  }
-
   changeTeX = (event) => {
     const { location } = this.state;
+    const { value } = event.target;
     this.setState({
       temp: {
         ...this.state.temp,
-        tex: event.target.value,
+        tex: value,
       },
     }, () => {
-      if (location === 'INPUT') this.saveSettings();
+      if (location === 'INPUT') {
+        try {
+          katex.__parse(value); // eslint-disable-line no-underscore-dangle
+          console.log('все ок');
+          this.setState({
+            popupError: false,
+          });
+        } catch (error) {
+          this.setState({
+            popupError: error,
+          });
+        }
+      }
+      this.saveSettings();
     });
   }
 
@@ -133,10 +163,18 @@ class TeX extends Component {
       modal,
       popup,
       content,
+      popupError,
     } = this.state;
     return (
       <span onDoubleClick={this.openEdit} style={{ position: 'relative' }}>
-        <Popup popup={popup} onBlur={this.hidePopup} data={temp} changeTeX={this.changeTeX} />
+        <Popup
+          popupError={popupError}
+          popup={popup}
+          onCancel={this.onCancelPopup}
+          onSave={this.onSavePopup}
+          data={temp}
+          changeTeX={this.changeTeX}
+        />
         <Preview data={content} />
         <Editor
           data={temp}
