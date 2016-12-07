@@ -143,7 +143,7 @@ class TeX extends Component {
         try {
           katex.__parse(value); // eslint-disable-line no-underscore-dangle
           this.setState({
-            popupError: false,
+            popupError: {},
           });
         } catch (error) {
           this.setState({
