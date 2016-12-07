@@ -9,7 +9,7 @@
   left: 0;
 }
 
-.tooltipInner {
+.innerField {
   display: flex;
   align-items: center;
   padding: 8px 10px;
@@ -35,11 +35,11 @@
   border-style: solid;
 }
 
-.confirmBtn {
+.button.confirm {
   cursor: pointer;
 }
 
-.cancelBtn {
+.button.cancel {
   cursor: pointer;
 }
 

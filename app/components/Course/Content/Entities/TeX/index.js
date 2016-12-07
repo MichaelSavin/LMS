@@ -30,7 +30,7 @@ class TeX extends Component {
       temp: content,
       original: content,
       modal: false,
-      popup: false,
+      isOpenPopup: false,
       popupError: {},
       content,
       location,
@@ -65,9 +65,9 @@ class TeX extends Component {
     );
   }
 
-  onSavePopup = () => {
+  saveTeXPopup = () => {
     this.setState({
-      popup: false,
+      isOpenPopup: false,
       content: this.state.temp,
       original: this.state.temp,
     }, () => {
@@ -76,9 +76,9 @@ class TeX extends Component {
     });
   }
 
-  onCancelPopup = () => {
+  cancelTeXPopup = () => {
     this.setState({
-      popup: false,
+      isOpenPopup: false,
       content: this.state.original,
       temp: this.state.original,
       popupError: {},
@@ -115,7 +115,7 @@ class TeX extends Component {
     const { addReadOnlyFlag } = this.context;
     if (location === 'INPUT') {
       this.setState({
-        popup: true,
+        isOpenPopup: true,
         temp: this
           .state
           .content,
@@ -159,17 +159,17 @@ class TeX extends Component {
     const {
       temp,
       modal,
-      popup,
+      isOpenPopup,
       content,
       popupError,
     } = this.state;
     return (
       <span onDoubleClick={this.openEdit} style={{ position: 'relative' }}>
         <Popup
-          popupError={popupError}
-          popup={popup}
-          onCancel={this.onCancelPopup}
-          onSave={this.onSavePopup}
+          error={popupError}
+          isOpen={isOpenPopup}
+          cancelTeX={this.cancelTeXPopup}
+          saveTeX={this.saveTeXPopup}
           data={temp}
           changeTeX={this.changeTeX}
         />

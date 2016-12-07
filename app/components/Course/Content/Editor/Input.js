@@ -27,7 +27,7 @@ class DraftInput extends Component {
     super(props);
     const { content } = props;
     this.state = {
-      readOnly: false,
+      isReadOnly: false,
       isFocused: true,
       editorState: content
         ? EditorState.createWithContent(
@@ -78,21 +78,15 @@ class DraftInput extends Component {
     });
   }
 
-  setFocus = () => {
-    this.setState({
-      isFocused: event.type === 'focus',
-    });
-  }
-
   addReadOnlyFlag = () => {
     this.setState({
-      readOnly: true,
+      isReadOnly: true,
     });
   }
 
   removeReadOnlyFlag = () => {
     this.setState({
-      readOnly: false,
+      isReadOnly: false,
     }, this.focusEditor);
   }
 
@@ -102,13 +96,13 @@ class DraftInput extends Component {
     const {
       isFocused,
       editorState,
-      readOnly,
+      isReadOnly,
     } = this.state;
     return (
       <div className={styles.input}>
         <Draft
           ref="editor"
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           onBlur={this.setFocusStatus}
           onFocus={this.setFocusStatus}
           onChange={this.onChange}
@@ -141,7 +135,7 @@ class DraftInput extends Component {
   }
 }
 
-DraftInput.childContextTypes = { // eslint-disable-line fp/no-mutation
+DraftInput.childContextTypes = {
   addReadOnlyFlag: PropTypes.func.isRequired,
   removeReadOnlyFlag: PropTypes.func.isRequired,
 };

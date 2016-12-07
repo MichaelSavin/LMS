@@ -3,6 +3,7 @@ import React, {
   PropTypes,
 } from 'react';
 import { Icon } from 'antd';
+import classNames from 'classnames';
 import styles from './styles.css';
 
 class Popup extends Component {
@@ -16,31 +17,47 @@ class Popup extends Component {
 
   render() {
     const {
-      popup,
-      popupError,
-      onCancel,
-      onSave,
+      isOpen,
+      error,
+      cancelTeX,
+      saveTeX,
       changeTeX,
       data: { tex },
     } = this.props;
-    return popup ? (
+    return isOpen ? (
       <div
         className={styles.tooltip}
       >
         <div className="ant-tooltip-content">
           <div className={styles.arrow} />
-          <div className={styles.tooltipInner}>
+          <div className={styles.innerField}>
             <input
-              className={popupError.message && styles.error}
+              className={classNames(
+                styles.tex,
+                { [styles.error]: error.message }
+              )}
               autoFocus
-              placeholder="asdf"
               onChange={changeTeX}
               defaultValue={tex}
             />
             &nbsp;&nbsp;
-            <Icon onClick={onCancel} className={styles.cancelBtn} type="close" />
+            <Icon
+              onClick={cancelTeX}
+              className={classNames(
+                styles.button,
+                styles.cancel,
+              )}
+              type="close"
+            />
             &nbsp;
-            {!popupError.message && <Icon onClick={onSave} className={styles.confirmBtn} type="check" />}
+            {!error.message && <Icon
+              onClick={saveTeX}
+              className={classNames(
+                styles.button,
+                styles.confirm,
+              )}
+              type="check"
+            />}
           </div>
         </div>
       </div>
@@ -49,10 +66,10 @@ class Popup extends Component {
 }
 
 Popup.propTypes = {
-  popup: PropTypes.bool,
-  popupError: PropTypes.object.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool,
+  error: PropTypes.object.isRequired,
+  cancelTeX: PropTypes.func.isRequired,
+  saveTeX: PropTypes.func.isRequired,
   changeTeX: PropTypes.func.isRequired,
   data: PropTypes.shape({
     tex: PropTypes.string.isRequired,
