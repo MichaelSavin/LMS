@@ -1,9 +1,7 @@
 .editor {
   width: 500px;
-  z-index: 9999;
   padding: 5px 10px;
-  margin-bottom: 5px;
-  background-color: #EEE;
+  margin-bottom: 10px;
 }
 
 .editor i {

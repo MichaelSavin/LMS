@@ -1,10 +1,16 @@
-.timeline {
-  /* ... */
+.sample {
+  width: 500px;
+  padding: 10px;
+  display: flex;
+  transition: all 0.5s;
+  align-items: center;
+  border-radius: 5px;
+  flex-direction: column;
 }
 
-body > li {
-  /* z-index: 9999;
-  list-style: none; */
+.sample.editing {
+  background-color: #F5F5F5;
+  box-shadow: 0 2px 24px 0 rgba(35, 34, 53, 0.31);
 }
 
 :global .ant-select-selection__rendered {
@@ -18,4 +24,16 @@ body > li {
 
 :global .ant-timeline-item-last :global .ant-timeline-item-content {
   min-height: 0 !important;
+}
+
+:global .ant-btn-ghost {
+  background-color: white;
+}
+
+:global .ant-btn-ghost:hover {
+  background-color: white;
+}
+
+:global .ant-btn-ghost:focus {
+  background-color: white;
 }

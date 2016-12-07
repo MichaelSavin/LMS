@@ -14,6 +14,7 @@ import {
 import {
   Button as AntButton,
 } from 'antd';
+import classNames from 'classnames';
 import { Entity } from 'draft-js';
 import Editor from './Editor';
 import Preview from './Preview';
@@ -27,7 +28,7 @@ class Sample extends Component {
     this.state = {
       temp: content,
       drag: null,
-      editor: false,
+      isEditing: false,
       content,
     };
   }
@@ -45,7 +46,7 @@ class Sample extends Component {
   toggleEditor = () => {
     this.setState({
       temp: this.state.content,
-      editor: !this.state.editor,
+      isEditing: !this.state.isEditing,
     });
     this.context.toggleReadOnly();
   }
@@ -54,7 +55,7 @@ class Sample extends Component {
     const content =
       this.state.temp;
     this.setState({
-      editor: false,
+      isEditing: false,
       content,
     });
     Entity.replaceData(
@@ -62,6 +63,7 @@ class Sample extends Component {
         content,
       }
     );
+    this.context.toggleReadOnly();
   }
 
   changeColor = (index) => (value) => {
@@ -132,18 +134,23 @@ class Sample extends Component {
   render() {
     const {
       temp,
-      editor,
       content,
+      isEditing,
     } = this.state;
     return (
-      <div>
+      <div
+        className={classNames(
+          styles.sample,
+          { [styles.editing]: isEditing }
+        )}
+      >
         <Preview
-          data={editor
+          data={isEditing
             ? temp
             : content
           }
         />
-        {editor &&
+        {isEditing &&
           <Editor
             data={temp}
             dragStep={this.dragStep}
@@ -154,24 +161,31 @@ class Sample extends Component {
         }
         <div className={styles.actions}>
           <AntButton
-            size="small"
-            icon={editor
+            type={isEditing
+              ? 'ghost'
+              : 'dashed'
+            }
+            size={isEditing
+              ? 'default'
+              : 'small'
+            }
+            icon={isEditing
               ? 'close'
               : 'setting'
             }
             onClick={this.toggleEditor}
           >
-            {editor
+            {isEditing
               ? 'Отменить'
               : 'Редактировать'
             }
           </AntButton>
-          {editor &&
+          {isEditing &&
             <AntButton
-              size="small"
+              // size="small"
               icon="save"
               type="primary"
-              style={{ marginLeft: '5px' }}
+              style={{ marginLeft: '10px' }}
               onClick={this.saveSettings}
             >
               Сохранить

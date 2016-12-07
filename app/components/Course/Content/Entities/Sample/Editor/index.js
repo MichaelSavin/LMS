@@ -60,9 +60,6 @@ const Editor = ({
                   onChange={changeText(stepIndex)}
                 />
               </div>
-              { /* <div className={styles.image}>
-                Картинка
-              </div> */ }
               <AntPopconfirm
                 title="Удалить событие?"
                 okText="Да"
