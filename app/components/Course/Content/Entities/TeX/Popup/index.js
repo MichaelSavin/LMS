@@ -1,76 +1,61 @@
 import React, {
-  Component,
   PropTypes,
 } from 'react';
 import { Icon } from 'antd';
+import katex from 'katex';
 import classNames from 'classnames';
 import styles from './styles.css';
 
-class Popup extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpen: true,
-    };
-  }
-
-  render() {
-    const {
-      isOpen,
-      error,
-      cancelTeX,
-      saveTeX,
-      changeTeX,
-      data: { tex },
-    } = this.props;
-    return isOpen ? (
-      <div
-        className={styles.tooltip}
-      >
-        <div className="ant-tooltip-content">
-          <div className={styles.arrow} />
-          <div className={styles.innerField}>
-            <input
-              className={classNames(
-                styles.tex,
-                { [styles.error]: error.message }
-              )}
-              autoFocus
-              onChange={changeTeX}
-              defaultValue={tex}
-            />
-            &nbsp;&nbsp;
+const Popup = ({
+  saveData,
+  changeTeX,
+  closeEditor,
+  data: { tex },
+}) => {
+  const isTexValid = (value) => {
+    try {
+      katex.__parse(value); // eslint-disable-line
+      return value !== '';
+    } catch (error) {
+      return false;
+    }
+  };
+  return (
+    <div className={styles.tooltip}>
+      <div className="ant-tooltip-content">
+        <div className={styles.arrow} />
+        <div className={styles.input}>
+          <input
+            value={tex}
+            onChange={changeTeX}
+            autoFocus
+            className={classNames(
+              styles.tex,
+              { [styles.error]: !isTexValid(tex) }
+            )}
+          />
+          {isTexValid(tex) &&
             <Icon
-              onClick={cancelTeX}
-              className={classNames(
-                styles.button,
-                styles.cancel,
-              )}
-              type="close"
-            />
-            &nbsp;
-            {!error.message && <Icon
-              onClick={saveTeX}
-              className={classNames(
-                styles.button,
-                styles.confirm,
-              )}
               type="check"
-            />}
-          </div>
+              onClick={saveData}
+              className={styles.save}
+            />
+          }
+          <Icon
+            type="close"
+            onClick={closeEditor}
+            className={styles.close}
+          />
         </div>
       </div>
-    ) : null;
-  }
-}
+    </div>
+  );
+};
 
 Popup.propTypes = {
-  isOpen: PropTypes.bool,
-  error: PropTypes.object.isRequired,
-  cancelTeX: PropTypes.func.isRequired,
-  saveTeX: PropTypes.func.isRequired,
+  saveData: PropTypes.func.isRequired,
   changeTeX: PropTypes.func.isRequired,
+  closeEditor: PropTypes.func.isRequired,
   data: PropTypes.shape({
     tex: PropTypes.string.isRequired,
   }).isRequired,

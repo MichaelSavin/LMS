@@ -4,53 +4,50 @@ import React, {
 } from 'react';
 import { isEqual } from 'lodash/fp';
 import { Entity } from 'draft-js';
-import katex from 'katex';
-import Preview from './Preview';
-import Editor from './Editor';
+import Modal from './Editor';
 import Popup from './Popup';
-import './styles.css';
+import Preview from './Preview';
+import styles from './styles.css';
 
 class TeX extends Component {
 
-  constructor(props) {
+  constructor(props) { // ✓
     super(props);
-    const entity = Entity
+    const {
+      content = {
+        tex: 'E = mc^2',
+      },
+      location,
+    } = Entity
       .get(this.props.entityKey)
       .getData();
-    const data = {
-      default: {
-        tex: 'e = mc^2',
-      },
-      entity: entity.content,
-    };
-    const { location } = entity;
-    const content =
-      data.entity || data.default;
     this.state = {
-      temp: content,
-      original: content,
-      modal: false,
-      isOpenPopup: false,
-      popupError: {},
-      content,
       location,
+      editor: {
+        open: false,
+        type:
+          location === 'INPUT'
+            ? 'popup'
+            : 'modal',
+      },
+      data: {
+        modal: content,
+        popup: content,
+        component: content,
+      },
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { entityKey } = nextProps;
-    if (entityKey && entityKey !== this.props.entityKey) {
-      const {
-        content = {
-          tex: 'e = mc^2',
-        },
-        location,
-      } = Entity
-        .get(entityKey)
-        .getData();
+  componentWillReceiveProps(nextProps) { // ✓ ???
+    if (this.state.editor.type === 'popup') {
       this.setState({
-        content,
-        location,
+        data: {
+          ...this.state.data,
+          component: Entity
+            .get(nextProps.entityKey)
+            .getData()
+            .content,
+        },
       });
     }
   }
@@ -65,122 +62,104 @@ class TeX extends Component {
     );
   }
 
-  saveTeXPopup = () => {
+  changeTeX = (editor) => (event) => { // ✓
+    const tex = event.target.value;
     this.setState({
-      isOpenPopup: false,
-      content: this.state.temp,
-      original: this.state.temp,
-    }, () => {
-      this.saveSettings();
-      this.context.removeReadOnlyFlag();
+      data: {
+        ...this.state.data,
+        component: editor.type === 'popup'
+        ? {
+          ...this.state.data.component,
+          tex,
+        }
+        : this.state.data.component,
+        [editor.type]: {
+          ...this.state.data[editor.type],
+          tex,
+        },
+      },
     });
   }
 
-  cancelTeXPopup = () => {
+  saveData = (editor) => () => { // ✓
     this.setState({
-      isOpenPopup: false,
-      content: this.state.original,
-      temp: this.state.original,
-      popupError: {},
-    }, () => {
-      this.saveSettings();
-      this.context.removeReadOnlyFlag();
-    });
-  }
-
-
-  closeModal = () => {
-    this.setState({
-      modal: false,
-    });
-  }
-
-  saveSettings = () => {
-    const content =
-      this.state.temp;
-    const { location } = this.state;
-    this.setState({
-      modal: false,
-      content,
-    });
-    Entity.replaceData(
+      editor: {
+        ...this
+          .state
+          .editor,
+        open: false,
+      },
+      data: {
+        ...this
+          .state
+          .data,
+        component: this
+          .state
+          .data[editor.type],
+      },
+    },
+      this.context.unlockDraft
+    );
+    Entity.mergeData(
       this.props.entityKey, {
-        content, location,
+        content: this
+          .state
+          .data[editor.type],
       }
     );
   }
 
-  openEdit = () => {
-    const { location } = this.state;
-    const { addReadOnlyFlag } = this.context;
-    if (location === 'INPUT') {
-      this.setState({
-        isOpenPopup: true,
-        temp: this
+  openEditor = (editor) => () => { // ✓
+    this.setState({
+      editor: {
+        ...this.state.editor,
+        open: true,
+      },
+      data: {
+        ...this.state.data,
+        [editor.type]: this
           .state
-          .content,
-      }, addReadOnlyFlag);
-    } else {
-      this.setState({
-        modal: true,
-        temp: this
-          .state
-          .content,
-      });
-    }
+          .data
+          .component,
+      },
+    },
+      this.context.lockDraft
+    );
   }
 
-  changeTeX = (event) => {
-    const { location } = this.state;
-    const { value } = event.target;
+  closeEditor = () => { // ✓
     this.setState({
-      temp: {
-        ...this.state.temp,
-        tex: value,
+      editor: {
+        ...this.state.editor,
+        open: false,
       },
-    }, () => {
-      if (location === 'INPUT') {
-        try {
-          katex.__parse(value); // eslint-disable-line no-underscore-dangle
-          this.setState({
-            popupError: {},
-          });
-        } catch (error) {
-          this.setState({
-            popupError: error,
-          });
-        }
-        this.saveSettings();
-      }
-    });
+    },
+      this.context.unlockDraft
+    );
   }
 
   render() {
     const {
-      temp,
-      modal,
-      isOpenPopup,
-      content,
-      popupError,
+      data,
+      editor,
     } = this.state;
     return (
-      <span onDoubleClick={this.openEdit} style={{ position: 'relative' }}>
-        <Popup
-          error={popupError}
-          isOpen={isOpenPopup}
-          cancelTeX={this.cancelTeXPopup}
-          saveTeX={this.saveTeXPopup}
-          data={temp}
-          changeTeX={this.changeTeX}
-        />
-        <Preview data={content} />
-        <Editor
-          data={temp}
-          isOpen={modal}
-          changeTeX={this.changeTeX}
-          closeModal={this.closeModal}
-          saveSettings={this.saveSettings}
-        />
+      <span
+        className={styles.tex}
+        onDoubleClick={this.openEditor(editor)}
+      >
+        <Preview data={data.component} />
+        {editor.open && React.createElement({
+          modal: Modal,
+          popup: Popup,
+        }[editor.type], {
+          data: data[editor.type],
+          saveData: this.saveData(editor),
+          changeTeX: this.changeTeX(editor),
+          closeEditor: this.closeEditor,
+        },
+          null
+        )}
       </span>
     );
   }
@@ -190,9 +169,10 @@ TeX.propTypes = {
   children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
 };
+
 TeX.contextTypes = {
-  addReadOnlyFlag: PropTypes.func,
-  removeReadOnlyFlag: PropTypes.func,
+  lockDraft: PropTypes.func,
+  unlockDraft: PropTypes.func,
 };
 
 export default TeX;
