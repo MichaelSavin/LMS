@@ -9,13 +9,15 @@ import Popup from './Popup';
 import Preview from './Preview';
 import styles from './styles.css';
 
+const defaultTex = 'E = mc^2';
+
 class TeX extends Component {
 
   constructor(props) { // ✓
     super(props);
     const {
       content = {
-        tex: 'E = mc^2',
+        tex: defaultTex,
       },
       location,
     } = Entity
@@ -40,13 +42,18 @@ class TeX extends Component {
 
   componentWillReceiveProps(nextProps) { // ✓ ???
     if (this.state.editor.type === 'popup') {
+      const {
+        content = {
+          tex: defaultTex,
+        },
+      } = Entity
+        .get(nextProps.entityKey)
+        .getData();
       this.setState({
         data: {
           ...this.state.data,
-          component: Entity
-            .get(nextProps.entityKey)
-            .getData()
-            .content,
+          popup: content,
+          component: content,
         },
       });
     }
