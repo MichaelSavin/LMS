@@ -1,4 +1,24 @@
 .preview {
   display: inline;
+  position: relative;
   user-select: none;
+
+  & .area { /* элемент для перехвата кликов с формул */
+    top: -2px;
+    left: 0;
+    width: 95%;
+    cursor: pointer;
+    height: 150%;
+    opacity: 0;
+    z-index: 1;
+    position: absolute;
+    background: red;
+  }
+
+  & .tex {
+    cursor: pointer;
+    padding: 2.5px 5px;
+    font-size: 12px !important;
+    user-select: none;
+  }
 }

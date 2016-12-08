@@ -8,10 +8,17 @@ import {
 import {
   customStyleMap,
 } from 'draftjs-utils';
+import {
+  entitiesDecorator,
+} from '../../../Entities';
 import styles from './styles.css';
 
-const Preview = ({ data }) =>
+const Preview = ({ data, openModal }) => (
   <div className={styles.preview}>
+    <div
+      className={styles.area}
+      onDoubleClick={openModal}
+    />
     {data.tags.map(({
       color,
       content,
@@ -30,12 +37,17 @@ const Preview = ({ data }) =>
           customStyleMap={customStyleMap}
           editorState={content
             ? EditorState.createWithContent(
-              convertFromRaw(content)
-            ) : EditorState.createEmpty()}
+                convertFromRaw(content),
+                entitiesDecorator
+              )
+            : EditorState.createEmpty()
+          }
         />
       </AntTag>
     )}
-  </div>;
+  </div>
+);
+
 
 Preview.propTypes = {
   data: PropTypes.shape({
@@ -50,6 +62,7 @@ Preview.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
+  openModal: PropTypes.func,
 };
 
 export default Preview;

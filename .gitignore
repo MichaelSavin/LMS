@@ -7,3 +7,6 @@ stats.json
 npm-debug.log
 yarn.lock
 .yarnclean
+.vscode/settings.json
+
+jsconfig.json

@@ -1,0 +1,54 @@
+.tooltip {
+  top: -45px;
+  left: 0;
+  z-index: 1060;
+  display: block;
+  position: absolute;
+  font-size: 12px;
+  visibility: visible;
+  line-height: 1.5;
+
+  & .arrow {
+    left: 10%;
+    width: 0;
+    height: 0;
+    bottom: -5px;
+    position: absolute;
+    margin-left: -5px;
+    border-width: 5px 5px 0;
+    border-color: transparent;
+    border-style: solid;
+    border-top-color: rgba(64, 64, 64, 0.85);
+  }
+
+  & .input {
+    color: #FFF;
+    padding: 8px 10px;
+    display: flex;
+    text-align: left;
+    min-height: 34px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    align-items: center;
+    border-radius: 6px;
+    text-decoration: none;
+    background-color: rgba(64, 64, 64, 0.85);
+
+    & .tex:focus {
+      outline: none;
+    }
+
+    & .tex.error {
+      color: #F50;
+    }
+  }
+
+  & .save {
+    cursor: pointer;
+    margin-left: 5px;
+  }
+
+  & .close {
+    cursor: pointer;
+    margin-left: 5px;
+  }
+}

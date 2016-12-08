@@ -170,8 +170,11 @@ class Tag extends Component {
       content,
     } = this.state;
     return (
-      <span onDoubleClick={this.openModal}>
-        <Preview data={content} />
+      <span>
+        <Preview
+          data={content}
+          openModal={this.openModal}
+        />
         <Editor
           data={temp}
           isOpen={modal}

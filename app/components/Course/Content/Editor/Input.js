@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 import {
   Editor as Draft,
-  RichUtils,
   EditorState,
   convertToRaw,
   convertFromRaw,
@@ -12,19 +11,24 @@ import {
 import {
   customStyleMap,
 } from 'draftjs-utils';
+import { Button } from 'antd';
+import Icon from 'components/UI/Icon';
 import {
   entitiesDecorator,
+  insertEntity,
+  addEOLtoInlineEntity,
 } from '../Entities';
 import Popup from './Popup';
 import styles from './styles.css';
 
-class Editor extends Component {
+class DraftInput extends Component {
 
   constructor(props) {
     super(props);
     const { content } = props;
     this.state = {
       isFocused: true,
+      isReadOnly: false,
       editorState: content
         ? EditorState.createWithContent(
             convertFromRaw(content),
@@ -33,6 +37,11 @@ class Editor extends Component {
         : EditorState.createEmpty(),
     };
   }
+
+  getChildContext = () => ({
+    lockDraft: this.lockDraft,
+    unlockDraft: this.unlockDraft,
+  });
 
   componentDidMount() {
     this.props.onChange(
@@ -46,14 +55,19 @@ class Editor extends Component {
 
   onChange = (editorState) => {
     this.setState({
-      editorState,
-    });
-    this.props.onChange(
+      editorState: editorState.getCurrentContent()
+        .blockMap.reduce(
+          addEOLtoInlineEntity,
+          editorState
+        ),
+    }, () => {
+      this.props.onChange(
       convertToRaw(
-        editorState
+        this.state.editorState
           .getCurrentContent()
-      )
-    );
+        )
+      );
+    });
   }
 
   setFocusStatus = (event) => {
@@ -62,18 +76,16 @@ class Editor extends Component {
     });
   }
 
-  handleKeyCommand = (command) => {
-    const { editorState } = this.state;
-    const newState = RichUtils
-      .handleKeyCommand(
-        editorState,
-        command
-      );
-    if (newState) {
-      this.onChange(newState);
-      return true;
-    }
-    return false;
+  lockDraft = () => {
+    this.setState({
+      isReadOnly: true,
+    });
+  }
+
+  unlockDraft = () => {
+    this.setState({
+      isReadOnly: false,
+    }, this.focusEditor);
   }
 
   focusEditor = () => this.refs.editor.focus();
@@ -81,6 +93,7 @@ class Editor extends Component {
   render() {
     const {
       isFocused,
+      isReadOnly,
       editorState,
     } = this.state;
     return (
@@ -89,11 +102,26 @@ class Editor extends Component {
           ref="editor"
           onBlur={this.setFocusStatus}
           onFocus={this.setFocusStatus}
+          readOnly={isReadOnly}
           onChange={this.onChange}
           editorState={editorState}
           customStyleMap={customStyleMap}
-          handleKeyCommand={this.handleKeyCommand}
         />
+        <div className={styles.icon}>
+          <Button
+            size="small"
+            onClick={() => {
+              insertEntity(
+                'TEX',
+                editorState,
+                this.onChange,
+                'INPUT'
+              );
+            }}
+          >
+            <Icon type="function" />
+          </Button>
+        </div>
         <Popup
           isFocused={isFocused}
           editorRef={this.refs.editor}
@@ -105,9 +133,14 @@ class Editor extends Component {
   }
 }
 
-Editor.propTypes = {
+DraftInput.childContextTypes = {
+  lockDraft: PropTypes.func.isRequired,
+  unlockDraft: PropTypes.func.isRequired,
+};
+
+DraftInput.propTypes = {
   content: PropTypes.object,
   onChange: PropTypes.func.isRequired,
 };
 
-export default Editor;
+export default DraftInput;

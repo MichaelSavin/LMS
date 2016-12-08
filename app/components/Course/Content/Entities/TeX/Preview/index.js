@@ -19,7 +19,7 @@ class Preview extends Component {
     if (!isEqual(
       this.props.data,
       nextProps.data,
-    )) {
+    ) && nextProps.data) {
       this.renderTeX(
         nextProps.data.tex
       );

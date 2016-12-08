@@ -13,10 +13,9 @@ import styles from './styles.css';
 
 const Editor = ({
   data: { tex },
-  isOpen,
+  saveData,
   changeTeX,
-  closeModal,
-  saveSettings,
+  closeEditor,
   form: {
     resetFields,
     validateFields,
@@ -26,12 +25,12 @@ const Editor = ({
 }) => {
   const validateAndSave = () => {
     validateFields((err) => {
-      if (!err) { saveSettings(); }
+      if (!err) { saveData(); }
     });
   };
   const resetAndClose = () => {
     resetFields();
-    closeModal();
+    closeEditor();
   };
   const checkValidity = (_, value, callback) => {
     try {
@@ -56,7 +55,7 @@ const Editor = ({
         </div>
       }
       okText="Сохранить"
-      visible={isOpen}
+      visible
       onCancel={resetAndClose}
       cancelText="Отмена"
     >
@@ -99,10 +98,9 @@ const Editor = ({
 };
 
 Editor.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
+  saveData: PropTypes.func.isRequired,
   changeTeX: PropTypes.func.isRequired,
-  closeModal: PropTypes.func.isRequired,
-  saveSettings: PropTypes.func.isRequired,
+  closeEditor: PropTypes.func.isRequired,
   data: PropTypes.shape({
     tex: PropTypes.string.isRequired,
   }).isRequired,
