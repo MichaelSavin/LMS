@@ -13,9 +13,12 @@ import {
 } from '../../../Entities';
 import styles from './styles.css';
 
-const Preview = ({ data, onDoubleClick }) => (
+const Preview = ({ data, openModal }) => (
   <div className={styles.preview}>
-    <div className={styles.clicker} onDoubleClick={onDoubleClick} />
+    <div
+      className={styles.area}
+      onDoubleClick={openModal}
+    />
     {data.tags.map(({
       color,
       content,
@@ -34,9 +37,10 @@ const Preview = ({ data, onDoubleClick }) => (
           customStyleMap={customStyleMap}
           editorState={content
             ? EditorState.createWithContent(
-              convertFromRaw(content),
-              entitiesDecorator
-            ) : EditorState.createEmpty()
+                convertFromRaw(content),
+                entitiesDecorator
+              )
+            : EditorState.createEmpty()
           }
         />
       </AntTag>
@@ -46,7 +50,6 @@ const Preview = ({ data, onDoubleClick }) => (
 
 
 Preview.propTypes = {
-  onDoubleClick: PropTypes.func,
   data: PropTypes.shape({
     tags: PropTypes.arrayOf(
       PropTypes.shape({
@@ -59,6 +62,7 @@ Preview.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
+  openModal: PropTypes.func,
 };
 
 export default Preview;

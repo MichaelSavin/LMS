@@ -1,3 +1,7 @@
+.tag {
+  user-select: none;
+}
+
 body > li {
   z-index: 9999;
   list-style: none;
