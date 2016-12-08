@@ -27,8 +27,8 @@ class DraftInput extends Component {
     super(props);
     const { content } = props;
     this.state = {
-      isReadOnly: false,
       isFocused: true,
+      isReadOnly: false,
       editorState: content
         ? EditorState.createWithContent(
             convertFromRaw(content),
@@ -38,12 +38,10 @@ class DraftInput extends Component {
     };
   }
 
-  getChildContext() {
-    return {
-      addReadOnlyFlag: this.addReadOnlyFlag,
-      removeReadOnlyFlag: this.removeReadOnlyFlag,
-    };
-  }
+  getChildContext = () => ({
+    lockDraft: this.lockDraft,
+    unlockDraft: this.unlockDraft,
+  });
 
   componentDidMount() {
     this.props.onChange(
@@ -78,13 +76,13 @@ class DraftInput extends Component {
     });
   }
 
-  addReadOnlyFlag = () => {
+  lockDraft = () => {
     this.setState({
       isReadOnly: true,
     });
   }
 
-  removeReadOnlyFlag = () => {
+  unlockDraft = () => {
     this.setState({
       isReadOnly: false,
     }, this.focusEditor);
@@ -95,16 +93,16 @@ class DraftInput extends Component {
   render() {
     const {
       isFocused,
-      editorState,
       isReadOnly,
+      editorState,
     } = this.state;
     return (
       <div className={styles.input}>
         <Draft
           ref="editor"
-          readOnly={isReadOnly}
           onBlur={this.setFocusStatus}
           onFocus={this.setFocusStatus}
+          readOnly={isReadOnly}
           onChange={this.onChange}
           editorState={editorState}
           customStyleMap={customStyleMap}
@@ -136,8 +134,8 @@ class DraftInput extends Component {
 }
 
 DraftInput.childContextTypes = {
-  addReadOnlyFlag: PropTypes.func.isRequired,
-  removeReadOnlyFlag: PropTypes.func.isRequired,
+  lockDraft: PropTypes.func.isRequired,
+  unlockDraft: PropTypes.func.isRequired,
 };
 
 DraftInput.propTypes = {
