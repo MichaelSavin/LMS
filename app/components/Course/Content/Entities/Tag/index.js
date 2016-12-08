@@ -6,13 +6,14 @@ import {
   set,
   update,
   remove,
-  isEqual,
   random,
 } from 'lodash/fp';
 import {
   Entity,
-  convertToRaw,
+  EditorState,
   ContentState,
+  convertToRaw,
+  convertFromRaw,
 } from 'draft-js';
 import {
   arrayMove,
@@ -20,45 +21,62 @@ import {
 import { message } from 'antd';
 import Preview from './Preview';
 import Editor from './Editor';
+import {
+  entitiesDecorator,
+} from '../../Entities';
 import './styles.css';
+
+const createDraftEditorStateFromText = (text) =>
+  EditorState.createWithContent(
+    ContentState.createFromText(text),
+    entitiesDecorator,
+  );
+
+const convertTextToDraftEditorState = (object, key) =>
+  object && ({
+    [key]: object[key].map((row) => ({
+      ...row,
+      content: EditorState
+        .createWithContent(
+          convertFromRaw(row.content),
+          entitiesDecorator,
+        ),
+    })),
+  });
+
+const convertDraftEditorStateToText = (object, key) => ({
+  [key]: object[key].map((row) => ({
+    ...row,
+    content: convertToRaw(
+      row.content
+        .getCurrentContent()
+    ),
+  })),
+});
 
 class Tag extends Component {
 
   constructor(props) {
     super(props);
-    const data = {
-      default: {
-        tags: [{
-          id: `${random(0, 999)}`,
-          color: 'green',
-          content: convertToRaw(
-            ContentState.createFromText('Тэг')
-          ),
-        }],
-      },
-      entity: Entity
-        .get(this.props.entityKey)
-        .getData()
-        .content,
+    const content = convertTextToDraftEditorState(
+      Entity
+      .get(this.props.entityKey)
+      .getData()
+      .content,
+      'tags'
+    ) || {
+      tags: [{
+        id: `${random(0, 999)}`,
+        color: 'green',
+        content: createDraftEditorStateFromText('Тэг'),
+      }],
     };
-    const content =
-      data.entity || data.default;
     this.state = {
       drag: null,
       temp: content,
       modal: false,
       content,
     };
-  }
-
-  shouldComponentUpdate(
-    nextProps,
-    nextState
-  ) {
-    return !isEqual(
-      this.state,
-      nextState
-    );
   }
 
   openModal = () => {
@@ -79,7 +97,10 @@ class Tag extends Component {
     });
     Entity.replaceData(
       this.props.entityKey, {
-        content,
+        content: convertDraftEditorStateToText(
+          content,
+          'tags'
+        ),
       }
     );
   }
@@ -123,9 +144,7 @@ class Tag extends Component {
         (tags) => tags.concat([{
           id: `${random(0, 999)}`,
           color: 'blue',
-          content: convertToRaw(
-            ContentState.createFromText('Тэг')
-          ),
+          content: createDraftEditorStateFromText('Тэг'),
         }]),
         this.state.temp,
       ),

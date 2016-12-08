@@ -4,9 +4,6 @@ import React, {
 } from 'react';
 import {
   Editor as Draft,
-  EditorState,
-  convertToRaw,
-  convertFromRaw,
 } from 'draft-js';
 import {
   customStyleMap,
@@ -14,7 +11,6 @@ import {
 import { Button } from 'antd';
 import Icon from 'components/UI/Icon';
 import {
-  entitiesDecorator,
   insertEntity,
   addEOLtoInlineEntity,
 } from '../Entities';
@@ -25,16 +21,9 @@ class DraftInput extends Component {
 
   constructor(props) {
     super(props);
-    const { content } = props;
     this.state = {
-      isFocused: true,
-      isReadOnly: false,
-      editorState: content
-        ? EditorState.createWithContent(
-            convertFromRaw(content),
-            entitiesDecorator,
-          )
-        : EditorState.createEmpty(),
+      readOnly: false,
+      popupOpen: true,
     };
   }
 
@@ -43,48 +32,33 @@ class DraftInput extends Component {
     unlockDraft: this.unlockDraft,
   });
 
-  componentDidMount() {
-    this.props.onChange(
-      convertToRaw(
-        this.state
-          .editorState
-          .getCurrentContent()
-      )
-    );
-  }
-
   onChange = (editorState) => {
-    this.setState({
-      editorState: editorState.getCurrentContent()
-        .blockMap.reduce(
+    this.props.onChange(
+      editorState
+        .getCurrentContent()
+        .blockMap
+        .reduce(
           addEOLtoInlineEntity,
           editorState
         ),
-    }, () => {
-      this.props.onChange(
-      convertToRaw(
-        this.state.editorState
-          .getCurrentContent()
-        )
-      );
-    });
+    );
   }
 
   setFocusStatus = (event) => {
     this.setState({
-      isFocused: event.type === 'focus',
+      popupIsOpen: event.type === 'focus',
     });
   }
 
   lockDraft = () => {
     this.setState({
-      isReadOnly: true,
+      readOnly: true,
     });
   }
 
   unlockDraft = () => {
     this.setState({
-      isReadOnly: false,
+      readOnly: false,
     }, this.focusEditor);
   }
 
@@ -92,20 +66,23 @@ class DraftInput extends Component {
 
   render() {
     const {
-      isFocused,
-      isReadOnly,
-      editorState,
+      readOnly,
+      popupIsOpen,
     } = this.state;
+    const {
+      value: editorState,
+    } = this.props;
     return (
       <div className={styles.input}>
         <Draft
           ref="editor"
           onBlur={this.setFocusStatus}
           onFocus={this.setFocusStatus}
-          readOnly={isReadOnly}
+          readOnly={readOnly}
           onChange={this.onChange}
           editorState={editorState}
           customStyleMap={customStyleMap}
+          handleKeyCommand={this.handleKeyCommand}
         />
         <div className={styles.icon}>
           <Button
@@ -123,7 +100,7 @@ class DraftInput extends Component {
           </Button>
         </div>
         <Popup
-          isFocused={isFocused}
+          isFocused={popupIsOpen}
           editorRef={this.refs.editor}
           editorState={editorState}
           changeEditorState={this.onChange}
@@ -139,7 +116,7 @@ DraftInput.childContextTypes = {
 };
 
 DraftInput.propTypes = {
-  content: PropTypes.object,
+  value: PropTypes.object,
   onChange: PropTypes.func.isRequired,
 };
 
