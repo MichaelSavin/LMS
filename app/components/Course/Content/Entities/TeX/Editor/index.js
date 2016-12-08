@@ -14,7 +14,7 @@ import styles from './styles.css';
 const Editor = ({
   data: { tex },
   saveData,
-  changeTeX,
+  changeData,
   closeEditor,
   form: {
     resetFields,
@@ -74,7 +74,7 @@ const Editor = ({
               <AntInput
                 rows={3}
                 type="textarea"
-                onChange={changeTeX}
+                onChange={changeData('tex')}
               />
             )}
           </AntForm.Item>
@@ -99,7 +99,7 @@ const Editor = ({
 
 Editor.propTypes = {
   saveData: PropTypes.func.isRequired,
-  changeTeX: PropTypes.func.isRequired,
+  changeData: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
   data: PropTypes.shape({
     tex: PropTypes.string.isRequired,
