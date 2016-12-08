@@ -90,7 +90,10 @@ const Editor = ({
           </span>
         </div>
         <div className={styles.component}>
-          <Preview data={data} />
+          <Preview
+            data={data}
+            size={'default'}
+          />
         </div>
       </div>
     </AntModal>

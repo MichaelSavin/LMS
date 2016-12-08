@@ -2,8 +2,19 @@
   & .tex {
     cursor: pointer;
     padding: 2.5px 5px;
-    font-size: 16px;
     user-select: none;
+  }
+
+  & .tex.large {
+    font-size: 18px;
+  }
+
+  & .tex.default {
+    font-size: 16px;
+  }
+
+  & .tex.small {
+    font-size: 12px;
   }
 }
 

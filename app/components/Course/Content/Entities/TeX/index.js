@@ -149,13 +149,20 @@ class TeX extends Component {
     const {
       data,
       editor,
+      location,
     } = this.state;
     return (
       <span
         className={styles.tex}
         onDoubleClick={this.openEditor(editor)}
       >
-        <Preview data={data.component} />
+        <Preview
+          data={data.component}
+          size={location === 'INPUT'
+            ? 'small'
+            : 'default'
+          }
+        />
         {editor.open && React.createElement({
           modal: Modal,
           popup: Popup,
