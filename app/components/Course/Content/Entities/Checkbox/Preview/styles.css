@@ -1,0 +1,34 @@
+.question {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.answer {
+  display: block;
+  margin: 0 0 8px;
+}
+
+.row {
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.col {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview {
+  padding: 16px;
+}
+
+:global .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+  margin-left: 0 !important;
+}
+
+:global .ant-btn {
+  border-radius: 6px 6px 0 0;
+}
