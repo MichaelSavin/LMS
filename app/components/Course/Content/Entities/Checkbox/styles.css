@@ -16,15 +16,15 @@
 }
 
 .checkbox:hover .edit {
-  display: block;
+  visibility: visible;
 }
 
 .edit {
   position: absolute;
   top: -29px;
   right: 10px;
-  transition: all 0.1s ease;
-  display: none;
+  transition: all 0.2s ease;
+  visibility: hidden;
 }
 
 :global .ant-checkbox-group .ant-checkbox-wrapper {

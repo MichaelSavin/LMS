@@ -24,14 +24,13 @@ import styles from './styles.css';
 
 const Editor = ({
   data,
-  isOpen,
   addStep,
   images,
-  closeModal,
   uploadImage,
   isRight,
   saveSettings,
   changeText,
+  changeQuestion,
   removeStep,
   dragStep,
   form: {
@@ -47,10 +46,27 @@ const Editor = ({
   };
   const resetAndClose = () => {
     resetFields();
-    closeModal();
   };
   return (
     <div className={styles.editor}>
+      <span className={styles.editorname}>Редактирование</span>
+      <div className={styles.question}>
+        <AntForm.Item>
+          {getFieldDecorator('question', {
+            rules: [{
+              required: true,
+              message: 'Это поле не может быть пустым!',
+            }],
+            initialValue: data.question,
+          })(
+            <AntInput
+              size="default"
+              className={styles.input}
+              onChange={changeQuestion}
+            />
+          )}
+        </AntForm.Item>
+      </div>
       <Collapse>
         <Panel header="Варианты ответа" key="1">
           <Sortable.List
@@ -82,20 +98,9 @@ const Editor = ({
                             />
                           )}
                         </AntForm.Item>
-                        <AntForm.Item>
-                          {getFieldDecorator(`text.${index}`, {
-                            rules: [{
-                              required: true,
-                              message: 'Это поле не может быть пустым!',
-                            }],
-                            initialValue: answer.value,
-                          })(
-                            <AntInput
-                              size="default"
-                              onChange={changeText(index)}
-                            />
-                          )}
-                        </AntForm.Item>
+                        <div className={styles.divinput}>
+                          <span>{answer.alt}</span>
+                        </div>
                       </Col>
                       <Col span={2} offset={1} className={styles.center}>
                         <Dropzone
@@ -149,6 +154,10 @@ const Editor = ({
           </Sortable.List>
         </Panel>
       </Collapse>
+      <div className={styles.buttonwrapper}>
+        <AntButton type="primary" onClick={validateAndSave}>Применить</AntButton>
+        <AntButton type="ghost">Отменить</AntButton>
+      </div>
     </div>
   );
 };
@@ -169,6 +178,12 @@ const Sortable = {
   ),
 };
 
+const Header = () => {
+  return (
+    <h1>Варианты ответа</h1>
+  );
+};
+
 Editor.propTypes = {
   form: PropTypes.shape({
     resetFields: PropTypes.func.isRequired,
@@ -176,10 +191,8 @@ Editor.propTypes = {
     getFieldDecorator: PropTypes.func.isRequired,
   }).isRequired,
   images: PropTypes.object.isRequired,
-  isOpen: PropTypes.bool.isRequired,
   addStep: PropTypes.func.isRequired,
   dragStep: PropTypes.func.isRequired,
-  closeModal: PropTypes.func.isRequired,
   removeStep: PropTypes.func.isRequired,
   changeText: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,

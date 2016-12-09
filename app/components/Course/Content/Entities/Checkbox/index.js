@@ -27,9 +27,9 @@ class Checkbox extends Component {
     super(props);
     const { content } = props;
     this.state = {
-      modal: false,
-      isEditing: false,
       temp: content,
+      drag: null,
+      isEditing: false,
       content,
     };
     this.images = {};
@@ -77,21 +77,6 @@ class Checkbox extends Component {
     });
   }
 
-  openModal = () => {
-    this.setState({
-      modal: true,
-      temp: this
-        .state
-        .content,
-    });
-  }
-
-  closeModal = () => {
-    this.setState({
-      modal: false,
-    });
-  }
-
   changeText = (index) => (event) => {
     this.setState({
       temp: set([
@@ -102,6 +87,15 @@ class Checkbox extends Component {
         event.target.value,
         this.state.temp,
       ),
+    });
+  }
+
+  changeQuestion = (e) => {
+    this.setState({
+      temp: {
+        ...this.state.temp,
+        question: e.target.value,
+      },
     });
   }
 
@@ -150,8 +144,9 @@ class Checkbox extends Component {
   saveSettings = () => {
     const content =
       this.state.temp;
+    console.log(content);
     this.setState({
-      modal: false,
+      isEditing: false,
       content,
     });
     Entity.replaceData(
@@ -159,6 +154,8 @@ class Checkbox extends Component {
         content,
       }
     );
+    this.context.toggleReadOnly();
+    console.log('save');
   }
 
   uploadImage = (index) => (files) => {
@@ -239,13 +236,12 @@ class Checkbox extends Component {
   }
 
   render() {
-    console.log(this.state);
     const {
       isEditing,
       content,
-      modal,
       temp,
     } = this.state;
+    console.log(this.state);
     return (
       <div
         className={styles.checkbox}
@@ -259,25 +255,33 @@ class Checkbox extends Component {
         </div>
         {isEditing &&
           <Editor
+            ref={this.saveFormRef}
             data={temp}
-            isOpen={modal}
-            closeModal={this.closeModal}
             addStep={this.addStep}
             removeStep={this.removeStep}
             dragStep={this.dragStep}
             saveSettings={this.saveSettings}
             changeText={this.changeText}
+            changeQuestion={this.changeQuestion}
             uploadImage={this.uploadImage}
             images={this.images}
             isRight={this.isRight}
           />
         }
-        <AntButton
-          type="primary"
-          icon="edit"
-          onClick={this.toggleEditor}
-          className={styles.edit}
-        />
+        {isEditing ?
+          <AntButton
+            type="primary"
+            icon="check-circle"
+            onClick={this.toggleEditor}
+            className={styles.edit}
+          /> :
+            <AntButton
+              type="primary"
+              icon="edit"
+              className={styles.edit}
+              onClick={this.toggleEditor}
+            />
+        }
       </div>
     );
   }
@@ -301,10 +305,10 @@ Checkbox.defaultProps = {
   content: {
     question: 'Где могут жить утки?',
     answers: [
-      { value: 'Здесь', checked: false, image: null, isRight: false },
-      { value: 'Тут', checked: false, image: null, isRight: false },
-      { value: 'Вот же', checked: false, image: null, isRight: false },
-      { value: 'Ага, вот отличное место', checked: false, image: null, isRight: false },
+      { value: 'Здесь', alt: 'Альтернативный текст', checked: false, image: null, isRight: false },
+      { value: 'Тут', alt: 'Альтернативный текст', checked: false, image: null, isRight: false },
+      { value: 'Вот же', alt: 'Альтернативный текст', checked: false, image: null, isRight: false },
+      { value: 'Ага, вот отличное место', alt: 'Альтернативный текст', checked: false, image: null, isRight: false },
     ],
   },
 };

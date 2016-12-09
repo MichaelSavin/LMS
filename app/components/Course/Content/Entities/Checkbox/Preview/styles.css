@@ -23,12 +23,9 @@
 
 .preview {
   padding: 16px;
+  overflow: hidden;
 }
 
 :global .ant-checkbox-wrapper + .ant-checkbox-wrapper {
   margin-left: 0 !important;
-}
-
-:global .ant-btn {
-  border-radius: 6px 6px 0 0;
 }

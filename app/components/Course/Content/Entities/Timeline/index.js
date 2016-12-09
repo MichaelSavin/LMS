@@ -70,6 +70,7 @@ class Timeline extends Component {
   saveSettings = () => {
     const content =
       this.state.temp;
+    console.log(content);
     this.setState({
       modal: false,
       content,
