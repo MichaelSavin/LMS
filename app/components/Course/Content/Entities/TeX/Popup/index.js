@@ -27,6 +27,7 @@ const Popup = ({
         <div className={styles.input}>
           <input
             value={tex}
+            onBlur={() => setTimeout(closeEditor, 100)}
             onChange={changeData('tex')}
             autoFocus
             className={classNames(
