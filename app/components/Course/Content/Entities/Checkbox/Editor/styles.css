@@ -47,6 +47,18 @@
   background-color: #F7F7F7;
 }
 
+.removeimage {
+  position: absolute;
+  top: -7px;
+  right: -5px;
+  color: #FFF;
+  background-color: red;
+  border-radius: 50%;
+  padding: 3px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .center {
   display: flex;
   justify-content: center;
@@ -75,6 +87,10 @@
   padding: 16px 16px 28px;
 }
 
+.bigsize {
+  font-size: 48px;
+}
+
 .buttonwrapper {
   margin-top: 16px;
 }
@@ -94,4 +110,8 @@
 
 :global .ant-row::before {
   content: none;
+}
+
+:global .ant-tabs-tabpane {
+  height: auto !important;
 }

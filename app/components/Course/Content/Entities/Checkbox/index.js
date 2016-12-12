@@ -35,27 +35,10 @@ class Checkbox extends Component {
     this.images = {};
   }
 
-  componentDidMount() {
-    this.receiveImages(this.state);
-  }
-
   shouldComponentUpdate(
     nextProps,
     nextState
   ) {
-    if (!isEqual(
-    ...[this.state, nextState]
-      .map((state) => state
-        .temp
-        .answers
-        .map((answer) =>
-          answer.image
-        )
-      )
-    )) {
-      this.receiveImages(this.state);
-      return false;
-    }
     return !isEqual(
       this.state,
       nextState
@@ -74,6 +57,20 @@ class Checkbox extends Component {
             this.forceUpdate();
           });
       }
+    });
+  }
+
+  removeImage = (index) => (event) => {
+    event.stopPropagation();
+    this.setState({
+      temp: set([
+        'answers',
+        index,
+        'image',
+      ],
+        undefined,
+        this.state.temp,
+      ),
     });
   }
 
@@ -141,10 +138,17 @@ class Checkbox extends Component {
     });
   }
 
+  openModal = () => {
+    this.setState({
+      temp: this
+        .state
+        .content,
+    });
+  }
+
   saveSettings = () => {
     const content =
       this.state.temp;
-    console.log(content);
     this.setState({
       isEditing: false,
       content,
@@ -155,7 +159,7 @@ class Checkbox extends Component {
       }
     );
     this.context.toggleReadOnly();
-    console.log('save');
+    console.log(content);
   }
 
   uploadImage = (index) => (files) => {
@@ -201,6 +205,7 @@ class Checkbox extends Component {
   }
 
   removeStep = (index) => () => {
+    console.log('remove');
     this.setState({
       temp: update(
         'answers',
@@ -237,9 +242,9 @@ class Checkbox extends Component {
 
   render() {
     const {
-      isEditing,
-      content,
       temp,
+      content,
+      isEditing,
     } = this.state;
     console.log(this.state);
     return (
@@ -248,7 +253,10 @@ class Checkbox extends Component {
       >
         <div className={styles.actions}>
           <Preview
-            data={isEditing ? temp : content}
+            data={isEditing
+              ? temp
+              : content
+            }
             images={this.images}
             toggleChecked={this.toggleChecked}
           />
@@ -264,6 +272,7 @@ class Checkbox extends Component {
             changeText={this.changeText}
             changeQuestion={this.changeQuestion}
             uploadImage={this.uploadImage}
+            removeImage={this.removeImage}
             images={this.images}
             isRight={this.isRight}
           />
@@ -272,7 +281,6 @@ class Checkbox extends Component {
           <AntButton
             type="primary"
             icon="check-circle"
-            onClick={this.toggleEditor}
             className={styles.edit}
           /> :
             <AntButton
