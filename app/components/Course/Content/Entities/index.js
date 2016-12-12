@@ -21,6 +21,7 @@ import Radio from './Radio';
 import Table from './Table';
 import Video from './Video';
 import Image from './Image';
+import Img from './Img';
 import Slider from './Slider';
 import Select from './Select';
 import Switch from './Switch';
@@ -48,6 +49,7 @@ const components = { // можно использовать require()
   TABLE: Table,
   VIDEO: Video,
   IMAGE: Image,
+  IMG: Img,
   SLIDER: Slider,
   UPLOAD: Upload,
   SELECT: Select,
@@ -71,6 +73,7 @@ const views = {
   TABLE: 'BLOCK',
   VIDEO: 'BLOCK',
   IMAGE: 'BLOCK',
+  IMG: 'BLOCK',
   SLIDER: 'BLOCK',
   UPLOAD: 'BLOCK',
   COLLAPSE: 'BLOCK',
