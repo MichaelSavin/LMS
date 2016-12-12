@@ -74,13 +74,10 @@ class Image extends Component {
           bodyStyle={{ padding: 0 }}
           onDoubleClick={this.editContent}
         >
-          <div className={styles.image}>
-            <img
-              alt="example"
-              width="100%"
-              src={source}
-            />
-          </div>
+          <img
+            alt="example"
+            src={source}
+          />
           <div className={styles.text}>
             <p>{text}</p>
           </div>
