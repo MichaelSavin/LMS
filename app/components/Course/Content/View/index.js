@@ -3,7 +3,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Editor,
+  Editor as Draft,
   EditorState,
   convertFromRaw,
 } from 'draft-js';
@@ -40,8 +40,8 @@ class View extends Component { // HMR
       <div className={styles.view}>
         <div className={styles.selectors}>
           <AntRadio.Group
-            defaultValue="desktop"
             onChange={this.changeViewport}
+            defaultValue="desktop"
           >
             {[{ device: 'desktop', name: 'Десктоп' },
               { device: 'tablet', name: 'Планшет' },
@@ -66,17 +66,22 @@ class View extends Component { // HMR
             styles[viewport]
           )}
         >
-          <Editor
-            blockRendererFn={blockRenderer}
-            editorState={EditorState
-              .createWithContent(
-                convertFromRaw(
-                  content
-                ),
-                entitiesDecorator,
-              )}
-            readOnly
-          />
+          <div
+            id="viewport"
+            className={styles.draft}
+          >
+            <Draft
+              readOnly
+              editorState={EditorState
+                .createWithContent(
+                  convertFromRaw(
+                    content
+                  ),
+                  entitiesDecorator,
+                )}
+              blockRendererFn={blockRenderer}
+            />
+          </div>
         </div>
       </div>
     );
