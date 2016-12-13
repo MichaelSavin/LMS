@@ -36,6 +36,10 @@ class Img extends Component {
     console.log(pixelCrop);
     this.setState({
       crop: pixelCrop,
+      position: {
+        top: `-${pixelCrop.y}px`,
+        left: `-${pixelCrop.x}px`,
+      },
       clip: crop.width && crop.height ? {
         clipPath:
           `inset(${
@@ -104,8 +108,9 @@ class Img extends Component {
               onComplete={this.onCropComplete}
             />
           </div>
-          <img src={source} style={this.state.clip} alt="" />
-
+          <div style={this.state.crop} className={styles.container} >
+            <img className={styles.preview} src={source} style={this.state.position} alt="" />
+          </div>
         </AntCard>
         <AntPromt
           type="textarea"
