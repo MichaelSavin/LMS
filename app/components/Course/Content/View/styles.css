@@ -4,23 +4,35 @@
   flex-direction: column;
 
   & .selectors {
+    top: 0;
     padding: 10px;
+    position: absolute;
     align-items: center;
 
     & .icon {
       margin-right: 5px;
     }
+
+    & .text {
+      font-size: 15px;
+    }
   }
 
-  & .viewport {
-    border: 10px solid #EEE;
+  & .draft {
     padding: 10px;
+    font-size: 15px;
     min-height: 250px;
     background: white;
   }
 
+  & .viewport {
+    border-width: 0 10px 10px;
+    border-style: solid;
+    border-color: #EEE;
+  }
+
   & .desktop {
-    min-width: 100%;
+    width: 100%;
   }
 
   & .tablet {
