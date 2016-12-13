@@ -36,9 +36,18 @@ class Img extends Component {
     console.log(pixelCrop);
     this.setState({
       crop: pixelCrop,
-      clip: {
-        clipPath: `inset(${crop.y}% ${100 - crop.x - crop.width}% ${100 - crop.y - crop.height}% ${crop.x}%)`,
-      },
+      clip: crop.width && crop.height ? {
+        clipPath:
+          `inset(${
+              crop.y
+            }% ${
+              100 - crop.x - crop.width
+            }% ${
+              100 - crop.y - crop.height
+            }% ${
+              crop.x
+            }%)`,
+      } : {},
     });
   }
 
