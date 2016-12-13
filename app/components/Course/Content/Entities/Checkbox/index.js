@@ -155,12 +155,12 @@ class Checkbox extends Component {
     });
   }
 
-  openModal = () => {
+  closeEditor = () => {
     this.setState({
-      temp: this
-        .state
-        .content,
+      isEditing: false,
+      temp: this.state.content,
     });
+    this.context.toggleReadOnly();
   }
 
   saveSettings = () => {
@@ -239,6 +239,7 @@ class Checkbox extends Component {
   dragStep = ({ oldIndex, newIndex }) => {
     this.setState({
       temp: {
+        question: this.state.temp.question,
         answers: arrayMove(
           this.state.temp.answers,
           oldIndex,
@@ -251,7 +252,7 @@ class Checkbox extends Component {
   toggleEditor = () => {
     this.setState({
       temp: this.state.content,
-      isEditing: !this.state.isEditing,
+      isEditing: true,
     });
     this.context.toggleReadOnly();
   }
@@ -285,6 +286,7 @@ class Checkbox extends Component {
             removeStep={this.removeStep}
             dragStep={this.dragStep}
             saveSettings={this.saveSettings}
+            closeEditor={this.closeEditor}
             changeText={this.changeText}
             changeQuestion={this.changeQuestion}
             uploadImage={this.uploadImage}
@@ -298,6 +300,7 @@ class Checkbox extends Component {
             type="primary"
             icon="check-circle"
             className={styles.edit}
+            onClick={this.saveSettings}
           /> :
             <AntButton
               type="primary"

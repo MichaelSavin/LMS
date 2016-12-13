@@ -1,15 +1,18 @@
 import React, {
   PropTypes,
 } from 'react';
-import { Checkbox as AntCheckbox } from 'antd';
+import {
+  Checkbox as AntCheckbox,
+  Button as AntButton,
+  } from 'antd';
 import styles from './styles.css';
 
 
 const Preview = ({
   data,
   toggleChecked,
-  images }) => {
-  return (
+  images,
+  }) =>
     <div className={styles.preview}>
       <span className={styles.question}>{data.question}</span>
       {Object.keys(images).length !== 0 ? (
@@ -46,14 +49,19 @@ const Preview = ({
           )}
         </div>
       )}
-    </div>
-  );
-};
+      <div className={styles.attemptwrapper}>
+        <AntButton type="primary">
+          <span>Количество попыток</span>
+          <span>Попытка 1 из 3</span>
+        </AntButton>
+      </div>
+    </div>;
 
 Preview.propTypes = {
   images: PropTypes.object.isRequired,
   toggleChecked: PropTypes.func.isRequired,
   data: PropTypes.shape({
+    question: PropTypes.string.isRequired,
     anwsers: PropTypes.arrayOf(
       PropTypes.shape({
         value: PropTypes.string.isRequired,

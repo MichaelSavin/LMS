@@ -5,7 +5,7 @@
 
 .answer {
   display: block;
-  margin: 0 0 8px;
+  margin: 8px 0;
 }
 
 .row {
@@ -21,9 +21,22 @@
   flex-direction: column;
 }
 
+.attemptwrapper {
+  border-top: 1px solid #E9E9E9;
+  padding-top: 16px;
+}
+
+.attemptwrapper span {
+  display: block;
+  text-align: left;
+}
+
 .preview {
   padding: 16px;
   overflow: hidden;
+  border: 1px solid #E9E9E9;
+  border-radius: 4px;
+  margin: 16px;
 }
 
 :global .ant-checkbox-wrapper + .ant-checkbox-wrapper {

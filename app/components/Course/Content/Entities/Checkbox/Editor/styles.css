@@ -47,6 +47,14 @@
   background-color: #F7F7F7;
 }
 
+.remove {
+  color: red;
+}
+
+.remove:hover {
+  cursor: pointer;
+}
+
 .removeimage {
   position: absolute;
   top: -7px;
@@ -93,6 +101,10 @@
 
 .buttonwrapper {
   margin-top: 16px;
+}
+
+.buttonwrapper button {
+  margin-right: 16px;
 }
 
 :global .ant-form-item {

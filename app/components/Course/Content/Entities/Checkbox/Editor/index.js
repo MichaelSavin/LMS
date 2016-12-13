@@ -30,6 +30,7 @@ const Editor = ({
   saveSettings,
   changeText,
   changeQuestion,
+  closeEditor,
   removeStep,
   removeImage,
   dragStep,
@@ -46,6 +47,7 @@ const Editor = ({
   };
   const resetAndClose = () => {
     resetFields();
+    closeEditor();
   };
   return (
     <div className={styles.editor}>
@@ -85,7 +87,7 @@ const Editor = ({
                           <Col span={1} className={styles.center}>
                             <Sortable.Handler />
                           </Col>
-                          <Col span={18}>
+                          <Col span={16}>
                             <AntForm.Item>
                               {getFieldDecorator(`text.${index}`, {
                                 rules: [{
@@ -168,7 +170,7 @@ const Editor = ({
       </AntTabs>
       <div className={styles.buttonwrapper}>
         <AntButton type="primary" onClick={validateAndSave}>Применить</AntButton>
-        <AntButton type="ghost">Отменить</AntButton>
+        <AntButton type="ghost" onClick={resetAndClose}>Отменить</AntButton>
       </div>
     </div>
   );
@@ -205,7 +207,11 @@ Editor.propTypes = {
   uploadImage: PropTypes.func.isRequired,
   saveSettings: PropTypes.func.isRequired,
   isRight: PropTypes.func.isRequired,
+  changeQuestion: PropTypes.func.isRequired,
+  closeEditor: PropTypes.func.isRequired,
+  removeImage: PropTypes.func.isRequired,
   data: PropTypes.shape({
+    question: PropTypes.string.isRequired,
     answers: PropTypes.arrayOf(
       PropTypes.shape({
         value: PropTypes.string.isRequired,
