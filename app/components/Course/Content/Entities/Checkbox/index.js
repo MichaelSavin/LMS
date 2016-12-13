@@ -35,10 +35,27 @@ class Checkbox extends Component {
     this.images = {};
   }
 
+  componentDidMount() {
+    this.receiveImages(this.state);
+  }
+
   shouldComponentUpdate(
     nextProps,
     nextState
   ) {
+    if (!isEqual(
+    ...[this.state, nextState]
+      .map((state) => state
+        .temp
+        .answers
+        .map((answer) =>
+          answer.image
+        )
+      )
+    )) {
+      this.receiveImages(this.state);
+      return false;
+    }
     return !isEqual(
       this.state,
       nextState
@@ -201,11 +218,10 @@ class Checkbox extends Component {
         }]),
         this.state.temp,
       ),
-    });
+    }, this.forceUpdate);
   }
 
   removeStep = (index) => () => {
-    console.log('remove');
     this.setState({
       temp: update(
         'answers',
@@ -217,7 +233,7 @@ class Checkbox extends Component {
         ),
         this.state.temp,
       ),
-    });
+    }, this.forceUpdate);
   }
 
   dragStep = ({ oldIndex, newIndex }) => {
