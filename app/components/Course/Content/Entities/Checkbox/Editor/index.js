@@ -18,6 +18,7 @@ import {
   SortableContainer,
 } from 'react-sortable-hoc';
 import Dropzone from 'react-dropzone';
+import AnswerOptions from './AnswerOptions';
 
 import styles from './styles.css';
 
@@ -72,7 +73,7 @@ const Editor = ({
             </AntForm.Item>
           </div>
           <AntCollapse>
-            <AntCollapse.Panel header="Варианты ответа" key="1">
+            <AntCollapse.Panel header={<AnswerOptions data={data} />} key="1">
               <Sortable.List
                 onSortEnd={dragStep}
                 useDragHandle

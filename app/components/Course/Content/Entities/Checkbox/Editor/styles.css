@@ -107,6 +107,25 @@
   margin-right: 16px;
 }
 
+.options {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 16px;
+  align-items: center;
+}
+
+.options span {
+  background-color: #87D068;
+  color: #FFF;
+  padding: 2px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 12px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
 :global .ant-form-item {
   margin-bottom: 0;
 }
