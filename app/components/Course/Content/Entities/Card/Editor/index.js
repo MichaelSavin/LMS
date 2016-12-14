@@ -126,6 +126,8 @@ const Editor = ({
             <Preview
               data={data}
               storage={storage}
+              placement="modal"
+              dimensions={{ fullscreen: true }}
             />
           </div>
         </div>

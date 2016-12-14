@@ -13,11 +13,15 @@ class Card extends Component {
 
   constructor(props) {
     super(props);
-    const { content } = props;
+    const {
+      content,
+      dimensions,
+    } = props;
     this.state = {
       temp: content,
       modal: false,
       content,
+      dimensions,
     };
     this.storage = {};
   }
@@ -47,6 +51,21 @@ class Card extends Component {
     });
   }
 
+  toggleFullscreen = () => {
+    const dimensions = {
+      ...this.state.dimensions,
+      fullscreen: !this.state
+        .dimensions
+        .fullscreen,
+    };
+    this.setState({ dimensions });
+    Entity.mergeData(
+      this.props.entityKey, {
+        dimensions,
+      }
+    );
+  }
+
   saveSettings = () => {
     const content =
       this.state.temp;
@@ -54,7 +73,7 @@ class Card extends Component {
       modal: false,
       content,
     });
-    Entity.replaceData(
+    Entity.mergeData(
       this.props.entityKey, {
         content,
       }
@@ -129,12 +148,16 @@ class Card extends Component {
       temp,
       modal,
       content,
+      dimensions,
     } = this.state;
     return (
       <div onDoubleClick={this.openModal}>
         <Preview
           data={content}
           storage={this.storage}
+          placement="editor"
+          dimensions={dimensions}
+          toggleFullscreen={this.toggleFullscreen}
         />
         <Editor
           data={temp}
@@ -159,6 +182,10 @@ Card.propTypes = {
     image: PropTypes.string,
     title: PropTypes.string,
   }).isRequired,
+  dimensions: PropTypes.shape({
+    width: PropTypes.number,
+    fullscreen: PropTypes.bool.isRequired,
+  }).isRequired,
 };
 
 Card.defaultProps = {
@@ -166,6 +193,10 @@ Card.defaultProps = {
     text: 'Текст',
     image: null,
     title: 'Заголовок',
+  },
+  dimensions: {
+    width: undefined,
+    fullscreen: true,
   },
 };
 
