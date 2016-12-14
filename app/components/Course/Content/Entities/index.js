@@ -123,12 +123,11 @@ const blockRenderer = (block) =>
 const Block = ({ block }) => { // eslint-disable-line react/prop-types
   const entityKey = block.getEntityAt(0);
   const entity = Entity.get(entityKey);
-  const { content } = entity.getData();
   return React.createElement(
     components[
       entity.getType()
     ], {
-      content,
+      ...entity.getData(),
       entityKey,
     },
     null
