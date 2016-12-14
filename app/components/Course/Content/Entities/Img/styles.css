@@ -3,10 +3,7 @@
 }
 
 .preview {
-  position: absolute;
-}
-
-.container {
-  position: relative;
-  overflow: hidden;
+  width: 225px;
+  height: 225px;
+  object-fit: contain;
 }

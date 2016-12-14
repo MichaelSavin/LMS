@@ -8,6 +8,8 @@ import 'react-image-crop/dist/ReactCrop.css';
 
 import styles from './styles.css';
 
+const canvas = document.createElement('canvas');
+
 class Img extends Component {
 
   constructor(props) {
@@ -18,6 +20,7 @@ class Img extends Component {
         open: false,
         value: null,
       },
+      cropSourc: props.content.source,
     };
   }
 
@@ -32,27 +35,35 @@ class Img extends Component {
   }
 
   onCropComplete = (crop, pixelCrop) => {
-    console.log(crop);
-    console.log(pixelCrop);
-    this.setState({
-      crop: pixelCrop,
-      position: {
-        top: `-${pixelCrop.y}px`,
-        left: `-${pixelCrop.x}px`,
-      },
-      clip: crop.width && crop.height ? {
-        clipPath:
-          `inset(${
-              crop.y
-            }% ${
-              100 - crop.x - crop.width
-            }% ${
-              100 - crop.y - crop.height
-            }% ${
-              crop.x
-            }%)`,
-      } : {},
-    });
+    const { source } = this.state;
+
+    canvas.width = pixelCrop.width; // eslint-disable-line fp/no-mutation
+    canvas.height = pixelCrop.height; // eslint-disable-line fp/no-mutation
+
+    const context = canvas.getContext('2d');
+    const imageObj = new Image();
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    imageObj.onload = () => { // eslint-disable-line fp/no-mutation
+      context.drawImage(
+        imageObj,
+        pixelCrop.x,
+        pixelCrop.y,
+        pixelCrop.width,
+        pixelCrop.height,
+        0, 0,
+        pixelCrop.width, pixelCrop.height,
+      );
+
+      this.setState({
+        cropSourc:
+          pixelCrop.width && pixelCrop.height
+            ? canvas.toDataURL('image/jpeg', 1)
+            : source,
+      });
+    };
+    imageObj.src = source; // eslint-disable-line fp/no-mutation
   }
 
   modifyContent = () => {
@@ -93,6 +104,7 @@ class Img extends Component {
       text,
       source,
       promt,
+      cropSourc,
     } = this.state;
     return (
       <div>
@@ -108,9 +120,7 @@ class Img extends Component {
               onComplete={this.onCropComplete}
             />
           </div>
-          <div style={this.state.crop} className={styles.container} >
-            <img className={styles.preview} src={source} style={this.state.position} alt="" />
-          </div>
+          <img className={styles.preview} src={cropSourc} alt="" />
         </AntCard>
         <AntPromt
           type="textarea"
