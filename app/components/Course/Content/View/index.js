@@ -3,7 +3,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Editor,
+  Editor as Draft,
   EditorState,
   convertFromRaw,
 } from 'draft-js';
@@ -11,11 +11,12 @@ import {
   Radio as AntRadio,
   Icon as AntIcon,
 } from 'antd';
-import styles from './styles.css';
+import classNames from 'classnames';
 import {
   blockRenderer,
   entitiesDecorator,
 } from '../Entities';
+import styles from './styles.css';
 
 class View extends Component { // HMR
 
@@ -37,36 +38,50 @@ class View extends Component { // HMR
     const { content } = this.props;
     return (
       <div className={styles.view}>
-        <div className={styles.select}>
+        <div className={styles.selectors}>
           <AntRadio.Group
-            defaultValue="desktop"
             onChange={this.changeViewport}
+            defaultValue="desktop"
           >
-            {['desktop',
-              'tablet',
-              'mobile',
-            ].map((type, index) =>
+            {[{ device: 'desktop', name: 'Десктоп' },
+              { device: 'tablet', name: 'Планшет' },
+              { device: 'mobile', name: 'Смартфон' },
+            ].map(({ device, name }) =>
               <AntRadio.Button
-                key={index}
-                value={type}
+                key={device}
+                value={device}
               >
-                <AntIcon type={type} />
+                <AntIcon
+                  type={device}
+                  className={styles.icon}
+                />
+                {name}
               </AntRadio.Button>
           )}
           </AntRadio.Group>
         </div>
-        <div className={styles[viewport]}>
-          <Editor
-            blockRendererFn={blockRenderer}
-            editorState={EditorState
-              .createWithContent(
-                convertFromRaw(
-                  content
-                ),
-                entitiesDecorator,
-              )}
-            readOnly
-          />
+        <div
+          className={classNames(
+            styles.viewport,
+            styles[viewport]
+          )}
+        >
+          <div
+            id="viewport"
+            className={styles.draft}
+          >
+            <Draft
+              readOnly
+              editorState={EditorState
+                .createWithContent(
+                  convertFromRaw(
+                    content
+                  ),
+                  entitiesDecorator,
+                )}
+              blockRendererFn={blockRenderer}
+            />
+          </div>
         </div>
       </div>
     );

@@ -1,22 +1,5 @@
-.preview.fullscreen {
-  width: 1000px !important;
-
-  & img {
-    width: 100% !important;
-    height: 750px !important;
-  }
-
-  & .resize {
-    margin-bottom: 35px;
-  }
-}
-
 .preview {
-  width: 350px;
-
   & .text {
-    width: 350px;
-    height: 250px;
     display: flex;
     padding: 0 10px;
     font-size: 15px;
@@ -28,15 +11,11 @@
   }
 
   & img {
-    width: 100%;
-    height: 250px;
     object-fit: contain;
   }
 
   & .empty {
     color: #DDD;
-    width: 350px;
-    height: 250px;
     border: 1px solid #EEE;
     display: flex;
     padding: 0 10px;

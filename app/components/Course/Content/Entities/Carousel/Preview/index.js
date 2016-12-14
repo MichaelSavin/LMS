@@ -5,7 +5,6 @@ import {
   Icon as AntIcon,
   Carousel as AntCarousel,
 } from 'antd';
-import classNames from 'classnames';
 import styles from './styles.css';
 
 const Preview = ({
@@ -14,55 +13,78 @@ const Preview = ({
   placement,
   fullscreen,
   toggleView,
-}) =>
-  <div
-    className={
-      classNames(
-        styles.preview, {
-          [styles.fullscreen]: fullscreen,
-        }
-      )
-    }
-  >
-    <AntCarousel>
-      {data.slides.map(({
-        type,
-        text,
-        image,
-      }, index) =>
-        <div
-          key={index}
-          className={styles[type]}
-        >
-          {type === 'text'
-            ? <div className={styles.text}>{text}</div>
-            : type === 'image'
-              ? cache[image.source]
-                ?
-                  <img
-                    src={cache[image.source]}
-                    alt={image.text}
-                  />
-                : <div className={styles.empty}>
-                    Изображение не загружено
-                  </div>
-              : undefined
-          }
-        </div>
-      )}
-    </AntCarousel>
-    {placement === 'editor' &&
-      <span className={styles.resize}>
-        <AntIcon
-          type={fullscreen
-            ? 'shrink'
-            : 'arrows-alt'
-          }
-          onClick={toggleView}
-        />
-      </span>
-    }
-  </div>;
+}) => {
+  const getViewportWidth = (
+    document.getElementById('viewport') || {}
+  ).offsetWidth;
+  const calculateWidth =
+    fullscreen
+      ? (getViewportWidth || 440) - 20
+      : getViewportWidth < 400
+        ? getViewportWidth - 20
+        : 400;
+  const calculateHeight = calculateWidth * 0.625;
+  const calculatedStyles = {
+    width: calculateWidth,
+    height: calculateHeight,
+  };
+  return (
+    <div
+      className={styles.preview}
+      style={calculatedStyles}
+    >
+      <AntCarousel>
+        {data.slides.map(({
+          type,
+          text,
+          image,
+        }, index) =>
+          <div
+            key={index}
+            className={styles[type]}
+          >
+            {type === 'text'
+              ?
+                <div
+                  style={calculatedStyles}
+                  className={styles.text}
+                >
+                  {text}
+                </div>
+              : type === 'image'
+                ? cache[image.source]
+                  ?
+                    <img
+                      src={cache[image.source]}
+                      alt={image.text}
+                      style={calculatedStyles}
+                    />
+                  :
+                      <div
+                        style={calculatedStyles}
+                        className={styles.empty}
+                      >
+                        Изображение не загружено
+                      </div>
+                : undefined
+            }
+          </div>
+        )}
+      </AntCarousel>
+      {placement === 'editor' &&
+        <span className={styles.resize}>
+          <AntIcon
+            type={fullscreen
+              ? 'shrink'
+              : 'arrows-alt'
+            }
+            onClick={toggleView}
+          />
+        </span>
+      }
+    </div>
+  );
+};
 
 Preview.propTypes = {
   data: PropTypes.shape({

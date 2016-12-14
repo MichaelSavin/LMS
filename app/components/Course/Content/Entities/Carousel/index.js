@@ -53,7 +53,13 @@ class Carousel extends Component {
       this.receiveImages(this.state);
       return false;
     } else {
-      return !isEqual(
+      // Перерендеринг при переключении
+      // вьюпорта окна простотра или
+      // изменении state компонента
+      return (
+       nextProps.entityKey !==
+       this.props.entityKey
+      ) || !isEqual(
         this.state,
         nextState
       );

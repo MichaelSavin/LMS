@@ -155,6 +155,7 @@ class Editor extends Component {
           changeEditorState={this.onChange}
         />
         <div
+          id="viewport"
           className={styles.draft}
         >
           <Draft
