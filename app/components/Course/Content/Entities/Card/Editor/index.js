@@ -8,6 +8,7 @@ import {
   Modal as AntModal,
   Upload as AntUpload,
 } from 'antd';
+import classNames from 'classnames';
 import Preview from '../Preview';
 import styles from './styles.css';
 
@@ -32,7 +33,15 @@ const Editor = ({
  },
  data,
 }) => {
+  const checkUploads = (_, __, callback) => {
+    if (image) {
+      callback();
+    } else {
+      callback('Необходимо загрузить изображение!');
+    }
+  };
   const validateAndSave = () => {
+    resetFields();
     validateFields((err) => {
       if (!err) { saveSettings(); }
     });
@@ -56,37 +65,50 @@ const Editor = ({
     >
       <div className={styles.editor}>
         <div className={styles.content}>
-          <div className={styles.uploader}>
-            <AntUpload.Dragger
-              accept="image/*"
-              onChange={uploadImage}
-              showUploadList={false}
-            >
-              {image
-                ?
-                  <div className={styles.preview}>
-                    <img
-                      src={storage[image]}
-                      role="presentation"
-                      className={styles.image}
-                    />
-                    <AntIcon
-                      type="close"
-                      onClick={removeImage}
-                      className={styles.remove}
-                    />
-                  </div>
-                :
-                  <div className={styles.upload}>
-                    <div className={styles.icon}>
-                      <AntIcon type="inbox" />
-                    </div>
-                    <div className={styles.hint}>
-                      Нажмите или перетащите файлы для загрузки
-                    </div>
-                  </div>
-              }
-            </AntUpload.Dragger>
+          <div
+            className={classNames(
+              styles.uploader,
+              { [styles.success]: image }
+            )}
+          >
+            <AntForm.Item>
+              {getFieldDecorator('image', {
+                rules: [{ validator: checkUploads }],
+                validateTrigger: 'onError',
+              })(
+                <AntUpload
+                  type="drag"
+                  accept="image/*"
+                  onChange={uploadImage}
+                  showUploadList={false}
+                >
+                  {image
+                    ?
+                      <div className={styles.preview}>
+                        <img
+                          src={storage[image]}
+                          role="presentation"
+                          className={styles.image}
+                        />
+                        <AntIcon
+                          type="close"
+                          onClick={removeImage}
+                          className={styles.remove}
+                        />
+                      </div>
+                    :
+                      <div className={styles.upload}>
+                        <div className={styles.icon}>
+                          <AntIcon type="inbox" />
+                        </div>
+                        <div className={styles.hint}>
+                          Нажмите или перетащите файлы для загрузки
+                        </div>
+                      </div>
+                  }
+                </AntUpload>
+              )}
+            </AntForm.Item>
           </div>
           <div className={styles.title}>
             <AntInput

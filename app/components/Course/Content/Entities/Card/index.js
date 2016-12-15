@@ -109,14 +109,13 @@ class Card extends Component {
           name,
           reader.result,
         ).then(() => {
+          this.storage[name] = reader.result;
           this.setState({
             temp: {
               ...this.state.temp,
               image: name,
             },
           });
-          this.storage[name] = reader.result;
-          this.forceUpdate();
         });
       };
     }
