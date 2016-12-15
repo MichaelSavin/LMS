@@ -7,6 +7,7 @@ import {
   Input as AntInput,
   Modal as AntModal,
   Upload as AntUpload,
+  Radio,
 } from 'antd';
 import ReactCrop from 'react-image-crop/dist/ReactCrop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -18,16 +19,17 @@ const Editor = ({
     text,
     title,
     image,
+    crop,
+    aspect,
   },
-  isOpen,
-  storage,
-  changeText,
+  changeData,
   closeModal,
-  uploadImage,
-  removeImage,
-  changeTitle,
-  saveSettings,
+  isOpen,
   onCropComplete,
+  removeImage,
+  saveSettings,
+  storage,
+  uploadImage,
   form: {
     resetFields,
     validateFields,
@@ -61,38 +63,71 @@ const Editor = ({
         <div className={styles.content}>
           <div className={styles.uploader}>
             {storage[image]
-              ? <div className={styles.preview}>
-                <ReactCrop
-                  src={storage[image]}
-                  onComplete={onCropComplete}
-                />
-                <AntIcon
-                  type="close"
-                  onClick={removeImage}
-                  className={styles.remove}
-                />
-              </div>
-              : <AntUpload
-                type="drag"
-                accept="image/*"
-                onChange={uploadImage}
-                showUploadList={false}
-              >
-                <div className={styles.upload}>
-                  <div className={styles.icon}>
-                    <AntIcon type="inbox" />
+              ?
+                <div>
+                  <div className={styles.preview}>
+                    <ReactCrop
+                      src={storage[image]}
+                      onComplete={onCropComplete}
+                      onAspectRatioChange={onCropComplete}
+                      crop={{
+                        ...crop,
+                        aspect,
+                      }}
+                    />
+                    <AntIcon
+                      type="close"
+                      onClick={removeImage}
+                      className={styles.remove}
+                    />
                   </div>
-                  <div className={styles.hint}>
-                    Нажмите или перетащите файлы для загрузки
+                  <div className={styles.aspects}>
+                    Соотношение сторон:&nbsp;&nbsp;
+                    <Radio.Group
+                      value={aspect}
+                      onChange={changeData('aspect')}
+                    >
+                      <Radio.Button value={16 / 9}>
+                        16:9
+                      </Radio.Button>
+                      <Radio.Button value={4 / 3}>
+                        4:3
+                      </Radio.Button>
+                      <Radio.Button value={1}>
+                        1:1
+                      </Radio.Button>
+                      <Radio.Button value={3 / 4}>
+                        3:4
+                      </Radio.Button>
+                      <Radio.Button value={9 / 16}>
+                        9:16
+                      </Radio.Button>
+                    </Radio.Group>
                   </div>
                 </div>
-              </AntUpload>}
+              :
+                <AntUpload
+                  type="drag"
+                  accept="image/*"
+                  onChange={uploadImage}
+                  showUploadList={false}
+                >
+                  <div className={styles.upload}>
+                    <div className={styles.icon}>
+                      <AntIcon type="inbox" />
+                    </div>
+                    <div className={styles.hint}>
+                      Нажмите или перетащите файлы для загрузки
+                    </div>
+                  </div>
+                </AntUpload>
+              }
           </div>
           <div className={styles.title}>
             <AntInput
               size="default"
               value={title}
-              onChange={changeTitle}
+              onChange={changeData('title')}
             />
           </div>
           <div className={styles.text}>
@@ -107,7 +142,7 @@ const Editor = ({
                 <AntInput
                   rows={4}
                   type="textarea"
-                  onChange={changeText}
+                  onChange={changeData('text')}
                 />
               )}
             </AntForm.Item>
@@ -137,18 +172,19 @@ const Editor = ({
 };
 
 Editor.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
+  changeData: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
-  changeText: PropTypes.func.isRequired,
-  changeTitle: PropTypes.func.isRequired,
-  uploadImage: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onCropComplete: PropTypes.func.isRequired,
   removeImage: PropTypes.func.isRequired,
   saveSettings: PropTypes.func.isRequired,
-  onCropComplete: PropTypes.func.isRequired,
+  uploadImage: PropTypes.func.isRequired,
   data: PropTypes.shape({
     text: PropTypes.string.isRequired,
     image: PropTypes.string,
     title: PropTypes.string,
+    crop: PropTypes.object,
+    aspect: PropTypes.number,
   }).isRequired,
   form: PropTypes.shape({
     resetFields: PropTypes.func.isRequired,
