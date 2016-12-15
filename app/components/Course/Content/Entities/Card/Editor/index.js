@@ -8,7 +8,6 @@ import {
   Modal as AntModal,
   Upload as AntUpload,
 } from 'antd';
-import classNames from 'classnames';
 import Preview from '../Preview';
 import styles from './styles.css';
 
@@ -33,14 +32,22 @@ const Editor = ({
  },
  data,
 }) => {
-  const checkUploads = (_, __, callback) => {
-    if (image) {
+  const checkUploads = (_, value, callback) => {
+    // Обработка двух состояний:
+    // 1. Загружается и возращает ошибку, и так как мы не
+    //    загружаем на сервер - то всегда возращает ошибку
+    // 2. Наличие изображения в state компонента - срабатывает
+    //    при инициализации компонента с катинкой
+    if ((value && value.file.status) === 'error' || image) {
       callback();
     } else {
       callback('Необходимо загрузить изображение!');
     }
   };
   const validateAndSave = () => {
+    // Дополнительный сброс внутренних
+    // значений Form для корректной работы
+    // валидатора загрузчика изображений
     resetFields();
     validateFields((err) => {
       if (!err) { saveSettings(); }
@@ -66,15 +73,11 @@ const Editor = ({
       <div className={styles.editor}>
         <div className={styles.content}>
           <div
-            className={classNames(
-              styles.uploader,
-              { [styles.success]: image }
-            )}
+            className={styles.uploader}
           >
             <AntForm.Item>
               {getFieldDecorator('image', {
                 rules: [{ validator: checkUploads }],
-                validateTrigger: 'onError',
               })(
                 <AntUpload
                   type="drag"

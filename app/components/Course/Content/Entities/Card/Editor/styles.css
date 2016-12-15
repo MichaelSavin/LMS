@@ -47,10 +47,6 @@
       }
     }
 
-    & .uploader.success :global(.ant-form-explain) {
-      display: none;
-    }
-
     & .title {
       padding: 10px 0;
     }

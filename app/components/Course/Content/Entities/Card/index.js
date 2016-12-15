@@ -96,7 +96,9 @@ class Card extends Component {
   }
 
   uploadImage = ({ file }) => {
-    if (file.status === 'error') { // Загрузка на сервер
+    // Так как мы не загружаем на сервер
+    // "error" в нашем случае это "success"
+    if (file.status === 'error') {
       const name = [
         file.lastModified,
         file.size,
