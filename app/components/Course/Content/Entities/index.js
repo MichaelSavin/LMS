@@ -12,7 +12,8 @@ import Tag from './Tag';
 import TeX from './TeX';
 import Link from './Link';
 import Tree from './Tree';
-import Card from './Card';
+import CardCrop from './Card';
+import Card from './CardOrigin';
 import Hint from './Hint';
 import Rate from './Rate';
 import Alert from './Alert';
@@ -41,6 +42,7 @@ const components = { // можно использовать require()
   LINK: Link,
   TREE: Tree,
   CARD: Card,
+  CARDCROP: CardCrop,
   HINT: Hint,
   RATE: Rate,
   ALERT: Alert,
@@ -67,6 +69,7 @@ const components = { // можно использовать require()
 const views = {
   TREE: 'BLOCK',
   CARD: 'BLOCK',
+  CARDCROP: 'BLOCK',
   HINT: 'BLOCK',
   ALERT: 'BLOCK',
   RADIO: 'BLOCK',

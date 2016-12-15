@@ -8,8 +8,6 @@ import {
   Modal as AntModal,
   Upload as AntUpload,
 } from 'antd';
-import ReactCrop from 'react-image-crop/dist/ReactCrop';
-import 'react-image-crop/dist/ReactCrop.css';
 import Preview from '../Preview';
 import styles from './styles.css';
 
@@ -27,7 +25,6 @@ const Editor = ({
   removeImage,
   changeTitle,
   saveSettings,
-  onCropComplete,
   form: {
     resetFields,
     validateFields,
@@ -60,33 +57,36 @@ const Editor = ({
       <div className={styles.editor}>
         <div className={styles.content}>
           <div className={styles.uploader}>
-            {storage[image]
-              ? <div className={styles.preview}>
-                <ReactCrop
-                  src={storage[image]}
-                  onComplete={onCropComplete}
-                />
-                <AntIcon
-                  type="close"
-                  onClick={removeImage}
-                  className={styles.remove}
-                />
-              </div>
-              : <AntUpload
-                type="drag"
-                accept="image/*"
-                onChange={uploadImage}
-                showUploadList={false}
-              >
-                <div className={styles.upload}>
-                  <div className={styles.icon}>
-                    <AntIcon type="inbox" />
+            <AntUpload.Dragger
+              accept="image/*"
+              onChange={uploadImage}
+              showUploadList={false}
+            >
+              {image
+                ?
+                  <div className={styles.preview}>
+                    <img
+                      src={storage[image]}
+                      role="presentation"
+                      className={styles.image}
+                    />
+                    <AntIcon
+                      type="close"
+                      onClick={removeImage}
+                      className={styles.remove}
+                    />
                   </div>
-                  <div className={styles.hint}>
-                    Нажмите или перетащите файлы для загрузки
+                :
+                  <div className={styles.upload}>
+                    <div className={styles.icon}>
+                      <AntIcon type="inbox" />
+                    </div>
+                    <div className={styles.hint}>
+                      Нажмите или перетащите файлы для загрузки
+                    </div>
                   </div>
-                </div>
-              </AntUpload>}
+              }
+            </AntUpload.Dragger>
           </div>
           <div className={styles.title}>
             <AntInput
@@ -144,7 +144,6 @@ Editor.propTypes = {
   uploadImage: PropTypes.func.isRequired,
   removeImage: PropTypes.func.isRequired,
   saveSettings: PropTypes.func.isRequired,
-  onCropComplete: PropTypes.func.isRequired,
   data: PropTypes.shape({
     text: PropTypes.string.isRequired,
     image: PropTypes.string,

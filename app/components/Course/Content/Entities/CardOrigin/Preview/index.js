@@ -31,7 +31,7 @@ const Preview = ({
       {image &&
         <img
           className={styles.image}
-          src={storage[`crop${image}`]}
+          src={storage[image]}
           role="presentation"
         />
       }

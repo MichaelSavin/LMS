@@ -12,6 +12,7 @@ const Widgets = ({
       { name: 'Дерево', type: 'TREE' },
       { name: 'Таблица', type: 'TABLE' },
       { name: 'Карточка', type: 'CARD' },
+      { name: 'Кроп', type: 'CARDCROP' },
       { name: 'Карусель', type: 'CAROUSEL' },
       { name: 'Прогресс', type: 'PROGRESS' },
       { name: 'Развернуть', type: 'COLLAPSE' },
