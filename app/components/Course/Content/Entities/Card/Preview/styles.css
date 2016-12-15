@@ -1,9 +1,15 @@
+.preview.fullscreen {
+  width: 100%;
+  max-width: none;
+}
+
 .preview {
-  width: 350px;
+  max-width: 500px;
+  min-width: 250px;
   font-size: 13px;
 
   & .image {
-    width: 300px;
+    width: 100%;
     border-bottom: 1px solid #E9E9E9;
     margin-bottom: 15px;
     padding-bottom: 20px;
@@ -16,7 +22,23 @@
   }
 
   & .text {
-    /* ... */
+    font-size: 13px;
+    text-align: justify;
+  }
+
+  & .icons {
+    top: -25px;
+    right: 5px;
+    display: flex;
+    position: relative;
+    margin-bottom: -15px;
+    flex-direction: row-reverse;
+
+    & .resize {
+      width: 15px;
+      cursor: pointer;
+      background: white;
+    }
   }
 }
 

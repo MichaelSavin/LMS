@@ -3,7 +3,9 @@ import React, {
 } from 'react';
 import {
   Card as AntCard,
+  Icon as AntIcon,
 } from 'antd';
+import classNames from 'classnames';
 import styles from './styles.css';
 
 const Preview = ({
@@ -13,8 +15,18 @@ const Preview = ({
     image,
   },
   storage,
+  placement,
+  dimensions: {
+    fullscreen,
+  },
+  toggleFullscreen,
 }) =>
-  <div className={styles.preview}>
+  <div
+    className={classNames(
+      styles.preview,
+      { [styles.fullscreen]: fullscreen }
+    )}
+  >
     <AntCard>
       {image &&
         <img
@@ -32,6 +44,19 @@ const Preview = ({
         {text}
       </div>
     </AntCard>
+    {placement === 'editor' &&
+      <div className={styles.icons}>
+        <span className={styles.resize}>
+          <AntIcon
+            type={fullscreen
+              ? 'shrink'
+              : 'arrows-alt'
+            }
+            onClick={toggleFullscreen}
+          />
+        </span>
+      </div>
+    }
   </div>;
 
 Preview.propTypes = {
@@ -42,6 +67,14 @@ Preview.propTypes = {
     title: PropTypes.string,
   }).isRequired,
   storage: PropTypes.object.isRequired,
+  placement: PropTypes.oneOf([
+    'modal',
+    'editor',
+  ]).isRequired,
+  dimensions: PropTypes.shape({
+    fullscreen: PropTypes.bool.isRequired,
+  }).isRequired,
+  toggleFullscreen: PropTypes.func,
 };
 
 export default Preview;
