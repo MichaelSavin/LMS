@@ -12,8 +12,8 @@ import Tag from './Tag';
 import TeX from './TeX';
 import Link from './Link';
 import Tree from './Tree';
-import CardCrop from './Card';
-import Card from './CardOrigin';
+import CardCrop from './CardCrop';
+import Card from './Card';
 import Hint from './Hint';
 import Rate from './Rate';
 import Alert from './Alert';
@@ -22,7 +22,6 @@ import Radio from './Radio';
 import Table from './Table';
 import Video from './Video';
 import Image from './Image';
-import Img from './Img';
 import Slider from './Slider';
 import Select from './Select';
 import Switch from './Switch';
@@ -51,7 +50,6 @@ const components = { // можно использовать require()
   TABLE: Table,
   VIDEO: Video,
   IMAGE: Image,
-  IMG: Img,
   SLIDER: Slider,
   UPLOAD: Upload,
   SELECT: Select,
@@ -76,7 +74,6 @@ const views = {
   TABLE: 'BLOCK',
   VIDEO: 'BLOCK',
   IMAGE: 'BLOCK',
-  IMG: 'BLOCK',
   SLIDER: 'BLOCK',
   UPLOAD: 'BLOCK',
   COLLAPSE: 'BLOCK',

@@ -13,7 +13,6 @@ const Preview = ({
     text,
     title,
     image,
-    alt,
   },
   storage,
   placement,
@@ -32,8 +31,7 @@ const Preview = ({
       {image &&
         <img
           className={styles.image}
-          src={storage[`crop${image}`]}
-          alt={alt}
+          src={storage[image]}
           role="presentation"
         />
       }
@@ -63,7 +61,6 @@ const Preview = ({
 
 Preview.propTypes = {
   data: PropTypes.shape({
-    alt: PropTypes.string,
     text: PropTypes.string.isRequired,
     image: PropTypes.string,
     cache: PropTypes.string,

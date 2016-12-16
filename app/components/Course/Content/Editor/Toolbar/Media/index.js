@@ -10,7 +10,6 @@ const Media = ({
     {[{ name: 'Файл', type: 'UPLOAD' },
       { name: 'Видео', type: 'VIDEO' },
       { name: 'Изображение', type: 'IMAGE' },
-      { name: 'Изображение с кропом', type: 'IMG' },
     ].map(({
       name: entityName,
       type: entityType,
