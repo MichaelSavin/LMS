@@ -222,8 +222,6 @@ class Card extends Component {
           isOpen={modal}
           storage={this.storage}
           closeModal={this.closeModal}
-          changeText={this.changeData('text')}
-          changeTitle={this.changeData('title')}
           uploadImage={this.uploadImage}
           removeImage={this.removeImage}
           saveSettings={this.saveSettings}
@@ -238,6 +236,7 @@ class Card extends Component {
 Card.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
+    alt: PropTypes.string,
     text: PropTypes.string.isRequired,
     image: PropTypes.string,
     title: PropTypes.string,
@@ -252,6 +251,7 @@ Card.propTypes = {
 
 Card.defaultProps = {
   content: {
+    alt: '',
     text: 'Текст',
     image: null,
     title: 'Заголовок',

@@ -16,6 +16,7 @@ import styles from './styles.css';
 
 const Editor = ({
   data: {
+    alt,
     text,
     title,
     image,
@@ -123,6 +124,23 @@ const Editor = ({
                 </AntUpload>
               }
           </div>
+          <div className={styles.alt}>
+            <AntForm.Item>
+              {getFieldDecorator('alt', {
+                rules: [{
+                  required: true,
+                  message: 'Это поле не может быть пустым!',
+                }],
+                initialValue: alt,
+              })(
+                <AntInput
+                  size="default"
+                  onChange={changeData('alt')}
+                  placeholder="альтернативный текст..."
+                />
+              )}
+            </AntForm.Item>
+          </div>
           <div className={styles.title}>
             <AntInput
               size="default"
@@ -180,6 +198,7 @@ Editor.propTypes = {
   saveSettings: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
   data: PropTypes.shape({
+    alt: PropTypes.string,
     text: PropTypes.string.isRequired,
     image: PropTypes.string,
     title: PropTypes.string,

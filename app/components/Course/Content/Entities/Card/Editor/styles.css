@@ -58,6 +58,11 @@
     & .text {
       padding: 0;
     }
+
+    & .alt {
+      padding: 0;
+      margin-top: 10px;
+    }
   }
 
   & > .preview {
