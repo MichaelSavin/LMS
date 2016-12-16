@@ -96,7 +96,9 @@ class Card extends Component {
   }
 
   uploadImage = ({ file }) => {
-    if (file.status === 'error') { // Загрузка на сервер
+    // Так как мы не загружаем на сервер
+    // "error" в нашем случае это "success"
+    if (file.status === 'error') {
       const name = [
         file.lastModified,
         file.size,
@@ -109,14 +111,13 @@ class Card extends Component {
           name,
           reader.result,
         ).then(() => {
+          this.storage[name] = reader.result;
           this.setState({
             temp: {
               ...this.state.temp,
               image: name,
             },
           });
-          this.storage[name] = reader.result;
-          this.forceUpdate();
         });
       };
     }
