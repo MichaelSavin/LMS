@@ -1,0 +1,100 @@
+.header {
+  display: flex;
+  padding-right: 30px;
+  justify-content: space-between;
+}
+
+/* При прямом наследовании от .editor направильно работает DnD */
+
+/* .editor { */
+
+.tag {
+  display: flex;
+  user-select: none;
+  flex-direction: row !important;
+  justify-content: space-around;
+
+  & .drag {
+    margin-right: 5px;
+    margin-top: 10px;
+    cursor: grab;
+  }
+
+  & .color {
+    width: 50px;
+    margin-top: 2px;
+  }
+
+  & .text {
+    width: 375px;
+  }
+
+  & .input {
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    padding: 4px 7px;
+    cursor: text;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #666;
+    background-color: #FFF;
+    background-image: none;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+    margin: 2px;
+  }
+
+  & .remove {
+    color: red;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+}
+
+/* } */
+
+.preview {
+  flex-direction: column;
+  padding-bottom: 10px;
+
+  & .title {
+    width: 100%;
+    margin: 30px 0 25px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: bold;
+    line-height: 0.1em;
+    border-bottom: 1px solid #EEE;
+
+    & .text {
+      padding: 0 10px;
+      background: #FFF;
+    }
+  }
+}
+
+.circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 7.5px;
+}
+
+.blue {
+  composes: circle;
+  border: 8px solid #2DB7F5;
+}
+
+.green {
+  composes: circle;
+  border: 8px solid #87D068;
+}
+
+.red {
+  composes: circle;
+  border: 8px solid #F50;
+}
+
+:global .ant-form-item {
+  margin-bottom: 5px;
+}

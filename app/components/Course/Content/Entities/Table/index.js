@@ -6,6 +6,7 @@ import {
 
 // import { isEqual } from 'lodash';
 import { Input as DraftInput } from '../../Editor';
+import EditableCell from './Cell';
 // import styles from './styles.css';
 
 // class Table extends Component {
@@ -44,54 +45,7 @@ import { Input as DraftInput } from '../../Editor';
 //   }
 // }
 
-class EditableCell extends React.Component {
-  state = {
-    value: this.props.value,
-    editable: false,
-  }
-  handleChange = (e) => {
-    const value = e.target.value;
-    this.setState({ value });
-  }
-  check = () => {
-    this.setState({ editable: false });
-    if (this.props.onChange) {
-      this.props.onChange(this.state.value);
-    }
-  }
-  edit = () => {
-    this.setState({ editable: true });
-  }
-  render() {
-    const { value, editable } = this.state;
-    return (<div className="editable-cell">
-      {
-        editable ?
-          <div className="editable-cell-input-wrapper">
-            <Input
-              value={value}
-              onChange={this.handleChange}
-              onPressEnter={this.check}
-            />
-            <Icon
-              type="check"
-              className="editable-cell-icon-check"
-              onClick={this.check}
-            />
-          </div>
-          :
-          <div className="editable-cell-text-wrapper">
-            {value || ' '}
-            <Icon
-              type="edit"
-              className="editable-cell-icon"
-              onClick={this.edit}
-            />
-          </div>
-      }
-    </div>);
-  }
-}
+
 
 class EditableTable extends React.Component {
   constructor(props) {
@@ -99,12 +53,12 @@ class EditableTable extends React.Component {
     this.columns = [{
       title: 'name',
       dataIndex: 'name',
-      width: '30%',
+      width: '40%',
       render: (text, record, index) => (
         <EditableCell
           value={text}
           onChange={this.onCellChange(index, 'name')}
-          />
+        />
       ),
     }, {
       title: 'age',
