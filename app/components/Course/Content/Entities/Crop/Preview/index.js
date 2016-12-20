@@ -9,11 +9,10 @@ import classNames from 'classnames';
 import styles from './styles.css';
 
 const Preview = ({
-  data: {
+  content: {
     text,
     title,
     image,
-    alt,
   },
   storage,
   placement,
@@ -31,10 +30,13 @@ const Preview = ({
     <AntCard>
       {image &&
         <img
-          className={styles.image}
-          src={storage[`crop${image}`]}
-          alt={alt}
+          alt={image.text}
+          src={
+            storage.crop[placement][image.source] ||
+            storage.image[image.source]
+          }
           role="presentation"
+          className={styles.image}
         />
       }
       {title &&
@@ -46,7 +48,7 @@ const Preview = ({
         {text}
       </div>
     </AntCard>
-    {placement === 'editor' &&
+    {placement === 'component' &&
       <div className={styles.icons}>
         <span className={styles.resize}>
           <AntIcon
@@ -62,20 +64,45 @@ const Preview = ({
   </div>;
 
 Preview.propTypes = {
-  data: PropTypes.shape({
-    alt: PropTypes.string,
+  content: PropTypes.shape({
     text: PropTypes.string.isRequired,
-    image: PropTypes.string,
-    cache: PropTypes.string,
     title: PropTypes.string,
+    image: PropTypes.shape({
+      source: PropTypes.string.isRequired,
+      text: PropTypes.string,
+      crop: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        width: PropTypes.number.isRequired,
+        height: PropTypes.number.isRequired,
+        pixels: PropTypes.shape({
+          x: PropTypes.number.isRequired,
+          y: PropTypes.number.isRequired,
+          width: PropTypes.number.isRequired,
+          height: PropTypes.number.isRequired,
+        }).isRequired,
+        aspect: PropTypes.oneOf([
+          false,
+          16 / 9,
+          4 / 3,
+          1,
+          3 / 4,
+          9 / 16,
+        ]),
+      }),
+    }),
   }).isRequired,
-  storage: PropTypes.object.isRequired,
+  storage: PropTypes.shape({
+    image: PropTypes.object.isRequired,
+    crop: PropTypes.object.isRequired,
+  }).isRequired,
   placement: PropTypes.oneOf([
-    'modal',
     'editor',
+    'component',
   ]).isRequired,
   dimensions: PropTypes.shape({
     fullscreen: PropTypes.bool.isRequired,
+    width: PropTypes.number,
   }).isRequired,
   toggleFullscreen: PropTypes.func,
 };

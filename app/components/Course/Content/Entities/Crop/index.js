@@ -1,15 +1,10 @@
-import React, {
-  Component,
-  PropTypes,
-} from 'react';
+import React, { Component, PropTypes } from 'react';
+import { set, isEqual } from 'lodash/fp';
 import localForage from 'localforage';
-import { isEqual } from 'lodash/fp';
 import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
 import './styles.css';
-
-const canvas = document.createElement('canvas');
 
 class Card extends Component {
 
@@ -20,23 +15,51 @@ class Card extends Component {
       dimensions,
     } = props;
     this.state = {
-      temp: content,
-      modal: false,
-      storage: {},
-      storageFromBD: {},
-      content,
+      content: {
+        editor: content,
+        component: content,
+      },
       dimensions,
-      aspect: 0,
-      crop: {},
+      isEditing: false,
     };
-    this.storage = {};
-    this.rawStorage = {};
+    this.storage = {
+      image: {},
+      crop: {
+        editor: {},
+        component: {},
+      },
+    };
   }
 
   componentDidMount() {
-    this.receiveImage(
-      this.state.content.image
-    );
+    const {
+      image,
+    } = this
+      .state
+      .content
+      .component;
+    if (image) {
+      localForage
+        .getItem(image.source)
+        .then((binary) => {
+          const { crop } = this.state
+            .content
+            .component
+            .image;
+          this.storage.image[
+            image.source
+          ] = binary;
+          if (crop) {
+            this.createCrop(
+              crop,
+              crop.pixels,
+              'mountComponent',
+            );
+          } else {
+            this.forceUpdate();
+          }
+        });
+    }
   }
 
   shouldComponentUpdate(
@@ -49,18 +72,20 @@ class Card extends Component {
     );
   }
 
-  onCropComplete = (crop, pixelCrop) => {
-    const { temp: { image }, temp } = this.state;
-
-    canvas.width = pixelCrop.width; // eslint-disable-line fp/no-mutation
-    canvas.height = pixelCrop.height; // eslint-disable-line fp/no-mutation
-
+  createCrop = (crop, pixelCrop, event = 'changeCrop') => {
+    const { content: { editor: { image } } } = this.state;
+    // Создание уникального канваса для кропа каждого изображения
+    // Нужно для параллельного вычисления нескольких кропов одновременно
+    const canvas = document.createElement('canvas');
+    /* eslint-disable fp/no-mutation */
+    canvas.width = pixelCrop.width;
+    canvas.height = pixelCrop.height;
     const context = canvas.getContext('2d');
     const imageObj = new Image();
-
     context.clearRect(0, 0, canvas.width, canvas.height);
-
-    imageObj.onload = () => { // eslint-disable-line fp/no-mutation
+    imageObj.src = this.storage.image[image.source];
+    imageObj.onload = () => {
+    /* eslint-enable fp/no-mutation */
       context.drawImage(
         imageObj,
         pixelCrop.x,
@@ -68,25 +93,43 @@ class Card extends Component {
         pixelCrop.width,
         pixelCrop.height,
         0, 0,
-        pixelCrop.width, pixelCrop.height,
+        pixelCrop.width,
+        pixelCrop.height,
       );
-      this.storage[`crop${image}`] = canvas.toDataURL('image/jpeg', 1);
-      this.setState({
-        temp: {
-          ...temp,
-          crop,
-        },
-      });
+      const binary = canvas.toDataURL('image/jpeg', 1);
+      this.storage.crop.editor[image.source] = binary;
+      // Срабатывает при подмонтировании компонента
+      if (event === 'mountComponent') {
+        this.storage.crop.component[image.source] = binary;
+        this.forceUpdate();
+      }
+      // Срабатывает при изменении кропа в редакторе
+      if (event === 'changeCrop') {
+        this.setState({
+          content: set([
+            'editor',
+            'image',
+            'crop',
+          ], {
+            ...crop,
+            pixels: pixelCrop,
+          },
+            this.state.content,
+          ),
+        });
+      }
     };
-    imageObj.src = this.storage[image]; // eslint-disable-line fp/no-mutation
   }
 
   openModal = () => {
     this.setState({
-      modal: true,
-      temp: this
-        .state
-        .content,
+      isEditing: true,
+      content: {
+        ...this.state.content,
+        editor: this.state
+          .content
+          .component,
+      },
     });
   }
 
@@ -105,128 +148,122 @@ class Card extends Component {
     );
   }
 
-  saveSettings = () => {
+  saveContent = () => {
     const {
-      temp: {
-        image,
+      content: {
+        editor,
       },
-      temp,
     } = this.state;
-    localForage.setItem(
-      `crop${image}`,
-      this.storage[`crop${image}`],
-    ).then(() => {
-      Entity.mergeData(
-        this.props.entityKey, {
-          content: temp,
-        }
-      );
-      this.rawStorage[`crop${image}`] = this.storage[`crop${image}`];
-      this.setState({
-        modal: false,
-        content: temp,
-      });
-      // this.forceUpdate();
-    });
-  }
-
-  closeModal = () => {
+    Entity.mergeData(
+      this.props.entityKey, {
+        content: editor,
+      }
+    );
+    // Глубокое копирование Base64 строк изображений
+    this.storage.crop.component = JSON.parse(
+      JSON.stringify(
+        this.storage.crop.editor
+      )
+    );
     this.setState({
-      modal: false,
-    });
-  }
-
-  changeData = (field) => (event) => {
-    this.setState({
-      temp: {
-        ...this.state.temp,
-        [field]: event.target.value,
+      content: {
+        ...this.state.content,
+        component: editor,
       },
+      isEditing: false,
+    });
+  }
+
+  closeEditor = () => {
+    this.setState({
+      isEditing: false,
+    });
+  }
+
+  changeContent = (path) => (event) => {
+    this.setState({
+      content: set([
+        'editor',
+        ...path,
+      ],
+        event.target.value,
+        this.state.content,
+      ),
     });
   }
 
   uploadImage = ({ file }) => {
-    if (file.status === 'error') { // Загрузка на сервер
-      const name = [
+    if (file.status === 'error') {
+      const imageName = [
         file.lastModified,
         file.size,
         file.name,
       ].join('');
       const reader = new FileReader();
       reader.readAsDataURL(file.originFileObj);
-      reader.onloadend = () => { // eslint-disable-line
+      // eslint-disable-next-line fp/no-mutation
+      reader.onloadend = () => {
         localForage.setItem(
-          name,
+          imageName,
           reader.result,
         ).then(() => {
-          this.storage[name] = reader.result;
-          this.storage[`crop${name}`] = reader.result;
+          this.storage.image[imageName] = reader.result;
           this.setState({
-            temp: {
-              ...this.state.temp,
-              image: name,
+            content: set([
+              'editor',
+              'image',
+            ], {
+              source: imageName,
             },
+              this.state.content,
+            ),
           });
         });
       };
     }
   }
 
-  receiveImage = (image) => {
-    if (image) {
-      const imgPromise = localForage
-        .getItem(image);
-      const cropImgPromise = localForage
-        .getItem(`crop${image}`);
-
-      Promise.all([imgPromise, cropImgPromise])
-        .then((values) => {
-          this.storage[image] = values[0];
-          this.storage[`crop${image}`] = values[1] || values[0];
-          this.rawStorage[`crop${image}`] = values[1] || values[0];
-          this.forceUpdate();
-        });
-    }
-  }
-
   removeImage = (event) => {
     event.stopPropagation();
     this.setState({
-      temp: {
-        ...this.state.temp,
-        image: undefined,
-        crop: {},
-        aspect: 0,
-      },
+      content: set([
+        'editor',
+        'image',
+      ],
+        undefined,
+        this.state.content,
+      ),
     });
   }
 
   render() {
     const {
-      temp,
-      modal,
-      content,
+      content: {
+        editor,
+        component,
+      },
+      isEditing,
       dimensions,
     } = this.state;
     return (
       <div onDoubleClick={this.openModal}>
         <Preview
-          data={content}
-          storage={this.rawStorage}
-          placement="editor"
+          content={component}
+          storage={this.storage}
+          placement="component"
           dimensions={dimensions}
           toggleFullscreen={this.toggleFullscreen}
         />
         <Editor
-          data={temp}
-          isOpen={modal}
+          isOpen={isEditing}
+          content={editor}
           storage={this.storage}
-          closeModal={this.closeModal}
+          createCrop={this.createCrop}
+          closeEditor={this.closeEditor}
           uploadImage={this.uploadImage}
           removeImage={this.removeImage}
-          saveSettings={this.saveSettings}
-          onCropComplete={this.onCropComplete}
-          changeData={this.changeData}
+          saveContent={this.saveContent}
+          changeContent={this.changeContent}
         />
       </div>
     );
@@ -236,31 +273,48 @@ class Card extends Component {
 Card.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    alt: PropTypes.string,
     text: PropTypes.string.isRequired,
-    image: PropTypes.string,
     title: PropTypes.string,
-    crop: PropTypes.object,
-    aspect: PropTypes.number,
+    image: PropTypes.shape({
+      source: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+      crop: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        width: PropTypes.number.isRequired,
+        height: PropTypes.number.isRequired,
+        pixels: PropTypes.shape({
+          x: PropTypes.number.isRequired,
+          y: PropTypes.number.isRequired,
+          width: PropTypes.number.isRequired,
+          height: PropTypes.number.isRequired,
+        }).isRequired,
+        aspect: PropTypes.oneOf([
+          false,
+          16 / 9,
+          4 / 3,
+          1,
+          3 / 4,
+          9 / 16,
+        ]),
+      }),
+    }),
   }).isRequired,
   dimensions: PropTypes.shape({
-    width: PropTypes.number,
     fullscreen: PropTypes.bool.isRequired,
+    width: PropTypes.number,
   }).isRequired,
 };
 
 Card.defaultProps = {
   content: {
-    alt: '',
     text: 'Текст',
-    image: null,
     title: 'Заголовок',
-    crop: {},
-    aspect: 0,
+    image: undefined,
   },
   dimensions: {
+    fullscreen: false,
     width: undefined,
-    fullscreen: true,
   },
 };
 

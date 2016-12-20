@@ -6,46 +6,43 @@ import {
   Form as AntForm,
   Input as AntInput,
   Modal as AntModal,
+  Radio as AntRadio,
   Upload as AntUpload,
-  Radio,
 } from 'antd';
-import ReactCrop from 'react-image-crop/dist/ReactCrop';
+import Crop from 'react-image-crop/dist/ReactCrop';
 import 'react-image-crop/dist/ReactCrop.css';
 import Preview from '../Preview';
 import styles from './styles.css';
 
 const Editor = ({
-  data: {
-    alt,
+  content: {
     text,
     title,
     image,
-    crop,
-    aspect,
   },
-  changeData,
-  closeModal,
   isOpen,
-  onCropComplete,
-  removeImage,
-  saveSettings,
+  content,
   storage,
+  createCrop,
+  closeEditor,
   uploadImage,
+  removeImage,
+  saveContent,
+  changeContent,
   form: {
     resetFields,
     validateFields,
     getFieldDecorator,
  },
- data,
 }) => {
   const validateAndSave = () => {
     validateFields((err) => {
-      if (!err) { saveSettings(); }
+      if (!err) { saveContent(); }
     });
   };
   const resetAndClose = () => {
     resetFields();
-    closeModal();
+    closeEditor();
   };
   return (
     <AntModal
@@ -63,18 +60,15 @@ const Editor = ({
       <div className={styles.editor}>
         <div className={styles.content}>
           <div className={styles.uploader}>
-            {storage[image]
+            {image
               ?
                 <div>
                   <div className={styles.preview}>
-                    <ReactCrop
-                      src={storage[image]}
-                      onComplete={onCropComplete}
-                      onAspectRatioChange={onCropComplete}
-                      crop={{
-                        ...crop,
-                        aspect,
-                      }}
+                    <Crop
+                      src={storage.image[image.source]}
+                      crop={image.crop}
+                      onComplete={createCrop}
+                      onAspectRatioChange={createCrop}
                     />
                     <AntIcon
                       type="close"
@@ -82,29 +76,34 @@ const Editor = ({
                       className={styles.remove}
                     />
                   </div>
-                  <div className={styles.aspects}>
-                    Соотношение сторон:&nbsp;&nbsp;
-                    <Radio.Group
-                      value={aspect}
-                      onChange={changeData('aspect')}
-                    >
-                      <Radio.Button value={16 / 9}>
-                        16:9
-                      </Radio.Button>
-                      <Radio.Button value={4 / 3}>
-                        4:3
-                      </Radio.Button>
-                      <Radio.Button value={1}>
-                        1:1
-                      </Radio.Button>
-                      <Radio.Button value={3 / 4}>
-                        3:4
-                      </Radio.Button>
-                      <Radio.Button value={9 / 16}>
-                        9:16
-                      </Radio.Button>
-                    </Radio.Group>
-                  </div>
+                  {image.crop &&
+                    <div className={styles.aspects}>
+                      Соотношение сторон:
+                      <AntRadio.Group
+                        value={image.crop.aspect}
+                        onChange={changeContent([
+                          'image',
+                          'crop',
+                          'aspect',
+                        ])}
+                      >
+                        {[{ name: '16:9', value: 16 / 9 },
+                          { name: '4:3', value: 4 / 3 },
+                          { name: '1:1', value: 1 },
+                          { name: '3:4', value: 3 / 4 },
+                          { name: '9:16', value: 9 / 16 },
+                          { name: 'Нет', value: false },
+                        ].map(({ name, value }) =>
+                          <AntRadio.Button
+                            key={name}
+                            value={value}
+                          >
+                            {name}
+                          </AntRadio.Button>
+                        )}
+                      </AntRadio.Group>
+                    </div>
+                  }
                 </div>
               :
                 <AntUpload
@@ -124,28 +123,30 @@ const Editor = ({
                 </AntUpload>
               }
           </div>
-          <div className={styles.alt}>
-            <AntForm.Item>
-              {getFieldDecorator('alt', {
-                rules: [{
-                  required: true,
-                  message: 'Это поле не может быть пустым!',
-                }],
-                initialValue: alt,
-              })(
-                <AntInput
-                  size="default"
-                  onChange={changeData('alt')}
-                  placeholder="альтернативный текст..."
-                />
-              )}
-            </AntForm.Item>
-          </div>
+          {image &&
+            <div className={styles.alt}>
+              <AntForm.Item>
+                {getFieldDecorator('image.text', {
+                  rules: [{
+                    required: true,
+                    message: 'Это поле не может быть пустым!',
+                  }],
+                  initialValue: image.text,
+                })(
+                  <AntInput
+                    size="default"
+                    onChange={changeContent(['image', 'text'])}
+                    placeholder="Альтернативный текст для изображения"
+                  />
+                )}
+              </AntForm.Item>
+            </div>
+          }
           <div className={styles.title}>
             <AntInput
               size="default"
               value={title}
-              onChange={changeData('title')}
+              onChange={changeContent(['title'])}
             />
           </div>
           <div className={styles.text}>
@@ -160,7 +161,7 @@ const Editor = ({
                 <AntInput
                   rows={4}
                   type="textarea"
-                  onChange={changeData('text')}
+                  onChange={changeContent(['text'])}
                 />
               )}
             </AntForm.Item>
@@ -177,9 +178,9 @@ const Editor = ({
           </div>
           <div className={styles.component}>
             <Preview
-              data={data}
+              content={content}
               storage={storage}
-              placement="modal"
+              placement="editor"
               dimensions={{ fullscreen: true }}
             />
           </div>
@@ -190,27 +191,50 @@ const Editor = ({
 };
 
 Editor.propTypes = {
-  changeData: PropTypes.func.isRequired,
-  closeModal: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  onCropComplete: PropTypes.func.isRequired,
-  removeImage: PropTypes.func.isRequired,
-  saveSettings: PropTypes.func.isRequired,
+  createCrop: PropTypes.func.isRequired,
+  closeEditor: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
-  data: PropTypes.shape({
-    alt: PropTypes.string,
+  removeImage: PropTypes.func.isRequired,
+  saveContent: PropTypes.func.isRequired,
+  changeContent: PropTypes.func.isRequired,
+  content: PropTypes.shape({
     text: PropTypes.string.isRequired,
-    image: PropTypes.string,
     title: PropTypes.string,
-    crop: PropTypes.object,
-    aspect: PropTypes.number,
+    image: PropTypes.shape({
+      source: PropTypes.string.isRequired,
+      text: PropTypes.string,
+      crop: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        width: PropTypes.number.isRequired,
+        height: PropTypes.number.isRequired,
+        pixels: PropTypes.shape({
+          x: PropTypes.number.isRequired,
+          y: PropTypes.number.isRequired,
+          width: PropTypes.number.isRequired,
+          height: PropTypes.number.isRequired,
+        }).isRequired,
+        aspect: PropTypes.oneOf([
+          false,
+          16 / 9,
+          4 / 3,
+          1,
+          3 / 4,
+          9 / 16,
+        ]),
+      }),
+    }),
   }).isRequired,
   form: PropTypes.shape({
     resetFields: PropTypes.func.isRequired,
     validateFields: PropTypes.func.isRequired,
     getFieldDecorator: PropTypes.func.isRequired,
   }).isRequired,
-  storage: PropTypes.object.isRequired,
+  storage: PropTypes.shape({
+    crop: PropTypes.object.isRequired,
+    image: PropTypes.object.isRequired,
+  }).isRequired,
 };
 
 export default AntForm.create()(Editor);
