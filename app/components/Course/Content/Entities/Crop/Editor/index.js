@@ -60,7 +60,7 @@ const Editor = ({
       <div className={styles.editor}>
         <div className={styles.content}>
           <div className={styles.uploader}>
-            {image
+            {image && storage.image[image.source]
               ?
                 <div>
                   <div className={styles.preview}>
