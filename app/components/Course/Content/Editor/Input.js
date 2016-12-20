@@ -69,6 +69,7 @@ class DraftInput extends Component {
       readOnly,
       popupIsOpen,
     } = this.state;
+    const { isReadOnly } = this.props;
     const {
       value: editorState,
     } = this.props;
@@ -78,7 +79,7 @@ class DraftInput extends Component {
           ref="editor"
           onBlur={this.setFocusStatus}
           onFocus={this.setFocusStatus}
-          readOnly={readOnly}
+          readOnly={readOnly || isReadOnly}
           onChange={this.onChange}
           editorState={editorState}
           customStyleMap={customStyleMap}
@@ -118,6 +119,7 @@ DraftInput.childContextTypes = {
 DraftInput.propTypes = {
   value: PropTypes.object,
   onChange: PropTypes.func.isRequired,
+  isReadOnly: PropTypes.bool,
 };
 
 export default DraftInput;
