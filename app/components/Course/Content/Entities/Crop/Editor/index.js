@@ -232,8 +232,17 @@ Editor.propTypes = {
     getFieldDecorator: PropTypes.func.isRequired,
   }).isRequired,
   storage: PropTypes.shape({
-    crop: PropTypes.object.isRequired,
-    image: PropTypes.object.isRequired,
+    image: PropTypes.objectOf(
+      PropTypes.string.isRequired,
+    ).isRequired,
+    crop: PropTypes.shape({
+      editor: PropTypes.objectOf(
+        PropTypes.string.isRequired,
+      ).isRequired,
+      component: PropTypes.objectOf(
+        PropTypes.string.isRequired,
+      ).isRequired,
+    }).isRequired,
   }).isRequired,
 };
 

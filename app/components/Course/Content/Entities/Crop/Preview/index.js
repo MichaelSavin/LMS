@@ -93,8 +93,17 @@ Preview.propTypes = {
     }),
   }).isRequired,
   storage: PropTypes.shape({
-    image: PropTypes.object.isRequired,
-    crop: PropTypes.object.isRequired,
+    image: PropTypes.objectOf(
+      PropTypes.string.isRequired,
+    ).isRequired,
+    crop: PropTypes.shape({
+      editor: PropTypes.objectOf(
+        PropTypes.string.isRequired,
+      ).isRequired,
+      component: PropTypes.objectOf(
+        PropTypes.string.isRequired,
+      ).isRequired,
+    }).isRequired,
   }).isRequired,
   placement: PropTypes.oneOf([
     'editor',
