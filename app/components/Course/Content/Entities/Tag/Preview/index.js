@@ -3,7 +3,6 @@ import { Tag as AntTag } from 'antd';
 import {
   Editor,
   EditorState,
-  convertFromRaw,
 } from 'draft-js';
 import {
   customStyleMap,
@@ -21,7 +20,7 @@ const Preview = ({ data, openModal }) => (
     />
     {data.tags.map(({
       color,
-      content,
+      content: editorState,
     }, index) =>
       <AntTag
         key={index}
@@ -34,14 +33,12 @@ const Preview = ({ data, openModal }) => (
       >
         <Editor
           readOnly
+          editorState={ // Bottleneck
+            EditorState.createWithContent(
+              editorState.getCurrentContent(),
+              entitiesDecorator,
+          )}
           customStyleMap={customStyleMap}
-          editorState={content
-            ? EditorState.createWithContent(
-                convertFromRaw(content),
-                entitiesDecorator
-              )
-            : EditorState.createEmpty()
-          }
         />
       </AntTag>
     )}

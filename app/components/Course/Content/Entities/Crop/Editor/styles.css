@@ -13,6 +13,7 @@
         display: flex;
         align-items: flex-start;
         justify-content: center;
+        margin: 0 8px 0 -6px;
 
         & .image {
           margin: 20px;
@@ -30,19 +31,22 @@
           margin-left: -35px;
           border-radius: 15px;
           background-color: red;
+          z-index: 1;
         }
       }
 
       & .upload {
         & .icon {
           color: #57C5F7;
+          margin: -5px 0 50px 0;
+          height: 60px;
           font-size: 80px;
-          margin-top: 12px;
+          margin-top: -5px;
         }
 
         & .hint {
           font-size: 13px;
-          margin: 10px 0;
+          margin: 20px 0;
         }
       }
     }
@@ -53,6 +57,11 @@
 
     & .text {
       padding: 0;
+    }
+
+    & .alt {
+      padding: 0;
+      margin-top: 10px;
     }
   }
 
@@ -80,6 +89,13 @@
       justify-content: center;
     }
   }
+}
+
+.aspects {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 :global .ant-form-item {

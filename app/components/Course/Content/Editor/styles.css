@@ -1,10 +1,7 @@
 .editor {
   background-color: #EEE;
-  margin-top: -10px;
   min-height: 230px;
-  padding: 10px;
-
-  /* padding-top: 0; */
+  padding: 0 10px 10px;
 }
 
 .buttons {
@@ -24,16 +21,6 @@
   margin-top: 10px;
   position: relative;
 }
-
-/* .draft li {
-  margin: 1px -5px;
-} */
-
-/* .draft h3 {
-  border-bottom: 1px solid #EEE;
-  margin-right: 10px;
-  margin-top: 15px;
-} */
 
 .draft figure {
   margin: 0;

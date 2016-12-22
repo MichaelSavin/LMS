@@ -75,6 +75,7 @@
     "react-dom": "15.3.2",
     "react-dropzone": "3.7.3",
     "react-helmet": "3.2.2",
+    "react-image-crop": "1.0.4",
     "react-immutable-proptypes": "2.1.0",
     "react-player": "0.12.1",
     "react-redux": "4.4.6",

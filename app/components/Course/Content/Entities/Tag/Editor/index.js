@@ -14,9 +14,6 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
-import {
-  convertFromRaw,
-} from 'draft-js';
 import Preview from '../Preview';
 import styles from './styles.css';
 import { Input as DraftInput } from '../../../Editor';
@@ -37,8 +34,13 @@ const Editor = ({
     getFieldDecorator,
  },
 }) => {
-  const getText = (content) =>
-    convertFromRaw(content).getPlainText();
+  const validateDraft = (_, value, callback) => {
+    if (value.getCurrentContent().getPlainText()) {
+      callback();
+    } else {
+      callback('Это поле не может быть пустым!');
+    }
+  };
   const validateAndSave = () => {
     validateFields((err) => {
       if (!err) { saveSettings(); }
@@ -48,7 +50,7 @@ const Editor = ({
     resetFields();
     closeModal();
   };
-  return isOpen ? (
+  return (
     <span className={styles.tags}>
       <AntModal
         onOk={validateAndSave}
@@ -106,18 +108,11 @@ const Editor = ({
                     <AntForm.Item>
                       {getFieldDecorator(`text.${tag.id}`, {
                         id: tag.id,
-                        rules: [{
-                          required: true,
-                          message: 'Это поле не может быть пустым!',
-                        }],
-                        initialValue: getText(tag.content),
-                        getValueFromEvent(content) {
-                          return getText(content);
-                        },
+                        rules: [{ validator: validateDraft }],
+                        initialValue: tag.content,
                       })(
                         <DraftInput
                           size="default"
-                          content={tag.content}
                           onChange={changeTagText(index)}
                         />
                       )}
@@ -150,7 +145,7 @@ const Editor = ({
         </div>
       </AntModal>
     </span>
-  ) : null;
+  );
 };
 
 const Sortable = {

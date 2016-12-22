@@ -8,7 +8,7 @@ import styles from './styles.css';
 
 const Popup = ({
   saveData,
-  changeTeX,
+  changeData,
   closeEditor,
   data: { tex },
 }) => {
@@ -27,7 +27,8 @@ const Popup = ({
         <div className={styles.input}>
           <input
             value={tex}
-            onChange={changeTeX}
+            onBlur={() => setTimeout(closeEditor, 100)}
+            onChange={changeData('tex')}
             autoFocus
             className={classNames(
               styles.tex,
@@ -54,7 +55,7 @@ const Popup = ({
 
 Popup.propTypes = {
   saveData: PropTypes.func.isRequired,
-  changeTeX: PropTypes.func.isRequired,
+  changeData: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
   data: PropTypes.shape({
     tex: PropTypes.string.isRequired,

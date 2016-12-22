@@ -69,20 +69,20 @@ class TeX extends Component {
     );
   }
 
-  changeTeX = (editor) => (event) => { // ✓
-    const tex = event.target.value;
+  changeData = (editor) => (type) => (event) => { // ✓
+    const { value } = event.target;
     this.setState({
       data: {
         ...this.state.data,
         component: editor.type === 'popup'
         ? {
           ...this.state.data.component,
-          tex,
+          [type]: value,
         }
         : this.state.data.component,
         [editor.type]: {
           ...this.state.data[editor.type],
-          tex,
+          [type]: value,
         },
       },
     });
@@ -149,20 +149,27 @@ class TeX extends Component {
     const {
       data,
       editor,
+      location,
     } = this.state;
     return (
       <span
         className={styles.tex}
         onDoubleClick={this.openEditor(editor)}
       >
-        <Preview data={data.component} />
+        <Preview
+          data={data.component}
+          size={location === 'INPUT'
+            ? 'small'
+            : 'default'
+          }
+        />
         {editor.open && React.createElement({
           modal: Modal,
           popup: Popup,
         }[editor.type], {
           data: data[editor.type],
           saveData: this.saveData(editor),
-          changeTeX: this.changeTeX(editor),
+          changeData: this.changeData(editor),
           closeEditor: this.closeEditor,
         },
           null

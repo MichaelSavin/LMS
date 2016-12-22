@@ -50,13 +50,15 @@ class Content extends Component {
           <div className={styles.selectors}>
             <Link
               to={`/${route}/editor`}
-              activeClassName={styles.active}
+              className="ant-btn"
+              activeClassName="ant-btn-primary"
             >
               Редактор
             </Link>
             <Link
               to={`/${route}/view`}
-              activeClassName={styles.active}
+              className="ant-btn"
+              activeClassName="ant-btn-primary"
             >
               Просмотр
             </Link>

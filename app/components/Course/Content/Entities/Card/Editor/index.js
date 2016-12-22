@@ -32,7 +32,23 @@ const Editor = ({
  },
  data,
 }) => {
+  const checkUploads = (_, value, callback) => {
+    // Обработка двух состояний:
+    // 1. Загружается и возращает ошибку, и так как мы не
+    //    загружаем на сервер - то всегда возращает ошибку
+    // 2. Наличие изображения в state компонента - срабатывает
+    //    при инициализации компонента с катинкой
+    if ((value && value.file.status) === 'error' || image) {
+      callback();
+    } else {
+      callback('Необходимо загрузить изображение!');
+    }
+  };
   const validateAndSave = () => {
+    // Дополнительный сброс внутренних
+    // значений Form для корректной работы
+    // валидатора загрузчика изображений
+    resetFields();
     validateFields((err) => {
       if (!err) { saveSettings(); }
     });
@@ -56,37 +72,46 @@ const Editor = ({
     >
       <div className={styles.editor}>
         <div className={styles.content}>
-          <div className={styles.uploader}>
-            <AntUpload.Dragger
-              accept="image/*"
-              onChange={uploadImage}
-              showUploadList={false}
-            >
-              {image
-                ?
-                  <div className={styles.preview}>
-                    <img
-                      src={storage[image]}
-                      role="presentation"
-                      className={styles.image}
-                    />
-                    <AntIcon
-                      type="close"
-                      onClick={removeImage}
-                      className={styles.remove}
-                    />
-                  </div>
-                :
-                  <div className={styles.upload}>
-                    <div className={styles.icon}>
-                      <AntIcon type="inbox" />
-                    </div>
-                    <div className={styles.hint}>
-                      Нажмите или перетащите файлы для загрузки
-                    </div>
-                  </div>
-              }
-            </AntUpload.Dragger>
+          <div
+            className={styles.uploader}
+          >
+            <AntForm.Item>
+              {getFieldDecorator('image', {
+                rules: [{ validator: checkUploads }],
+              })(
+                <AntUpload
+                  type="drag"
+                  accept="image/*"
+                  onChange={uploadImage}
+                  showUploadList={false}
+                >
+                  {image
+                    ?
+                      <div className={styles.preview}>
+                        <img
+                          src={storage[image]}
+                          role="presentation"
+                          className={styles.image}
+                        />
+                        <AntIcon
+                          type="close"
+                          onClick={removeImage}
+                          className={styles.remove}
+                        />
+                      </div>
+                    :
+                      <div className={styles.upload}>
+                        <div className={styles.icon}>
+                          <AntIcon type="inbox" />
+                        </div>
+                        <div className={styles.hint}>
+                          Нажмите или перетащите файлы для загрузки
+                        </div>
+                      </div>
+                  }
+                </AntUpload>
+              )}
+            </AntForm.Item>
           </div>
           <div className={styles.title}>
             <AntInput
@@ -126,6 +151,8 @@ const Editor = ({
             <Preview
               data={data}
               storage={storage}
+              placement="modal"
+              dimensions={{ fullscreen: true }}
             />
           </div>
         </div>

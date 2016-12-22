@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import katex from 'katex';
 import { isEqual } from 'lodash/fp';
+import classNames from 'classnames';
 import 'katex/dist/katex.min.css';
 import styles from './styles.css';
 
@@ -34,18 +35,24 @@ class Preview extends Component {
       );
     } catch (error) {
       katex.render(
-        '?',
+        '???',
         this.refs.tex
       );
     }
   }
 
   render() {
+    const {
+      size,
+    } = this.props;
     return (
       <span className={styles.preview}>
         <span
           ref="tex"
-          className={styles.tex}
+          className={classNames(
+            styles.tex,
+            styles[size]
+          )}
           contentEditable="false"
         />
       </span>
@@ -54,6 +61,11 @@ class Preview extends Component {
 }
 
 Preview.propTypes = {
+  size: PropTypes.oneOf([
+    'small',
+    'large',
+    'default',
+  ]),
   data: PropTypes.shape({
     tex: PropTypes.string.isRequired,
   }).isRequired,
