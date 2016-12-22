@@ -11,6 +11,9 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
+import {
+  entitiesDecorator,
+} from '../../Entities';
 
 // import { isEqual } from 'lodash';
 import EditableCell from './Cell';
@@ -21,31 +24,49 @@ const createDraftEditorStateFromText = (text) =>
     entitiesDecorator,
   );
 
-const convertTextToDraftEditorState = (object, key) =>
+const convertRawToDraftEditorState = (object) =>
   object && ({
-    [key]: object[key].map((row) => ({
-      ...row,
-      content: EditorState
-        .createWithContent(
-        convertFromRaw(row.content),
-        entitiesDecorator,
+    ...object,
+    dataSource: object.dataSource.map((row) => {
+      const newRow = { ...row };
+      (row.editorKeys || []).forEach((key) => {
+        newRow[key] = EditorState
+          .createWithContent(
+            convertFromRaw(row[key]),
+            entitiesDecorator
+        );
+      });
+      return newRow;
+    }),
+    columns: object.columns.map((obj) => ({
+      ...obj,
+      render: (text) => (
+        <EditableCell value={text} isReadOnly />
       ),
     })),
   });
 
-const convertDraftEditorStateToText = (object, key) => ({
-  [key]: object[key].map((row) => ({
-    ...row,
-    content: convertToRaw(
-      row.content
-        .getCurrentContent()
-    ),
-  })),
+const convertDraftEditorStateToRow = (object) => ({
+  ...object,
+  dataSource: object.dataSource.map((row) => {
+    const newRow = { ...row, editorKeys: [] };
+    Object.keys(row).forEach((key) => {
+      if (row[key] instanceof EditorState) {
+        newRow.editorKeys.push(key);
+        newRow[key] = convertToRaw(
+          row[key]
+            .getCurrentContent()
+        );
+      }
+    });
+    return newRow;
+  }),
 });
 
 
 class EditableTable extends Component {
   constructor(props) {
+    console.log(props);
     super(props);
     // this.columns = [{
     //   title: 'name',
@@ -80,7 +101,7 @@ class EditableTable extends Component {
 
     this.state = {
       isReadOnly: true,
-      content: this.props.content,
+      content: convertRawToDraftEditorState(this.props.content),
       temp: false,
     };
   }
@@ -142,14 +163,12 @@ class EditableTable extends Component {
       modal: false,
       content,
     });
-    Entity.replaceData(
+    Entity.mergeData(
       this.props.entityKey, {
-        content: convertDraftEditorStateToText(
-          content,
-          'tags'
-        ),
+        content: convertDraftEditorStateToRow(content),
       }
     );
+    this.context.toggleReadOnly();
   }
 
   render() {
