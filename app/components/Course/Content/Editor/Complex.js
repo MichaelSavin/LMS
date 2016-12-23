@@ -93,8 +93,12 @@ class Editor extends Component {
   })
 
   toggleReadOnly = () => {
+    const { editorState, isReadOnly } = this.state;
     this.setState({
-      isReadOnly: !this.state.isReadOnly,
+      editorState: isReadOnly
+        ? EditorState.moveFocusToEnd(editorState)
+        : editorState,
+      isReadOnly: !isReadOnly,
     });
   }
 
