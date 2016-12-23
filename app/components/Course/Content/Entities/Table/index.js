@@ -10,7 +10,6 @@ import {
 import {
   Entity,
   EditorState,
-  ContentState,
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
@@ -18,8 +17,11 @@ import {
   entitiesDecorator,
 } from '../../Entities';
 
-// import { isEqual } from 'lodash';
 import EditableCell from './Cell';
+
+const renderCell = (text) => (
+  <EditableCell value={text} isReadOnly />
+);
 
 const convertRawOrEmptyState = (raw) => (
   raw
@@ -37,7 +39,7 @@ const convertRawToDraftEditorState = (object) =>
     dataSource: object.dataSource.map((row) => {
       const newRow = { ...row };
       (row.editorKeys || []).forEach((key) => {
-        newRow[key] = EditorState
+        newRow[key] = EditorState // eslint-disable-line fp/no-mutation
           .createWithContent(
             convertFromRaw(row[key]),
             entitiesDecorator
@@ -52,9 +54,7 @@ const convertRawToDraftEditorState = (object) =>
         value={convertRawOrEmptyState(obj.editorStateTtle)}
         isReadOnly
       />),
-      render: (text) => (
-        <EditableCell value={text} isReadOnly />
-      ),
+      render: renderCell,
     })),
   });
 
@@ -64,8 +64,8 @@ const convertDraftEditorStateToRow = (object) => ({
     const newRow = { ...row, editorKeys: [] };
     Object.keys(row).forEach((key) => {
       if (row[key] instanceof EditorState) {
-        newRow.editorKeys.push(key);
-        newRow[key] = convertToRaw(
+        newRow.editorKeys.push(key); // eslint-disable-line fp/no-mutating-methods
+        newRow[key] = convertToRaw( // eslint-disable-line fp/no-mutation
           row[key]
             .getCurrentContent()
         );
@@ -176,13 +176,11 @@ class EditableTable extends Component {
     });
   };
 
-  onDelete = (index) => {
-    return () => {
-      const dataSource = [...this.state.temp.dataSource];
-      dataSource.splice(index, 1);
-      this.setState({ dataSource });
-    };
-  }
+  // onDelete = (index) => () => {
+  //   const dataSource = [...this.state.temp.dataSource];
+  //   dataSource.splice(index, 1);
+  //   this.setState({ dataSource });
+  // };
 
   handleAdd = () => {
     const { count, dataSource } = this.state;
@@ -219,10 +217,7 @@ class EditableTable extends Component {
           ),
         })),
       },
-    }, () => {
-      console.log(this.state);
-      this.context.toggleReadOnly();
-    });
+    }, this.context.toggleReadOnly);
   }
 
   saveSettings = () => {
@@ -267,29 +262,14 @@ EditableTable.defaultProps = {
       title: 'Name',
       dataIndex: 'name',
       width: '40%',
-      render: (text) => (
-        <EditableCell value={text} isReadOnly />
-      ),
+      render: renderCell,
     }, {
       title: 'Age',
       dataIndex: 'age',
     }, {
       title: 'Address',
       dataIndex: 'address',
-    }, /*{
-      title: 'operation',
-      dataIndex: 'operation',
-      render: (text, record, index) => {
-        return (
-          this.state.dataSource.length > 1 ?
-            (
-              <Popconfirm title="Sure to delete?" onConfirm={this.onDelete(index)}>
-                <a href="#">Delete</a>
-              </Popconfirm>
-            ) : null
-        );
-      },
-    }*/],
+    }],
     dataSource: [{
       key: '0',
       name: 'Edward King 0',
