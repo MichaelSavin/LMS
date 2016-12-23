@@ -3,6 +3,9 @@ import {
   Table as AntTable,
   Button,
 } from 'antd';
+import {
+  set,
+} from 'lodash/fp';
 
 import {
   Entity,
@@ -18,11 +21,15 @@ import {
 // import { isEqual } from 'lodash';
 import EditableCell from './Cell';
 
-const createDraftEditorStateFromText = (text) =>
-  EditorState.createWithContent(
-    ContentState.createFromText(text),
-    entitiesDecorator,
-  );
+const convertRawOrEmptyState = (raw) => (
+  raw
+  ? EditorState
+    .createWithContent(
+      convertFromRaw(raw),
+      entitiesDecorator
+    )
+  : EditorState.createEmpty()
+);
 
 const convertRawToDraftEditorState = (object) =>
   object && ({
@@ -40,6 +47,11 @@ const convertRawToDraftEditorState = (object) =>
     }),
     columns: object.columns.map((obj) => ({
       ...obj,
+      editorStateTtle: convertRawOrEmptyState(obj.editorStateTtle),
+      title: (<EditableCell
+        value={convertRawOrEmptyState(obj.editorStateTtle)}
+        isReadOnly
+      />),
       render: (text) => (
         <EditableCell value={text} isReadOnly />
       ),
@@ -61,6 +73,29 @@ const convertDraftEditorStateToRow = (object) => ({
     });
     return newRow;
   }),
+  columns: object.columns.map((col) => (
+    {
+      ...col,
+      editorStateTtle: convertToRaw(
+        col.editorStateTtle
+          .getCurrentContent()
+      ),
+    }
+  )
+  // {
+  //   const newCol = { ...col, editorKeys: [] };
+  //   Object.keys(col).forEach((key) => {
+  //     if (col[key] instanceof EditorState) {
+  //       newCol.editorKeys.push(key);
+  //       newCol[key] = convertToRaw(
+  //         col[key]
+  //           .getCurrentContent()
+  //       );
+  //     }
+  //   });
+  //   return newRow;
+  // }
+  ),
 });
 
 
@@ -100,18 +135,45 @@ class EditableTable extends Component {
     // }];
 
     this.state = {
-      isReadOnly: true,
       content: convertRawToDraftEditorState(this.props.content),
       temp: false,
     };
   }
 
-  onCellChange = (index, key) => {
-    return (value) => {
-      const dataSource = [...this.state.temp.dataSource];
-      dataSource[index][key] = value;
-      this.setState({ dataSource });
-    };
+  onCellChange = (index, key) => (value) => {
+    this.setState({
+      temp: set([
+        'dataSource',
+        index,
+        key,
+      ],
+        value,
+        this.state.temp,
+      ),
+    });
+  };
+
+  onHeadChange = (key) => (value) => {
+    this.setState({
+      temp: set([
+        'columns',
+        key,
+        'title',
+      ],
+        <EditableCell
+          value={value}
+          onChange={this.onHeadChange(key)}
+        />,
+        set([
+          'columns',
+          key,
+          'editorStateTtle',
+        ],
+          value,
+          this.state.temp,
+        ),
+      ),
+    });
   };
 
   onDelete = (index) => {
@@ -143,8 +205,12 @@ class EditableTable extends Component {
     this.setState({
       temp: {
         ...content,
-        columns: columns.map((obj) => ({
+        columns: columns.map((obj, key) => ({
           ...obj,
+          title: (<EditableCell
+            value={obj.editorStateTtle}
+            onChange={this.onHeadChange(key)}
+          />),
           render: (text, record, index) => (
             <EditableCell
               value={text}
@@ -153,7 +219,10 @@ class EditableTable extends Component {
           ),
         })),
       },
-    }, this.context.toggleReadOnly);
+    }, () => {
+      console.log(this.state);
+      this.context.toggleReadOnly();
+    });
   }
 
   saveSettings = () => {
