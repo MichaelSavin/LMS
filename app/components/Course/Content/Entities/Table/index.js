@@ -19,9 +19,16 @@ import {
 import EditableCell from './Cell';
 // import styles from './styles.css';
 
-const renderCell = (text) => (
-  <EditableCell value={text} isReadOnly />
-);
+const renderCell = (columnKey) => ( // eslint-disable-line react/display-name
+    text, record, index
+  ) => {
+  console.log(text);
+  console.log(record);
+  console.log(index);
+  return (
+    <EditableCell index={index} value={text} columnKey={columnKey} isReadOnly />
+  );
+};
 
 const convertRawOrEmptyState = (raw) => (
   raw
@@ -47,14 +54,16 @@ const convertRawToDraftEditorState = (object) =>
       });
       return newRow;
     }),
-    columns: object.columns.map((obj) => ({
+    columns: object.columns.map((obj, columnKey) => ({
       ...obj,
       editorStateTtle: convertRawOrEmptyState(obj.editorStateTtle),
       title: (<EditableCell
+        index={-1}
         value={convertRawOrEmptyState(obj.editorStateTtle)}
         isReadOnly
+        columnKey={columnKey}
       />),
-      render: renderCell,
+      render: renderCell(columnKey),
     })),
   });
 
@@ -106,20 +115,22 @@ class EditableTable extends Component {
     });
   };
 
-  onHeadChange = (key) => (value) => {
+  onHeadChange = (columnKey) => (value) => {
     this.setState({
       temp: set([
         'columns',
-        key,
+        columnKey,
         'title',
       ],
         <EditableCell
+          index={-1}
           value={value}
-          onChange={this.onHeadChange(key)}
+          onChange={this.onHeadChange(columnKey)}
+          columnKey={columnKey}
         />,
         set([
           'columns',
-          key,
+          columnKey,
           'editorStateTtle',
         ],
           value,
@@ -159,13 +170,17 @@ class EditableTable extends Component {
         columns: columns.map((obj, key) => ({
           ...obj,
           title: (<EditableCell
+            index={-1}
             value={obj.editorStateTtle}
             onChange={this.onHeadChange(key)}
+            columnKey={key}
           />),
           render: (text, record, index) => (
             <EditableCell
+              index={index}
               value={text}
               onChange={this.onCellChange(index, obj.dataIndex)}
+              columnKey={key}
             />
           ),
         })),
@@ -213,7 +228,6 @@ EditableTable.defaultProps = {
       title: 'Name',
       dataIndex: 'name',
       width: '40%',
-      render: renderCell,
     }, {
       title: 'Age',
       dataIndex: 'age',
@@ -224,7 +238,7 @@ EditableTable.defaultProps = {
     dataSource: [{
       key: '0',
       name: 'Edward King 0',
-      age: '32',
+      age: '31',
       address: 'London, Park Lane no. 0',
     }, {
       key: '1',

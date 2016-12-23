@@ -39,6 +39,8 @@ EditableCell.propTypes = {
   onChange: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,
+  columnKey: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 EditableCell.defaultProps = {
