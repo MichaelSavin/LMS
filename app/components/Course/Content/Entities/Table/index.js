@@ -16,8 +16,8 @@ import {
 import {
   entitiesDecorator,
 } from '../../Entities';
-
 import EditableCell from './Cell';
+// import styles from './styles.css';
 
 const renderCell = (text) => (
   <EditableCell value={text} isReadOnly />

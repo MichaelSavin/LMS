@@ -3,21 +3,24 @@ import React, {
 } from 'react';
 import {
   EditorState,
-  convertFromRaw,
+  // convertFromRaw,
 } from 'draft-js';
-import {
-  entitiesDecorator,
-} from '../../../Entities';
+// import {
+//   entitiesDecorator,
+// } from '../../../Entities';
+import styles from './styles.css';
+
 
 import { Input as DraftInput } from '../../../Editor';
 
 class EditableCell extends React.Component {
 
   render() {
-    const { value, isReadOnly, onChange } = this.props;
+    const { value, isReadOnly, onChange, className } = this.props;
     return (<div className="editable-cell">
       <div className="editable-cell-input-wrapper">
         <DraftInput
+          className={className}
           value={
             value instanceof EditorState
             ? value
@@ -35,6 +38,11 @@ EditableCell.propTypes = {
   value: PropTypes.object.isRequired,
   onChange: PropTypes.func,
   isReadOnly: PropTypes.bool,
+  className: PropTypes.string,
+};
+
+EditableCell.defaultProps = {
+  className: styles.cell,
 };
 
 export default EditableCell;

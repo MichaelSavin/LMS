@@ -69,12 +69,12 @@ class DraftInput extends Component {
       readOnly,
       popupIsOpen,
     } = this.state;
-    const { isReadOnly } = this.props;
+    const { isReadOnly, className } = this.props;
     const {
       value: editorState,
     } = this.props;
     return (
-      <div className={styles.input}>
+      <div className={className || styles.input}>
         <Draft
           ref="editor"
           onBlur={this.setFocusStatus}
@@ -85,7 +85,7 @@ class DraftInput extends Component {
           customStyleMap={customStyleMap}
           handleKeyCommand={this.handleKeyCommand}
         />
-        <div className={styles.icon}>
+        {!className && <div className={styles.icon}>
           <Button
             size="small"
             onClick={() => {
@@ -99,7 +99,7 @@ class DraftInput extends Component {
           >
             <Icon type="function" />
           </Button>
-        </div>
+        </div>}
         <Popup
           isFocused={popupIsOpen}
           editorRef={this.refs.editor}
@@ -120,6 +120,7 @@ DraftInput.propTypes = {
   value: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   isReadOnly: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default DraftInput;
