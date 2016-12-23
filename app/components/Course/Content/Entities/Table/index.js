@@ -73,29 +73,13 @@ const convertDraftEditorStateToRow = (object) => ({
     });
     return newRow;
   }),
-  columns: object.columns.map((col) => (
-    {
-      ...col,
-      editorStateTtle: convertToRaw(
-        col.editorStateTtle
-          .getCurrentContent()
-      ),
-    }
-  )
-  // {
-  //   const newCol = { ...col, editorKeys: [] };
-  //   Object.keys(col).forEach((key) => {
-  //     if (col[key] instanceof EditorState) {
-  //       newCol.editorKeys.push(key);
-  //       newCol[key] = convertToRaw(
-  //         col[key]
-  //           .getCurrentContent()
-  //       );
-  //     }
-  //   });
-  //   return newRow;
-  // }
-  ),
+  columns: object.columns.map((col) => ({
+    ...col,
+    editorStateTtle: convertToRaw(
+      col.editorStateTtle
+        .getCurrentContent()
+    ),
+  })),
 });
 
 
@@ -103,37 +87,6 @@ class EditableTable extends Component {
   constructor(props) {
     console.log(props);
     super(props);
-    // this.columns = [{
-    //   title: 'name',
-    //   dataIndex: 'name',
-    //   width: '40%',
-    //   render: (text, record, index) => (
-    //     <EditableCell
-    //       value={text}
-    //       onChange={this.onCellChange(index, 'name')}
-    //     />
-    //   ),
-    // }, {
-    //   title: 'age',
-    //   dataIndex: 'age',
-    // }, {
-    //   title: 'address',
-    //   dataIndex: 'address',
-    // }, {
-    //   title: 'operation',
-    //   dataIndex: 'operation',
-    //   render: (text, record, index) => {
-    //     return (
-    //       this.state.dataSource.length > 1 ?
-    //         (
-    //           <Popconfirm title="Sure to delete?" onConfirm={this.onDelete(index)}>
-    //             <a href="#">Delete</a>
-    //           </Popconfirm>
-    //         ) : null
-    //     );
-    //   },
-    // }];
-
     this.state = {
       content: convertRawToDraftEditorState(this.props.content),
       temp: false,
@@ -245,8 +198,6 @@ class EditableTable extends Component {
     </div>);
   }
 }
-
-// const Comp = ({ text }) => (<h1>{text}</h1>)
 
 EditableTable.propTypes = {
   entityKey: PropTypes.string.isRequired,
