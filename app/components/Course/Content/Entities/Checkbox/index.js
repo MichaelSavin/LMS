@@ -1,8 +1,7 @@
-
-// Состояние редактора не изменяется при выборе ответов - facebook/draft-js#185
-// Нужно кликнуть по редактору
-
-import React, { Component, PropTypes } from 'react';
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
 import {
   set,
   update,
@@ -17,22 +16,32 @@ import {
 } from 'antd';
 import { Entity } from 'draft-js';
 import localForage from 'localforage';
-import Editor from './Editor';
 import Preview from './Preview';
+import Editor from './Editor';
 import styles from './styles.css';
 
 class Checkbox extends Component {
 
   constructor(props) {
     super(props);
-    const { content } = props;
+    const {
+      content: {
+        editor,
+        component,
+      },
+    } = props;
     this.state = {
-      temp: content,
       drag: null,
-      isEditing: false,
-      content,
+      editing: false,
+      content: {
+        editor,
+        component,
+      },
     };
-    this.images = {};
+    this.storage = {
+      crops: {},
+      images: {},
+    };
   }
 
   componentDidMount() {
@@ -46,8 +55,9 @@ class Checkbox extends Component {
     if (!isEqual(
     ...[this.state, nextState]
       .map((state) => state
-        .temp
-        .answers
+        .content
+        .component
+        .options
         .map((answer) =>
           answer.image
         )
@@ -63,120 +73,40 @@ class Checkbox extends Component {
   }
 
   receiveImages = (state) => {
-    state.temp.answers.forEach(({
-      image,
-    }) => {
-      if (image) {
-        localForage
-          .getItem(image)
-          .then((value) => {
-            this.images[image] = value;
-            this.forceUpdate();
-          });
-      }
-    });
+    state
+      .content
+      .editor
+      .options
+      .forEach(({
+        image,
+      }) => {
+        if (image) {
+          localForage
+            .getItem(image.source)
+            .then((value) => {
+              this.storage.images[
+                image.source
+              ] = value;
+              this.forceUpdate();
+            });
+        }
+      });
   }
 
-  removeImage = (index) => (event) => {
+  // Заменить на ChangeData
+  removeOptionImage = (index) => (event) => {
     event.stopPropagation();
     this.setState({
-      temp: set([
-        'answers',
+      content: set([
+        'editor',
+        'options',
         index,
         'image',
       ],
         undefined,
-        this.state.temp,
-      ),
-    });
-  }
-
-  changeText = (index) => (event) => {
-    this.setState({
-      temp: set([
-        'answers',
-        index,
-        'value',
-      ],
-        event.target.value,
-        this.state.temp,
-      ),
-    });
-  }
-
-  changeQuestion = (e) => {
-    this.setState({
-      temp: {
-        ...this.state.temp,
-        question: e.target.value,
-      },
-    });
-  }
-
-  toggleAnswer = (answers) => {
-    Entity.replaceData(
-      this.props.entityKey, {
-        content: {
-          answers,
-          options: this
-            .state
-            .options,
-        },
-      },
-    );
-    this.setState({
-      answers,
-    });
-  }
-
-  toggleChecked = (index) => (e) => {
-    this.setState({
-      content: set([
-        'answers',
-        index,
-        'checked',
-      ],
-        e.target.checked,
         this.state.content,
       ),
     });
-  }
-
-  isRight = (index) => (e) => {
-    this.setState({
-      temp: set([
-        'answers',
-        index,
-        'isRight',
-      ],
-        e.target.checked,
-        this.state.temp,
-      ),
-    });
-  }
-
-  closeEditor = () => {
-    this.setState({
-      isEditing: false,
-      temp: this.state.content,
-    });
-    this.context.toggleReadOnly();
-  }
-
-  saveSettings = () => {
-    const content =
-      this.state.temp;
-    this.setState({
-      isEditing: false,
-      content,
-    });
-    Entity.replaceData(
-      this.props.entityKey, {
-        content,
-      }
-    );
-    this.context.toggleReadOnly();
-    console.log(content);
   }
 
   uploadImage = (index) => (files) => {
@@ -193,122 +123,165 @@ class Checkbox extends Component {
         name,
         reader.result,
       ).then(() => {
+        this.storage.images[name] = reader.result;
         this.setState({
-          temp: set([
-            'answers',
+          content: set([
+            'editor',
+            'options',
             index,
             'image',
+            'source',
           ],
             name,
             this.state.temp,
           ),
         });
-        this.images[name] = reader.result;
-        this.forceUpdate();
       });
     };
   }
 
-  addStep = () => {
+  addOption = () => {
     this.setState({
-      temp: update(
-        'answers',
-        (answers) => answers.concat([{
-          value: 'Новое событие',
+      content: update([
+        'editor',
+        'options',
+      ],
+        (options) => options.concat([{
+          text: 'Новый вариант',
+          image: undefined,
+          checked: false,
+          correct: false,
         }]),
-        this.state.temp,
+        this.state.content,
       ),
     }, this.forceUpdate);
   }
 
-  removeStep = (index) => () => {
+  removeOption = (index) => () => {
     this.setState({
-      temp: update(
-        'answers',
-        (answers) => remove(
-          (answer) => answers.indexOf(
-            answer
-          ) === index,
-          answers,
+      content: update([
+        'editor',
+        'options',
+      ],
+        (options) => remove(
+          (option) => options.indexOf(option) === index,
+          options,
         ),
-        this.state.temp,
+        this.state.content,
       ),
     }, this.forceUpdate);
   }
 
-  dragStep = ({ oldIndex, newIndex }) => {
+  dragOption = ({ oldIndex, newIndex }) => {
     this.setState({
-      temp: {
-        question: this.state.temp.question,
-        answers: arrayMove(
-          this.state.temp.answers,
+      content: set([
+        'editor',
+        'options',
+      ],
+        arrayMove(
+          this.state
+            .content
+            .editor
+            .options,
           oldIndex,
           newIndex,
         ),
-      },
+        this.state.content,
+      ),
     });
   };
 
-  toggleEditor = () => {
+  changeContent = (path) => (event) => {
     this.setState({
-      temp: this.state.content,
-      isEditing: true,
+      content: set([
+        'editor',
+        ...path,
+      ],
+        event.target.value,
+        this.state.content,
+      ),
     });
-    this.context.toggleReadOnly();
+  }
+
+  openEditor = () => {
+    this.setState({
+      content: {
+        ...this.state.content,
+        editor: this.state
+          .content
+          .component,
+      },
+      editing: true,
+    }, this.context.toggleReadOnly);
+  }
+
+  closeEditor = () => {
+    this.setState({
+      editing: false,
+    }, this.context.toggleReadOnly);
+  }
+
+  saveSettings = () => {
+    const content =
+      this.state.temp;
+    Entity.replaceData(
+      this.props.entityKey, {
+        content,
+      }
+    );
+    this.setState({
+      editing: false,
+      content,
+    }, this.context.toggleReadOnly);
   }
 
   render() {
     const {
-      temp,
-      content,
-      isEditing,
+      content: {
+        editor,
+        component,
+      },
+      editing,
     } = this.state;
-    console.log(this.state);
     return (
-      <div
-        className={styles.checkbox}
-      >
-        <div className={styles.actions}>
+      <div className={styles.checkbox}>
+        <div className={styles.preview}>
           <Preview
-            data={isEditing
-              ? temp
-              : content
-            }
-            images={this.images}
-            toggleChecked={this.toggleChecked}
-          />
+          storage={this.storage}
+          content={editing ? editor : component}
+        />
         </div>
-        {isEditing &&
-          <Editor
-            ref={this.saveFormRef}
-            data={temp}
-            addStep={this.addStep}
-            removeStep={this.removeStep}
-            dragStep={this.dragStep}
-            saveSettings={this.saveSettings}
+        {editing &&
+          <div className={styles.editor}>
+            <Editor
+            content={editor}
+            storage={this.storage}
+            addOption={this.addOption}
+            dragOption={this.dragOption}
             closeEditor={this.closeEditor}
-            changeText={this.changeText}
-            changeQuestion={this.changeQuestion}
-            uploadImage={this.uploadImage}
-            removeImage={this.removeImage}
-            images={this.images}
-            isRight={this.isRight}
+            removeOption={this.removeOption}
+            saveSettings={this.saveSettings}
+            changeContent={this.changeContent}
+            uploadOptionImage={this.uploadImage}
+            removeOptionImage={this.removeImage}
           />
+          </div>
         }
-        {isEditing ?
-          <AntButton
-            type="primary"
-            icon="check-circle"
-            className={styles.edit}
-            onClick={this.saveSettings}
-          /> :
-            <AntButton
-              type="primary"
-              icon="edit"
-              className={styles.edit}
-              onClick={this.toggleEditor}
-            />
-        }
+        <div className={styles.actions}>
+          {editing /* eslint react/jsx-indent-props: 0, react/jsx-closing-bracket-location: 0 */
+            ? <AntButton
+                type="primary"
+                icon="check-circle"
+                className={styles.edit}
+              />
+            : <AntButton
+                type="primary"
+                icon="edit"
+                onClick={this.openEditor}
+                className={styles.edit}
+              />
+          }
+        </div>
       </div>
     );
   }
@@ -316,13 +289,17 @@ class Checkbox extends Component {
 
 Checkbox.propTypes = {
   entityKey: PropTypes.string.isRequired,
+  question: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    answers: PropTypes.arrayOf(
+    options: PropTypes.arrayOf(
       PropTypes.shape({
         text: PropTypes.string,
-        image: PropTypes.string,
-        checked: PropTypes.bool,
-        isRight: PropTypes.bool,
+        image: PropTypes.shape({
+          text: PropTypes.string.isRequired,
+          source: PropTypes.string.isRequired,
+        }),
+        checked: PropTypes.bool.isRequired,
+        correct: PropTypes.bool.isRequired,
       }).isRequired,
     ).isRequired,
   }).isRequired,
@@ -331,12 +308,27 @@ Checkbox.propTypes = {
 Checkbox.defaultProps = {
   content: {
     question: 'Где могут жить утки?',
-    answers: [
-      { value: 'Здесь', alt: 'Альтернативный текст', checked: false, image: null, isRight: false },
-      { value: 'Тут', alt: 'Альтернативный текст', checked: false, image: null, isRight: false },
-      { value: 'Вот же', alt: 'Альтернативный текст', checked: false, image: null, isRight: false },
-      { value: 'Ага, вот отличное место', alt: 'Альтернативный текст', checked: false, image: null, isRight: false },
-    ],
+    options: [{
+      text: 'Здесь',
+      image: undefined,
+      checked: false,
+      correct: false,
+    }, {
+      text: 'Тут',
+      image: undefined,
+      checked: false,
+      correct: false,
+    }, {
+      text: 'Вот же',
+      image: undefined,
+      checked: false,
+      correct: false,
+    }, {
+      text: 'Ага, вот отличное место',
+      image: undefined,
+      checked: false,
+      correct: false,
+    }],
   },
 };
 
