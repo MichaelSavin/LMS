@@ -8,9 +8,9 @@ import {
 // import {
 //   entitiesDecorator,
 // } from '../../../Entities';
+
+import Dropdown from '../Dropdown';
 import styles from './styles.css';
-
-
 import { Input as DraftInput } from '../../../Editor';
 
 class EditableCell extends React.Component {
@@ -30,6 +30,7 @@ class EditableCell extends React.Component {
           isReadOnly={isReadOnly}
         />
       </div>
+      {!isReadOnly && <Dropdown />}
     </div>);
   }
 }

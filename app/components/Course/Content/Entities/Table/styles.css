@@ -1,8 +1,10 @@
 .table {
   /* ... */
+  th {
+    position: relative;
+  }
 }
 
-.cell {
-  /* ... */
+.table th {
+  position: relative !important;
 }
-

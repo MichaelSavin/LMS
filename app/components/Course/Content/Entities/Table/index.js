@@ -17,18 +17,18 @@ import {
   entitiesDecorator,
 } from '../../Entities';
 import EditableCell from './Cell';
-// import styles from './styles.css';
+import styles from './styles.css';
 
 const renderCell = (columnKey) => ( // eslint-disable-line react/display-name
     text, record, index
-  ) => {
-  console.log(text);
-  console.log(record);
-  console.log(index);
-  return (
+  ) => (
+  // console.log(text);
+  // console.log(record);
+  // console.log(index);
+
     <EditableCell index={index} value={text} columnKey={columnKey} isReadOnly />
   );
-};
+
 
 const convertRawOrEmptyState = (raw) => (
   raw
@@ -189,15 +189,38 @@ class EditableTable extends Component {
   }
 
   saveSettings = () => {
-    const content =
-      this.state.temp;
+    const {
+      temp: { columns },
+      temp,
+    } =
+      this.state;
     this.setState({
       modal: false,
-      content,
+      content: temp,
+      temp: {
+        ...temp,
+        columns: columns.map((obj, key) => ({
+          ...obj,
+          title: (<EditableCell
+            index={-1}
+            value={obj.editorStateTtle}
+            isReadOnly
+            columnKey={key}
+          />),
+          render: (text, record, index) => (
+            <EditableCell
+              index={index}
+              value={text}
+              isReadOnly
+              columnKey={key}
+            />
+          ),
+        })),
+      },
     });
     Entity.mergeData(
       this.props.entityKey, {
-        content: convertDraftEditorStateToRow(content),
+        content: convertDraftEditorStateToRow(temp),
       }
     );
     this.context.toggleReadOnly();
@@ -205,11 +228,11 @@ class EditableTable extends Component {
 
   render() {
     const { dataSource, columns } = this.state.temp || this.state.content;
-    return (<div>
+    return (<div className={styles.table}>
       <Button className="editable-add-btn" type="ghost" onClick={this.editTable}>Редактировать</Button>
       <Button className="editable-add-btn" type="ghost" onClick={this.saveSettings}>Сохранить</Button>
       <Button className="editable-add-btn" type="ghost" onClick={this.handleAdd}>Add</Button>
-      <AntTable bordered dataSource={dataSource} columns={columns} />
+      <AntTable bordered dataSource={dataSource} columns={columns} className={styles.table} />
     </div>);
   }
 }
