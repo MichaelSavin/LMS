@@ -3,6 +3,29 @@
   user-select: none;
   display: inline-block;
   -webkit-user-select: none;
+  border: 1px solid #E9E9E9;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  width: 100%;
+  transition: all 0.1s ease;
+}
+
+.checkbox:hover {
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+  border-color: transparent;
+}
+
+.checkbox:hover .edit {
+  visibility: visible;
+}
+
+.edit {
+  position: absolute;
+  top: -29px;
+  right: 10px;
+  transition: all 0.2s ease;
+  visibility: hidden;
+  border-radius: 4px 4px 0 0 !important;
 }
 
 :global .ant-checkbox-group .ant-checkbox-wrapper {
