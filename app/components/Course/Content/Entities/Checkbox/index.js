@@ -2,18 +2,13 @@ import React, {
   Component,
   PropTypes,
 } from 'react';
-import {
-  set,
-  update,
-  remove,
-  isEqual,
-} from 'lodash/fp';
-import {
-  arrayMove,
-} from 'react-sortable-hoc';
+// import {
+//   arrayMove,
+// } from 'react-sortable-hoc';
 import {
   Button as AntButton,
 } from 'antd';
+import Immutable, { fromJS } from 'immutable';
 import { Entity } from 'draft-js';
 import localForage from 'localforage';
 import Preview from './Preview';
@@ -33,186 +28,175 @@ class Checkbox extends Component {
     this.state = {
       drag: null,
       editing: false,
-      content: {
+      content: fromJS({
         editor,
         component,
-      },
-    };
-    this.storage = {
-      crops: {},
-      images: {},
+      }),
     };
   }
 
   componentDidMount() {
-    this.receiveImages(this.state);
+    this.receiveImages();
   }
 
   shouldComponentUpdate(
     nextProps,
     nextState
   ) {
-    if (!isEqual(
-    ...[this.state, nextState]
-      .map((state) => state
-        .content
-        .component
-        .options
-        .map((answer) =>
-          answer.image
-        )
-      )
-    )) {
-      this.receiveImages(this.state);
-      return false;
-    }
-    return !isEqual(
-      this.state,
-      nextState
+    return Immutable.is(
+      this.state.content,
+      nextState.content
+    ) || (
+      this.state.editing !==
+      nextState.editing
     );
   }
 
-  receiveImages = (state) => {
-    state
-      .content
-      .editor
-      .options
-      .forEach(({
-        image,
-      }) => {
-        if (image) {
-          localForage
-            .getItem(image.source)
-            .then((value) => {
-              this.storage.images[
-                image.source
-              ] = value;
-              this.forceUpdate();
-            });
-        }
-      });
-  }
-
-  // Заменить на ChangeData
-  removeOptionImage = (index) => (event) => {
-    event.stopPropagation();
-    this.setState({
-      content: set([
-        'editor',
-        'options',
-        index,
-        'image',
-      ],
-        undefined,
-        this.state.content,
-      ),
+  receiveImages = () => {
+    this.state.content.getIn([
+      'editor',
+      'options',
+    ]).forEach((
+      { image },
+      index,
+    ) => {
+      if (image) {
+        localForage
+          .getItem(image.get('name'))
+          .then((data) => {
+            this.setState(
+              ({ content }) => ({
+                content: content.setIn([
+                  'editor',
+                  'options',
+                  index,
+                  'image',
+                  'data',
+                ],
+                  data
+                ),
+              })
+            );
+          });
+      }
     });
   }
 
   uploadImage = (index) => (files) => {
-    const file = files[0].slice(0);
-    const name = [
-      files[0].lastModified,
-      files[0].size,
-      files[0].name,
-    ].join('');
+    const image = {
+      data: files[0].slice(0),
+      name: [
+        files[0].lastModified,
+        files[0].size,
+        files[0].name,
+      ].join(''),
+    };
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => { // eslint-disable-line
+    reader.readAsDataURL(image.data);
+    // eslint-disable-next-line
+    reader.onloadend = () => {
+      // TODO
+      // Перенести зазрузку изображений
+      // в localStorage в saveSettings
       localForage.setItem(
-        name,
+        image.name,
         reader.result,
       ).then(() => {
-        this.storage.images[name] = reader.result;
-        this.setState({
-          content: set([
-            'editor',
-            'options',
-            index,
-            'image',
-            'source',
-          ],
-            name,
-            this.state.temp,
-          ),
-        });
+        this.setState(
+          ({ content }) => ({
+            content: content.setIn([
+              'editor',
+              'options',
+              index,
+              'image',
+            ],
+              fromJS({
+                name: image.name,
+                data: reader.result,
+              })
+            ),
+          })
+        );
       });
     };
   }
 
   addOption = () => {
-    this.setState({
-      content: update([
-        'editor',
-        'options',
-      ],
-        (options) => options.concat([{
-          text: 'Новый вариант',
-          image: undefined,
-          checked: false,
-          correct: false,
-        }]),
-        this.state.content,
-      ),
-    }, this.forceUpdate);
+    this.setState(
+      ({ content }) => ({
+        content: content.updateIn([
+          'editor',
+          'options',
+        ],
+          Immutable.List.of(),
+          // eslint-disable-next-line
+          (options) => options.push(
+            fromJS({
+              text: 'Новый вариант',
+              image: undefined,
+              checked: false,
+              correct: false,
+            }),
+          ),
+        ),
+      })
+    );
   }
 
   removeOption = (index) => () => {
-    this.setState({
-      content: update([
-        'editor',
-        'options',
-      ],
-        (options) => remove(
-          (option) => options.indexOf(option) === index,
-          options,
-        ),
-        this.state.content,
-      ),
-    }, this.forceUpdate);
+    this.setState(
+      ({ content }) => ({
+        content: content.removeIn([
+          'editor',
+          'options',
+          index,
+        ]),
+      })
+    );
   }
 
-  dragOption = ({ oldIndex, newIndex }) => {
-    this.setState({
-      content: set([
-        'editor',
-        'options',
-      ],
-        arrayMove(
-          this.state
-            .content
-            .editor
-            .options,
-          oldIndex,
-          newIndex,
-        ),
-        this.state.content,
-      ),
-    });
-  };
+  // dragOption = ({ oldIndex, newIndex }) => {
+  //   this.setState({
+  //     content: set([
+  //       'editor',
+  //       'options',
+  //     ],
+  //       arrayMove(
+  //         this.state
+  //           .content
+  //           .editor
+  //           .options,
+  //         oldIndex,
+  //         newIndex,
+  //       ),
+  //       this.state.content,
+  //     ),
+  //   });
+  // };
 
   changeContent = (path) => (event) => {
-    this.setState({
-      content: set([
-        'editor',
-        ...path,
-      ],
-        event.target.value,
-        this.state.content,
-      ),
-    });
+    this.setState(
+      ({ content }) => ({
+        content: content.setIn([
+          'editor',
+          ...path,
+        ],
+          event.target.value
+        ),
+      })
+    );
   }
 
   openEditor = () => {
-    this.setState({
-      content: {
-        ...this.state.content,
-        editor: this.state
-          .content
-          .component,
-      },
+    this.setState(({
+      content,
+    }) => ({
+      content: content.set(
+        'editor',
+        content.get('component'),
+      ),
       editing: true,
-    }, this.context.toggleReadOnly);
+    }), this.context.toggleReadOnly);
   }
 
   closeEditor = () => {
@@ -222,16 +206,19 @@ class Checkbox extends Component {
   }
 
   saveSettings = () => {
-    const content =
-      this.state.temp;
+    const { content } = this.state;
+    const newContent = content.set(
+      'component',
+      content.get('editor'),
+    );
     Entity.replaceData(
       this.props.entityKey, {
-        content,
+        content: newContent.toJS(),
       }
     );
     this.setState({
       editing: false,
-      content,
+      content: newContent,
     }, this.context.toggleReadOnly);
   }
 
@@ -246,25 +233,21 @@ class Checkbox extends Component {
     return (
       <div className={styles.checkbox}>
         <div className={styles.preview}>
-          <Preview
-          storage={this.storage}
-          content={editing ? editor : component}
-        />
+          <Preview content={editing ? editor : component} />
         </div>
         {editing &&
           <div className={styles.editor}>
             <Editor
-            content={editor}
-            storage={this.storage}
-            addOption={this.addOption}
-            dragOption={this.dragOption}
-            closeEditor={this.closeEditor}
-            removeOption={this.removeOption}
-            saveSettings={this.saveSettings}
-            changeContent={this.changeContent}
-            uploadOptionImage={this.uploadImage}
-            removeOptionImage={this.removeImage}
-          />
+              content={editor}
+              addOption={this.addOption}
+              dragOption={this.dragOption}
+              closeEditor={this.closeEditor}
+              removeOption={this.removeOption}
+              saveSettings={this.saveSettings}
+              changeContent={this.changeContent}
+              uploadOptionImage={this.uploadImage}
+              removeOptionImage={this.removeImage}
+            />
           </div>
         }
         <div className={styles.actions}>
@@ -295,8 +278,13 @@ Checkbox.propTypes = {
       PropTypes.shape({
         text: PropTypes.string,
         image: PropTypes.shape({
+          name: PropTypes.string.isRequired,
           text: PropTypes.string.isRequired,
-          source: PropTypes.string.isRequired,
+          data: PropTypes.string.isRequired,
+          crop: {
+            size: PropTypes.object.isRequired,
+            data: PropTypes.string.isRequired,
+          },
         }),
         checked: PropTypes.bool.isRequired,
         correct: PropTypes.bool.isRequired,
