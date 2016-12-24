@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Table as AntTable,
-  Button,
 } from 'antd';
 import {
   set,
@@ -19,6 +18,7 @@ import {
   entitiesDecorator,
 } from '../../Entities';
 import Cell from './Cell';
+import Editor from './Editor';
 import styles from './styles.css';
 
 const renderCell = (value) => (
@@ -129,12 +129,13 @@ class Table extends Component {
 
   addColumn = (columnKey) => {
     const dataIndex = `index${random(0, 999)}`;
-    const dataSource = this.state.temp.dataSource
+    const { temp } = this.state;
+    const dataSource = temp.dataSource
       .map((obj) => ({
         ...obj,
         [dataIndex]: EditorState.createEmpty(),
       }));
-    const columns = [...this.state.temp.columns];
+    const columns = [...temp.columns];
     const newCol = {
       editorStateTtle: EditorState.createEmpty(),
       dataIndex,
@@ -142,6 +143,7 @@ class Table extends Component {
     columns.splice(columnKey, 0, newCol); // eslint-disable-line
     this.setState({
       temp: {
+        ...temp,
         columns: this.makeEditableColumns(columns),
         dataSource,
       },
@@ -149,10 +151,17 @@ class Table extends Component {
   }
 
   delColumn = (columnKey) => {
-    const { columns, dataSource } = this.state.temp;
+    const {
+      temp: {
+        columns,
+        dataSource,
+      },
+      temp,
+    } = this.state;
     const { dataIndex } = columns[columnKey];
     this.setState({
       temp: {
+        ...temp,
         dataSource: dataSource
           .map((obj) => omit(dataIndex, obj)),
         columns: this.makeEditableColumns(
@@ -182,16 +191,17 @@ class Table extends Component {
   }
 
   delRow = (columnKey, index) => {
-    const newDataSource = [...this.state.temp.dataSource];
-    newDataSource.splice(index, 1); // eslint-disable-line
-    this.setState({
-      temp: set([
-        'dataSource',
-      ],
-        newDataSource,
-        this.state.temp,
-      ),
-    });
+    const { dataSource } = this.state.temp;
+    if (dataSource.length > 1) {
+      this.setState({
+        temp: set([
+          'dataSource',
+        ],
+          dataSource.filter((val, key) => key !== index),
+          this.state.temp,
+        ),
+      });
+    }
   }
 
   headChange = (columnKey) => (value) => {
@@ -256,16 +266,26 @@ class Table extends Component {
       })),
     };
 
+    Entity.mergeData(
+      this.props.entityKey, {
+        content: convertDraftEditorStateToRow(temp),
+      }
+    );
+
     this.setState({
       content,
       temp: false,
       isReadOnly: true,
     });
-    Entity.mergeData(
-      this.props.entityKey, {
-        content: convertDraftEditorStateToRow(content),
-      }
-    );
+
+    this.context.toggleReadOnly();
+  }
+
+  closeEditor = () => {
+    this.setState({
+      temp: false,
+      isReadOnly: true,
+    });
     this.context.toggleReadOnly();
   }
 
@@ -289,19 +309,67 @@ class Table extends Component {
     ),
   }))
 
+  editorOnChange = (type) => (e) => {
+    console.log(type);
+    if (type === 'equalColumnsWidth') {
+      this.equalColumnWidthTrigger(e.target.checked);
+    } else {
+      this.setState({
+        temp: set([
+          'tableStyles',
+          type,
+        ],
+          e.target.checked,
+          this.state.temp,
+        ),
+      });
+    }
+  }
+
+  equalColumnWidthTrigger = (isEqual) => {
+    const {
+      temp: {
+        columns,
+      },
+      temp,
+    } = this.state;
+    this.setState({
+      temp: {
+        ...temp,
+        tableStyles: set([
+          'equalColumnsWidth',
+        ],
+          isEqual,
+          temp.tableStyles,
+        ),
+        columns: columns.map((obj) => ({
+          ...obj,
+          width: isEqual ? `${100 / columns.length}%` : null,
+        })),
+      },
+    });
+  }
+
   render() {
-    const { dataSource, columns } = this.state.temp || this.state.content;
+    const { dataSource, columns, tableStyles } = this.state.temp || this.state.content;
     const { isReadOnly } = this.state;
+    console.log(tableStyles.hideHeader);
     return (<div className={styles.table} onDoubleClick={isReadOnly && this.editMode}>
       <AntTable
         bordered
         dataSource={dataSource}
         columns={columns}
         pagination={false}
+        showHeader={!tableStyles.hideHeader}
       />
-      {!isReadOnly && <Button className="editable-add-btn" type="ghost" onClick={this.saveSettings}>
-        Сохранить
-      </Button>}
+      {!isReadOnly &&
+        <Editor
+          saveSettings={this.saveSettings}
+          closeEditor={this.closeEditor}
+          onChange={this.editorOnChange}
+          tableStyles={tableStyles}
+        />
+      }
     </div>);
   }
 }
@@ -316,6 +384,7 @@ Table.propTypes = {
 
 Table.defaultProps = {
   content: {
+    tableStyles: {},
     columns: [{
       title: 'Name',
       dataIndex: 'name',
