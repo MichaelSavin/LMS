@@ -155,24 +155,25 @@ class Checkbox extends Component {
     );
   }
 
-  // dragOption = ({ oldIndex, newIndex }) => {
-  //   this.setState({
-  //     content: set([
-  //       'editor',
-  //       'options',
-  //     ],
-  //       arrayMove(
-  //         this.state
-  //           .content
-  //           .editor
-  //           .options,
-  //         oldIndex,
-  //         newIndex,
-  //       ),
-  //       this.state.content,
-  //     ),
-  //   });
-  // };
+  dragOption = ({ oldIndex, newIndex }) => {
+    this.setState(
+      ({ content }) => ({
+        content: content.setIn([
+          'editor',
+          'options',
+        ],
+          content.getIn([
+            'editor',
+            'options',
+          ]).withMutations(
+            (options) => options
+              .set(oldIndex, options.get(newIndex))
+              .set(newIndex, options.get(oldIndex))
+          )
+        ),
+      })
+    );
+  };
 
   changeContent = (path) => (event) => {
     this.setState(
@@ -205,7 +206,7 @@ class Checkbox extends Component {
     }, this.context.toggleReadOnly);
   }
 
-  saveSettings = () => {
+  saveContent = () => {
     const { content } = this.state;
     const newContent = content.set(
       'component',
@@ -242,8 +243,8 @@ class Checkbox extends Component {
               addOption={this.addOption}
               dragOption={this.dragOption}
               closeEditor={this.closeEditor}
+              saveContent={this.saveContent}
               removeOption={this.removeOption}
-              saveSettings={this.saveSettings}
               changeContent={this.changeContent}
               uploadOptionImage={this.uploadImage}
               removeOptionImage={this.removeImage}
@@ -272,8 +273,8 @@ class Checkbox extends Component {
 
 Checkbox.propTypes = {
   entityKey: PropTypes.string.isRequired,
-  question: PropTypes.string.isRequired,
   content: PropTypes.shape({
+    question: PropTypes.string.isRequired,
     options: PropTypes.arrayOf(
       PropTypes.shape({
         text: PropTypes.string,
