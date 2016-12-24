@@ -2,15 +2,12 @@ import React, {
   Component,
   PropTypes,
 } from 'react';
-// import {
-//   arrayMove,
-// } from 'react-sortable-hoc';
 import {
   Button as AntButton,
 } from 'antd';
 import Immutable, { fromJS } from 'immutable';
 import { Entity } from 'draft-js';
-import localForage from 'localforage';
+// import localForage from 'localforage';
 import Preview from './Preview';
 import Editor from './Editor';
 import styles from './styles.css';
@@ -35,10 +32,6 @@ class Checkbox extends Component {
     };
   }
 
-  componentDidMount() {
-    this.receiveImages();
-  }
-
   shouldComponentUpdate(
     nextProps,
     nextState
@@ -50,36 +43,6 @@ class Checkbox extends Component {
       this.state.editing !==
       nextState.editing
     );
-  }
-
-  receiveImages = () => {
-    this.state.content.getIn([
-      'editor',
-      'options',
-    ]).forEach((
-      { image },
-      index,
-    ) => {
-      if (image) {
-        localForage
-          .getItem(image.get('name'))
-          .then((data) => {
-            this.setState(
-              ({ content }) => ({
-                content: content.setIn([
-                  'editor',
-                  'options',
-                  index,
-                  'image',
-                  'data',
-                ],
-                  data
-                ),
-              })
-            );
-          });
-      }
-    });
   }
 
   uploadImage = (index) => (files) => {
@@ -95,29 +58,21 @@ class Checkbox extends Component {
     reader.readAsDataURL(image.data);
     // eslint-disable-next-line
     reader.onloadend = () => {
-      // TODO
-      // Перенести зазрузку изображений
-      // в localStorage в saveSettings
-      localForage.setItem(
-        image.name,
-        reader.result,
-      ).then(() => {
-        this.setState(
-          ({ content }) => ({
-            content: content.setIn([
-              'editor',
-              'options',
-              index,
-              'image',
-            ],
-              fromJS({
-                name: image.name,
-                data: reader.result,
-              })
-            ),
-          })
-        );
-      });
+      this.setState(
+        ({ content }) => ({
+          content: content.setIn([
+            'editor',
+            'options',
+            index,
+            'image',
+          ],
+            fromJS({
+              name: image.name,
+              data: reader.result,
+            })
+          ),
+        })
+      );
     };
   }
 
@@ -167,8 +122,14 @@ class Checkbox extends Component {
             'options',
           ]).withMutations(
             (options) => options
-              .set(oldIndex, options.get(newIndex))
-              .set(newIndex, options.get(oldIndex))
+              .set(
+                oldIndex,
+                options.get(newIndex)
+              )
+              .set(
+                newIndex,
+                options.get(oldIndex)
+              )
           )
         ),
       })
