@@ -6,6 +6,7 @@ import {
 import {
   set,
   random,
+  omit,
 } from 'lodash/fp';
 
 import {
@@ -17,19 +18,12 @@ import {
 import {
   entitiesDecorator,
 } from '../../Entities';
-import EditableCell from './Cell';
+import Cell from './Cell';
 import styles from './styles.css';
 
-const renderCell = ( // eslint-disable-line react/display-name
-    value
-  ) => (
-  // console.log(text);
-  // console.log(record);
-  // console.log(index);
-
-    <EditableCell value={value} isReadOnly />
-  );
-
+const renderCell = (value) => (
+  <Cell value={value} isReadOnly />
+);
 
 const convertRawOrEmptyState = (raw) => (
   raw
@@ -58,7 +52,7 @@ const convertRawToDraftEditorState = (object) =>
     columns: object.columns.map((obj) => ({
       ...obj,
       editorStateTtle: convertRawOrEmptyState(obj.editorStateTtle),
-      title: (<EditableCell
+      title: (<Cell
         value={convertRawOrEmptyState(obj.editorStateTtle)}
         isReadOnly
       />),
@@ -91,7 +85,7 @@ const convertDraftEditorStateToRow = (object) => ({
 });
 
 
-class EditableTable extends Component {
+class Table extends Component {
   constructor(props) {
     console.log(props);
     super(props);
@@ -112,34 +106,83 @@ class EditableTable extends Component {
         this.state.temp,
       ),
     });
-  };
-
-  editTable = (type, columnKey, index) => (e) => {
-    console.log(e.target);
-    switch (type) {
-      case 'addRowUp':
-        this.addRow(index);
-        break;
-
-      case 'addRowDown':
-        this.addRow(index + 1);
-        break;
-
-      default:
-        console.log(type);
-        break;
-    }
   }
 
-  addRow = (index) => {
+  editTable = (type, columnKey, index) => () => {
+    console.log(index);
+    this[type](columnKey, index);
+    // switch (type) {
+    //   case 'addRowUp':
+    //     this.addRow(index);
+    //     break;
+
+    //   case 'addRowDown':
+    //     this.addRow(index + 1);
+    //     break;
+
+    //   default:
+    //     console.log(type);
+    //     break;
+    // }
+  }
+
+  addColumn = (columnKey) => {
+    const dataIndex = `index${random(0, 999)}`;
+    const dataSource = this.state.temp.dataSource
+      .map((obj) => ({
+        ...obj,
+        [dataIndex]: EditorState.createEmpty(),
+      }));
+    const columns = [...this.state.temp.columns];
+    const newCol = {
+      editorStateTtle: EditorState.createEmpty(),
+      dataIndex,
+    };
+    columns.splice(columnKey, 0, newCol); // eslint-disable-line
+    this.setState({
+      temp: {
+        columns: this.makeEditableColumns(columns),
+        dataSource,
+      },
+    });
+  }
+
+  delColumn = (columnKey) => {
+    const { columns, dataSource } = this.state.temp;
+    const { dataIndex } = columns[columnKey];
+    this.setState({
+      temp: {
+        dataSource: dataSource
+          .map((obj) => omit(dataIndex, obj)),
+        columns: this.makeEditableColumns(
+          columns.filter((val, key) => key !== columnKey)
+        ),
+      },
+    });
+  }
+
+  addRow = (columnKey, index) => {
     const newDataSource = [...this.state.temp.dataSource];
-    const newRow = Object.keys(newDataSource[index])
+    const newRow = Object.keys(newDataSource[0])
       .reduce((obj, key) => ({
         ...obj,
-        [key]: '',
+        [key]: EditorState.createEmpty(),
       }), {});
     newRow.key = `${random(0, 999)}`; // eslint-disable-line
     newDataSource.splice(index, 0, newRow); // eslint-disable-line
+    this.setState({
+      temp: set([
+        'dataSource',
+      ],
+        newDataSource,
+        this.state.temp,
+      ),
+    });
+  }
+
+  delRow = (columnKey, index) => {
+    const newDataSource = [...this.state.temp.dataSource];
+    newDataSource.splice(index, 1); // eslint-disable-line
     this.setState({
       temp: set([
         'dataSource',
@@ -157,7 +200,7 @@ class EditableTable extends Component {
         columnKey,
         'title',
       ],
-        <EditableCell
+        <Cell
           editTable={this.editTable}
           index={-1}
           value={value}
@@ -176,26 +219,6 @@ class EditableTable extends Component {
     });
   };
 
-  // onDelete = (index) => () => {
-  //   const dataSource = [...this.state.temp.dataSource];
-  //   dataSource.splice(index, 1);
-  //   this.setState({ dataSource });
-  // };
-
-  // handleAdd = () => {
-  //   const { count, dataSource } = this.state;
-  //   const newData = {
-  //     key: count,
-  //     name: `Edward King ${count}`,
-  //     age: 32,
-  //     address: `London, Park Lane no. ${count}`,
-  //   };
-  //   this.setState({
-  //     dataSource: [...dataSource, newData],
-  //     count: count + 1,
-  //   });
-  // }
-
   changeTable = () => {
     const { content: {
       columns,
@@ -203,25 +226,7 @@ class EditableTable extends Component {
     this.setState({
       temp: {
         ...content,
-        columns: columns.map((obj, key) => ({
-          ...obj,
-          title: (<EditableCell
-            index={-1}
-            value={obj.editorStateTtle}
-            onChange={this.headChange(key)}
-            columnKey={key}
-            editTable={this.editTable}
-          />),
-          render: (text, record, index) => (
-            <EditableCell
-              editTable={this.editTable}
-              index={index}
-              value={text}
-              onChange={this.onCellChange(index, obj.dataIndex)}
-              columnKey={key}
-            />
-          ),
-        })),
+        columns: this.makeEditableColumns(columns),
       },
     }, this.context.toggleReadOnly);
   }
@@ -239,12 +244,12 @@ class EditableTable extends Component {
         ...temp,
         columns: columns.map((obj) => ({
           ...obj,
-          title: (<EditableCell
+          title: (<Cell
             value={obj.editorStateTtle}
             isReadOnly
           />),
           render: (value) => (
-            <EditableCell
+            <Cell
               value={value}
               isReadOnly
             />
@@ -260,18 +265,37 @@ class EditableTable extends Component {
     this.context.toggleReadOnly();
   }
 
+  makeEditableColumns = (columns) => columns.map((obj, key) => ({
+    ...obj,
+    title: (<Cell
+      index={-1}
+      value={obj.editorStateTtle}
+      onChange={this.headChange(key)}
+      columnKey={key}
+      editTable={this.editTable}
+    />),
+    render: (text, record, index) => (
+      <Cell
+        editTable={this.editTable}
+        index={index}
+        value={text}
+        onChange={this.onCellChange(index, obj.dataIndex)}
+        columnKey={key}
+      />
+    ),
+  }))
+
   render() {
     const { dataSource, columns } = this.state.temp || this.state.content;
     return (<div className={styles.table}>
       <Button className="editable-add-btn" type="ghost" onClick={this.changeTable}>Редактировать</Button>
       <Button className="editable-add-btn" type="ghost" onClick={this.saveSettings}>Сохранить</Button>
-      <Button className="editable-add-btn" type="ghost" onClick={this.handleAdd}>Add</Button>
       <AntTable bordered dataSource={dataSource} columns={columns} className={styles.table} />
     </div>);
   }
 }
 
-EditableTable.propTypes = {
+Table.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     dataSource: PropTypes.array.isRequired,
@@ -279,7 +303,7 @@ EditableTable.propTypes = {
   }).isRequired,
 };
 
-EditableTable.defaultProps = {
+Table.defaultProps = {
   content: {
     columns: [{
       title: 'Name',
@@ -303,12 +327,11 @@ EditableTable.defaultProps = {
       age: '32',
       address: 'London, Park Lane no. 1',
     }],
-    count: 2,
   },
 };
 
-EditableTable.contextTypes = {
+Table.contextTypes = {
   toggleReadOnly: PropTypes.func,
 };
 
-export default EditableTable;
+export default Table;

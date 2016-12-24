@@ -13,8 +13,7 @@ import Dropdown from '../Dropdown';
 import styles from './styles.css';
 import { Input as DraftInput } from '../../../Editor';
 
-class EditableCell extends React.Component {
-
+class Cell extends React.Component {
   render() {
     const {
       value,
@@ -50,7 +49,7 @@ class EditableCell extends React.Component {
   }
 }
 
-EditableCell.propTypes = {
+Cell.propTypes = {
   value: PropTypes.object.isRequired,
   onChange: PropTypes.func,
   editTable: PropTypes.func,
@@ -60,8 +59,8 @@ EditableCell.propTypes = {
   index: PropTypes.number,
 };
 
-EditableCell.defaultProps = {
+Cell.defaultProps = {
   className: styles.cell,
 };
 
-export default EditableCell;
+export default Cell;

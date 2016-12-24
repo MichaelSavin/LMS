@@ -118,7 +118,7 @@ DraftInput.childContextTypes = {
 
 DraftInput.propTypes = {
   value: PropTypes.object,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,
 };
