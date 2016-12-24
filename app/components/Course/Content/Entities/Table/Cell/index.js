@@ -16,7 +16,15 @@ import { Input as DraftInput } from '../../../Editor';
 class EditableCell extends React.Component {
 
   render() {
-    const { value, isReadOnly, onChange, className } = this.props;
+    const {
+      value,
+      isReadOnly,
+      onChange,
+      className,
+      editTable,
+      index,
+      columnKey,
+    } = this.props;
     return (<div className="editable-cell">
       <div className="editable-cell-input-wrapper">
         <DraftInput
@@ -30,7 +38,14 @@ class EditableCell extends React.Component {
           isReadOnly={isReadOnly}
         />
       </div>
-      {!isReadOnly && <Dropdown />}
+      {
+        !isReadOnly
+          && <Dropdown
+            editTable={editTable}
+            index={index}
+            columnKey={columnKey}
+          />
+      }
     </div>);
   }
 }
@@ -38,10 +53,11 @@ class EditableCell extends React.Component {
 EditableCell.propTypes = {
   value: PropTypes.object.isRequired,
   onChange: PropTypes.func,
+  editTable: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,
-  columnKey: PropTypes.number.isRequired,
-  index: PropTypes.number.isRequired,
+  columnKey: PropTypes.number,
+  index: PropTypes.number,
 };
 
 EditableCell.defaultProps = {

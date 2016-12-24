@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import {
   set,
+  random,
 } from 'lodash/fp';
 
 import {
@@ -19,14 +20,14 @@ import {
 import EditableCell from './Cell';
 import styles from './styles.css';
 
-const renderCell = (columnKey) => ( // eslint-disable-line react/display-name
-    text, record, index
+const renderCell = ( // eslint-disable-line react/display-name
+    value
   ) => (
   // console.log(text);
   // console.log(record);
   // console.log(index);
 
-    <EditableCell index={index} value={text} columnKey={columnKey} isReadOnly />
+    <EditableCell value={value} isReadOnly />
   );
 
 
@@ -54,16 +55,14 @@ const convertRawToDraftEditorState = (object) =>
       });
       return newRow;
     }),
-    columns: object.columns.map((obj, columnKey) => ({
+    columns: object.columns.map((obj) => ({
       ...obj,
       editorStateTtle: convertRawOrEmptyState(obj.editorStateTtle),
       title: (<EditableCell
-        index={-1}
         value={convertRawOrEmptyState(obj.editorStateTtle)}
         isReadOnly
-        columnKey={columnKey}
       />),
-      render: renderCell(columnKey),
+      render: renderCell,
     })),
   });
 
@@ -115,7 +114,43 @@ class EditableTable extends Component {
     });
   };
 
-  onHeadChange = (columnKey) => (value) => {
+  editTable = (type, columnKey, index) => (e) => {
+    console.log(e.target);
+    switch (type) {
+      case 'addRowUp':
+        this.addRow(index);
+        break;
+
+      case 'addRowDown':
+        this.addRow(index + 1);
+        break;
+
+      default:
+        console.log(type);
+        break;
+    }
+  }
+
+  addRow = (index) => {
+    const newDataSource = [...this.state.temp.dataSource];
+    const newRow = Object.keys(newDataSource[index])
+      .reduce((obj, key) => ({
+        ...obj,
+        [key]: '',
+      }), {});
+    newRow.key = `${random(0, 999)}`; // eslint-disable-line
+    newDataSource.splice(index, 0, newRow); // eslint-disable-line
+    this.setState({
+      temp: set([
+        'dataSource',
+      ],
+        newDataSource,
+        this.state.temp,
+      ),
+    });
+  }
+
+  headChange = (columnKey) => (value) => {
     this.setState({
       temp: set([
         'columns',
@@ -123,9 +158,10 @@ class EditableTable extends Component {
         'title',
       ],
         <EditableCell
+          editTable={this.editTable}
           index={-1}
           value={value}
-          onChange={this.onHeadChange(columnKey)}
+          onChange={this.headChange(columnKey)}
           columnKey={columnKey}
         />,
         set([
@@ -146,21 +182,21 @@ class EditableTable extends Component {
   //   this.setState({ dataSource });
   // };
 
-  handleAdd = () => {
-    const { count, dataSource } = this.state;
-    const newData = {
-      key: count,
-      name: `Edward King ${count}`,
-      age: 32,
-      address: `London, Park Lane no. ${count}`,
-    };
-    this.setState({
-      dataSource: [...dataSource, newData],
-      count: count + 1,
-    });
-  }
+  // handleAdd = () => {
+  //   const { count, dataSource } = this.state;
+  //   const newData = {
+  //     key: count,
+  //     name: `Edward King ${count}`,
+  //     age: 32,
+  //     address: `London, Park Lane no. ${count}`,
+  //   };
+  //   this.setState({
+  //     dataSource: [...dataSource, newData],
+  //     count: count + 1,
+  //   });
+  // }
 
-  editTable = () => {
+  changeTable = () => {
     const { content: {
       columns,
     }, content } = this.state;
@@ -172,11 +208,13 @@ class EditableTable extends Component {
           title: (<EditableCell
             index={-1}
             value={obj.editorStateTtle}
-            onChange={this.onHeadChange(key)}
+            onChange={this.headChange(key)}
             columnKey={key}
+            editTable={this.editTable}
           />),
           render: (text, record, index) => (
             <EditableCell
+              editTable={this.editTable}
               index={index}
               value={text}
               onChange={this.onCellChange(index, obj.dataIndex)}
@@ -199,20 +237,16 @@ class EditableTable extends Component {
       content: temp,
       temp: {
         ...temp,
-        columns: columns.map((obj, key) => ({
+        columns: columns.map((obj) => ({
           ...obj,
           title: (<EditableCell
-            index={-1}
             value={obj.editorStateTtle}
             isReadOnly
-            columnKey={key}
           />),
-          render: (text, record, index) => (
+          render: (value) => (
             <EditableCell
-              index={index}
-              value={text}
+              value={value}
               isReadOnly
-              columnKey={key}
             />
           ),
         })),
@@ -229,7 +263,7 @@ class EditableTable extends Component {
   render() {
     const { dataSource, columns } = this.state.temp || this.state.content;
     return (<div className={styles.table}>
-      <Button className="editable-add-btn" type="ghost" onClick={this.editTable}>Редактировать</Button>
+      <Button className="editable-add-btn" type="ghost" onClick={this.changeTable}>Редактировать</Button>
       <Button className="editable-add-btn" type="ghost" onClick={this.saveSettings}>Сохранить</Button>
       <Button className="editable-add-btn" type="ghost" onClick={this.handleAdd}>Add</Button>
       <AntTable bordered dataSource={dataSource} columns={columns} className={styles.table} />
