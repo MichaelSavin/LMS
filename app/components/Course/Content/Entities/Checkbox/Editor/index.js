@@ -4,13 +4,12 @@ import React, {
 import {
   Icon as AntIcon,
   Form as AntForm,
-  Input as AntInput,
-  Checkbox as AntCheckbox,
-  Button as AntButton,
-  Popconfirm as AntPopconfirm,
-  Collapse as AntCollapse,
-  Row, Col,
   Tabs as AntTabs,
+  Input as AntInput,
+  Button as AntButton,
+  Collapse as AntCollapse,
+  Checkbox as AntCheckbox,
+  Popconfirm as AntPopconfirm,
 } from 'antd';
 import {
   SortableHandle,
@@ -18,23 +17,19 @@ import {
   SortableContainer,
 } from 'react-sortable-hoc';
 import Dropzone from 'react-dropzone';
-import AnswerOptions from './AnswerOptions';
-
 import styles from './styles.css';
 
 const Editor = ({
-  data,
-  addStep,
-  images,
-  uploadImage,
-  isRight,
-  saveSettings,
-  changeText,
-  changeQuestion,
+  content,
+  storage,
+  addOption,
+  dragOption,
   closeEditor,
-  removeStep,
-  removeImage,
-  dragStep,
+  saveContent,
+  removeOption,
+  changeContent,
+  uploadOptionImage,
+  removeOptionImage,
   form: {
     resetFields,
     validateFields,
@@ -43,7 +38,7 @@ const Editor = ({
 }) => {
   const validateAndSave = () => {
     validateFields((err) => {
-      if (!err) { saveSettings(); }
+      if (!err) { saveContent(); }
     });
   };
   const resetAndClose = () => {
@@ -52,9 +47,20 @@ const Editor = ({
   };
   return (
     <div className={styles.editor}>
-      <span className={styles.editorname}>Редактирование</span>
-      <AntTabs tabBarExtraContent={<AntButton onClick={addStep}>+ Добавить вариант</AntButton>}>
-        <AntTabs.TabPane tab="Задание" key="1">
+      <span className={styles.title}>
+        Редактирование
+      </span>
+      <AntTabs
+        tabBarExtraContent={
+          <AntButton onClick={addOption}>
+            + Добавить вариант
+          </AntButton>
+        }
+      >
+        <AntTabs.TabPane
+          key="1"
+          tab="Задание"
+        >
           <div className={styles.question}>
             <AntForm.Item>
               {getFieldDecorator('question', {
@@ -62,121 +68,150 @@ const Editor = ({
                   required: true,
                   message: 'Это поле не может быть пустым!',
                 }],
-                initialValue: data.question,
+                initialValue: content.get('question'),
               })(
                 <AntInput
                   size="default"
+                  onChange={changeContent(['question'])}
                   className={styles.input}
-                  onChange={changeQuestion}
                 />
               )}
             </AntForm.Item>
           </div>
           <AntCollapse>
-            <AntCollapse.Panel header={<AnswerOptions data={data} />} key="1">
-              <Sortable.List
-                onSortEnd={dragStep}
-                useDragHandle
-              >
-                <div>
-                  {data.answers.map((answer, index) =>
-                    <Row key={index}>
-                      <Sortable.Item
-                        index={index}
-                      >
-                        <div className={styles.answer}>
-                          <Col span={1} className={styles.center}>
-                            <Sortable.Handler />
-                          </Col>
-                          <Col span={16}>
-                            <AntForm.Item>
-                              {getFieldDecorator(`text.${index}`, {
-                                rules: [{
-                                  required: true,
-                                  message: 'Это поле не может быть пустым!',
-                                }],
-                                initialValue: answer.value,
-                              })(
-                                <AntInput
-                                  size="default"
-                                  onChange={changeText(index)}
-                                />
-                              )}
-                            </AntForm.Item>
-                            <div className={styles.divinput}>
-                              <span>{answer.alt}</span>
-                            </div>
-                          </Col>
-                          <Col span={2} offset={1} className={styles.center}>
-                            <Dropzone
-                              multiple={false}
-                              className={styles.upload}
-                              onDrop={uploadImage(index)}
-                            >
-                              {answer.image
-                                ?
-                                  <div>
-                                    <AntIcon
-                                      type="close"
-                                      onClick={removeImage(index)}
-                                      className={styles.removeimage}
-                                    />
-                                    <img
-                                      src={images[answer.image]}
-                                      role="presentation"
-                                      height={70}
-                                      width={70}
-                                    />
-                                  </div>
-                                :
-                                  <div className={styles.icon}>
-                                    <AntIcon
-                                      className={styles.bigsize}
-                                      type="camera"
-                                    />
-                                  </div>
-                              }
-                            </Dropzone>
-                          </Col>
-                          <Col span={1} className={styles.center}>
-                            <AntCheckbox
-                              key={index}
-                              checked={answer.isRight}
-                              onChange={isRight(index)}
-                            />
-                          </Col>
-                          <Col span={1} className={styles.center}>
-                            <AntPopconfirm
-                              title="Удалить событие?"
-                              okText="Да"
-                              onConfirm={removeStep(index)}
-                              cancelText="Нет"
-                            >
-                              <AntIcon
-                                type="close"
-                                className={styles.remove}
-                              />
-                            </AntPopconfirm>
-                          </Col>
+            <AntCollapse.Panel
+              key="1"
+              header={content
+                .get('options')
+                .filter((option) =>
+                  option.get('correct') === true
+                ).isEmpty()
+                  ? 'Не заданы'
+                  : 'Заданы'
+              }
+            >
+              <div className={styles.options}>
+                <Sortable.List
+                  onSortEnd={dragOption}
+                  useDragHandle
+                >
+                  {content.get('options').map((option, index) =>
+                    <Sortable.Item index={index}>
+                      <div className={styles.option}>
+                        <div className={styles.drag}>
+                          <Sortable.Handler />
                         </div>
-                      </Sortable.Item>
-                    </Row>
+                        <div className={styles.text}>
+                          <AntForm.Item>
+                            {getFieldDecorator(`option.${index}.text`, {
+                              rules: [{
+                                required: true,
+                                message: 'Укажите текст варианта ответа!',
+                              }],
+                              initialValue: option.get('text'),
+                            })(
+                              <AntInput
+                                size="default"
+                                onChange={changeContent([
+                                  'options',
+                                  index,
+                                  'text',
+                                ])}
+                              />
+                            )}
+                          </AntForm.Item>
+                        </div>
+                        <div className={styles.image}>
+                          {option.get('image')
+                            /* eslint-disable */
+                            ? <div className={styles.preview}>
+                                <AntIcon
+                                  type="close"
+                                  onClick={removeOptionImage(index)}
+                                  className={styles.remove}
+                                />
+                                <img
+                                  src={storage[
+                                    option.getIn([
+                                      'image',
+                                      'name',
+                                    ])
+                                  ]}
+                                  role="presentation"
+                                  width={70}
+                                  height={70}
+                                />
+                              </div>
+                            : <div className={styles.upload}>
+                                <Dropzone
+                                  onDrop={uploadOptionImage(index)}
+                                  multiple={false}
+                                  className={styles.dropzone}
+                                />
+                                <AntIcon
+                                  className={styles.icon}
+                                  type="camera"
+                                />
+                              </div>
+                            /* eslint-enable */
+                          }
+                        </div>
+                        <div className={styles.correct}>
+                          <AntCheckbox
+                            key={index}
+                            checked={option.get('correct')}
+                            onChange={changeContent([
+                              'options',
+                              index,
+                              'correct',
+                            ])}
+                          />
+                        </div>
+                        <div className={styles.remove}>
+                          <AntPopconfirm
+                            title="Удалить событие?"
+                            okText="Да"
+                            onConfirm={removeOption(index)}
+                            cancelText="Нет"
+                          >
+                            <AntIcon
+                              type="close"
+                              className={styles.icon}
+                            />
+                          </AntPopconfirm>
+                        </div>
+                      </div>
+                    </Sortable.Item>
                   )}
-                </div>
-              </Sortable.List>
+                </Sortable.List>
+              </div>
             </AntCollapse.Panel>
           </AntCollapse>
         </AntTabs.TabPane>
-        <AntTabs.TabPane tab="Баллы" key="2">Content of tab 2</AntTabs.TabPane>
+        <AntTabs.TabPane
+          tab="Баллы"
+          key="2"
+        >
+          Содержание
+        </AntTabs.TabPane>
       </AntTabs>
-      <div className={styles.buttonwrapper}>
-        <AntButton type="primary" onClick={validateAndSave}>Применить</AntButton>
-        <AntButton type="ghost" onClick={resetAndClose}>Отменить</AntButton>
+      <div className={styles.actions}>
+        <AntButton
+          type="primary"
+          onClick={validateAndSave}
+        >
+          Применить
+        </AntButton>
+        <AntButton
+          type="ghost"
+          onClick={resetAndClose}
+        >
+          Отменить
+        </AntButton>
       </div>
     </div>
   );
 };
-
 
 const Sortable = {
   List: SortableContainer(
@@ -193,33 +228,45 @@ const Sortable = {
   ),
 };
 
-
 Editor.propTypes = {
   form: PropTypes.shape({
     resetFields: PropTypes.func.isRequired,
     validateFields: PropTypes.func.isRequired,
     getFieldDecorator: PropTypes.func.isRequired,
   }).isRequired,
-  images: PropTypes.object.isRequired,
-  addStep: PropTypes.func.isRequired,
-  dragStep: PropTypes.func.isRequired,
-  removeStep: PropTypes.func.isRequired,
-  changeText: PropTypes.func.isRequired,
-  uploadImage: PropTypes.func.isRequired,
-  saveSettings: PropTypes.func.isRequired,
-  isRight: PropTypes.func.isRequired,
-  changeQuestion: PropTypes.func.isRequired,
+  addOption: PropTypes.func.isRequired,
+  dragOption: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
-  removeImage: PropTypes.func.isRequired,
-  data: PropTypes.shape({
+  saveContent: PropTypes.func.isRequired,
+  removeOption: PropTypes.func.isRequired,
+  changeContent: PropTypes.func.isRequired,
+  removeOptionImage: PropTypes.func.isRequired,
+  uploadOptionImage: PropTypes.func.isRequired,
+  content: PropTypes.shape({
     question: PropTypes.string.isRequired,
-    answers: PropTypes.arrayOf(
+    options: PropTypes.arrayOf(
       PropTypes.shape({
-        value: PropTypes.string.isRequired,
-        image: PropTypes.string,
-        checked: PropTypes.bool,
+        text: PropTypes.string,
+        image: PropTypes.shape({
+          name: PropTypes.string.isRequired,
+          text: PropTypes.string.isRequired,
+          crop: {
+            size: PropTypes.object.isRequired,
+            name: PropTypes.string.isRequired,
+          },
+        }),
+        checked: PropTypes.bool.isRequired,
+        correct: PropTypes.bool.isRequired,
       }).isRequired,
-    ),
+    ).isRequired,
+  }).isRequired,
+  storage: PropTypes.shape({
+    images: PropTypes.objectOf(
+      PropTypes.string.isRequired,
+    ).isRequired,
+    crops: PropTypes.objectOf(
+      PropTypes.string.isRequired,
+    ).isRequired,
   }).isRequired,
 };
 

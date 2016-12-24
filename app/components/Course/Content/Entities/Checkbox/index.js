@@ -1,11 +1,7 @@
-import React, {
-  Component,
-  PropTypes,
-} from 'react';
-import {
-  Button as AntButton,
-} from 'antd';
+import React, { Component, PropTypes } from 'react';
+import { Button as AntButton } from 'antd';
 import Immutable, { fromJS } from 'immutable';
+import localForage from 'localforage';
 import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
@@ -29,6 +25,28 @@ class Checkbox extends Component {
         component,
       }),
     };
+    this.storage = {
+      images: {},
+      crops: {},
+    };
+  }
+
+  componentDidMount() {
+    this.state.content.getIn([
+      'editor',
+      'options',
+    ]).forEach(({ image }) => {
+      if (image) {
+        localForage
+          .getItem(image.get('name'))
+          .then((data) => {
+            this.storage.images[
+              image.get('name')
+            ] = data;
+            this.forceUpdate();
+          });
+      }
+    });
   }
 
   shouldComponentUpdate(
@@ -57,6 +75,9 @@ class Checkbox extends Component {
     reader.readAsDataURL(image.data);
     // eslint-disable-next-line
     reader.onloadend = () => {
+      this.storage.images[
+        image.name
+      ] = reader.result;
       this.setState(
         ({ content }) => ({
           content: content.setIn([
@@ -64,11 +85,9 @@ class Checkbox extends Component {
             'options',
             index,
             'image',
+            'name',
           ],
-            fromJS({
-              name: image.name,
-              data: reader.result,
-            })
+            image.name,
           ),
         })
       );
@@ -210,25 +229,30 @@ class Checkbox extends Component {
     return (
       <div className={styles.checkbox}>
         <div className={styles.preview}>
-          <Preview content={editing ? editor : component} />
+          <Preview
+            content={editing ? editor : component}
+            storage={this.storage}
+          />
         </div>
         {editing &&
           <div className={styles.editor}>
             <Editor
               content={editor}
+              storage={this.storage}
               addOption={this.addOption}
               dragOption={this.dragOption}
               closeEditor={this.closeEditor}
               saveContent={this.saveContent}
               removeOption={this.removeOption}
               changeContent={this.changeContent}
-              uploadOptionImage={this.uploadImage}
-              removeOptionImage={this.removeImage}
+              uploadOptionImage={this.uploadOptionImage}
+              removeOptionImage={this.removeOptionImage}
             />
           </div>
         }
         <div className={styles.actions}>
-          {editing /* eslint react/jsx-indent-props: 0, react/jsx-closing-bracket-location: 0 */
+          {editing
+            /* eslint-disable */
             ? <AntButton
                 type="primary"
                 icon="check-circle"
@@ -240,6 +264,7 @@ class Checkbox extends Component {
                 onClick={this.openEditor}
                 className={styles.edit}
               />
+            /* eslint-enable */
           }
         </div>
       </div>
@@ -257,10 +282,9 @@ Checkbox.propTypes = {
         image: PropTypes.shape({
           name: PropTypes.string.isRequired,
           text: PropTypes.string.isRequired,
-          data: PropTypes.string.isRequired,
           crop: {
             size: PropTypes.object.isRequired,
-            data: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
           },
         }),
         checked: PropTypes.bool.isRequired,
