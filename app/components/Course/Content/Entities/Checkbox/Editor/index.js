@@ -16,6 +16,8 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
+import ImmutablePropTypes from
+  'react-immutable-proptypes';
 import Dropzone from 'react-dropzone';
 import styles from './styles.css';
 
@@ -242,18 +244,18 @@ Editor.propTypes = {
   changeContent: PropTypes.func.isRequired,
   removeOptionImage: PropTypes.func.isRequired,
   uploadOptionImage: PropTypes.func.isRequired,
-  content: PropTypes.shape({
+  content: ImmutablePropTypes.mapContains({
     question: PropTypes.string.isRequired,
-    options: PropTypes.arrayOf(
-      PropTypes.shape({
+    options: ImmutablePropTypes.listOf(
+      ImmutablePropTypes.mapContains({
         text: PropTypes.string,
-        image: PropTypes.shape({
+        image: ImmutablePropTypes.mapContains({
           name: PropTypes.string.isRequired,
           text: PropTypes.string.isRequired,
-          crop: {
+          crop: ImmutablePropTypes.mapContains({
             size: PropTypes.object.isRequired,
             name: PropTypes.string.isRequired,
-          },
+          }),
         }),
         checked: PropTypes.bool.isRequired,
         correct: PropTypes.bool.isRequired,

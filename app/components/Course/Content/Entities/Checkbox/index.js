@@ -232,6 +232,7 @@ class Checkbox extends Component {
           <Preview
             content={editing ? editor : component}
             storage={this.storage}
+            changeContent={this.changeContent}
           />
         </div>
         {editing &&
