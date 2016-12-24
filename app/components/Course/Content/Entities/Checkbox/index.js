@@ -11,18 +11,13 @@ class Checkbox extends Component {
 
   constructor(props) {
     super(props);
-    const {
-      content: {
-        editor,
-        component,
-      },
-    } = props;
+    const { content } = props;
     this.state = {
       drag: null,
       editing: false,
       content: fromJS({
-        editor,
-        component,
+        editor: content,
+        component: content,
       }),
     };
     this.storage = {
