@@ -7,7 +7,6 @@ import {
 } from 'antd';
 import Immutable, { fromJS } from 'immutable';
 import { Entity } from 'draft-js';
-// import localForage from 'localforage';
 import Preview from './Preview';
 import Editor from './Editor';
 import styles from './styles.css';
@@ -45,7 +44,7 @@ class Checkbox extends Component {
     );
   }
 
-  uploadImage = (index) => (files) => {
+  uploadOptionImage = (index) => (files) => {
     const image = {
       data: files[0].slice(0),
       name: [
@@ -74,6 +73,22 @@ class Checkbox extends Component {
         })
       );
     };
+  }
+
+  removeOptionImage = (index) => (event) => {
+    event.stopPropagation();
+    this.setState(
+      ({ content }) => ({
+        content: content.setIn([
+          'editor',
+          'options',
+          index,
+          'image',
+        ],
+          undefined
+        ),
+      })
+    );
   }
 
   addOption = () => {
