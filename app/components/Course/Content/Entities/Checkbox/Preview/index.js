@@ -22,35 +22,38 @@ const Preview = ({
       {content.get('options').map((
          option,
          index
-       ) =>
-         <div className={styles.option}>
-           <div className={styles.image}>
-             <img
-               src={storage.images[
-                 option.getIn([
-                   'image',
-                   'name',
-                 ])
-               ]}
-               role="presentation"
-               width={250}
-             />
-           </div>
-           <div className={styles.checkbox}>
-             <AntCheckbox
-               key={index}
-               checked={option.get('checked')}
-               onChange={changeContent([
-                 'options',
-                 index,
-                 'checked',
-               ])}
-               className={styles.answer}
-             >
-               {content.value}
-             </AntCheckbox>
-           </div>
-         </div>
+      ) =>
+        <div
+          key={index}
+          className={styles.option}
+        >
+          <div className={styles.image}>
+            <img
+              src={storage.images[
+                option.getIn([
+                  'image',
+                  'name',
+                ])
+              ]}
+              role="presentation"
+              width={250}
+            />
+          </div>
+          <div className={styles.checkbox}>
+            <AntCheckbox
+              key={index}
+              checked={option.get('checked')}
+              onChange={changeContent([
+                'options',
+                index,
+                'checked',
+              ])}
+              className={styles.answer}
+            >
+              {content.value}
+            </AntCheckbox>
+          </div>
+        </div>
       )}
     </div>
     <div className={styles.attemps}>
