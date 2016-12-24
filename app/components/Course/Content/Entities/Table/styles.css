@@ -1,10 +1,11 @@
-.table {
-  /* ... */
-  th {
-    position: relative;
-  }
+.table th {
+  position: relative;
 }
 
-.table th {
-  position: relative !important;
+:global .ant-table table {
+  overflow: visible;
+}
+
+:global .ant-table {
+  overflow: visible;
 }

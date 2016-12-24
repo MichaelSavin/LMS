@@ -91,6 +91,7 @@ class Table extends Component {
     super(props);
     this.state = {
       content: convertRawToDraftEditorState(this.props.content),
+      isReadOnly: true,
       temp: false,
     };
   }
@@ -219,11 +220,12 @@ class Table extends Component {
     });
   };
 
-  changeTable = () => {
+  editMode = () => {
     const { content: {
       columns,
     }, content } = this.state;
     this.setState({
+      isReadOnly: false,
       temp: {
         ...content,
         columns: this.makeEditableColumns(columns),
@@ -237,29 +239,31 @@ class Table extends Component {
       temp,
     } =
       this.state;
-    this.setState({
-      modal: false,
-      content: temp,
-      temp: {
-        ...temp,
-        columns: columns.map((obj) => ({
-          ...obj,
-          title: (<Cell
-            value={obj.editorStateTtle}
+    const content = {
+      ...temp,
+      columns: columns.map((obj) => ({
+        ...obj,
+        title: (<Cell
+          value={obj.editorStateTtle}
+          isReadOnly
+        />),
+        render: (value) => (
+          <Cell
+            value={value}
             isReadOnly
-          />),
-          render: (value) => (
-            <Cell
-              value={value}
-              isReadOnly
-            />
-          ),
-        })),
-      },
+          />
+        ),
+      })),
+    };
+
+    this.setState({
+      content,
+      temp: false,
+      isReadOnly: true,
     });
     Entity.mergeData(
       this.props.entityKey, {
-        content: convertDraftEditorStateToRow(temp),
+        content: convertDraftEditorStateToRow(content),
       }
     );
     this.context.toggleReadOnly();
@@ -287,10 +291,17 @@ class Table extends Component {
 
   render() {
     const { dataSource, columns } = this.state.temp || this.state.content;
-    return (<div className={styles.table}>
-      <Button className="editable-add-btn" type="ghost" onClick={this.changeTable}>Редактировать</Button>
-      <Button className="editable-add-btn" type="ghost" onClick={this.saveSettings}>Сохранить</Button>
-      <AntTable bordered dataSource={dataSource} columns={columns} className={styles.table} />
+    const { isReadOnly } = this.state;
+    return (<div className={styles.table} onDoubleClick={isReadOnly && this.editMode}>
+      <AntTable
+        bordered
+        dataSource={dataSource}
+        columns={columns}
+        pagination={false}
+      />
+      {!isReadOnly && <Button className="editable-add-btn" type="ghost" onClick={this.saveSettings}>
+        Сохранить
+      </Button>}
     </div>);
   }
 }
