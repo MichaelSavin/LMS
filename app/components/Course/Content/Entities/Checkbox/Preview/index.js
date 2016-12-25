@@ -2,7 +2,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Button as AntButton,
+  // Button as AntButton,
   Checkbox as AntCheckbox,
   } from 'antd';
 import ImmutablePropTypes from
@@ -15,9 +15,9 @@ const Preview = ({
   changeContent,
 }) =>
   <div className={styles.preview}>
-    <span className={styles.question}>
+    <div className={styles.question}>
       {content.get('question')}
-    </span>
+    </div>
     <div className={styles.options}>
       {content.get('options').map((
          option,
@@ -27,18 +27,20 @@ const Preview = ({
           key={index}
           className={styles.option}
         >
-          <div className={styles.image}>
-            <img
-              src={storage.images[
-                option.getIn([
-                  'image',
-                  'name',
-                ])
-              ]}
-              role="presentation"
-              width={250}
-            />
-          </div>
+          {option.get('image') &&
+            <div className={styles.image}>
+              <img
+                src={storage.images[
+                  option.getIn([
+                    'image',
+                    'name',
+                  ])
+                ]}
+                role="presentation"
+                width={250}
+              />
+            </div>
+          }
           <div className={styles.checkbox}>
             <AntCheckbox
               key={index}
@@ -49,19 +51,20 @@ const Preview = ({
                 'checked',
               ])}
               className={styles.answer}
-            >
-              {content.value}
-            </AntCheckbox>
+            />
+          </div>
+          <div className={styles.text}>
+            {option.get('text')}
           </div>
         </div>
       )}
     </div>
-    <div className={styles.attemps}>
+    { /* <div className={styles.attemps}>
       <AntButton type="primary">
-        <span>Количество попыток</span>
-        <span>Попытка 1 из 3</span>
+        <div>Количество попыток</div>
+        <div>Попытка 1 из 3</div>
       </AntButton>
-    </div>
+    </div> */ }
   </div>;
 
 Preview.propTypes = {

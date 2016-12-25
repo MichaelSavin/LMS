@@ -49,9 +49,9 @@ const Editor = ({
   };
   return (
     <div className={styles.editor}>
-      <span className={styles.title}>
+      { /* <span className={styles.title}>
         Редактирование
-      </span>
+      </span> */ }
       <AntTabs
         tabBarExtraContent={
           <AntButton onClick={addOption}>
@@ -98,8 +98,11 @@ const Editor = ({
                   useDragHandle
                 >
                   {content.get('options').map((option, index) =>
-                    <Sortable.Item index={index}>
-                      <div className={styles.option}>
+                    <div
+                      key={index}
+                      className={styles.option}
+                    >
+                      <Sortable.Item index={index}>
                         <div className={styles.drag}>
                           <Sortable.Handler />
                         </div>
@@ -182,8 +185,8 @@ const Editor = ({
                             />
                           </AntPopconfirm>
                         </div>
-                      </div>
-                    </Sortable.Item>
+                      </Sortable.Item>
+                    </div>
                   )}
                 </Sortable.List>
               </div>

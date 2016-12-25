@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Button as AntButton } from 'antd';
 import Immutable, { fromJS } from 'immutable';
 import localForage from 'localforage';
+import classNames from 'classnames';
 import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
@@ -48,7 +49,7 @@ class Checkbox extends Component {
     nextProps,
     nextState
   ) {
-    return Immutable.is(
+    return !Immutable.is(
       this.state.content,
       nextState.content
     ) || (
@@ -165,17 +166,17 @@ class Checkbox extends Component {
     );
   };
 
-  changeContent = (path) => (event) => {
-    this.setState(
-      ({ content }) => ({
-        content: content.setIn([
+  changeContent = (location) => (event) => {
+    this.setState({
+      content: this.state
+        .content
+        .setIn([
           'editor',
-          ...path,
+          ...location,
         ],
-          event.target.value
-        ),
-      })
-    );
+        event.target.value
+      ),
+    });
   }
 
   openEditor = () => {
@@ -222,7 +223,12 @@ class Checkbox extends Component {
       editing,
     } = this.state;
     return (
-      <div className={styles.checkbox}>
+      <div
+        className={classNames(
+          styles.checkbox,
+          { [styles.editing]: editing },
+        )}
+      >
         <div className={styles.preview}>
           <Preview
             content={editing ? editor : component}
