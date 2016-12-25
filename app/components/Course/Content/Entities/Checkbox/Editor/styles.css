@@ -1,120 +1,79 @@
 .editor {
   padding: 15px;
   border-top: 1px solid #E9E9E9;
-}
 
-.title {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.answer {
-  display: flex;
-  user-select: none;
-  align-items: flex-start;
-  flex-direction: row;
-  justify-content: space-around;
-  margin-bottom: 8px;
-}
-
-.drag {
-  cursor: grab;
-}
-
-.title {
-  display: flex;
-  padding-right: 30px;
-  justify-content: space-between;
-}
-
-.upload {
-  width: 72px;
-  height: 72px;
-  border: 1px solid #D9D9D9;
-  display: flex;
-  align-items: center;
-  border-radius: 5px;
-  justify-content: center;
-  background-color: #F7F7F7;
-}
-
-.remove {
-  color: red;
-}
-
-.remove:hover {
-  cursor: pointer;
-}
-
-.removeimage {
-  position: absolute;
-  top: -7px;
-  right: -5px;
-  color: #FFF;
-  background-color: red;
-  border-radius: 50%;
-  padding: 3px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.center {
-  display: flex;
-  justify-content: center;
-}
-
-.divinput {
-  position: relative;
-  display: inline-block;
-  padding: 4px 7px;
-  width: 100%;
-  height: 28px;
-  cursor: text;
-  font-size: 12px;
-  line-height: 1.5;
-  color: #666;
-  background-color: #FFF;
-  background-image: none;
-  border: 1px solid #D9D9D9;
-  border-radius: 6px;
-  margin-bottom: 8px;
-}
-
-.input {
-  font-size: 14px;
-  margin-top: 8px;
-  padding: 16px 16px 28px;
-}
-
-.bigsize {
-  font-size: 48px;
-}
-
-.actions {
-  margin-top: 16px;
-
-  & button {
-    margin-right: 16px;
+  & .question {
+    font-size: 15px;
+    margin-top: 5px;
   }
-}
 
-.options {
-  display: flex;
-  justify-content: space-between;
-  padding-right: 16px;
-  align-items: center;
-}
+  & .options {
+    display: flex;
+    flex-direction: column;
 
-.options span {
-  background-color: #87D068;
-  color: #FFF;
-  padding: 2px 12px;
-  border-radius: 4px;
-  font-size: 12px;
-  line-height: 12px;
-  height: 24px;
-  display: flex;
-  align-items: center;
+    & .option {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+
+      & .drag {
+        cursor: grab;
+      }
+
+      & .text {
+        width: 80%;
+      }
+
+      & .image {
+        & .preview {
+          & img {
+            width: 70px;
+            height: 70px;
+          }
+
+          & .remove {
+            top: -7px;
+            right: -5px;
+            color: #FFF;
+            cursor: pointer;
+            padding: 3px;
+            position: absolute;
+            font-size: 12px;
+            border-radius: 50%;
+            background-color: red;
+          }
+        }
+
+        & .upload {
+          width: 72px;
+          height: 72px;
+          border: 1px solid #D9D9D9;
+          display: flex;
+          align-items: center;
+          border-radius: 5px;
+          justify-content: center;
+          background-color: #F7F7F7;
+
+          & .dropzone {
+            /* ... */
+          }
+
+          & .icon {
+            /* ... */
+          }
+        }
+      }
+
+      & .checkbox {
+        /* ... */
+      }
+
+      & .remove {
+        color: red;
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 :global .ant-form-item {

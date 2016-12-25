@@ -63,24 +63,27 @@ const Editor = ({
           key="1"
           tab="Задание"
         >
-          <div className={styles.question}>
-            <AntForm.Item>
-              {getFieldDecorator('question', {
-                rules: [{
-                  required: true,
-                  message: 'Это поле не может быть пустым!',
-                }],
-                initialValue: content.get('question'),
-              })(
-                <AntInput
-                  size="default"
-                  onChange={changeContent(['question'])}
-                  className={styles.input}
-                />
-              )}
-            </AntForm.Item>
-          </div>
-          <AntCollapse>
+          <AntForm.Item>
+            {getFieldDecorator('question', {
+              rules: [{
+                required: true,
+                message: 'Это поле не может быть пустым!',
+              }],
+              initialValue: content.get('question'),
+            })(
+              <AntInput
+                rows={4}
+                size="default"
+                type="textarea"
+                onChange={changeContent(['question'])}
+                className={styles.question}
+              />
+            )}
+          </AntForm.Item>
+          <AntCollapse
+            bordered={false}
+            defaultActiveKey="1"
+          >
             <AntCollapse.Panel
               key="1"
               header={content
@@ -88,7 +91,7 @@ const Editor = ({
                 .filter((option) =>
                   option.get('correct') === true
                 ).isEmpty()
-                  ? 'Не заданы'
+                  ? 'Варианты ответов не заданы'
                   : 'Заданы'
               }
             >
@@ -130,11 +133,6 @@ const Editor = ({
                           {option.get('image')
                             /* eslint-disable */
                             ? <div className={styles.preview}>
-                                <AntIcon
-                                  type="close"
-                                  onClick={removeOptionImage(index)}
-                                  className={styles.remove}
-                                />
                                 <img
                                   src={storage[
                                     option.getIn([
@@ -143,8 +141,11 @@ const Editor = ({
                                     ])
                                   ]}
                                   role="presentation"
-                                  width={70}
-                                  height={70}
+                                />
+                                <AntIcon
+                                  type="close"
+                                  onClick={removeOptionImage(index)}
+                                  className={styles.remove}
                                 />
                               </div>
                             : <div className={styles.upload}>
@@ -161,7 +162,7 @@ const Editor = ({
                             /* eslint-enable */
                           }
                         </div>
-                        <div className={styles.correct}>
+                        <div className={styles.checkbox}>
                           <AntCheckbox
                             key={index}
                             checked={option.get('correct')}
@@ -193,10 +194,7 @@ const Editor = ({
             </AntCollapse.Panel>
           </AntCollapse>
         </AntTabs.TabPane>
-        <AntTabs.TabPane
-          tab="Баллы"
-          key="2"
-        >
+        <AntTabs.TabPane key="2" tab="Баллы">
           Содержание
         </AntTabs.TabPane>
       </AntTabs>

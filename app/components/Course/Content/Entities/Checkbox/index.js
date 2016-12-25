@@ -253,20 +253,13 @@ class Checkbox extends Component {
           </div>
         }
         <div className={styles.actions}>
-          {editing
-            /* eslint-disable */
-            ? <AntButton
-                type="primary"
-                icon="check-circle"
-                className={styles.edit}
-              />
-            : <AntButton
-                type="primary"
-                icon="edit"
-                onClick={this.openEditor}
-                className={styles.edit}
-              />
-            /* eslint-enable */
+          {!editing &&
+            <AntButton
+              type="primary"
+              icon="edit"
+              onClick={this.openEditor}
+              className={styles.edit}
+            />
           }
         </div>
       </div>
