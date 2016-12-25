@@ -1,18 +1,23 @@
 .checkbox {
-  margin: 5px 0;
-  user-select: none;
-  display: inline-block;
-  -webkit-user-select: none;
-  border: 1px solid #E9E9E9;
-  border-radius: 4px 4px 0 0;
-  position: relative;
   width: 100%;
-  transition: all 0.1s ease;
+  margin: 5px 0;
+  display: inline-block;
+  position: relative;
+  transition: all 0.25s;
+  user-select: none;
+  border: 2.5px solid #EEE;
+}
+
+.checkbox.editing {
+  border: 2.5px solid #57C5F7;
 }
 
 .checkbox:hover {
-  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
-  border-color: transparent;
+  border: 2.5px solid #57C5F7;
+}
+
+.checkbox .edit {
+  visibility: visible;
 }
 
 .checkbox:hover .edit {
@@ -20,17 +25,16 @@
 }
 
 .edit {
-  position: absolute;
   top: -29px;
   right: 10px;
+  position: absolute;
   transition: all 0.2s ease;
-  visibility: hidden;
   border-radius: 4px 4px 0 0 !important;
 }
 
 :global .ant-checkbox-group .ant-checkbox-wrapper {
-  display: block !important;
   height: 30px;
+  display: block !important;
   line-height: 30px;
   margin-left: 0 !important;
 }

@@ -1,44 +1,33 @@
-.checkbox {
-  & .question {
-    display: block;
-    margin-bottom: 8px;
-  }
-
-  .option {
-    width: 60%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-}
-
-.answer {
-  display: block;
-  margin: 8px 0;
-}
-
-.col {
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-}
-
-.attemps {
-  border-top: 1px solid #E9E9E9;
-  padding-top: 16px;
-}
-
-.attemptwrapper span {
-  display: block;
-  text-align: left;
-}
-
 .preview {
-  padding: 16px;
-  overflow: hidden;
-  border: 1px solid #E9E9E9;
-  border-radius: 4px;
-  margin: 16px;
+  padding: 15px;
+
+  & .question {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  & .options {
+    display: flex;
+    flex-direction: column;
+
+    & .option {
+      display: flex;
+      padding: 5px 0;
+      align-items: center;
+      flex-direction: row;
+
+      & .text {
+        font-size: 13px;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  & .attemps {
+    padding: 5px;
+    text-align: left;
+  }
 }
 
 :global .ant-checkbox-wrapper + .ant-checkbox-wrapper {
