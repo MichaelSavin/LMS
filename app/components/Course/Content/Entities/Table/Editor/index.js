@@ -6,6 +6,8 @@ import {
   Select as AntSelect,
   Checkbox as AntCheckbox,
 } from 'antd';
+import classNames from 'classnames';
+
 
 import styles from './styles.css';
 
@@ -20,17 +22,27 @@ const Editor = ({
     <div className={styles.options}>
       <div className={styles.item}>
         <p>Стиль таблицы:</p>
-        <AntSelect defaultValue="big" style={{ minWidth: '300px' }}>
-          <Option value="compact">Компактная горизонтальные разделители</Option>
-          <Option value="big">Крупная все разделители</Option>
-          <Option value="small">Маленькая, черезполосица без разделителей</Option>
+        <AntSelect
+          style={{ minWidth: '300px' }}
+          defaultValue="table__big"
+          value={classNames({ ...tableStyles.tableOptions })}
+          onChange={onChange('tableOptions')}
+        >
+          <AntSelect.Option value="table__compact">Компактная горизонтальные разделители</AntSelect.Option>
+          <AntSelect.Option value="table__big">Крупная все разделители</AntSelect.Option>
+          <AntSelect.Option value="table__small">Маленькая, черезполосица без разделителей</AntSelect.Option>
         </AntSelect>
       </div>
       <div className={styles.item}>
         <p>Стиль заголовков:</p>
-        <AntSelect defaultValue="textBold" style={{ minWidth: '300px' }}>
-          <Option value="textBold">Тектст жирный</Option>
-          <Option value="textNormal">Текст нормальный</Option>
+        <AntSelect
+          defaultValue="table-head__bold"
+          onChange={onChange('headOptions')}
+          value={classNames({ ...tableStyles.headOptions })}
+          style={{ minWidth: '300px' }}
+        >
+          <AntSelect.Option value="table-head__bold">Тектст жирный</AntSelect.Option>
+          <AntSelect.Option value="table-head__normal">Текст нормальный</AntSelect.Option>
         </AntSelect>
       </div>
     </div>

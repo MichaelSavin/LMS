@@ -7,6 +7,7 @@ import {
   set,
   random,
   omit,
+  get,
 } from 'lodash/fp';
 import classNames from 'classnames';
 import {
@@ -58,6 +59,7 @@ const convertRawToDraftEditorState = (object) =>
   object && ({
     ...object,
     dataSource: object.dataSource.map((row) => {
+      console.log(row);
       const newRow = { ...row };
       (row.editorKeys || []).forEach((key) => {
         newRow[key] = EditorState // eslint-disable-line fp/no-mutation
@@ -82,6 +84,7 @@ const convertRawToDraftEditorState = (object) =>
 const convertDraftEditorStateToRow = (object) => ({
   ...object,
   dataSource: object.dataSource.map((row) => {
+    console.log(row);
     const newRow = { ...row, editorKeys: [] };
     Object.keys(row).forEach((key) => {
       if (row[key] instanceof EditorState) {
@@ -201,7 +204,9 @@ class Table extends Component {
     const newRow = Object.keys(newDataSource[0])
       .reduce((obj, key) => ({
         ...obj,
-        [key]: EditorState.createEmpty(),
+        [key]: key === 'editorKeys'
+        ? newDataSource[0].editorKeys
+        : EditorState.createEmpty(),
       }), {});
     newRow.key = `${random(0, 999)}`; // eslint-disable-line
     newDataSource.splice(index, 0, newRow); // eslint-disable-line
@@ -290,19 +295,16 @@ class Table extends Component {
         ),
       })),
     };
-
     Entity.mergeData(
       this.props.entityKey, {
         content: convertDraftEditorStateToRow(temp),
       }
     );
-
     this.setState({
       content,
       temp: false,
       isReadOnly: true,
     });
-
     this.context.toggleReadOnly();
   }
 
@@ -335,11 +337,20 @@ class Table extends Component {
   }))
 
   editorOnChange = (type) => (e) => {
-    console.log(type);
     const { temp } = this.state;
     if (type === 'equalColumnsWidth') {
       this.setState({
         temp: equalColumnWidthTrigger(e.target.checked, temp),
+      });
+    } else if (!e.target) {
+      this.setState({
+        temp: set([
+          'tableStyles',
+          type,
+        ],
+          { [e]: true },
+          this.state.temp,
+        ),
       });
     } else {
       this.setState({
@@ -356,16 +367,20 @@ class Table extends Component {
 
   render() {
     const { dataSource, columns, tableStyles } = this.state.temp || this.state.content;
+    console.log(dataSource);
     const { isReadOnly } = this.state;
     return (<div
       className={classNames(
         styles.table, {
           [styles.editing]: !isReadOnly,
+          ...tableStyles.headOptions,
+          ...tableStyles.tableOptions,
         }
       )}
       onDoubleClick={isReadOnly && this.editMode}
     >
       <AntTable
+        bordered={get(['tableOptions', 'table__big'], tableStyles)}
         dataSource={dataSource}
         columns={columns}
         pagination={false}
@@ -407,11 +422,17 @@ Table.propTypes = {
 
 Table.defaultProps = {
   content: {
-    tableStyles: {},
+    tableStyles: {
+      tableOptions: {
+        table__big: true,
+      },
+      headOptions: {
+        'table-head__bold': true,
+      },
+    },
     columns: [{
       title: 'Name',
       dataIndex: 'name',
-      width: '40%',
     }, {
       title: 'Age',
       dataIndex: 'age',
