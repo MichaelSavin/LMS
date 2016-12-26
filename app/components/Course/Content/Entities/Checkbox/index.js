@@ -154,11 +154,17 @@ class Checkbox extends Component {
             (options) => options
               .set(
                 oldIndex,
-                options.get(newIndex)
+                content.getIn([
+                  'editor',
+                  'options',
+                ]).get(newIndex)
               )
               .set(
                 newIndex,
-                options.get(oldIndex)
+                content.getIn([
+                  'editor',
+                  'options',
+                ]).get(oldIndex)
               )
           )
         ),
@@ -252,16 +258,38 @@ class Checkbox extends Component {
             />
           </div>
         }
-        <div className={styles.actions}>
-          {!editing &&
-            <AntButton
-              type="primary"
-              icon="edit"
-              onClick={this.openEditor}
-              className={styles.edit}
-            />
-          }
-        </div>
+        {editing
+          /* eslint-disable */
+          ? <div className={styles.actions}>
+              <AntButton
+                type="default"
+                icon="rollback"
+                onClick={this.closeEditor}
+                className={styles.close}
+              >
+                Отменить
+              </AntButton>
+              <AntButton
+                type="primary"
+                icon="check"
+                onClick={this.saveContent}
+                className={styles.save}
+              >
+                Сохранить
+              </AntButton>
+            </div>
+          : <div className={styles.actions}>
+              <AntButton
+                type="primary"
+                icon="edit"
+                onClick={this.openEditor}
+                className={styles.edit}
+              >
+                Редактировать
+              </AntButton>
+            </div>
+          /* eslint-enable */
+        }
       </div>
     );
   }

@@ -1,22 +1,20 @@
 .checkbox {
-  width: 100%;
+  width: 102%;
+  border: 2.5px solid white;
   margin: 5px 0;
   display: inline-block;
   position: relative;
-  transition: all 0.25s;
-  border: 2.5px solid white;
+  margin-left: -10px;
 }
 
 .checkbox:hover {
-  border: 2.5px solid rgba(45, 183, 245, 0.5);
-
-  /* box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.1); */
+  /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
+  border: 2.5px solid rgb(45, 183, 245);
 }
 
 .checkbox.editing {
+  /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
   border: 2.5px solid rgb(45, 183, 245);
-
-  /* box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1); */
 }
 
 .checkbox .edit {
@@ -27,12 +25,24 @@
   visibility: visible;
 }
 
-.edit {
-  top: -29px;
-  right: 10px;
+.actions {
+  top: -30px;
+  left: -2px;
   position: absolute;
-  transition: all 0.1s;
-  border-radius: 4px 4px 0 0;
+  transition: all 0s;
+  background: white;
+
+  & .edit {
+    border-radius: 5px 5px 0 0;
+  }
+
+  & .save {
+    border-radius: 0 5px 0 0;
+  }
+
+  & .close {
+    border-radius: 5px 0 0;
+  }
 }
 
 :global .ant-checkbox-group .ant-checkbox-wrapper {
