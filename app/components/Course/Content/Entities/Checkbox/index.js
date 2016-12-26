@@ -28,8 +28,8 @@ class Checkbox extends Component {
       }),
     };
     this.storage = {
-      images: {},
       crops: {},
+      images: {},
     };
   }
 
@@ -299,36 +299,35 @@ class Checkbox extends Component {
 Checkbox.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    question: PropTypes.string.isRequired,
-    options: PropTypes.arrayOf(
+    points: PropTypes.object.isRequired,
+    variations: PropTypes.arrayOf(
       PropTypes.shape({
-        text: PropTypes.string.isRequired,
-        image: PropTypes.shape({
-          name: PropTypes.string.isRequired,
-          text: PropTypes.string.isRequired,
-          crop: {
-            size: PropTypes.object.isRequired,
-            name: PropTypes.string.isRequired,
-          },
-        }),
-        checked: PropTypes.bool.isRequired,
-        correct: PropTypes.bool.isRequired,
+        question: PropTypes.string.isRequired,
+        options: PropTypes.arrayOf(
+          PropTypes.shape({
+            text: PropTypes.string.isRequired,
+            image: PropTypes.shape({
+              name: PropTypes.string.isRequired,
+              text: PropTypes.string.isRequired,
+              crop: PropTypes.shape({
+                size: PropTypes.object.isRequired,
+                name: PropTypes.string.isRequired,
+              }),
+            }),
+            checked: PropTypes.bool.isRequired,
+            correct: PropTypes.bool.isRequired,
+          }).isRequired,
+        ).isRequired,
+        hints: PropTypes.arrayOf(
+          PropTypes.shape({ text: PropTypes.string.isRequired })
+        ).isRequired,
+        competences: PropTypes.arrayOf(
+          PropTypes.shape({ text: PropTypes.string.isRequired })
+        ).isRequired,
+        explanations: PropTypes.arrayOf(
+          PropTypes.shape({ text: PropTypes.string.isRequired })
+        ).isRequired,
       }).isRequired,
-    ).isRequired,
-    hints: PropTypes.arrayOf(
-      PropTypes.shape({
-        text: PropTypes.string.isRequired,
-      })
-    ).isRequired,
-    competences: PropTypes.arrayOf(
-      PropTypes.shape({
-        text: PropTypes.string.isRequired,
-      })
-    ).isRequired,
-    explanations: PropTypes.arrayOf(
-      PropTypes.shape({
-        text: PropTypes.string.isRequired,
-      })
     ).isRequired,
   }).isRequired,
 };
@@ -336,36 +335,33 @@ Checkbox.propTypes = {
 Checkbox.defaultProps = {
   content: {
     initial: {
-      question: 'Где могут жить утки?',
-      options: [{
-        text: 'Здесь',
-        image: undefined,
-        checked: false,
-        correct: false,
-      }, {
-        text: 'Тут',
-        image: undefined,
-        checked: false,
-        correct: false,
-      }, {
-        text: 'Вот же',
-        image: undefined,
-        checked: false,
-        correct: false,
-      }, {
-        text: 'Ага, вот отличное место',
-        image: undefined,
-        checked: false,
-        correct: false,
-      }],
-      hints: [{
-        text: 'Подсказка',
-      }],
-      competences: [{
-        text: 'Компетенция',
-      }],
-      explanations: [{
-        text: 'Объяснение',
+      points: {},
+      variations: [{
+        question: 'Где могут жить утки?',
+        hints: [],
+        options: [{
+          text: 'Здесь',
+          image: undefined,
+          checked: false,
+          correct: false,
+        }, {
+          text: 'Тут',
+          image: undefined,
+          checked: false,
+          correct: false,
+        }, {
+          text: 'Вот же',
+          image: undefined,
+          checked: false,
+          correct: false,
+        }, {
+          text: 'Ага, вот отличное место',
+          image: undefined,
+          checked: false,
+          correct: false,
+        }],
+        competences: [],
+        explanations: [],
       }],
     },
   },

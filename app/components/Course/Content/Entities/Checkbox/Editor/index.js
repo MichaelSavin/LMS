@@ -53,7 +53,7 @@ const Editor = ({
         Редактирование компонента
       </div>
       <AntTabs
-        type="card"
+        // type="card"
         className={styles.tabs}
         tabBarExtraContent={
           <AntButton
@@ -65,6 +65,8 @@ const Editor = ({
           </AntButton>
         }
       >
+
+
         <AntTabs.TabPane
           key="1"
           tab="Задание"
@@ -239,7 +241,12 @@ const Editor = ({
             </AntCollapse.Panel>
             <AntCollapse.Panel
               key="3"
-              header="Подсказки"
+              header={
+                <span className={styles.header}>
+                  <AntIcon type="question-circle-o" />
+                  Подсказки
+                </span>
+              }
             >
               <div className={styles.hints}>
                 {content.get('hints').map(
@@ -291,9 +298,13 @@ const Editor = ({
             </AntCollapse.Panel>
           </AntCollapse>
         </AntTabs.TabPane>
+
+
         <AntTabs.TabPane key="2" tab="Баллы">
           Содержание
         </AntTabs.TabPane>
+
+
       </AntTabs>
       <div className={styles.actions}>
         <AntButton
@@ -347,20 +358,25 @@ Editor.propTypes = {
   removeOptionImage: PropTypes.func.isRequired,
   uploadOptionImage: PropTypes.func.isRequired,
   content: ImmutablePropTypes.mapContains({
-    question: PropTypes.string.isRequired,
-    options: ImmutablePropTypes.listOf(
+    points: ImmutablePropTypes.map.isRequired,
+    variations: PropTypes.arrayOf(
       ImmutablePropTypes.mapContains({
-        text: PropTypes.string,
-        image: ImmutablePropTypes.mapContains({
-          name: PropTypes.string.isRequired,
-          text: PropTypes.string.isRequired,
-          crop: ImmutablePropTypes.mapContains({
-            size: PropTypes.object.isRequired,
-            name: PropTypes.string.isRequired,
-          }),
-        }),
-        checked: PropTypes.bool.isRequired,
-        correct: PropTypes.bool.isRequired,
+        question: PropTypes.string.isRequired,
+        options: ImmutablePropTypes.listOf(
+          ImmutablePropTypes.mapContains({
+            text: PropTypes.string.isRequired,
+            image: ImmutablePropTypes.mapContains({
+              name: PropTypes.string.isRequired,
+              text: PropTypes.string.isRequired,
+              crop: ImmutablePropTypes.mapContains({
+                size: PropTypes.object.isRequired,
+                name: PropTypes.string.isRequired,
+              }),
+            }),
+            checked: PropTypes.bool.isRequired,
+            correct: PropTypes.bool.isRequired,
+          }).isRequired,
+        ).isRequired,
       }).isRequired,
     ).isRequired,
   }).isRequired,

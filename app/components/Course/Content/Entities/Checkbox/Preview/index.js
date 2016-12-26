@@ -69,20 +69,25 @@ const Preview = ({
 
 Preview.propTypes = {
   content: ImmutablePropTypes.mapContains({
-    question: PropTypes.string.isRequired,
-    options: ImmutablePropTypes.listOf(
+    points: ImmutablePropTypes.map.isRequired,
+    variations: PropTypes.arrayOf(
       ImmutablePropTypes.mapContains({
-        text: PropTypes.string,
-        image: ImmutablePropTypes.mapContains({
-          name: PropTypes.string.isRequired,
-          text: PropTypes.string.isRequired,
-          crop: ImmutablePropTypes.mapContains({
-            size: PropTypes.object.isRequired,
-            name: PropTypes.string.isRequired,
-          }),
-        }),
-        checked: PropTypes.bool.isRequired,
-        correct: PropTypes.bool.isRequired,
+        question: PropTypes.string.isRequired,
+        options: ImmutablePropTypes.listOf(
+          ImmutablePropTypes.mapContains({
+            text: PropTypes.string.isRequired,
+            image: ImmutablePropTypes.mapContains({
+              name: PropTypes.string.isRequired,
+              text: PropTypes.string.isRequired,
+              crop: ImmutablePropTypes.mapContains({
+                size: PropTypes.object.isRequired,
+                name: PropTypes.string.isRequired,
+              }),
+            }),
+            checked: PropTypes.bool.isRequired,
+            correct: PropTypes.bool.isRequired,
+          }).isRequired,
+        ).isRequired,
       }).isRequired,
     ).isRequired,
   }).isRequired,
