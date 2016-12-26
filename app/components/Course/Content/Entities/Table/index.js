@@ -21,6 +21,24 @@ import Cell from './Cell';
 import Editor from './Editor';
 import styles from './styles.css';
 
+
+const equalColumnWidthTrigger = (isEqual, temp) => {
+  const { columns } = temp;
+  return {
+    ...temp,
+    tableStyles: set([
+      'equalColumnsWidth',
+    ],
+      isEqual,
+      temp.tableStyles,
+    ),
+    columns: columns.map((obj) => ({
+      ...obj,
+      width: isEqual ? `${100 / columns.length}%` : null,
+    })),
+  };
+};
+
 const renderCell = (value) => (
   <Cell value={value} isReadOnly />
 );
@@ -142,11 +160,14 @@ class Table extends Component {
     };
     columns.splice(columnKey, 0, newCol); // eslint-disable-line
     this.setState({
-      temp: {
-        ...temp,
-        columns: this.makeEditableColumns(columns),
-        dataSource,
-      },
+      temp: equalColumnWidthTrigger(
+        temp.tableStyles.equalColumnsWidth,
+        {
+          ...temp,
+          columns: this.makeEditableColumns(columns),
+          dataSource,
+        }
+      ),
     });
   }
 
@@ -160,14 +181,17 @@ class Table extends Component {
     } = this.state;
     const { dataIndex } = columns[columnKey];
     this.setState({
-      temp: {
-        ...temp,
-        dataSource: dataSource
-          .map((obj) => omit(dataIndex, obj)),
-        columns: this.makeEditableColumns(
-          columns.filter((val, key) => key !== columnKey)
-        ),
-      },
+      temp: equalColumnWidthTrigger(
+        temp.tableStyles.equalColumnsWidth,
+        {
+          ...temp,
+          dataSource: dataSource
+            .map((obj) => omit(dataIndex, obj)),
+          columns: this.makeEditableColumns(
+            columns.filter((val, key) => key !== columnKey)
+          ),
+        }
+      ),
     });
   }
 
@@ -311,8 +335,11 @@ class Table extends Component {
 
   editorOnChange = (type) => (e) => {
     console.log(type);
+    const { temp } = this.state;
     if (type === 'equalColumnsWidth') {
-      this.equalColumnWidthTrigger(e.target.checked);
+      this.setState({
+        temp: equalColumnWidthTrigger(e.target.checked, temp),
+      });
     } else {
       this.setState({
         temp: set([
@@ -324,30 +351,6 @@ class Table extends Component {
         ),
       });
     }
-  }
-
-  equalColumnWidthTrigger = (isEqual) => {
-    const {
-      temp: {
-        columns,
-      },
-      temp,
-    } = this.state;
-    this.setState({
-      temp: {
-        ...temp,
-        tableStyles: set([
-          'equalColumnsWidth',
-        ],
-          isEqual,
-          temp.tableStyles,
-        ),
-        columns: columns.map((obj) => ({
-          ...obj,
-          width: isEqual ? `${100 / columns.length}%` : null,
-        })),
-      },
-    });
   }
 
   render() {
