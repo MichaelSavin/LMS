@@ -1,5 +1,43 @@
+.table {
+  margin: 5px 0;
+  user-select: none;
+  display: inline-block;
+  -webkit-user-select: none;
+  border: 1px solid #E9E9E9;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  width: 100%;
+  transition: all 0.1s ease;
+}
+
 .table th {
   position: relative;
+}
+
+.table:hover {
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+}
+
+.editing {
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+  border-left: 2px solid #2BAEE9 !important;
+}
+
+.table:hover .edit {
+  visibility: visible;
+}
+
+.edit {
+  position: absolute;
+  top: -29px;
+  right: 10px;
+  transition: all 0.2s ease;
+  visibility: hidden;
+  border-radius: 4px 4px 0 0 !important;
+}
+
+.editor {
+  margin-top: 30px;
 }
 
 :global .ant-table table {
@@ -8,4 +46,8 @@
 
 :global .ant-table {
   overflow: visible;
+}
+
+:global .clearfix::before {
+  content: none;
 }

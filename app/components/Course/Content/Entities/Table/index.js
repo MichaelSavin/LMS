@@ -1,13 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Table as AntTable,
+  Button as AntButton,
 } from 'antd';
 import {
   set,
   random,
   omit,
 } from 'lodash/fp';
-
+import classNames from 'classnames';
 import {
   Entity,
   EditorState,
@@ -356,8 +357,14 @@ class Table extends Component {
   render() {
     const { dataSource, columns, tableStyles } = this.state.temp || this.state.content;
     const { isReadOnly } = this.state;
-    console.log(tableStyles.hideHeader);
-    return (<div className={styles.table} onDoubleClick={isReadOnly && this.editMode}>
+    return (<div
+      className={classNames(
+        styles.table, {
+          [styles.editing]: !isReadOnly,
+        }
+      )}
+      onDoubleClick={isReadOnly && this.editMode}
+    >
       <AntTable
         bordered
         dataSource={dataSource}
@@ -365,12 +372,26 @@ class Table extends Component {
         pagination={false}
         showHeader={!tableStyles.hideHeader}
       />
-      {!isReadOnly &&
-        <Editor
-          saveSettings={this.saveSettings}
-          closeEditor={this.closeEditor}
-          onChange={this.editorOnChange}
-          tableStyles={tableStyles}
+      {!isReadOnly ?
+        <div className={styles.editor}>
+          <Editor
+            saveSettings={this.saveSettings}
+            closeEditor={this.closeEditor}
+            onChange={this.editorOnChange}
+            tableStyles={tableStyles}
+          />
+          <AntButton
+            type="primary"
+            icon="check-circle"
+            className={styles.edit}
+            onClick={this.saveSettings}
+          />
+        </div> :
+        <AntButton
+          type="primary"
+          icon="edit"
+          className={styles.edit}
+          onClick={this.editMode}
         />
       }
     </div>);
