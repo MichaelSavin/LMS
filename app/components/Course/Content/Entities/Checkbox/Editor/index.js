@@ -24,7 +24,7 @@ import styles from './styles.css';
 const Editor = ({
   content,
   storage,
-  addOption,
+  addContent,
   dragOption,
   closeEditor,
   saveContent,
@@ -53,7 +53,17 @@ const Editor = ({
         Редактирование компонента
       </div>
       <AntTabs
+        type="card"
         className={styles.tabs}
+        tabBarExtraContent={
+          <AntButton
+            size="small"
+            type="primary"
+            onClick={() => {}}
+          >
+            Добавить вариант задания
+          </AntButton>
+        }
       >
         <AntTabs.TabPane
           key="1"
@@ -77,7 +87,6 @@ const Editor = ({
             )}
           </AntForm.Item>
           <AntCollapse
-            bordered={false}
             className={styles.collapse}
             defaultActiveKey="1"
           >
@@ -188,12 +197,97 @@ const Editor = ({
                   )}
                   <AntButton
                     type="primary"
-                    onClick={addOption}
+                    onClick={addContent(
+                      ['options'], {
+                        text: 'Новый вариант',
+                        image: undefined,
+                        checked: false,
+                        correct: false,
+                      }
+                    )}
                   >
-                    + Добавить вариант
+                    Добавить вариант ответа
                   </AntButton>
                 </Sortable.List>
               </div>
+            </AntCollapse.Panel>
+            <AntCollapse.Panel
+              key="2"
+              header="Пояснения к правильному ответу"
+            >
+              <div className={styles.explanations}>
+                {content.get('explanations').map(
+                  (explanation, index) =>
+                    <div
+                      key={index}
+                      className={styles.explanation}
+                    >
+                      {explanation.get('text')}
+                    </div>
+                )}
+              </div>
+              <AntButton
+                type="primary"
+                onClick={addContent(
+                  ['explanations'], {
+                    text: 'Новое объяснение',
+                  }
+                )}
+              >
+                Добавить пояснение к ответу
+              </AntButton>
+            </AntCollapse.Panel>
+            <AntCollapse.Panel
+              key="3"
+              header="Подсказки"
+            >
+              <div className={styles.hints}>
+                {content.get('hints').map(
+                  (hint, index) =>
+                    <div
+                      key={index}
+                      className={styles.hint}
+                    >
+                      {hint.get('text')}
+                    </div>
+                )}
+              </div>
+              <AntButton
+                type="primary"
+                onClick={addContent(
+                  ['hints'], {
+                    text: 'Новая подсказка',
+                  }
+                )}
+              >
+                Добавить подсказку
+              </AntButton>
+            </AntCollapse.Panel>
+            <AntCollapse.Panel
+              key="4"
+              header="Компетенции"
+            >
+              <div className={styles.competences}>
+                {content.get('competences').map(
+                  (competence, index) =>
+                    <div
+                      key={index}
+                      className={styles.competence}
+                    >
+                      {competence.get('text')}
+                    </div>
+                )}
+              </div>
+              <AntButton
+                type="primary"
+                onClick={addContent(
+                  ['competences'], {
+                    text: 'Новая компетенция',
+                  }
+                )}
+              >
+                Добавить компетенцию
+              </AntButton>
             </AntCollapse.Panel>
           </AntCollapse>
         </AntTabs.TabPane>
@@ -244,7 +338,7 @@ Editor.propTypes = {
     validateFields: PropTypes.func.isRequired,
     getFieldDecorator: PropTypes.func.isRequired,
   }).isRequired,
-  addOption: PropTypes.func.isRequired,
+  addContent: PropTypes.func.isRequired,
   dragOption: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
   saveContent: PropTypes.func.isRequired,

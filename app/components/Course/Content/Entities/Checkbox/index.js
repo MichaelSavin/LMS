@@ -112,26 +112,19 @@ class Checkbox extends Component {
     );
   }
 
-  addOption = () => {
-    this.setState(
-      ({ content }) => ({
-        content: content.updateIn([
-          'editor',
-          'options',
-        ],
-          Immutable.List.of(),
-          // eslint-disable-next-line
-          (options) => options.push(
-            fromJS({
-              text: 'Новый вариант',
-              image: undefined,
-              checked: false,
-              correct: false,
-            }),
-          ),
+  addContent = (location, content) => () => {
+    this.setState({
+      content: this.state.content.updateIn([
+        'editor',
+        ...location,
+      ],
+        Immutable.List.of(),
+        // eslint-disable-next-line
+        (data) => data.push(
+          fromJS(content)
         ),
-      })
-    );
+      ),
+    });
   }
 
   removeOption = (index) => () => {
@@ -255,7 +248,7 @@ class Checkbox extends Component {
             <Editor
               content={editor}
               storage={this.storage}
-              addOption={this.addOption}
+              addContent={this.addContent}
               dragOption={this.dragOption}
               closeEditor={this.closeEditor}
               saveContent={this.saveContent}
@@ -309,7 +302,7 @@ Checkbox.propTypes = {
     question: PropTypes.string.isRequired,
     options: PropTypes.arrayOf(
       PropTypes.shape({
-        text: PropTypes.string,
+        text: PropTypes.string.isRequired,
         image: PropTypes.shape({
           name: PropTypes.string.isRequired,
           text: PropTypes.string.isRequired,
@@ -321,6 +314,21 @@ Checkbox.propTypes = {
         checked: PropTypes.bool.isRequired,
         correct: PropTypes.bool.isRequired,
       }).isRequired,
+    ).isRequired,
+    hints: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+    competences: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+    explanations: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string.isRequired,
+      })
     ).isRequired,
   }).isRequired,
 };
@@ -349,6 +357,15 @@ Checkbox.defaultProps = {
         image: undefined,
         checked: false,
         correct: false,
+      }],
+      hints: [{
+        text: 'Подсказка',
+      }],
+      competences: [{
+        text: 'Компетенция',
+      }],
+      explanations: [{
+        text: 'Объяснение',
       }],
     },
   },
