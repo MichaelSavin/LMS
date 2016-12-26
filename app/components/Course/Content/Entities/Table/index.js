@@ -366,7 +366,6 @@ class Table extends Component {
       onDoubleClick={isReadOnly && this.editMode}
     >
       <AntTable
-        bordered
         dataSource={dataSource}
         columns={columns}
         pagination={false}

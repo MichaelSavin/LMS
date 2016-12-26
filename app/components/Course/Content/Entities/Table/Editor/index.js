@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import {
   Button as AntButton,
+  Select as AntSelect,
   Checkbox as AntCheckbox,
 } from 'antd';
 
@@ -16,11 +17,25 @@ const Editor = ({
 }) => (
   <div className={styles.editor}>
     <span className={styles.editorname}>Редактирование</span>
+    <div className={styles.options}>
+      <div className={styles.item}>
+        <p>Стиль таблицы:</p>
+        <AntSelect defaultValue="big" style={{ minWidth: '300px' }}>
+          <Option value="compact">Компактная горизонтальные разделители</Option>
+          <Option value="big">Крупная все разделители</Option>
+          <Option value="small">Маленькая, черезполосица без разделителей</Option>
+        </AntSelect>
+      </div>
+      <div className={styles.item}>
+        <p>Стиль заголовков:</p>
+        <AntSelect defaultValue="textBold" style={{ minWidth: '300px' }}>
+          <Option value="textBold">Тектст жирный</Option>
+          <Option value="textNormal">Текст нормальный</Option>
+        </AntSelect>
+      </div>
+    </div>
     <AntCheckbox onChange={onChange('hideHeader')} checked={tableStyles.hideHeader}>
       Скрыть заголовки
-    </AntCheckbox><br />
-    <AntCheckbox onChange={onChange('fullWidth')} checked={tableStyles.fullWidth}>
-      Таблица во всю ширину
     </AntCheckbox><br />
     <AntCheckbox onChange={onChange('equalColumnsWidth')} checked={tableStyles.equalColumnsWidth}>
       Колонки равной ширины

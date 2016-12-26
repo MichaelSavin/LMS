@@ -24,3 +24,12 @@
 .buttonwrapper button {
   margin-right: 16px;
 }
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.item {
+  flex: 1 1 300px;
+}

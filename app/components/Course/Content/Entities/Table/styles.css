@@ -4,7 +4,6 @@
   display: inline-block;
   -webkit-user-select: none;
   border: 1px solid #E9E9E9;
-  border-radius: 4px 4px 0 0;
   position: relative;
   width: 100%;
   transition: all 0.1s ease;
@@ -15,12 +14,13 @@
 }
 
 .table:hover {
-  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
 }
 
 .editing {
-  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
-  border-left: 2px solid #2BAEE9 !important;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  border: none;
+  border-left: 2px solid #2DB7F5 !important;
 }
 
 .table:hover .edit {
@@ -42,10 +42,20 @@
 
 :global .ant-table table {
   overflow: visible;
+  border-radius: 0;
 }
 
 :global .ant-table {
   overflow: visible;
+}
+
+:global .ant-table-thead > tr > th {
+  background: none;
+}
+
+:global .ant-table-tbody > tr > td {
+  border-bottom: none;
+  border-top: 1px solid #E9E9E9;
 }
 
 :global .clearfix::before {
