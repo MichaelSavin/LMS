@@ -49,15 +49,11 @@ const Editor = ({
   };
   return (
     <div className={styles.editor}>
-      { /* <span className={styles.title}>
-        Редактирование
-      </span> */ }
+      <div className={styles.title}>
+        Редактирование компонента
+      </div>
       <AntTabs
-        tabBarExtraContent={
-          <AntButton onClick={addOption}>
-            + Добавить вариант
-          </AntButton>
-        }
+        className={styles.tabs}
       >
         <AntTabs.TabPane
           key="1"
@@ -82,6 +78,7 @@ const Editor = ({
           </AntForm.Item>
           <AntCollapse
             bordered={false}
+            className={styles.collapse}
             defaultActiveKey="1"
           >
             <AntCollapse.Panel
@@ -189,6 +186,12 @@ const Editor = ({
                       </Sortable.Item>
                     </div>
                   )}
+                  <AntButton
+                    type="primary"
+                    onClick={addOption}
+                  >
+                    + Добавить вариант
+                  </AntButton>
                 </Sortable.List>
               </div>
             </AntCollapse.Panel>
@@ -201,13 +204,17 @@ const Editor = ({
       <div className={styles.actions}>
         <AntButton
           type="primary"
+          icon="check"
           onClick={validateAndSave}
+          className={styles.save}
         >
-          Применить
+          Сохранить
         </AntButton>
         <AntButton
-          type="ghost"
+          type="default"
+          icon="rollback"
           onClick={resetAndClose}
+          className={styles.cancel}
         >
           Отменить
         </AntButton>

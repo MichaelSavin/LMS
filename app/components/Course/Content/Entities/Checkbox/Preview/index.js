@@ -2,7 +2,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  // Button as AntButton,
+  Button as AntButton,
   Checkbox as AntCheckbox,
   } from 'antd';
 import ImmutablePropTypes from
@@ -59,12 +59,12 @@ const Preview = ({
         </div>
       )}
     </div>
-    { /* <div className={styles.attemps}>
-      <AntButton type="primary">
+    <div className={styles.attemps}>
+      <AntButton type="dashed">
         <div>Количество попыток</div>
         <div>Попытка 1 из 3</div>
       </AntButton>
-    </div> */ }
+    </div>
   </div>;
 
 Preview.propTypes = {

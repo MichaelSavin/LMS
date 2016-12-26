@@ -12,13 +12,19 @@ class Checkbox extends Component {
 
   constructor(props) {
     super(props);
-    const { content } = props;
+    const {
+      content: {
+        editor,
+        initial,
+        component,
+      },
+    } = props;
     this.state = {
       drag: null,
       editing: false,
       content: fromJS({
-        editor: content,
-        component: content,
+        editor: editor || initial,
+        component: component || initial,
       }),
     };
     this.storage = {
@@ -181,6 +187,8 @@ class Checkbox extends Component {
           ...location,
         ],
         event.target.value
+        ||
+        event.target.checked
       ),
     });
   }
@@ -262,20 +270,20 @@ class Checkbox extends Component {
           /* eslint-disable */
           ? <div className={styles.actions}>
               <AntButton
-                type="default"
-                icon="rollback"
-                onClick={this.closeEditor}
-                className={styles.close}
-              >
-                Отменить
-              </AntButton>
-              <AntButton
                 type="primary"
                 icon="check"
                 onClick={this.saveContent}
                 className={styles.save}
               >
                 Сохранить
+              </AntButton>
+              <AntButton
+                type="default"
+                icon="rollback"
+                onClick={this.closeEditor}
+                className={styles.cancel}
+              >
+                Отменить
               </AntButton>
             </div>
           : <div className={styles.actions}>
@@ -319,28 +327,30 @@ Checkbox.propTypes = {
 
 Checkbox.defaultProps = {
   content: {
-    question: 'Где могут жить утки?',
-    options: [{
-      text: 'Здесь',
-      image: undefined,
-      checked: false,
-      correct: false,
-    }, {
-      text: 'Тут',
-      image: undefined,
-      checked: false,
-      correct: false,
-    }, {
-      text: 'Вот же',
-      image: undefined,
-      checked: false,
-      correct: false,
-    }, {
-      text: 'Ага, вот отличное место',
-      image: undefined,
-      checked: false,
-      correct: false,
-    }],
+    initial: {
+      question: 'Где могут жить утки?',
+      options: [{
+        text: 'Здесь',
+        image: undefined,
+        checked: false,
+        correct: false,
+      }, {
+        text: 'Тут',
+        image: undefined,
+        checked: false,
+        correct: false,
+      }, {
+        text: 'Вот же',
+        image: undefined,
+        checked: false,
+        correct: false,
+      }, {
+        text: 'Ага, вот отличное место',
+        image: undefined,
+        checked: false,
+        correct: false,
+      }],
+    },
   },
 };
 
