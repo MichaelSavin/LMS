@@ -24,7 +24,7 @@ import Editor from './Editor';
 import styles from './styles.css';
 
 
-const equalColumnWidthTrigger = (isEqual, temp) => {
+const toggleColumnFixedWidth = (isEqual, temp) => {
   const { columns } = temp;
   return {
     ...temp,
@@ -58,22 +58,21 @@ const convertRawOrEmptyState = (raw) => (
 const convertRawToDraftEditorState = (object) =>
   object && ({
     ...object,
-    dataSource: object.dataSource.map((row) => {
-      const newRow = { ...row };
-      (row.editorKeys || []).forEach((key) => {
-        newRow[key] = EditorState // eslint-disable-line fp/no-mutation
+    dataSource: object.dataSource.map((row) => (
+      (row.editorKeys || []).reduce((obj, key) => ({
+        ...obj,
+        [key]: EditorState
           .createWithContent(
-            convertFromRaw(row[key]),
-            entitiesDecorator
-        );
-      });
-      return newRow;
-    }),
-    columns: object.columns.map((obj) => ({
-      ...obj,
-      editorStateTtle: convertRawOrEmptyState(obj.editorStateTtle),
+          convertFromRaw(row[key]),
+          entitiesDecorator
+        ),
+      }), row))
+    ),
+    columns: object.columns.map((column) => ({
+      ...column,
+      editorStateTtle: convertRawOrEmptyState(column.editorStateTtle),
       title: (<Cell
-        value={convertRawOrEmptyState(obj.editorStateTtle)}
+        value={convertRawOrEmptyState(column.editorStateTtle)}
         isReadOnly
       />),
       render: renderCell,
@@ -82,19 +81,16 @@ const convertRawToDraftEditorState = (object) =>
 
 const convertDraftEditorStateToRow = (object) => ({
   ...object,
-  dataSource: object.dataSource.map((row) => {
-    const newRow = { ...row, editorKeys: [] };
-    Object.keys(row).forEach((key) => {
-      if (row[key] instanceof EditorState) {
-        newRow.editorKeys.push(key); // eslint-disable-line fp/no-mutating-methods
-        newRow[key] = convertToRaw( // eslint-disable-line fp/no-mutation
+  dataSource: object.dataSource.map((row) => (
+    Object.keys(row).reduce((obj, key) => (
+      row[key] instanceof EditorState ? {
+        [key]: convertToRaw(
           row[key]
             .getCurrentContent()
-        );
-      }
-    });
-    return newRow;
-  }),
+        ),
+      } : obj
+    ), { ...row, editorKeys: [] })
+  )),
   columns: object.columns.map((col) => ({
     ...col,
     editorStateTtle: convertToRaw(
@@ -147,7 +143,7 @@ class Table extends Component {
     };
     columns.splice(columnKey, 0, newCol); // eslint-disable-line
     this.setState({
-      temp: equalColumnWidthTrigger(
+      temp: toggleColumnFixedWidth(
         temp.tableStyles.equalColumnsWidth,
         {
           ...temp,
@@ -168,7 +164,7 @@ class Table extends Component {
     } = this.state;
     const { dataIndex } = columns[columnKey];
     this.setState({
-      temp: equalColumnWidthTrigger(
+      temp: toggleColumnFixedWidth(
         temp.tableStyles.equalColumnsWidth,
         {
           ...temp,
@@ -329,7 +325,7 @@ class Table extends Component {
     const { temp } = this.state;
     if (type === 'equalColumnsWidth') {
       this.setState({
-        temp: equalColumnWidthTrigger(e.target.checked, temp),
+        temp: toggleColumnFixedWidth(e.target.checked, temp),
       });
     } else if (!e.target) {
       this.setState({
