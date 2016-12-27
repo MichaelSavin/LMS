@@ -5,6 +5,8 @@ import { Menu, Dropdown as AntDropdown, Icon } from 'antd';
 
 import styles from './styles.css';
 
+// Компонент полей выпадающего меню для ячеек таблицы
+// Передается в качестве аргумента overlay в Dropdown
 const RenderMenu = ({
   columnKey,
   editTable,
