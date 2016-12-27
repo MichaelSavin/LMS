@@ -299,25 +299,31 @@ class Table extends Component {
     this.context.toggleReadOnly();
   }
 
-  makeEditableColumns = (columns) => columns.map((obj, key) => ({
-    ...obj,
-    title: (<Cell
-      index={-1}
-      value={obj.editorStateTtle}
-      onChange={this.headChange(key)}
-      columnKey={key}
-      editTable={this.editTable}
-    />),
-    render: (text, record, index) => (
-      <Cell
-        editTable={this.editTable}
-        index={index}
-        value={text}
-        onChange={this.onCellChange(index, obj.dataIndex)}
-        columnKey={key}
-      />
-    ),
-  }))
+  makeEditableColumns = (columns) => columns
+    .map((obj, key) => ({
+      ...obj,
+      title: (
+      // Компонент для рендера ячейки заголовков таблицы должен
+      // храниться в этом свойстве https://ant.design/components/table/
+        <Cell
+          index={-1}
+          value={obj.editorStateTtle}
+          onChange={this.headChange(key)}
+          columnKey={key}
+          editTable={this.editTable}
+        />),
+      render: (text, record, index) => (
+      // Функция для рендера ячейки должна
+      // храниться в этом свойстве https://ant.design/components/table/
+        <Cell
+          editTable={this.editTable}
+          index={index}
+          value={text}
+          onChange={this.onCellChange(index, obj.dataIndex)}
+          columnKey={key}
+        />
+      ),
+    }))
 
   editorOnChange = (type) => (e) => {
     const { temp } = this.state;
