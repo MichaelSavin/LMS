@@ -371,7 +371,7 @@ class Table extends Component {
         showHeader={!tableStyles.hideHeader}
       />
       {isReadOnly ?
-        <div className={styles.iconsWraper}>
+        <div className={styles.actions}>
           <AntButton
             type="danger"
             icon="close-circle"
@@ -392,7 +392,7 @@ class Table extends Component {
             onChange={this.editorOnChange}
             tableStyles={tableStyles}
           />
-          <div className={styles.iconsWraper}>
+          <div className={styles.actions}>
             <AntButton
               type="primary"
               icon="rollback"
