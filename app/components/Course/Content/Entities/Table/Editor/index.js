@@ -21,9 +21,9 @@ const Editor = ({
     <span className={styles.editorname}>Редактирование</span>
     <div className={styles.options}>
       <div className={styles.item}>
-        <p>Стиль таблицы:</p>
+        <dvi><p>Стиль таблицы:</p></dvi>
         <AntSelect
-          style={{ minWidth: '300px' }}
+          style={{ width: '100%' }}
           defaultValue="table__big"
           value={classNames({ ...tableStyles.tableOptions })}
           onChange={onChange('tableOptions')}
@@ -34,16 +34,18 @@ const Editor = ({
         </AntSelect>
       </div>
       <div className={styles.item}>
-        <p>Стиль заголовков:</p>
-        <AntSelect
-          defaultValue="table-head__bold"
-          onChange={onChange('headOptions')}
-          value={classNames({ ...tableStyles.headOptions })}
-          style={{ minWidth: '300px' }}
-        >
-          <AntSelect.Option value="table-head__bold">Тектст жирный</AntSelect.Option>
-          <AntSelect.Option value="table-head__normal">Текст нормальный</AntSelect.Option>
-        </AntSelect>
+        <dvi><p>Стиль заголовков:</p></dvi>
+        <div>
+          <AntSelect
+            defaultValue="table-head__bold"
+            onChange={onChange('headOptions')}
+            value={classNames({ ...tableStyles.headOptions })}
+            style={{ width: '100%' }}
+          >
+            <AntSelect.Option value="table-head__bold">Тектст жирный</AntSelect.Option>
+            <AntSelect.Option value="table-head__normal">Текст нормальный</AntSelect.Option>
+          </AntSelect>
+        </div>
       </div>
     </div>
     <AntCheckbox onChange={onChange('hideHeader')} checked={tableStyles.hideHeader}>

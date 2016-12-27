@@ -59,7 +59,6 @@ const convertRawToDraftEditorState = (object) =>
   object && ({
     ...object,
     dataSource: object.dataSource.map((row) => {
-      console.log(row);
       const newRow = { ...row };
       (row.editorKeys || []).forEach((key) => {
         newRow[key] = EditorState // eslint-disable-line fp/no-mutation
@@ -84,7 +83,6 @@ const convertRawToDraftEditorState = (object) =>
 const convertDraftEditorStateToRow = (object) => ({
   ...object,
   dataSource: object.dataSource.map((row) => {
-    console.log(row);
     const newRow = { ...row, editorKeys: [] };
     Object.keys(row).forEach((key) => {
       if (row[key] instanceof EditorState) {
@@ -109,7 +107,6 @@ const convertDraftEditorStateToRow = (object) => ({
 
 class Table extends Component {
   constructor(props) {
-    console.log(props);
     super(props);
     this.state = {
       content: convertRawToDraftEditorState(this.props.content),
@@ -132,21 +129,7 @@ class Table extends Component {
   }
 
   editTable = (type, columnKey, index) => () => {
-    console.log(index);
     this[type](columnKey, index);
-    // switch (type) {
-    //   case 'addRowUp':
-    //     this.addRow(index);
-    //     break;
-
-    //   case 'addRowDown':
-    //     this.addRow(index + 1);
-    //     break;
-
-    //   default:
-    //     console.log(type);
-    //     break;
-    // }
   }
 
   addColumn = (columnKey) => {
@@ -367,7 +350,6 @@ class Table extends Component {
 
   render() {
     const { dataSource, columns, tableStyles } = this.state.temp || this.state.content;
-    console.log(dataSource);
     const { isReadOnly } = this.state;
     return (<div
       className={classNames(
@@ -386,8 +368,14 @@ class Table extends Component {
         pagination={false}
         showHeader={!tableStyles.hideHeader}
       />
-      {!isReadOnly ?
-        <div className={styles.editor}>
+      {isReadOnly ?
+        <AntButton
+          type="primary"
+          icon="edit"
+          className={styles.edit}
+          onClick={this.editMode}
+        />
+        : <div className={styles.editor}>
           <Editor
             saveSettings={this.saveSettings}
             closeEditor={this.closeEditor}
@@ -400,13 +388,7 @@ class Table extends Component {
             className={styles.edit}
             onClick={this.saveSettings}
           />
-        </div> :
-        <AntButton
-          type="primary"
-          icon="edit"
-          className={styles.edit}
-          onClick={this.editMode}
-        />
+        </div>
       }
     </div>);
   }
@@ -431,25 +413,25 @@ Table.defaultProps = {
       },
     },
     columns: [{
-      title: 'Name',
+      title: '',
       dataIndex: 'name',
     }, {
-      title: 'Age',
+      title: '',
       dataIndex: 'age',
     }, {
-      title: 'Address',
+      title: '',
       dataIndex: 'address',
     }],
     dataSource: [{
       key: '0',
-      name: 'Edward King 0',
-      age: '31',
-      address: 'London, Park Lane no. 0',
+      name: {},
+      age: {},
+      address: {},
     }, {
       key: '1',
-      name: 'Edward King 1',
-      age: '32',
-      address: 'London, Park Lane no. 1',
+      name: {},
+      age: {},
+      address: {},
     }],
   },
 };

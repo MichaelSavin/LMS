@@ -32,4 +32,9 @@
 
 .item {
   flex: 1 1 300px;
+  margin-right: 20px;
+
+  & > div {
+    padding: 10px 0;
+  }
 }
