@@ -23,14 +23,29 @@
   border-left: 2px solid #2DB7F5 !important;
 }
 
-.table:hover .edit {
-  visibility: visible;
+.table:hover {
+  & .edit {
+    visibility: visible;
+  }
+
+  & .delete {
+    visibility: visible;
+  }
 }
 
 .edit {
   position: absolute;
   top: -29px;
   right: 10px;
+  transition: all 0.2s ease;
+  visibility: hidden;
+  border-radius: 4px 4px 0 0 !important;
+}
+
+.delete {
+  position: absolute;
+  top: -29px;
+  right: 45px;
   transition: all 0.2s ease;
   visibility: hidden;
   border-radius: 4px 4px 0 0 !important;
@@ -60,6 +75,18 @@
 :global .table-head__normal {
   & .ant-table-thead > tr > th {
     font-weight: normal;
+  }
+}
+
+:global .ant-btn-danger {
+  color: #FFF;
+  background-color: #EC6D6D;
+  border-color: #EC6D6D;
+
+  &:hover {
+    color: #FFF;
+    background-color: #F77D7D;
+    border-color: #F77D7D;
   }
 }
 

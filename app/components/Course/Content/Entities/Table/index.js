@@ -348,6 +348,11 @@ class Table extends Component {
     }
   }
 
+  deleteBlock = () => {
+    console.log('object');
+    this.context.removeBlock(this.props.entityKey);
+  }
+
   render() {
     const { dataSource, columns, tableStyles } = this.state.temp || this.state.content;
     const { isReadOnly } = this.state;
@@ -369,18 +374,32 @@ class Table extends Component {
         showHeader={!tableStyles.hideHeader}
       />
       {isReadOnly ?
-        <AntButton
-          type="primary"
-          icon="edit"
-          className={styles.edit}
-          onClick={this.editMode}
-        />
+        <div className={styles.editor}>
+          <AntButton
+            type="danger"
+            icon="close-circle"
+            className={styles.delete}
+            onClick={this.deleteBlock}
+          />
+          <AntButton
+            type="primary"
+            icon="edit"
+            className={styles.edit}
+            onClick={this.editMode}
+          />
+        </div>
         : <div className={styles.editor}>
           <Editor
             saveSettings={this.saveSettings}
             closeEditor={this.closeEditor}
             onChange={this.editorOnChange}
             tableStyles={tableStyles}
+          />
+          <AntButton
+            type="danger"
+            icon="close-circle"
+            className={styles.delete}
+            onClick={this.deleteBlock}
           />
           <AntButton
             type="primary"
@@ -438,6 +457,7 @@ Table.defaultProps = {
 
 Table.contextTypes = {
   toggleReadOnly: PropTypes.func,
+  removeBlock: PropTypes.func,
 };
 
 export default Table;

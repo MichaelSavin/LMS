@@ -8,6 +8,8 @@ import {
   EditorState,
   convertToRaw,
   convertFromRaw,
+  Modifier,
+  SelectionState,
 } from 'draft-js';
 import {
   customStyleMap,
@@ -40,6 +42,7 @@ class Editor extends Component {
   getChildContext() {
     return {
       toggleReadOnly: this.toggleReadOnly,
+      removeBlock: this.removeBlock,
     };
   }
 
@@ -148,6 +151,31 @@ class Editor extends Component {
 
   focusEditor = () => this.refs.editor.focus();
 
+  removeBlock = (blockKey) => {
+    const { editorState } = this.state;
+    const content = this.state.editorState.getCurrentContent();
+    const block = content.getBlockForKey(blockKey);
+
+    const targetRange = new SelectionState({
+      anchorKey: blockKey,
+      anchorOffset: 0,
+      focusKey: blockKey,
+      focusOffset: block.getLength(),
+    });
+
+    const withoutBlock = Modifier.removeRange(content, targetRange, 'backward');
+    const resetBlock = Modifier.setBlockType(
+      withoutBlock,
+      withoutBlock.getSelectionAfter(),
+      'unstyled'
+    );
+
+    const newState = EditorState.push(editorState, resetBlock, 'remove-range');
+    this.onChange(
+      EditorState.forceSelection(newState, resetBlock.getSelectionAfter())
+    );
+  }
+
   render() {
     const {
       // isFocused,
@@ -196,6 +224,7 @@ class Editor extends Component {
 
 Editor.childContextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
+  removeBlock: PropTypes.func.isRequired,
 };
 
 Editor.propTypes = {
