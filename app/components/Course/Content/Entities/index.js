@@ -125,6 +125,7 @@ const blockRenderer = (block) =>
 
 const Block = ({ block }) => { // eslint-disable-line react/prop-types
   const entityKey = block.getEntityAt(0);
+  const blockKey = block.getKey();
   const entity = Entity.get(entityKey);
   return React.createElement(
     components[
@@ -132,6 +133,7 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
     ], {
       ...entity.getData(),
       entityKey,
+      blockKey,
     },
     null
   );
