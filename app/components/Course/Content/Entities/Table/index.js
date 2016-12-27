@@ -88,6 +88,7 @@ const convertDraftEditorStateToRow = (object) => ({
           row[key]
             .getCurrentContent()
         ),
+        editorKeys: obj.editorKeys.concat([key]),
       } : obj
     ), { ...row, editorKeys: [] })
   )),
@@ -136,12 +137,16 @@ class Table extends Component {
         ...obj,
         [dataIndex]: EditorState.createEmpty(),
       }));
-    const columns = [...temp.columns];
     const newCol = {
       editorStateTtle: EditorState.createEmpty(),
       dataIndex,
     };
-    columns.splice(columnKey, 0, newCol); // eslint-disable-line
+    const columns = [].concat(
+      temp.columns.slice(0, columnKey),
+      [newCol],
+      temp.columns.slice(columnKey),
+    );
+    // columns.splice(columnKey, 0, newCol); // eslint-disable-line
     this.setState({
       temp: toggleColumnFixedWidth(
         temp.tableStyles.equalColumnsWidth,
