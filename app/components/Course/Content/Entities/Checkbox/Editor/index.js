@@ -25,13 +25,12 @@ const Editor = ({
   content,
   storage,
   addContent,
-  dragOption,
+  dragContent,
   closeEditor,
+  uploadImage,
   saveContent,
-  removeOption,
   changeContent,
-  uploadOptionImage,
-  removeOptionImage,
+  removeContent,
   form: {
     resetFields,
     validateFields,
@@ -53,258 +52,318 @@ const Editor = ({
         Редактирование компонента
       </div>
       <AntTabs
-        // type="card"
         className={styles.tabs}
         tabBarExtraContent={
           <AntButton
             size="small"
             type="primary"
-            onClick={() => {}}
+            onClick={addContent([
+              'variants',
+            ], {
+              question: 'Вопрос',
+              options: [{
+                text: 'Вариант 1',
+                image: undefined,
+                checked: false,
+                correct: false,
+              }, {
+                text: 'Вариант 2',
+                image: undefined,
+                checked: false,
+                correct: false,
+              }, {
+                text: 'Вариант 3',
+                image: undefined,
+                checked: false,
+                correct: false,
+              }, {
+                text: 'Вариант 4',
+                image: undefined,
+                checked: false,
+                correct: false,
+              }],
+              hints: [],
+              competences: [],
+              explanations: [],
+            })}
           >
             Добавить вариант задания
           </AntButton>
         }
       >
-
-
-        <AntTabs.TabPane
-          key="1"
-          tab="Задание"
-        >
-          <AntForm.Item>
-            {getFieldDecorator('question', {
-              rules: [{
-                required: true,
-                message: 'Это поле не может быть пустым!',
-              }],
-              initialValue: content.get('question'),
-            })(
-              <AntInput
-                rows={4}
-                size="default"
-                type="textarea"
-                onChange={changeContent(['question'])}
-                className={styles.question}
-              />
-            )}
-          </AntForm.Item>
-          <AntCollapse
-            className={styles.collapse}
-            defaultActiveKey="1"
+        {content.get('variants').map((
+          variant, variantIndex
+        ) =>
+          <AntTabs.TabPane
+            key={variantIndex}
+            tab={`Вариант ${variantIndex + 1}`}
           >
-            <AntCollapse.Panel
-              key="1"
-              header={content
-                .get('options')
-                .filter((option) =>
-                  option.get('correct') === true
-                ).isEmpty()
-                  ? 'Варианты ответов не заданы'
-                  : 'Заданы'
-              }
+            <div
+              key={variantIndex}
+              className={styles.variant}
             >
-              <div className={styles.options}>
-                <Sortable.List
-                  onSortEnd={dragOption}
-                  useDragHandle
+              <AntForm.Item>
+                {getFieldDecorator('question', {
+                  rules: [{
+                    required: true,
+                    message: 'Это поле не может быть пустым!',
+                  }],
+                  initialValue: variant.get('question'),
+                })(
+                  <AntInput
+                    rows={4}
+                    size="default"
+                    type="textarea"
+                    onChange={changeContent(['question'])}
+                    className={styles.question}
+                  />
+                )}
+              </AntForm.Item>
+              <AntCollapse
+                className={styles.collapse}
+                defaultActiveKey="1"
+              >
+                <AntCollapse.Panel
+                  key="1"
+                  header={variant
+                    .get('options')
+                    .filter((option) =>
+                      option.get('correct') === true
+                    ).isEmpty()
+                      ? 'Варианты ответов не заданы'
+                      : 'Заданы'
+                  }
                 >
-                  {content.get('options').map((option, index) =>
-                    <div
-                      key={index}
-                      className={styles.option}
+                  <div className={styles.options}>
+                    <Sortable.List
+                      onSortEnd={dragContent([
+                        'variants',
+                        variantIndex,
+                        'options',
+                      ])}
+                      useDragHandle
                     >
-                      <Sortable.Item index={index}>
-                        <div className={styles.drag}>
-                          <Sortable.Handler />
-                        </div>
-                        <div className={styles.text}>
-                          <AntForm.Item>
-                            {getFieldDecorator(`option.${index}.text`, {
-                              rules: [{
-                                required: true,
-                                message: 'Укажите текст варианта ответа!',
-                              }],
-                              initialValue: option.get('text'),
-                            })(
-                              <AntInput
-                                size="default"
+                      {variant.get('options').map((
+                        option, optionIndex
+                      ) =>
+                        <div
+                          key={optionIndex}
+                          className={styles.option}
+                        >
+                          <Sortable.Item index={optionIndex}>
+                            <div className={styles.drag}>
+                              <Sortable.Handler />
+                            </div>
+                            <div className={styles.text}>
+                              <AntForm.Item>
+                                {getFieldDecorator(
+                                  `variant.${variantIndex}.option.${optionIndex}.text`, {
+                                    rules: [{
+                                      required: true,
+                                      message: 'Укажите текст варианта ответа!',
+                                    }],
+                                    initialValue: option.get('text'),
+                                  }
+                                )(
+                                  <AntInput
+                                    size="default"
+                                    onChange={changeContent([
+                                      'variants',
+                                      variantIndex,
+                                      'options',
+                                      optionIndex,
+                                      'text',
+                                    ])}
+                                  />
+                                )}
+                              </AntForm.Item>
+                            </div>
+                            <div className={styles.image}>
+                              {option.get('image')
+                                /* eslint-disable */
+                                ? <div className={styles.preview}>
+                                    <img
+                                      src={storage[
+                                        option.getIn([
+                                          'image',
+                                          'name',
+                                        ])
+                                      ]}
+                                      role="presentation"
+                                    />
+                                    <AntIcon
+                                      type="close"
+                                      onClick={removeContent([
+                                        'variants',
+                                        variantIndex,
+                                        'options',
+                                        optionIndex,
+                                        'image',
+                                      ])}
+                                      className={styles.remove}
+                                    />
+                                  </div>
+                                : <div className={styles.upload}>
+                                    <Dropzone
+                                      onDrop={uploadImage([
+                                        'variants',
+                                        variantIndex,
+                                        'options',
+                                        optionIndex,
+                                      ])}
+                                      multiple={false}
+                                      className={styles.dropzone}
+                                    />
+                                    <AntIcon
+                                      className={styles.icon}
+                                      type="camera"
+                                    />
+                                  </div>
+                                /* eslint-enable */
+                              }
+                            </div>
+                            <div className={styles.checkbox}>
+                              <AntCheckbox
+                                checked={option.get('correct')}
                                 onChange={changeContent([
+                                  'variants',
+                                  variantIndex,
                                   'options',
-                                  index,
-                                  'text',
+                                  optionIndex,
+                                  'correct',
                                 ])}
                               />
-                            )}
-                          </AntForm.Item>
-                        </div>
-                        <div className={styles.image}>
-                          {option.get('image')
-                            /* eslint-disable */
-                            ? <div className={styles.preview}>
-                                <img
-                                  src={storage[
-                                    option.getIn([
-                                      'image',
-                                      'name',
-                                    ])
-                                  ]}
-                                  role="presentation"
-                                />
+                            </div>
+                            <div className={styles.remove}>
+                              <AntPopconfirm
+                                title="Удалить вариант ответа?"
+                                okText="Да"
+                                onConfirm={removeContent([
+                                  'variants',
+                                  variantIndex,
+                                  'options',
+                                  optionIndex,
+                                ])}
+                                cancelText="Нет"
+                              >
                                 <AntIcon
                                   type="close"
-                                  onClick={removeOptionImage(index)}
-                                  className={styles.remove}
-                                />
-                              </div>
-                            : <div className={styles.upload}>
-                                <Dropzone
-                                  onDrop={uploadOptionImage(index)}
-                                  multiple={false}
-                                  className={styles.dropzone}
-                                />
-                                <AntIcon
                                   className={styles.icon}
-                                  type="camera"
                                 />
-                              </div>
-                            /* eslint-enable */
-                          }
+                              </AntPopconfirm>
+                            </div>
+                          </Sortable.Item>
                         </div>
-                        <div className={styles.checkbox}>
-                          <AntCheckbox
-                            key={index}
-                            checked={option.get('correct')}
-                            onChange={changeContent([
-                              'options',
-                              index,
-                              'correct',
-                            ])}
-                          />
-                        </div>
-                        <div className={styles.remove}>
-                          <AntPopconfirm
-                            title="Удалить событие?"
-                            okText="Да"
-                            onConfirm={removeOption(index)}
-                            cancelText="Нет"
-                          >
-                            <AntIcon
-                              type="close"
-                              className={styles.icon}
-                            />
-                          </AntPopconfirm>
-                        </div>
-                      </Sortable.Item>
-                    </div>
-                  )}
+                      )}
+                      <AntButton
+                        type="primary"
+                        onClick={addContent([
+                          'variants',
+                          variantIndex,
+                          'options',
+                        ], {
+                          text: 'Новый вариант',
+                          image: undefined,
+                          checked: false,
+                          correct: false,
+                        })}
+                      >
+                        Добавить вариант ответа
+                      </AntButton>
+                    </Sortable.List>
+                  </div>
+                </AntCollapse.Panel>
+                <AntCollapse.Panel
+                  key="2"
+                  header="Пояснения к правильному ответу"
+                >
+                  <div className={styles.explanations}>
+                    {variant.get('explanations').map((
+                      explanation, explanationIndex
+                    ) =>
+                      <div
+                        key={explanationIndex}
+                        className={styles.explanation}
+                      >
+                        {explanation.get('text')}
+                      </div>
+                    )}
+                  </div>
                   <AntButton
                     type="primary"
-                    onClick={addContent(
-                      ['options'], {
-                        text: 'Новый вариант',
-                        image: undefined,
-                        checked: false,
-                        correct: false,
-                      }
-                    )}
+                    onClick={addContent([
+                      'variants',
+                      variantIndex,
+                      'explanations',
+                    ], {
+                      text: 'Новое объяснение',
+                    })}
                   >
-                    Добавить вариант ответа
+                    Добавить пояснение к ответу
                   </AntButton>
-                </Sortable.List>
-              </div>
-            </AntCollapse.Panel>
-            <AntCollapse.Panel
-              key="2"
-              header="Пояснения к правильному ответу"
-            >
-              <div className={styles.explanations}>
-                {content.get('explanations').map(
-                  (explanation, index) =>
-                    <div
-                      key={index}
-                      className={styles.explanation}
-                    >
-                      {explanation.get('text')}
-                    </div>
-                )}
-              </div>
-              <AntButton
-                type="primary"
-                onClick={addContent(
-                  ['explanations'], {
-                    text: 'Новое объяснение',
-                  }
-                )}
-              >
-                Добавить пояснение к ответу
-              </AntButton>
-            </AntCollapse.Panel>
-            <AntCollapse.Panel
-              key="3"
-              header={
-                <span className={styles.header}>
-                  <AntIcon type="question-circle-o" />
-                  Подсказки
-                </span>
-              }
-            >
-              <div className={styles.hints}>
-                {content.get('hints').map(
-                  (hint, index) =>
-                    <div
-                      key={index}
-                      className={styles.hint}
-                    >
-                      {hint.get('text')}
-                    </div>
-                )}
-              </div>
-              <AntButton
-                type="primary"
-                onClick={addContent(
-                  ['hints'], {
-                    text: 'Новая подсказка',
-                  }
-                )}
-              >
-                Добавить подсказку
-              </AntButton>
-            </AntCollapse.Panel>
-            <AntCollapse.Panel
-              key="4"
-              header="Компетенции"
-            >
-              <div className={styles.competences}>
-                {content.get('competences').map(
-                  (competence, index) =>
-                    <div
-                      key={index}
-                      className={styles.competence}
-                    >
-                      {competence.get('text')}
-                    </div>
-                )}
-              </div>
-              <AntButton
-                type="primary"
-                onClick={addContent(
-                  ['competences'], {
-                    text: 'Новая компетенция',
-                  }
-                )}
-              >
-                Добавить компетенцию
-              </AntButton>
-            </AntCollapse.Panel>
-          </AntCollapse>
-        </AntTabs.TabPane>
-
-
-        <AntTabs.TabPane key="2" tab="Баллы">
-          Содержание
-        </AntTabs.TabPane>
-
-
+                </AntCollapse.Panel>
+                <AntCollapse.Panel
+                  key="3"
+                  header="Подсказки"
+                >
+                  <div className={styles.hints}>
+                    {variant.get('hints').map((
+                      hint, hintIndex
+                    ) =>
+                      <div
+                        key={hintIndex}
+                        className={styles.hint}
+                      >
+                        {hint.get('text')}
+                      </div>
+                    )}
+                  </div>
+                  <AntButton
+                    type="primary"
+                    onClick={addContent([
+                      'variants',
+                      variantIndex,
+                      'hints',
+                    ], {
+                      text: 'Новая подсказка',
+                    })}
+                  >
+                    Добавить подсказку
+                  </AntButton>
+                </AntCollapse.Panel>
+                <AntCollapse.Panel
+                  key="4"
+                  header="Компетенции"
+                >
+                  <div className={styles.competences}>
+                    {variant.get('competences').map((
+                      competence, competenceIndex
+                    ) =>
+                      <div
+                        key={competenceIndex}
+                        className={styles.competence}
+                      >
+                        {competence.get('text')}
+                      </div>
+                    )}
+                  </div>
+                  <AntButton
+                    type="primary"
+                    onClick={addContent([
+                      'variants',
+                      variantIndex,
+                      'competences',
+                    ], {
+                      text: 'Новая компетенция',
+                    })}
+                  >
+                    Добавить компетенцию
+                  </AntButton>
+                </AntCollapse.Panel>
+              </AntCollapse>
+            </div>
+          </AntTabs.TabPane>
+        )}
       </AntTabs>
       <div className={styles.actions}>
         <AntButton
@@ -350,16 +409,15 @@ Editor.propTypes = {
     getFieldDecorator: PropTypes.func.isRequired,
   }).isRequired,
   addContent: PropTypes.func.isRequired,
-  dragOption: PropTypes.func.isRequired,
+  dragContent: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
+  uploadImage: PropTypes.func.isRequired,
   saveContent: PropTypes.func.isRequired,
-  removeOption: PropTypes.func.isRequired,
+  removeContent: PropTypes.func.isRequired,
   changeContent: PropTypes.func.isRequired,
-  removeOptionImage: PropTypes.func.isRequired,
-  uploadOptionImage: PropTypes.func.isRequired,
   content: ImmutablePropTypes.mapContains({
     points: ImmutablePropTypes.map.isRequired,
-    variations: PropTypes.arrayOf(
+    variants: ImmutablePropTypes.listOf(
       ImmutablePropTypes.mapContains({
         question: PropTypes.string.isRequired,
         options: ImmutablePropTypes.listOf(

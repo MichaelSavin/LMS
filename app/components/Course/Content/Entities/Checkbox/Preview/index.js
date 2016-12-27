@@ -9,6 +9,8 @@ import ImmutablePropTypes from
   'react-immutable-proptypes';
 import styles from './styles.css';
 
+// Показывает первый вариант задания
+
 const Preview = ({
   content,
   storage,
@@ -16,10 +18,18 @@ const Preview = ({
 }) =>
   <div className={styles.preview}>
     <div className={styles.question}>
-      {content.get('question')}
+      {content.getIn([
+        'variants',
+        0,
+        'question',
+      ])}
     </div>
     <div className={styles.options}>
-      {content.get('options').map((
+      {content.getIn([
+        'variants',
+        0,
+        'options',
+      ]).map((
          option,
          index
       ) =>
@@ -70,7 +80,7 @@ const Preview = ({
 Preview.propTypes = {
   content: ImmutablePropTypes.mapContains({
     points: ImmutablePropTypes.map.isRequired,
-    variations: PropTypes.arrayOf(
+    variants: ImmutablePropTypes.listOf(
       ImmutablePropTypes.mapContains({
         question: PropTypes.string.isRequired,
         options: ImmutablePropTypes.listOf(

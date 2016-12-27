@@ -1,16 +1,17 @@
 .editor {
   padding: 15px;
-  border-top: 1px solid #CCC;
+  border-top: 2.5px solid rgb(45, 183, 245);
   padding-top: 0;
 
   & .title {
     width: 103%;
+    color: white;
     padding: 5px 15px;
     font-size: 13px;
     font-weight: 500;
     margin-left: -15px;
-    border-bottom: 1px solid #CCC;
-    background-color: rgba(230, 230, 230, 0.5);
+    border-bottom: 2.5px solid rgb(45, 183, 245);
+    background-color: rgb(45, 183, 245);
   }
 
   & .tabs {
@@ -81,7 +82,7 @@
           }
 
           & .checkbox {
-            transform: scale(2);
+            /* ... */
           }
 
           & .remove {
@@ -90,6 +91,21 @@
           }
         }
       }
+    }
+
+    & .hint {
+      padding: 10px 0;
+      font-weight: normal;
+    }
+
+    & .competence {
+      padding: 10px 0;
+      font-weight: normal;
+    }
+
+    & .explanation {
+      padding: 10px 0;
+      font-weight: normal;
     }
   }
 

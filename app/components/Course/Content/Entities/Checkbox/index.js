@@ -12,19 +12,13 @@ class Checkbox extends Component {
 
   constructor(props) {
     super(props);
-    const {
-      content: {
-        editor,
-        initial,
-        component,
-      },
-    } = props;
+    const { content } = props;
     this.state = {
       drag: null,
       editing: false,
       content: fromJS({
-        editor: editor || initial,
-        component: component || initial,
+        editor: content,
+        component: content,
       }),
     };
     this.storage = {
@@ -36,18 +30,21 @@ class Checkbox extends Component {
   componentDidMount() {
     this.state.content.getIn([
       'editor',
-      'options',
-    ]).forEach(({ image }) => {
-      if (image) {
-        localForage
-          .getItem(image.get('name'))
-          .then((data) => {
-            this.storage.images[
-              image.get('name')
-            ] = data;
-            this.forceUpdate();
-          });
-      }
+      'variants',
+    ]).forEach((variant) => {
+      variant.get('options')
+        .forEach(({ image }) => {
+          if (image) {
+            localForage
+              .getItem(image.get('name'))
+              .then((data) => {
+                this.storage.images[
+                  image.get('name')
+                ] = data;
+                this.forceUpdate();
+              });
+          }
+        });
     });
   }
 
@@ -64,7 +61,7 @@ class Checkbox extends Component {
     );
   }
 
-  uploadOptionImage = (index) => (files) => {
+  uploadImage = (location) => (files) => {
     const image = {
       data: files[0].slice(0),
       name: [
@@ -84,8 +81,7 @@ class Checkbox extends Component {
         ({ content }) => ({
           content: content.setIn([
             'editor',
-            'options',
-            index,
+            ...location,
             'image',
             'name',
           ],
@@ -96,22 +92,6 @@ class Checkbox extends Component {
     };
   }
 
-  removeOptionImage = (index) => (event) => {
-    event.stopPropagation();
-    this.setState(
-      ({ content }) => ({
-        content: content.setIn([
-          'editor',
-          'options',
-          index,
-          'image',
-        ],
-          undefined
-        ),
-      })
-    );
-  }
-
   addContent = (location, content) => () => {
     this.setState({
       content: this.state.content.updateIn([
@@ -120,49 +100,47 @@ class Checkbox extends Component {
       ],
         Immutable.List.of(),
         // eslint-disable-next-line
-        (data) => data.push(
-          fromJS(content)
-        ),
+        (data) => data.push(fromJS(content)),
       ),
     });
   }
 
-  removeOption = (index) => () => {
+  removeContent = (location) => (event) => {
+    if (event) { event.stopPropagation(); }
     this.setState(
       ({ content }) => ({
         content: content.removeIn([
           'editor',
-          'options',
-          index,
+          ...location,
         ]),
       })
     );
   }
 
-  dragOption = ({ oldIndex, newIndex }) => {
+  dragContent = (location) => ({ oldIndex, newIndex }) => {
     this.setState(
       ({ content }) => ({
         content: content.setIn([
           'editor',
-          'options',
+          ...location,
         ],
           content.getIn([
             'editor',
-            'options',
+            ...location,
           ]).withMutations(
             (options) => options
               .set(
                 oldIndex,
                 content.getIn([
                   'editor',
-                  'options',
+                  ...location,
                 ]).get(newIndex)
               )
               .set(
                 newIndex,
                 content.getIn([
                   'editor',
-                  'options',
+                  ...location,
                 ]).get(oldIndex)
               )
           )
@@ -206,18 +184,17 @@ class Checkbox extends Component {
 
   saveContent = () => {
     const { content } = this.state;
-    const newContent = content.set(
-      'component',
-      content.get('editor'),
-    );
     Entity.replaceData(
       this.props.entityKey, {
-        content: newContent.toJS(),
+        content: content.get('editor').toJS(),
       }
     );
     this.setState({
       editing: false,
-      content: newContent,
+      content: content.set(
+        'component',
+        content.get('editor'),
+      ),
     }, this.context.toggleReadOnly);
   }
 
@@ -249,13 +226,13 @@ class Checkbox extends Component {
               content={editor}
               storage={this.storage}
               addContent={this.addContent}
-              dragOption={this.dragOption}
+              dragContent={this.dragContent}
               closeEditor={this.closeEditor}
+              uploadImage={this.uploadImage}
+              removeImage={this.removeImage}
               saveContent={this.saveContent}
-              removeOption={this.removeOption}
+              removeContent={this.removeContent}
               changeContent={this.changeContent}
-              uploadOptionImage={this.uploadOptionImage}
-              removeOptionImage={this.removeOptionImage}
             />
           </div>
         }
@@ -300,7 +277,7 @@ Checkbox.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     points: PropTypes.object.isRequired,
-    variations: PropTypes.arrayOf(
+    variants: PropTypes.arrayOf(
       PropTypes.shape({
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
@@ -319,13 +296,19 @@ Checkbox.propTypes = {
           }).isRequired,
         ).isRequired,
         hints: PropTypes.arrayOf(
-          PropTypes.shape({ text: PropTypes.string.isRequired })
+          PropTypes.shape({
+            text: PropTypes.string.isRequired,
+          })
         ).isRequired,
         competences: PropTypes.arrayOf(
-          PropTypes.shape({ text: PropTypes.string.isRequired })
+          PropTypes.shape({
+            text: PropTypes.string.isRequired,
+          })
         ).isRequired,
         explanations: PropTypes.arrayOf(
-          PropTypes.shape({ text: PropTypes.string.isRequired })
+          PropTypes.shape({
+            text: PropTypes.string.isRequired,
+          })
         ).isRequired,
       }).isRequired,
     ).isRequired,
@@ -334,36 +317,34 @@ Checkbox.propTypes = {
 
 Checkbox.defaultProps = {
   content: {
-    initial: {
-      points: {},
-      variations: [{
-        question: 'Где могут жить утки?',
-        hints: [],
-        options: [{
-          text: 'Здесь',
-          image: undefined,
-          checked: false,
-          correct: false,
-        }, {
-          text: 'Тут',
-          image: undefined,
-          checked: false,
-          correct: false,
-        }, {
-          text: 'Вот же',
-          image: undefined,
-          checked: false,
-          correct: false,
-        }, {
-          text: 'Ага, вот отличное место',
-          image: undefined,
-          checked: false,
-          correct: false,
-        }],
-        competences: [],
-        explanations: [],
+    points: {},
+    variants: [{
+      question: 'Вопрос',
+      options: [{
+        text: 'Вариант 1',
+        image: undefined,
+        checked: false,
+        correct: false,
+      }, {
+        text: 'Вариант 2',
+        image: undefined,
+        checked: false,
+        correct: false,
+      }, {
+        text: 'Вариант 3',
+        image: undefined,
+        checked: false,
+        correct: false,
+      }, {
+        text: 'Вариант 4',
+        image: undefined,
+        checked: false,
+        correct: false,
       }],
-    },
+      hints: [],
+      competences: [],
+      explanations: [],
+    }],
   },
 };
 
