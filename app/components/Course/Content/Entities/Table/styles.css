@@ -24,31 +24,22 @@
 }
 
 .table:hover {
-  & .edit {
-    visibility: visible;
-  }
-
-  & .delete {
+  & .icon {
     visibility: visible;
   }
 }
 
-.edit {
+.iconsWraper {
   position: absolute;
   top: -29px;
   right: 10px;
-  transition: all 0.2s ease;
-  visibility: hidden;
-  border-radius: 4px 4px 0 0 !important;
 }
 
-.delete {
-  position: absolute;
-  top: -29px;
-  right: 45px;
+.icon {
   transition: all 0.2s ease;
   visibility: hidden;
   border-radius: 4px 4px 0 0 !important;
+  margin-left: 5px;
 }
 
 .editor {

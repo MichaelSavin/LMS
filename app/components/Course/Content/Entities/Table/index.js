@@ -371,17 +371,17 @@ class Table extends Component {
         showHeader={!tableStyles.hideHeader}
       />
       {isReadOnly ?
-        <div>
+        <div className={styles.iconsWraper}>
           <AntButton
             type="danger"
             icon="close-circle"
-            className={styles.delete}
+            className={styles.icon}
             onClick={this.deleteBlock}
           />
           <AntButton
             type="primary"
             icon="edit"
-            className={styles.edit}
+            className={styles.icon}
             onClick={this.editMode}
           />
         </div>
@@ -392,18 +392,20 @@ class Table extends Component {
             onChange={this.editorOnChange}
             tableStyles={tableStyles}
           />
-          <AntButton
-            type="primary"
-            icon="left-circle"
-            className={styles.edit}
-            onClick={this.closeEditor}
-          />
-          <AntButton
-            type="primary"
-            icon="check-circle"
-            className={styles.edit}
-            onClick={this.saveSettings}
-          />
+          <div className={styles.iconsWraper}>
+            <AntButton
+              type="primary"
+              icon="rollback"
+              className={styles.icon}
+              onClick={this.closeEditor}
+            />
+            <AntButton
+              type="primary"
+              icon="check-circle"
+              className={styles.icon}
+              onClick={this.saveSettings}
+            />
+          </div>
         </div>
       }
     </div>);
