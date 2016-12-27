@@ -94,6 +94,8 @@ class Editor extends Component {
 
   toggleReadOnly = () => {
     const { editorState, isReadOnly } = this.state;
+    // Для сохранения изменений добавил установку фокуса
+    // TODO чтобы работало надо что-то поменять в редакторе.
     this.setState({
       editorState: isReadOnly
         ? EditorState.moveFocusToEnd(editorState)
