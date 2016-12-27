@@ -3,11 +3,7 @@ import React, {
 } from 'react';
 import {
   EditorState,
-  // convertFromRaw,
 } from 'draft-js';
-// import {
-//   entitiesDecorator,
-// } from '../../../Entities';
 
 import Dropdown from '../Dropdown';
 import styles from './styles.css';
