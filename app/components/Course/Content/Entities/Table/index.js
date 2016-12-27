@@ -348,10 +348,7 @@ class Table extends Component {
     }
   }
 
-  deleteBlock = () => {
-    console.log('object');
-    this.context.removeBlock(this.props.entityKey);
-  }
+  deleteBlock = () => this.context.removeBlock(this.props.blockKey);
 
   render() {
     const { dataSource, columns, tableStyles } = this.state.temp || this.state.content;
@@ -374,7 +371,7 @@ class Table extends Component {
         showHeader={!tableStyles.hideHeader}
       />
       {isReadOnly ?
-        <div className={styles.editor}>
+        <div>
           <AntButton
             type="danger"
             icon="close-circle"
@@ -396,10 +393,10 @@ class Table extends Component {
             tableStyles={tableStyles}
           />
           <AntButton
-            type="danger"
-            icon="close-circle"
-            className={styles.delete}
-            onClick={this.deleteBlock}
+            type="primary"
+            icon="left-circle"
+            className={styles.edit}
+            onClick={this.closeEditor}
           />
           <AntButton
             type="primary"
@@ -414,6 +411,7 @@ class Table extends Component {
 }
 
 Table.propTypes = {
+  blockKey: PropTypes.string.isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     dataSource: PropTypes.array.isRequired,
