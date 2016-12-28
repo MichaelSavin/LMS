@@ -29,6 +29,8 @@ const Editor = ({
   closeEditor,
   uploadImage,
   saveContent,
+  undoHistory,
+  redoHistory,
   changeContent,
   removeContent,
   form: {
@@ -49,7 +51,19 @@ const Editor = ({
   return (
     <div className={styles.editor}>
       <div className={styles.title}>
-        Редактирование компонента
+        <div className={styles.text}>
+          Редактирование компонента
+        </div>
+        <div className={styles.actions}>
+          <AntButton
+            icon="arrow-left"
+            onClick={undoHistory}
+          />
+          <AntButton
+            icon="arrow-right"
+            onClick={redoHistory}
+          />
+        </div>
       </div>
       <AntTabs
         className={styles.tabs}
@@ -114,7 +128,11 @@ const Editor = ({
                     rows={4}
                     size="default"
                     type="textarea"
-                    onChange={changeContent(['question'])}
+                    onChange={changeContent([
+                      'variants',
+                      variantIndex,
+                      'question',
+                    ])}
                     className={styles.question}
                   />
                 )}
@@ -413,6 +431,8 @@ Editor.propTypes = {
   closeEditor: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
   saveContent: PropTypes.func.isRequired,
+  undoHistory: PropTypes.func.isRequired,
+  redoHistory: PropTypes.func.isRequired,
   removeContent: PropTypes.func.isRequired,
   changeContent: PropTypes.func.isRequired,
   content: ImmutablePropTypes.mapContains({
@@ -448,4 +468,8 @@ Editor.propTypes = {
   }).isRequired,
 };
 
-export default AntForm.create()(Editor);
+export default AntForm.create({
+  mapPropsToFields: () => ({
+    name: { value: undefined },
+  }),
+})(Editor);

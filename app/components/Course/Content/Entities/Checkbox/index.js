@@ -25,6 +25,11 @@ class Checkbox extends Component {
       crops: {},
       images: {},
     };
+    this.history = {
+      past: [],
+      future: [],
+      present: undefined,
+    };
   }
 
   componentDidMount() {
@@ -87,7 +92,7 @@ class Checkbox extends Component {
           ],
             image.name,
           ),
-        })
+        }), this.addStateToHistory
       );
     };
   }
@@ -102,7 +107,7 @@ class Checkbox extends Component {
         // eslint-disable-next-line
         (data) => data.push(fromJS(content)),
       ),
-    });
+    }, this.addStateToHistory);
   }
 
   removeContent = (location) => (event) => {
@@ -113,7 +118,7 @@ class Checkbox extends Component {
           'editor',
           ...location,
         ]),
-      })
+      }), this.addStateToHistory
     );
   }
 
@@ -145,7 +150,7 @@ class Checkbox extends Component {
               )
           )
         ),
-      })
+      }), this.addStateToHistory
     );
   };
 
@@ -161,7 +166,47 @@ class Checkbox extends Component {
         ||
         event.target.checked
       ),
-    });
+    }, this.addStateToHistory);
+  }
+
+  addStateToHistory = () => {
+    /* eslint-disable */
+    this.history.present =
+      this.state.content.get('editor');
+    this.history.past.push(
+      this.state.content.get('editor'),
+    );
+    /* eslint-enable */
+  }
+
+  undoHistory = () => {
+    if (this.history.past.length > 0) {
+      /* eslint-disable */
+      this.history.future.push(this.history.present);
+      this.history.present = this.history.past.pop();
+      /* eslint-enable */
+      this.setState({
+        content: this.state.content.set(
+          'editor',
+          this.history.present,
+        ),
+      });
+    }
+  }
+
+  redoHistory = () => {
+    if (this.history.future.length > 0) {
+      /* eslint-disable */
+      this.history.past.push(this.history.present);
+      this.history.present = this.history.future.pop();
+      /* eslint-enable */
+      this.setState({
+        content: this.state.content.set(
+          'editor',
+          this.history.present,
+        ),
+      });
+    }
   }
 
   openEditor = () => {
@@ -231,6 +276,8 @@ class Checkbox extends Component {
               uploadImage={this.uploadImage}
               removeImage={this.removeImage}
               saveContent={this.saveContent}
+              undoHistory={this.undoHistory}
+              redoHistory={this.redoHistory}
               removeContent={this.removeContent}
               changeContent={this.changeContent}
             />

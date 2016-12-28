@@ -7,11 +7,24 @@
     width: 103%;
     color: white;
     padding: 5px 15px;
+    display: flex;
     font-size: 13px;
     font-weight: 500;
     margin-left: -15px;
     border-bottom: 2.5px solid rgb(45, 183, 245);
+    flex-direction: row;
+    justify-content: space-between;
     background-color: rgb(45, 183, 245);
+
+    & .actions {
+      height: 20px;
+      margin-top: -4px;
+      margin-right: -2px;
+
+      & button {
+        transform: scale(0.8);
+      }
+    }
   }
 
   & .tabs {
