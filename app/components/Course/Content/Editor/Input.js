@@ -85,21 +85,23 @@ class DraftInput extends Component {
           customStyleMap={customStyleMap}
           handleKeyCommand={this.handleKeyCommand}
         />
-        {!className && <div className={styles.icon}>
-          <Button
-            size="small"
-            onClick={() => {
-              insertEntity(
-                'TEX',
-                editorState,
-                this.onChange,
-                'INPUT'
-              );
-            }}
-          >
-            <Icon type="function" />
-          </Button>
-        </div>}
+        {!className &&
+          <div className={styles.icon}>
+            <Button
+              size="small"
+              onClick={() => {
+                insertEntity(
+                  'TEX',
+                  editorState,
+                  this.onChange,
+                  'INPUT'
+                );
+              }}
+            >
+              <Icon type="function" />
+            </Button>
+          </div>
+        }
         <Popup
           isFocused={popupIsOpen}
           editorRef={this.refs.editor}
