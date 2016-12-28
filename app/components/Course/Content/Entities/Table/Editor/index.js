@@ -18,7 +18,7 @@ const Editor = ({
   style,
 }) => (
   <div className={styles.editor}>
-    <span className={styles.editorname}>Редактирование</span>
+    <span className={styles.name}>Редактирование</span>
     <div className={styles.options}>
       <div className={styles.item}>
         <div><p>Стиль таблицы:</p></div>
