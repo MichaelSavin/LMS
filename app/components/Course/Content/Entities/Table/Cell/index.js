@@ -14,9 +14,12 @@ const Cell = ({
   isReadOnly,
   onChange,
   className,
-  editTable,
   index,
   columnKey,
+  addRow,
+  delRow,
+  addColumn,
+  delColumn,
 }) => (
   <div className="editable-cell">
     <div className="editable-cell-input-wrapper">
@@ -34,7 +37,10 @@ const Cell = ({
     {
       !isReadOnly
         && <Dropdown
-          editTable={editTable}
+          addRow={addRow}
+          delRow={delRow}
+          addColumn={addColumn}
+          delColumn={delColumn}
           index={index}
           columnKey={columnKey}
         />
@@ -44,6 +50,10 @@ const Cell = ({
 Cell.propTypes = {
   value: PropTypes.object.isRequired,
   onChange: PropTypes.func,
+  addRow: PropTypes.func,
+  delRow: PropTypes.func,
+  addColumn: PropTypes.func,
+  delColumn: PropTypes.func,
   editTable: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,

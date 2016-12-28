@@ -127,10 +127,6 @@ class Table extends Component {
     });
   }
 
-  editTable = (type, columnKey, index) => () => {
-    this[type](columnKey, index);
-  }
-
   addColumn = (columnKey) => {
     const dataIndex = `index${random(0, 999)}`;
     const { temp } = this.state;
@@ -234,7 +230,10 @@ class Table extends Component {
           // к сожалению при изменении данных надо передавать
           // весь элемент с новыми пропсами
           title: <Cell
-            editTable={this.editTable}
+            addRow={this.addRow}
+            delRow={this.delRow}
+            addColumn={this.addColumn}
+            delColumn={this.delColumn}
             index={-1}
             value={titleData}
             onChange={this.headChange(columnKey)}
@@ -314,13 +313,19 @@ class Table extends Component {
           value={obj.titleData}
           onChange={this.headChange(key)}
           columnKey={key}
-          editTable={this.editTable}
+          addRow={this.addRow}
+          delRow={this.delRow}
+          addColumn={this.addColumn}
+          delColumn={this.delColumn}
         />),
       render: (text, record, index) => (
       // Функция для рендера ячейки должна
       // храниться в этом свойстве https://ant.design/components/table/
         <Cell
-          editTable={this.editTable}
+          addRow={this.addRow}
+          delRow={this.delRow}
+          addColumn={this.addColumn}
+          delColumn={this.delColumn}
           index={index}
           value={text}
           onChange={this.onCellChange(index, obj.dataIndex)}
