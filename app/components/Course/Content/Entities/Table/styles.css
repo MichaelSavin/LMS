@@ -1,12 +1,12 @@
 .table {
-  margin: 5px 0;
   user-select: none;
+  position: relative;
   display: inline-block;
   -webkit-user-select: none;
-  border: 1px solid #E9E9E9;
-  position: relative;
   width: 100%;
+  margin: 5px 0;
   transition: all 0.1s ease;
+  border: 1px solid #E9E9E9;
 
   & th {
     position: relative;
@@ -18,10 +18,10 @@
     right: 10px;
 
     & .icon {
-      transition: all 0.2s ease;
       visibility: hidden;
-      border-radius: 4px 4px 0 0 !important;
       margin-left: 5px;
+      transition: all 0.2s ease;
+      border-radius: 4px 4px 0 0 !important;
     }
   }
 
@@ -58,8 +58,8 @@
   }
 
   & .editing {
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
     border: none;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
     border-left: 2px solid #2DB7F5 !important;
   }
 
@@ -95,12 +95,12 @@
 
 :global .ant-btn-danger {
   color: #FFF;
-  background-color: #EC6D6D;
   border-color: #EC6D6D;
+  background-color: #EC6D6D;
 
   &:hover {
     color: #FFF;
-    background-color: #F77D7D;
     border-color: #F77D7D;
+    background-color: #F77D7D;
   }
 }
