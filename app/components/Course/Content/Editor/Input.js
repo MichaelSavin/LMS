@@ -22,7 +22,7 @@ class DraftInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      readOnly: false,
+      isReadOnly: false,
       popupOpen: true,
     };
   }
@@ -52,13 +52,13 @@ class DraftInput extends Component {
 
   lockDraft = () => {
     this.setState({
-      readOnly: true,
+      isReadOnly: true,
     });
   }
 
   unlockDraft = () => {
     this.setState({
-      readOnly: false,
+      isReadOnly: false,
     }, this.focusEditor);
   }
 
@@ -66,12 +66,12 @@ class DraftInput extends Component {
 
   render() {
     const {
-      readOnly,
+      isReadOnly,
       popupIsOpen,
     } = this.state;
-    const { isReadOnly, className } = this.props;
     const {
       value: editorState,
+      className,
     } = this.props;
     return (
       <div className={className || styles.input}>
@@ -79,7 +79,7 @@ class DraftInput extends Component {
           ref="editor"
           onBlur={this.setFocusStatus}
           onFocus={this.setFocusStatus}
-          readOnly={readOnly || isReadOnly}
+          readOnly={isReadOnly || this.props.isReadOnly}
           onChange={this.onChange}
           editorState={editorState}
           customStyleMap={customStyleMap}

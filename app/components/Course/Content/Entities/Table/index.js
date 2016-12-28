@@ -24,15 +24,15 @@ import Editor from './Editor';
 import styles from './styles.css';
 
 
-const toggleColumnFixedWidth = (isEqual, temp) => {
-  const { columns } = temp;
+const toggleColumnFixedWidth = (isEqual, content) => {
+  const { columns } = content;
   return {
-    ...temp,
+    ...content,
     tableStyles: set([
       'equalColumnsWidth',
     ],
       isEqual,
-      temp.tableStyles,
+      content.tableStyles,
     ),
     columns: columns.map((obj) => ({
       ...obj,
@@ -49,15 +49,17 @@ const convertRawToDraftEditorState = (object) =>
   object && ({
     ...object,
     dataSource: object.dataSource.map((row) => (
-      (row.editorKeys || []).reduce((obj, key) => ({
-        ...obj,
-        [key]: EditorState
-          .createWithContent(
-          convertFromRaw(row[key]),
-          entitiesDecorator
-        ),
-      }), row))
-    ),
+      Object.keys(row).reduce((obj, key) => (
+        key === 'key' ? obj : {
+          ...obj,
+          [key]: EditorState
+            .createWithContent(
+            convertFromRaw(row[key]),
+            entitiesDecorator
+          ),
+        }
+      ), row)
+    )),
     columns: object.columns.map((column) => ({
       ...column,
       titleData: EditorState
@@ -89,9 +91,8 @@ const convertDraftEditorStateToRow = (object) => ({
           row[key]
             .getCurrentContent()
         ),
-        editorKeys: obj.editorKeys.concat([key]),
       } : obj
-    ), { ...row, editorKeys: [] })
+    ), { ...row })
   )),
   columns: object.columns.map((col) => ({
     ...col,
@@ -185,19 +186,20 @@ class Table extends Component {
   addRow = (columnKey, index) => {
     const newDataSource = [...this.state.temp.dataSource];
     const newRow = Object.keys(newDataSource[0])
-      .reduce((obj, key) => ({
-        ...obj,
-        [key]: key === 'editorKeys'
-        ? newDataSource[0].editorKeys
-        : EditorState.createEmpty(),
-      }), {});
-    newRow.key = `${random(0, 999)}`; // eslint-disable-line
-    newDataSource.splice(index, 0, newRow); // eslint-disable-line
+      .reduce((obj, key) => (
+        key === 'key' ? obj : {
+          ...obj,
+          [key]: EditorState.createEmpty(),
+        }), { ...newDataSource[0], key: `${random(0, 999)}` });
     this.setState({
       temp: set([
         'dataSource',
       ],
-        newDataSource,
+        [
+          ...newDataSource.slice(0, index),
+          newRow,
+          ...newDataSource.slice(index),
+        ],
         this.state.temp,
       ),
     });
@@ -424,7 +426,6 @@ Table.propTypes = {
   content: PropTypes.shape({
     dataSource: PropTypes.arrayOf(
       PropTypes.shape({
-        editorKeys: PropTypes.array.isRequired,
         key: PropTypes.string.isRequired,
       }).isRequired,
     ).isRequired,
@@ -439,25 +440,6 @@ Table.propTypes = {
   }).isRequired,
 };
 
-/*
-Carousel.propTypes = {
-  entityKey: PropTypes.string.isRequired,
-  content: PropTypes.shape({
-    slides: PropTypes.arrayOf(
-      PropTypes.shape({
-        type: PropTypes.oneOf([
-          'text',
-          'image',
-        ]).isRequired,
-        text: PropTypes.string,
-        image: PropTypes.shape({
-          source: PropTypes.string,
-          text: PropTypes.string,
-        }),
-      }).isRequired,
-    ).isRequired,
-  }).isRequired,
-};*/
 const emptyEditorStateRaw = convertToRaw(
   EditorState.createEmpty()
     .getCurrentContent()
@@ -485,16 +467,14 @@ Table.defaultProps = {
     }],
     dataSource: [{
       key: '0',
-      editorKeys: [],
-      name: {},
-      age: {},
-      address: {},
+      name: emptyEditorStateRaw,
+      age: emptyEditorStateRaw,
+      address: emptyEditorStateRaw,
     }, {
       key: '1',
-      editorKeys: [],
-      name: {},
-      age: {},
-      address: {},
+      name: emptyEditorStateRaw,
+      age: emptyEditorStateRaw,
+      address: emptyEditorStateRaw,
     }],
   },
 };
