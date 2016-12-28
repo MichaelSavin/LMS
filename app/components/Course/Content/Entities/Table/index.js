@@ -94,6 +94,8 @@ const convertDraftEditorStateToRow = (object) => ({
   )),
   columns: object.columns.map((col) => ({
     ...col,
+    title: null,
+    render: null,
     titleData: convertToRaw(
       col.titleData
         .getCurrentContent()
@@ -423,6 +425,17 @@ Table.propTypes = {
   blockKey: PropTypes.string.isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
+    style: PropTypes.shape({
+      table: PropTypes.shape({
+        big: PropTypes.bool,
+        small: PropTypes.bool,
+        compact: PropTypes.bool,
+      }).isRequired,
+      head: PropTypes.shape({
+        bold: PropTypes.bool,
+        normal: PropTypes.bool,
+      }).isRequired,
+    }).isRequired,
     dataSource: PropTypes.arrayOf(
       PropTypes.shape({
         key: PropTypes.string.isRequired,
@@ -430,10 +443,17 @@ Table.propTypes = {
     ).isRequired,
     columns: PropTypes.arrayOf(
       PropTypes.shape({
-        titleData: PropTypes.object.isRequired,
-        dataIndex: PropTypes.string.isRequired,
-        title: PropTypes.element,
         render: PropTypes.func,
+        width: PropTypes.string,
+        title: PropTypes.element,
+        dataIndex: PropTypes.string.isRequired,
+        titleData: React.PropTypes.oneOfType([
+          React.PropTypes.instanceOf(EditorState),
+          PropTypes.shape({
+            blocks: PropTypes.arrayOf(PropTypes.object.isRequired),
+            entityMap: PropTypes.object.isRequired,
+          }).isRequired,
+        ]).isRequired,
       }).isRequired,
     ).isRequired,
   }).isRequired,
