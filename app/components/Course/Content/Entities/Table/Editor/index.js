@@ -7,8 +7,6 @@ import {
   Checkbox as AntCheckbox,
 } from 'antd';
 import classNames from 'classnames';
-
-
 import styles from './styles.css';
 
 const Editor = ({

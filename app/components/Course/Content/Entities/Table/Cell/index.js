@@ -4,32 +4,27 @@ import React, {
 import {
   EditorState,
 } from 'draft-js';
-
-import Dropdown from '../Dropdown';
 import styles from './styles.css';
+import Dropdown from '../Dropdown';
 import { Input as DraftInput } from '../../../Editor';
 
 const Cell = ({
   value,
-  isReadOnly,
-  onChange,
-  className,
   index,
-  columnKey,
   addRow,
   delRow,
+  onChange,
+  className,
+  columnKey,
   addColumn,
   delColumn,
+  isReadOnly,
 }) => (
   <div className="editable-cell">
     <div className="editable-cell-input-wrapper">
       <DraftInput
         className={className}
-        value={
-          value instanceof EditorState
-          ? value
-          : EditorState.createEmpty()
-        }
+        value={value}
         onChange={onChange}
         isReadOnly={isReadOnly}
       />
@@ -48,17 +43,17 @@ const Cell = ({
   </div>);
 
 Cell.propTypes = {
-  value: PropTypes.object.isRequired,
-  onChange: PropTypes.func,
   addRow: PropTypes.func,
   delRow: PropTypes.func,
+  index: PropTypes.number,
+  onChange: PropTypes.func,
   addColumn: PropTypes.func,
   delColumn: PropTypes.func,
   editTable: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,
   columnKey: PropTypes.number,
-  index: PropTypes.number,
+  value: PropTypes.instanceOf(EditorState).isRequired,
 };
 
 Cell.defaultProps = {

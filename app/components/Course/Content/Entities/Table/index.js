@@ -4,25 +4,24 @@ import {
   Button as AntButton,
 } from 'antd';
 import {
-  set,
-  random,
-  omit,
   get,
+  set,
+  omit,
+  random,
 } from 'lodash/fp';
-import classNames from 'classnames';
 import {
   Entity,
   EditorState,
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
+import classNames from 'classnames';
 import {
   entitiesDecorator,
 } from '../../Entities';
 import Cell from './Cell';
 import Editor from './Editor';
 import styles from './styles.css';
-
 
 const toggleColumnFixedWidth = (isEqual, content) => {
   const { columns } = content;
@@ -36,7 +35,9 @@ const toggleColumnFixedWidth = (isEqual, content) => {
     ),
     columns: columns.map((obj) => ({
       ...obj,
-      width: isEqual ? `${100 / columns.length}%` : null,
+      width: isEqual
+        ? `${100 / columns.length}%`
+        : null,
     })),
   };
 };
