@@ -155,21 +155,18 @@ class Editor extends Component {
     const { editorState } = this.state;
     const content = this.state.editorState.getCurrentContent();
     const block = content.getBlockForKey(blockKey);
-
     const targetRange = new SelectionState({
       anchorKey: blockKey,
       anchorOffset: 0,
       focusKey: blockKey,
       focusOffset: block.getLength(),
     });
-
     const withoutBlock = Modifier.removeRange(content, targetRange, 'backward');
     const resetBlock = Modifier.setBlockType(
       withoutBlock,
       withoutBlock.getSelectionAfter(),
       'unstyled'
     );
-
     const newState = EditorState.push(editorState, resetBlock, 'remove-range');
     this.onChange(
       EditorState.forceSelection(newState, resetBlock.getSelectionAfter())
@@ -178,7 +175,6 @@ class Editor extends Component {
 
   render() {
     const {
-      // isFocused,
       isReadOnly,
       editorState,
     } = this.state;
