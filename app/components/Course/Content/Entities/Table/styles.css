@@ -56,26 +56,24 @@
       border-bottom: none;
     }
   }
-}
 
-.table:hover {
-  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
-}
-
-.editing {
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-  border: none;
-  border-left: 2px solid #2DB7F5 !important;
-}
-
-.table:hover {
-  & .icon {
-    visibility: visible;
+  & .editing {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    border: none;
+    border-left: 2px solid #2DB7F5 !important;
   }
-}
 
-.editor {
-  margin-top: 30px;
+  & .editor {
+    margin-top: 30px;
+  }
+
+  &:hover {
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+
+    & .icon {
+      visibility: visible;
+    }
+  }
 }
 
 :global .clearfix::before {

@@ -9,13 +9,13 @@
   justify-content: flex-end;
   align-items: flex-end;
   pointer-events: none;
-}
 
-.icon {
-  margin: 5px;
-  pointer-events: all;
-}
+  & .icon {
+    margin: 5px;
+    pointer-events: all;
+  }
 
-.menu {
-  margin-left: -165px;
+  & .menu {
+    margin-left: -165px;
+  }
 }
