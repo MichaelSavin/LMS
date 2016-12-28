@@ -219,28 +219,30 @@ class Table extends Component {
     }
   }
 
-  headChange = (columnKey) => (value) => {
+  headChange = (columnKey) => (titleData) => {
+    const { temp } = this.state;
     this.setState({
       temp: set([
         'columns',
         columnKey,
-        'title',
       ],
-        <Cell
-          editTable={this.editTable}
-          index={-1}
-          value={value}
-          onChange={this.headChange(columnKey)}
-          columnKey={columnKey}
-        />,
-        set([
-          'columns',
-          columnKey,
-          'titleData',
-        ],
-          value,
-          this.state.temp,
-        ),
+        {
+          ...temp.columns[columnKey],
+          // https://ant.design/components/table/#Column
+          // Ант таблица может рендерить кастомный React.Elment
+          // который передаеться ей через свойство title
+          // к сожалению при изменении данных надо передавать
+          // весь элемент с новыми пропсами
+          title: <Cell
+            editTable={this.editTable}
+            index={-1}
+            value={titleData}
+            onChange={this.headChange(columnKey)}
+            columnKey={columnKey}
+          />,
+          titleData,
+        },
+        temp,
       ),
     });
   };
