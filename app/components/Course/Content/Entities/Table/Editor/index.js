@@ -15,43 +15,43 @@ const Editor = ({
   saveSettings,
   closeEditor,
   onChange,
-  tableStyles,
+  style,
 }) => (
   <div className={styles.editor}>
     <span className={styles.editorname}>Редактирование</span>
     <div className={styles.options}>
       <div className={styles.item}>
-        <dvi><p>Стиль таблицы:</p></dvi>
+        <div><p>Стиль таблицы:</p></div>
         <AntSelect
           style={{ width: '100%' }}
-          defaultValue="table__big"
-          value={classNames({ ...tableStyles.tableOptions })}
-          onChange={onChange('tableOptions')}
+          defaultValue="big"
+          value={classNames({ ...style.table })}
+          onChange={onChange('table')}
         >
-          <AntSelect.Option value="table__compact">Компактная горизонтальные разделители</AntSelect.Option>
-          <AntSelect.Option value="table__big">Крупная все разделители</AntSelect.Option>
-          <AntSelect.Option value="table__small">Маленькая, черезполосица без разделителей</AntSelect.Option>
+          <AntSelect.Option value="compact">Компактная горизонтальные разделители</AntSelect.Option>
+          <AntSelect.Option value="big">Крупная все разделители</AntSelect.Option>
+          <AntSelect.Option value="small">Маленькая, черезполосица без разделителей</AntSelect.Option>
         </AntSelect>
       </div>
       <div className={styles.item}>
-        <dvi><p>Стиль заголовков:</p></dvi>
+        <div><p>Стиль заголовков:</p></div>
         <div>
           <AntSelect
-            defaultValue="table-head__bold"
-            onChange={onChange('headOptions')}
-            value={classNames({ ...tableStyles.headOptions })}
+            defaultValue="bold"
+            onChange={onChange('head')}
+            value={classNames({ ...style.head })}
             style={{ width: '100%' }}
           >
-            <AntSelect.Option value="table-head__bold">Тектст жирный</AntSelect.Option>
-            <AntSelect.Option value="table-head__normal">Текст нормальный</AntSelect.Option>
+            <AntSelect.Option value="bold">Тектст жирный</AntSelect.Option>
+            <AntSelect.Option value="normal">Текст нормальный</AntSelect.Option>
           </AntSelect>
         </div>
       </div>
     </div>
-    <AntCheckbox onChange={onChange('hideHeader')} checked={tableStyles.hideHeader}>
+    <AntCheckbox onChange={onChange('hideHeader')} checked={style.hideHeader}>
       Скрыть заголовки
     </AntCheckbox><br />
-    <AntCheckbox onChange={onChange('equalColumnsWidth')} checked={tableStyles.equalColumnsWidth}>
+    <AntCheckbox onChange={onChange('equalColumnsWidth')} checked={style.equalColumnsWidth}>
       Колонки равной ширины
     </AntCheckbox>
     <div className={styles.buttonwrapper}>
@@ -65,7 +65,7 @@ Editor.propTypes = {
   saveSettings: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  tableStyles: PropTypes.object.isRequired,
+  style: PropTypes.object.isRequired,
 };
 
 export default Editor;

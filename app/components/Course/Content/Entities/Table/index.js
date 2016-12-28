@@ -28,11 +28,11 @@ const toggleColumnFixedWidth = (isEqual, content) => {
   const { columns } = content;
   return {
     ...content,
-    tableStyles: set([
+    style: set([
       'equalColumnsWidth',
     ],
       isEqual,
-      content.tableStyles,
+      content.style,
     ),
     columns: columns.map((obj) => ({
       ...obj,
@@ -58,7 +58,6 @@ const convertRawToDraftEditorState = (object) =>
     )),
     columns: object.columns.map((column) => ({
       ...column,
-      displayName: 'asd',
       titleData: EditorState
         .createWithContent(
           convertFromRaw(column.titleData),
@@ -148,7 +147,7 @@ class Table extends Component {
     ];
     this.setState({
       temp: toggleColumnFixedWidth(
-        temp.tableStyles.equalColumnsWidth,
+        temp.style.equalColumnsWidth,
         {
           ...temp,
           columns: this.makeEditableColumns(columns),
@@ -169,7 +168,7 @@ class Table extends Component {
     const { dataIndex } = columns[columnKey];
     this.setState({
       temp: toggleColumnFixedWidth(
-        temp.tableStyles.equalColumnsWidth,
+        temp.style.equalColumnsWidth,
         {
           ...temp,
           dataSource: dataSource
@@ -335,7 +334,7 @@ class Table extends Component {
     } else if (!e.target) {
       this.setState({
         temp: set([
-          'tableStyles',
+          'style',
           type,
         ],
           { [e]: true },
@@ -345,7 +344,7 @@ class Table extends Component {
     } else {
       this.setState({
         temp: set([
-          'tableStyles',
+          'style',
           type,
         ],
           e.target.checked,
@@ -358,24 +357,25 @@ class Table extends Component {
   deleteBlock = () => this.context.removeBlock(this.props.blockKey);
 
   render() {
-    const { dataSource, columns, tableStyles } = this.state.temp || this.state.content;
+    const { dataSource, columns, style } = this.state.temp || this.state.content;
     const { isReadOnly } = this.state;
     return (<div
       className={classNames(
-        styles.table, {
+        styles.table,
+        styles[classNames(style.head)],
+        styles[classNames(style.table)],
+        {
           [styles.editing]: !isReadOnly,
-          ...tableStyles.headOptions,
-          ...tableStyles.tableOptions,
-        }
+        },
       )}
       onDoubleClick={isReadOnly && this.editMode}
     >
       <AntTable
-        bordered={get(['tableOptions', 'table__big'], tableStyles)}
-        dataSource={dataSource}
         columns={columns}
         pagination={false}
-        showHeader={!tableStyles.hideHeader}
+        dataSource={dataSource}
+        showHeader={!style.hideHeader}
+        bordered={get(['table', 'big'], style)}
       />
       {isReadOnly ?
         <div className={styles.actions}>
@@ -386,18 +386,18 @@ class Table extends Component {
             onClick={this.deleteBlock}
           />
           <AntButton
-            type="primary"
             icon="edit"
+            type="primary"
             className={styles.icon}
             onClick={this.editMode}
           />
         </div>
         : <div className={styles.editor}>
           <Editor
-            saveSettings={this.saveSettings}
-            closeEditor={this.closeEditor}
+            style={style}
             onChange={this.editorOnChange}
-            tableStyles={tableStyles}
+            closeEditor={this.closeEditor}
+            saveSettings={this.saveSettings}
           />
           <div className={styles.actions}>
             <AntButton
@@ -446,12 +446,12 @@ const emptyEditorStateRaw = convertToRaw(
 
 Table.defaultProps = {
   content: {
-    tableStyles: {
-      tableOptions: {
-        table__big: true,
+    style: {
+      table: {
+        big: true,
       },
-      headOptions: {
-        'table-head__bold': true,
+      head: {
+        bold: true,
       },
     },
     columns: [{
