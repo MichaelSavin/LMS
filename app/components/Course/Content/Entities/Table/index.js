@@ -45,16 +45,6 @@ const renderCell = (value) => (
   <Cell value={value} isReadOnly />
 );
 
-const convertRawOrEmptyState = (raw) => (
-  raw
-  ? EditorState
-    .createWithContent(
-      convertFromRaw(raw),
-      entitiesDecorator
-    )
-  : EditorState.createEmpty()
-);
-
 const convertRawToDraftEditorState = (object) =>
   object && ({
     ...object,
@@ -70,9 +60,19 @@ const convertRawToDraftEditorState = (object) =>
     ),
     columns: object.columns.map((column) => ({
       ...column,
-      editorStateTtle: convertRawOrEmptyState(column.editorStateTtle),
+      titleData: EditorState
+        .createWithContent(
+          convertFromRaw(column.titleData),
+          entitiesDecorator
+        ),
       title: (<Cell
-        value={convertRawOrEmptyState(column.editorStateTtle)}
+        value={
+          EditorState
+            .createWithContent(
+            convertFromRaw(column.titleData),
+            entitiesDecorator
+            )
+        }
         isReadOnly
       />),
       render: renderCell,
@@ -84,6 +84,7 @@ const convertDraftEditorStateToRow = (object) => ({
   dataSource: object.dataSource.map((row) => (
     Object.keys(row).reduce((obj, key) => (
       row[key] instanceof EditorState ? {
+        ...obj,
         [key]: convertToRaw(
           row[key]
             .getCurrentContent()
@@ -94,8 +95,8 @@ const convertDraftEditorStateToRow = (object) => ({
   )),
   columns: object.columns.map((col) => ({
     ...col,
-    editorStateTtle: convertToRaw(
-      col.editorStateTtle
+    titleData: convertToRaw(
+      col.titleData
         .getCurrentContent()
     ),
   })),
@@ -137,16 +138,14 @@ class Table extends Component {
         ...obj,
         [dataIndex]: EditorState.createEmpty(),
       }));
-    const newCol = {
-      editorStateTtle: EditorState.createEmpty(),
-      dataIndex,
-    };
-    const columns = [].concat(
-      temp.columns.slice(0, columnKey),
-      [newCol],
-      temp.columns.slice(columnKey),
-    );
-    // columns.splice(columnKey, 0, newCol); // eslint-disable-line
+    const columns = [
+      ...temp.columns.slice(0, columnKey),
+      {
+        titleData: EditorState.createEmpty(),
+        dataIndex,
+      },
+      ...temp.columns.slice(columnKey),
+    ];
     this.setState({
       temp: toggleColumnFixedWidth(
         temp.tableStyles.equalColumnsWidth,
@@ -235,7 +234,7 @@ class Table extends Component {
         set([
           'columns',
           columnKey,
-          'editorStateTtle',
+          'titleData',
         ],
           value,
           this.state.temp,
@@ -268,7 +267,7 @@ class Table extends Component {
       columns: columns.map((obj) => ({
         ...obj,
         title: (<Cell
-          value={obj.editorStateTtle}
+          value={obj.titleData}
           isReadOnly
         />),
         render: (value) => (
@@ -308,7 +307,7 @@ class Table extends Component {
       // храниться в этом свойстве https://ant.design/components/table/
         <Cell
           index={-1}
-          value={obj.editorStateTtle}
+          value={obj.titleData}
           onChange={this.headChange(key)}
           columnKey={key}
           editTable={this.editTable}
@@ -423,10 +422,46 @@ Table.propTypes = {
   blockKey: PropTypes.string.isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    dataSource: PropTypes.array.isRequired,
-    columns: PropTypes.array.isRequired,
+    dataSource: PropTypes.arrayOf(
+      PropTypes.shape({
+        editorKeys: PropTypes.array.isRequired,
+        key: PropTypes.string.isRequired,
+      }).isRequired,
+    ).isRequired,
+    columns: PropTypes.arrayOf(
+      PropTypes.shape({
+        titleData: PropTypes.object.isRequired,
+        dataIndex: PropTypes.string.isRequired,
+        title: PropTypes.element,
+        render: PropTypes.func,
+      }).isRequired,
+    ).isRequired,
   }).isRequired,
 };
+
+/*
+Carousel.propTypes = {
+  entityKey: PropTypes.string.isRequired,
+  content: PropTypes.shape({
+    slides: PropTypes.arrayOf(
+      PropTypes.shape({
+        type: PropTypes.oneOf([
+          'text',
+          'image',
+        ]).isRequired,
+        text: PropTypes.string,
+        image: PropTypes.shape({
+          source: PropTypes.string,
+          text: PropTypes.string,
+        }),
+      }).isRequired,
+    ).isRequired,
+  }).isRequired,
+};*/
+const emptyEditorStateRaw = convertToRaw(
+  EditorState.createEmpty()
+    .getCurrentContent()
+);
 
 Table.defaultProps = {
   content: {
@@ -439,22 +474,24 @@ Table.defaultProps = {
       },
     },
     columns: [{
-      title: '',
+      titleData: emptyEditorStateRaw,
       dataIndex: 'name',
     }, {
-      title: '',
+      titleData: emptyEditorStateRaw,
       dataIndex: 'age',
     }, {
-      title: '',
+      titleData: emptyEditorStateRaw,
       dataIndex: 'address',
     }],
     dataSource: [{
       key: '0',
+      editorKeys: [],
       name: {},
       age: {},
       address: {},
     }, {
       key: '1',
+      editorKeys: [],
       name: {},
       age: {},
       address: {},
