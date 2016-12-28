@@ -41,10 +41,6 @@ const toggleColumnFixedWidth = (isEqual, content) => {
   };
 };
 
-const renderCell = (value) => (
-  <Cell value={value} isReadOnly />
-);
-
 const convertRawToDraftEditorState = (object) =>
   object && ({
     ...object,
@@ -62,6 +58,7 @@ const convertRawToDraftEditorState = (object) =>
     )),
     columns: object.columns.map((column) => ({
       ...column,
+      displayName: 'asd',
       titleData: EditorState
         .createWithContent(
           convertFromRaw(column.titleData),
@@ -71,13 +68,15 @@ const convertRawToDraftEditorState = (object) =>
         value={
           EditorState
             .createWithContent(
-            convertFromRaw(column.titleData),
-            entitiesDecorator
+              convertFromRaw(column.titleData),
+              entitiesDecorator
             )
         }
         isReadOnly
       />),
-      render: renderCell,
+      render(value) {
+        return <Cell value={value} isReadOnly />;
+      },
     })),
   });
 
