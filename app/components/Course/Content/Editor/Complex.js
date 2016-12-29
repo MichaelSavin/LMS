@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import {
   Editor as Draft,
+  Entity,
   Modifier,
   RichUtils,
   EditorState,
@@ -179,7 +180,9 @@ class Editor extends Component {
     this.onChange(AtomicBlockUtils
       .insertAtomicBlock(
         this.state.editorState,
-        entityKey,
+        Entity.add(
+          Entity.get(entityKey)
+        ),
         ' '
     ));
   }
