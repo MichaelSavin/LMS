@@ -4,12 +4,13 @@ import React, {
 } from 'react';
 import {
   Editor as Draft,
+  Modifier,
   RichUtils,
   EditorState,
   convertToRaw,
   convertFromRaw,
-  Modifier,
   SelectionState,
+  AtomicBlockUtils,
 } from 'draft-js';
 import {
   customStyleMap,
@@ -41,8 +42,9 @@ class Editor extends Component {
 
   getChildContext() {
     return {
-      toggleReadOnly: this.toggleReadOnly,
       removeBlock: this.removeBlock,
+      duplicateBlock: this.duplicateBlock,
+      toggleReadOnly: this.toggleReadOnly,
     };
   }
 
@@ -173,6 +175,15 @@ class Editor extends Component {
     );
   }
 
+  duplicateBlock = (entityKey) => {
+    this.onChange(AtomicBlockUtils
+      .insertAtomicBlock(
+        this.state.editorState,
+        entityKey,
+        ' '
+    ));
+  }
+
   render() {
     const {
       isReadOnly,
@@ -221,6 +232,7 @@ class Editor extends Component {
 Editor.childContextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
   removeBlock: PropTypes.func.isRequired,
+  duplicateBlock: PropTypes.func.isRequired,
 };
 
 Editor.propTypes = {

@@ -366,6 +366,8 @@ class Table extends Component {
 
   deleteBlock = () => this.context.removeBlock(this.props.blockKey);
 
+  duplicateBlock = () => this.context.duplicateBlock(this.props.entityKey);
+
   render() {
     const { dataSource, columns, style } = this.state.temp || this.state.content;
     const { isReadOnly } = this.state;
@@ -394,6 +396,12 @@ class Table extends Component {
             icon="close-circle"
             className={styles.icon}
             onClick={this.deleteBlock}
+          />
+          <AntButton
+            icon="copy"
+            type="primary"
+            className={styles.icon}
+            onClick={this.duplicateBlock}
           />
           <AntButton
             icon="edit"
@@ -507,8 +515,9 @@ Table.defaultProps = {
 };
 
 Table.contextTypes = {
-  toggleReadOnly: PropTypes.func,
   removeBlock: PropTypes.func,
+  duplicateBlock: PropTypes.func,
+  toggleReadOnly: PropTypes.func,
 };
 
 export default Table;
