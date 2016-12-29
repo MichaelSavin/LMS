@@ -475,6 +475,53 @@ Table.propTypes = {
   }).isRequired,
 };
 
+// // Новая структура данных компонента
+
+// Table.propTypes = {
+//   entityKey: PropTypes.string.isRequired,
+//   blockKey: PropTypes.string.isRequired,
+//   content: PropTypes.shape({
+//     styles: PropTypes.shape({
+//       table: PropTypes.shape({
+//         head: PropTypes.oneOf([
+//           'bold',
+//           'normal',
+//         ]).isRequired,
+//         body: PropTypes.oneOf([
+//           'big',
+//           'small',
+//           'compact',
+//         ]).isRequired,
+//       }).isRequired,
+//     }).isRequired,
+//     /* https://ant.design/components/table/#How-To-Use */
+//     data: PropTypes.shape({
+//       rows: PropTypes.arrayOf( // dataSource
+//         PropTypes.objectOf(
+//           PropTypes.instanceOf(EditorState),
+//         ).isRequired,
+//       ).isRequired,
+//       /* https://ant.design/components/table/#Column */
+//       columns: PropTypes.arrayOf(
+//         PropTypes.shape({
+//           title: PropTypes.element,
+//           width: PropTypes.number,
+//           render: PropTypes.func,
+//           content: PropTypes.oneOfType([
+//             PropTypes.instanceOf(EditorState),
+//             /* https://facebook.github.io/draft-js/docs/api-reference-data-conversion.html#converttoraw */
+//             PropTypes.shape({
+//               blocks: PropTypes.arrayOf(PropTypes.object.isRequired),
+//               entityMap: PropTypes.object.isRequired,
+//             }).isRequired,
+//           ]).isRequired,
+//           dataIndex: PropTypes.string.isRequired,
+//         }).isRequired,
+//       ).isRequired,
+//     }).isRequired,
+//   }).isRequired,
+// };
+
 const emptyEditorStateRaw = convertToRaw(
   EditorState.createEmpty()
     .getCurrentContent()
