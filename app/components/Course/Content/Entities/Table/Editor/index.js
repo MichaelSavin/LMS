@@ -6,14 +6,13 @@ import {
   Select as AntSelect,
   Checkbox as AntCheckbox,
 } from 'antd';
-import classNames from 'classnames';
 import styles from './styles.css';
 
 const Editor = ({
   saveSettings,
   closeEditor,
   onChange,
-  style,
+  ...props
 }) => (
   <div className={styles.editor}>
     <span className={styles.name}>Редактирование</span>
@@ -23,8 +22,8 @@ const Editor = ({
         <AntSelect
           style={{ width: '100%' }}
           defaultValue="big"
-          value={classNames({ ...style.table })}
-          onChange={onChange('table')}
+          value={props.styles.body}
+          onChange={onChange('body')}
         >
           <AntSelect.Option value="compact">Компактная горизонтальные разделители</AntSelect.Option>
           <AntSelect.Option value="big">Крупная все разделители</AntSelect.Option>
@@ -37,7 +36,7 @@ const Editor = ({
           <AntSelect
             defaultValue="bold"
             onChange={onChange('head')}
-            value={classNames({ ...style.head })}
+            value={props.styles.head}
             style={{ width: '100%' }}
           >
             <AntSelect.Option value="bold">Тектст жирный</AntSelect.Option>
@@ -46,10 +45,10 @@ const Editor = ({
         </div>
       </div>
     </div>
-    <AntCheckbox onChange={onChange('hideHeader')} checked={style.hideHeader}>
+    <AntCheckbox onChange={onChange('hideHeader')} checked={props.styles.hideHeader}>
       Скрыть заголовки
     </AntCheckbox><br />
-    <AntCheckbox onChange={onChange('equalColumnsWidth')} checked={style.equalColumnsWidth}>
+    <AntCheckbox onChange={onChange('equalColumnsWidth')} checked={props.styles.equalColumnsWidth}>
       Колонки равной ширины
     </AntCheckbox>
     <div className={styles.buttonwrapper}>
@@ -63,7 +62,19 @@ Editor.propTypes = {
   saveSettings: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  style: PropTypes.object.isRequired,
+  styles: PropTypes.shape({
+    head: PropTypes.oneOf([
+      'bold',
+      'normal',
+    ]).isRequired,
+    body: PropTypes.oneOf([
+      'big',
+      'small',
+      'compact',
+    ]).isRequired,
+    hideHeader: PropTypes.bool,
+    equalColumnsWidth: PropTypes.bool,
+  }).isRequired,
 };
 
 export default Editor;

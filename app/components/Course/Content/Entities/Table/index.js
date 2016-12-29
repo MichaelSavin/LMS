@@ -27,14 +27,14 @@ const toggleColumnFixedWidth = (isEqual, content) => {
   const { columns } = content;
   return {
     ...content,
-    style: set([
+    styles: set([
       'equalColumnsWidth',
     ],
       isEqual,
-      content.style,
+      content.styles,
     ),
-    columns: columns.map((obj) => ({
-      ...obj,
+    columns: columns.map((column) => ({
+      ...column,
       width: isEqual
         ? `${100 / columns.length}%`
         : null,
@@ -46,9 +46,9 @@ const convertRawToDraftEditorState = (object) =>
   object && ({
     ...object,
     dataSource: object.dataSource.map((row) => (
-      Object.keys(row).reduce((obj, key) => (
-        key === 'key' ? obj : {
-          ...obj,
+      Object.keys(row).reduce((newRow, key) => (
+        key === 'key' ? newRow : {
+          ...newRow,
           [key]: EditorState
             .createWithContent(
             convertFromRaw(row[key]),
@@ -83,22 +83,22 @@ const convertRawToDraftEditorState = (object) =>
 const convertDraftEditorStateToRow = (object) => ({
   ...object,
   dataSource: object.dataSource.map((row) => (
-    Object.keys(row).reduce((obj, key) => (
+    Object.keys(row).reduce((newRow, key) => (
       row[key] instanceof EditorState ? {
-        ...obj,
+        ...newRow,
         [key]: convertToRaw(
           row[key]
             .getCurrentContent()
         ),
-      } : obj
+      } : newRow
     ), { ...row })
   )),
-  columns: object.columns.map((col) => ({
-    ...col,
+  columns: object.columns.map((column) => ({
+    ...column,
     title: null,
     render: null,
     titleData: convertToRaw(
-      col.titleData
+      column.titleData
         .getCurrentContent()
     ),
   })),
@@ -132,8 +132,8 @@ class Table extends Component {
     const dataIndex = `index${random(0, 999)}`;
     const { temp } = this.state;
     const dataSource = temp.dataSource
-      .map((obj) => ({
-        ...obj,
+      .map((row) => ({
+        ...row,
         [dataIndex]: EditorState.createEmpty(),
       }));
     const columns = [
@@ -146,7 +146,7 @@ class Table extends Component {
     ];
     this.setState({
       temp: toggleColumnFixedWidth(
-        temp.style.equalColumnsWidth,
+        temp.styles.equalColumnsWidth,
         {
           ...temp,
           columns: this.makeEditableColumns(columns),
@@ -167,13 +167,13 @@ class Table extends Component {
     const { dataIndex } = columns[columnKey];
     this.setState({
       temp: toggleColumnFixedWidth(
-        temp.style.equalColumnsWidth,
+        temp.styles.equalColumnsWidth,
         {
           ...temp,
           dataSource: dataSource
-            .map((obj) => omit(dataIndex, obj)),
+            .map((row) => omit(dataIndex, row)),
           columns: this.makeEditableColumns(
-            columns.filter((val, key) => key !== columnKey)
+            columns.filter((value, key) => key !== columnKey)
           ),
         }
       ),
@@ -183,9 +183,9 @@ class Table extends Component {
   addRow = (columnKey, index) => {
     const newDataSource = [...this.state.temp.dataSource];
     const newRow = Object.keys(newDataSource[0])
-      .reduce((obj, key) => (
-        key === 'key' ? obj : {
-          ...obj,
+      .reduce((row, key) => (
+        key === 'key' ? row : {
+          ...row,
           [key]: EditorState.createEmpty(),
         }), { ...newDataSource[0], key: `${random(0, 999)}` });
     this.setState({
@@ -209,7 +209,7 @@ class Table extends Component {
         temp: set([
           'dataSource',
         ],
-          dataSource.filter((val, key) => key !== index),
+          dataSource.filter((value, key) => key !== index),
           this.state.temp,
         ),
       });
@@ -268,10 +268,10 @@ class Table extends Component {
       this.state;
     const content = {
       ...temp,
-      columns: columns.map((obj) => ({
-        ...obj,
+      columns: columns.map((column) => ({
+        ...column,
         title: (<Cell
-          value={obj.titleData}
+          value={column.titleData}
           isReadOnly
         />),
         render: (value) => (
@@ -304,14 +304,14 @@ class Table extends Component {
   }
 
   makeEditableColumns = (columns) => columns
-    .map((obj, key) => ({
-      ...obj,
+    .map((column, key) => ({
+      ...column,
       title: (
-      // Компонент для рендера ячейки заголовков таблицы должен
-      // храниться в этом свойстве https://ant.design/components/table/
+      // Это свойство содержить компонет для рендера ячейки заголовков таблицы
+      // https://ant.design/components/table/#Column
         <Cell
           index={-1}
-          value={obj.titleData}
+          value={column.titleData}
           onChange={this.headChange(key)}
           columnKey={key}
           addRow={this.addRow}
@@ -320,8 +320,8 @@ class Table extends Component {
           delColumn={this.delColumn}
         />),
       render: (text, record, index) => (
-      // Функция для рендера ячейки должна
-      // храниться в этом свойстве https://ant.design/components/table/
+      // Функция для рендера ячейки
+      // https://ant.design/components/table/#Column
         <Cell
           addRow={this.addRow}
           delRow={this.delRow}
@@ -329,35 +329,41 @@ class Table extends Component {
           delColumn={this.delColumn}
           index={index}
           value={text}
-          onChange={this.onCellChange(index, obj.dataIndex)}
+          onChange={this.onCellChange(index, column.dataIndex)}
           columnKey={key}
         />
       ),
     }))
 
-  editorOnChange = (type) => (e) => {
+  editorOnChange = (type) => (event) => {
+    // Если событие произошло в Ant.Select
+    // то в параметре функции передается
+    // значение select а не event!
+    const value = !event.target && event;
     const { temp } = this.state;
-    if (type === 'equalColumnsWidth') {
-      this.setState({
-        temp: toggleColumnFixedWidth(e.target.checked, temp),
-      });
-    } else if (!e.target) {
+    if (value) {
       this.setState({
         temp: set([
-          'style',
+          'styles',
           type,
         ],
-          { [e]: true },
+          value,
           this.state.temp,
+        ),
+      });
+    } else if (type === 'equalColumnsWidth') {
+      this.setState({
+        temp: toggleColumnFixedWidth(
+          event.target.checked, temp
         ),
       });
     } else {
       this.setState({
         temp: set([
-          'style',
+          'styles',
           type,
         ],
-          e.target.checked,
+          event.target.checked,
           this.state.temp,
         ),
       });
@@ -367,13 +373,14 @@ class Table extends Component {
   deleteBlock = () => this.context.removeBlock(this.props.blockKey);
 
   render() {
-    const { dataSource, columns, style } = this.state.temp || this.state.content;
+    const content = this.state.temp || this.state.content;
+    const { dataSource, columns } = content;
     const { isReadOnly } = this.state;
     return (<div
       className={classNames(
         styles.table,
-        styles[classNames(style.head)],
-        styles[classNames(style.table)],
+        styles[content.styles.head],
+        styles[content.styles.body],
         {
           [styles.editing]: !isReadOnly,
         },
@@ -384,8 +391,8 @@ class Table extends Component {
         columns={columns}
         pagination={false}
         dataSource={dataSource}
-        showHeader={!style.hideHeader}
-        bordered={get(['table', 'big'], style)}
+        showHeader={!content.styles.hideHeader}
+        bordered={get(['body'], content.styles) === 'big'}
       />
       {isReadOnly ?
         <div className={styles.actions}>
@@ -404,7 +411,7 @@ class Table extends Component {
         </div>
         : <div className={styles.editor}>
           <Editor
-            style={style}
+            styles={content.styles}
             onChange={this.editorOnChange}
             closeEditor={this.closeEditor}
             saveSettings={this.saveSettings}
@@ -434,17 +441,17 @@ Table.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     styles: PropTypes.shape({
-      table: PropTypes.shape({
-        head: PropTypes.oneOf([
-          'bold',
-          'normal',
-        ]).isRequired,
-        body: PropTypes.oneOf([
-          'big',
-          'small',
-          'compact',
-        ]).isRequired,
-      }).isRequired,
+      hideHeader: PropTypes.bool,
+      equalColumnsWidth: PropTypes.bool,
+      head: PropTypes.oneOf([
+        'bold',
+        'normal',
+      ]).isRequired,
+      body: PropTypes.oneOf([
+        'big',
+        'small',
+        'compact',
+      ]).isRequired,
     }).isRequired,
     /* https://ant.design/components/table/#How-To-Use */
     data: PropTypes.shape({
@@ -457,7 +464,7 @@ Table.propTypes = {
       columns: PropTypes.arrayOf(
         PropTypes.shape({
           title: PropTypes.element,
-          width: PropTypes.number,
+          width: PropTypes.string, // Ширина в процентах "20%"
           render: PropTypes.func,
           content: PropTypes.oneOfType([
             PropTypes.instanceOf(EditorState),
@@ -528,13 +535,9 @@ const emptyEditorStateRaw = convertToRaw(
 
 Table.defaultProps = {
   content: {
-    style: {
-      table: {
-        big: true,
-      },
-      head: {
-        bold: true,
-      },
+    styles: {
+      body: 'big',
+      head: 'bold',
     },
     columns: [{
       titleData: emptyEditorStateRaw,
