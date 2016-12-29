@@ -17,33 +17,33 @@ const Dropdown = ({
       overlay={
         <Menu className={styles.menu}>
           <Menu.Item key="0">
-            <a onClick={() => addColumn(columnKey + 1, index)}>
+            <a onClick={addColumn(columnKey + 1, index)}>
               Добавить колонку справа
             </a>
           </Menu.Item>
           <Menu.Item key="1">
-            <a onClick={() => addColumn(columnKey, index)}>
+            <a onClick={addColumn(columnKey, index)}>
               Добавить колонку слево
             </a>
           </Menu.Item>
           <Menu.Item key="2">
-            <a onClick={() => delColumn(columnKey, index)}>
+            <a onClick={delColumn(columnKey, index)}>
               Удалить колонку
             </a>
           </Menu.Item>
           <Menu.Divider />
           {index >= 0 && <Menu.Item key="3">
-            <a onClick={() => addRow(columnKey, index)}>
+            <a onClick={addRow(columnKey, index)}>
               Добавить ряд сверху
             </a>
           </Menu.Item>}
           <Menu.Item key="4">
-            <a onClick={() => addRow(columnKey, index + 1)}>
+            <a onClick={addRow(columnKey, index + 1)}>
               Добавить ряд снизу
             </a>
           </Menu.Item>
           {index >= 0 && <Menu.Item key="5">
-            <a onClick={() => delRow(columnKey, index)}>
+            <a onClick={delRow(columnKey, index)}>
               Удалить ряд
             </a>
           </Menu.Item>}

@@ -128,7 +128,7 @@ class Table extends Component {
     });
   }
 
-  addColumn = (columnKey) => {
+  addColumn = (columnKey) => () => {
     const dataIndex = `index${random(0, 999)}`;
     const { temp } = this.state;
     const dataSource = temp.dataSource
@@ -156,7 +156,7 @@ class Table extends Component {
     });
   }
 
-  delColumn = (columnKey) => {
+  delColumn = (columnKey) => () => {
     const {
       temp: {
         columns,
@@ -180,7 +180,7 @@ class Table extends Component {
     });
   }
 
-  addRow = (columnKey, index) => {
+  addRow = (columnKey, index) => () => {
     const newDataSource = [...this.state.temp.dataSource];
     const newRow = Object.keys(newDataSource[0])
       .reduce((row, key) => (
@@ -202,7 +202,7 @@ class Table extends Component {
     });
   }
 
-  delRow = (columnKey, index) => {
+  delRow = (columnKey, index) => () => {
     const { dataSource } = this.state.temp;
     if (dataSource.length > 1) {
       this.setState({

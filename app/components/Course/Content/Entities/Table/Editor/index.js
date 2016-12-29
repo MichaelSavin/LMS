@@ -25,9 +25,15 @@ const Editor = ({
           value={props.styles.body}
           onChange={onChange('body')}
         >
-          <AntSelect.Option value="compact">Компактная горизонтальные разделители</AntSelect.Option>
-          <AntSelect.Option value="big">Крупная все разделители</AntSelect.Option>
-          <AntSelect.Option value="small">Маленькая, черезполосица без разделителей</AntSelect.Option>
+          <AntSelect.Option value="compact">
+            Компактная горизонтальные разделители
+          </AntSelect.Option>
+          <AntSelect.Option value="big">
+            Крупная все разделители
+          </AntSelect.Option>
+          <AntSelect.Option value="small">
+            Маленькая, черезполосица без разделителей
+          </AntSelect.Option>
         </AntSelect>
       </div>
       <div className={styles.item}>
@@ -39,21 +45,39 @@ const Editor = ({
             value={props.styles.head}
             style={{ width: '100%' }}
           >
-            <AntSelect.Option value="bold">Тектст жирный</AntSelect.Option>
-            <AntSelect.Option value="normal">Текст нормальный</AntSelect.Option>
+            <AntSelect.Option value="bold">
+              Тектст жирный
+            </AntSelect.Option>
+            <AntSelect.Option value="normal">
+              Текст нормальный
+            </AntSelect.Option>
           </AntSelect>
         </div>
       </div>
     </div>
-    <AntCheckbox onChange={onChange('hideHeader')} checked={props.styles.hideHeader}>
-      Скрыть заголовки
-    </AntCheckbox><br />
-    <AntCheckbox onChange={onChange('equalColumnsWidth')} checked={props.styles.equalColumnsWidth}>
-      Колонки равной ширины
-    </AntCheckbox>
+    <div>
+      <AntCheckbox
+        onChange={onChange('hideHeader')}
+        checked={props.styles.hideHeader}
+      >
+        Скрыть заголовки
+      </AntCheckbox>
+    </div>
+    <div>
+      <AntCheckbox
+        onChange={onChange('equalColumnsWidth')}
+        checked={props.styles.equalColumnsWidth}
+      >
+        Колонки равной ширины
+      </AntCheckbox>
+    </div>
     <div className={styles.buttonwrapper}>
-      <AntButton type="primary" onClick={saveSettings}>Применить</AntButton>
-      <AntButton type="ghost" onClick={closeEditor}>Отменить</AntButton>
+      <AntButton type="primary" onClick={saveSettings}>
+        Применить
+      </AntButton>
+      <AntButton type="ghost" onClick={closeEditor}>
+        Отменить
+      </AntButton>
     </div>
   </div>
 );

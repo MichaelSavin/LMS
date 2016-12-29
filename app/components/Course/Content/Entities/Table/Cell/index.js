@@ -23,20 +23,20 @@ const Cell = ({
   <div className="editable-cell">
     <div className="editable-cell-input-wrapper">
       <DraftInput
-        className={className}
         value={value}
         onChange={onChange}
+        className={className}
         isReadOnly={isReadOnly}
       />
     </div>
     {
       !isReadOnly
         && <Dropdown
+          index={index}
           addRow={addRow}
           delRow={delRow}
           addColumn={addColumn}
           delColumn={delColumn}
-          index={index}
           columnKey={columnKey}
         />
     }
