@@ -433,37 +433,44 @@ Table.propTypes = {
   blockKey: PropTypes.string.isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    style: PropTypes.shape({
+    styles: PropTypes.shape({
       table: PropTypes.shape({
-        big: PropTypes.bool,
-        small: PropTypes.bool,
-        compact: PropTypes.bool,
-      }).isRequired,
-      head: PropTypes.shape({
-        bold: PropTypes.bool,
-        normal: PropTypes.bool,
-      }).isRequired,
-    }).isRequired,
-    dataSource: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string.isRequired,
-      }).isRequired,
-    ).isRequired,
-    columns: PropTypes.arrayOf(
-      PropTypes.shape({
-        render: PropTypes.func,
-        width: PropTypes.string,
-        title: PropTypes.element,
-        dataIndex: PropTypes.string.isRequired,
-        titleData: React.PropTypes.oneOfType([
-          React.PropTypes.instanceOf(EditorState),
-          PropTypes.shape({
-            blocks: PropTypes.arrayOf(PropTypes.object.isRequired),
-            entityMap: PropTypes.object.isRequired,
-          }).isRequired,
+        head: PropTypes.oneOf([
+          'bold',
+          'normal',
+        ]).isRequired,
+        body: PropTypes.oneOf([
+          'big',
+          'small',
+          'compact',
         ]).isRequired,
       }).isRequired,
-    ).isRequired,
+    }).isRequired,
+    /* https://ant.design/components/table/#How-To-Use */
+    data: PropTypes.shape({
+      rows: PropTypes.arrayOf( // dataSource
+        PropTypes.objectOf(
+          PropTypes.instanceOf(EditorState),
+        ).isRequired,
+      ).isRequired,
+      /* https://ant.design/components/table/#Column */
+      columns: PropTypes.arrayOf(
+        PropTypes.shape({
+          title: PropTypes.element,
+          width: PropTypes.number,
+          render: PropTypes.func,
+          content: PropTypes.oneOfType([
+            PropTypes.instanceOf(EditorState),
+            /* https://facebook.github.io/draft-js/docs/api-reference-data-conversion.html#converttoraw */
+            PropTypes.shape({
+              blocks: PropTypes.arrayOf(PropTypes.object.isRequired),
+              entityMap: PropTypes.object.isRequired,
+            }).isRequired,
+          ]).isRequired,
+          dataIndex: PropTypes.string.isRequired,
+        }).isRequired,
+      ).isRequired,
+    }).isRequired,
   }).isRequired,
 };
 
