@@ -66,7 +66,7 @@ const Editor = ({
         </div>
       </div>
       <AntTabs
-        className={styles.tabs}
+        className={styles.variants}
         tabBarExtraContent={
           <AntButton
             size="small"
@@ -110,7 +110,27 @@ const Editor = ({
         ) =>
           <AntTabs.TabPane
             key={variantIndex}
-            tab={`Вариант ${variantIndex + 1}`}
+            tab={
+              <div className={styles.variant}>
+                {`Вариант ${variantIndex + 1}`}
+                {variantIndex > 0 &&
+                  <AntPopconfirm
+                    title="Удалить вариант?"
+                    onConfirm={removeContent([
+                      'variants',
+                      variantIndex,
+                    ])}
+                    okText="Да"
+                    cancelText="Нет"
+                  >
+                    <AntIcon
+                      type="close"
+                      className={styles.remove}
+                    />
+                  </AntPopconfirm>
+                }
+              </div>
+            }
           >
             <div
               key={variantIndex}
@@ -138,7 +158,7 @@ const Editor = ({
                 )}
               </AntForm.Item>
               <AntCollapse
-                className={styles.collapse}
+                className={styles.data}
                 defaultActiveKey="1"
               >
                 <AntCollapse.Panel

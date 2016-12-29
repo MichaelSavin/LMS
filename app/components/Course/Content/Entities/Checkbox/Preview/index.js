@@ -9,8 +9,6 @@ import ImmutablePropTypes from
   'react-immutable-proptypes';
 import styles from './styles.css';
 
-// Показывает первый вариант задания
-
 const Preview = ({
   content,
   storage,
@@ -25,6 +23,7 @@ const Preview = ({
       ])}
     </div>
     <div className={styles.options}>
+      {/* Показывает первый вариант задания */}
       {content.getIn([
         'variants',
         0,
