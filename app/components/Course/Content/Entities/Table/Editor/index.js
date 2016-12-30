@@ -6,14 +6,13 @@ import {
   Select as AntSelect,
   Checkbox as AntCheckbox,
 } from 'antd';
-import classNames from 'classnames';
 import styles from './styles.css';
 
 const Editor = ({
   saveSettings,
   closeEditor,
-  onChange,
-  style,
+  stylesChange,
+  ...props
 }) => (
   <div className={styles.editor}>
     <span className={styles.name}>Редактирование</span>
@@ -23,12 +22,18 @@ const Editor = ({
         <AntSelect
           style={{ width: '100%' }}
           defaultValue="big"
-          value={classNames({ ...style.table })}
-          onChange={onChange('table')}
+          value={props.styles.body}
+          onChange={stylesChange('body')}
         >
-          <AntSelect.Option value="compact">Компактная горизонтальные разделители</AntSelect.Option>
-          <AntSelect.Option value="big">Крупная все разделители</AntSelect.Option>
-          <AntSelect.Option value="small">Маленькая, черезполосица без разделителей</AntSelect.Option>
+          <AntSelect.Option value="compact">
+            Компактная горизонтальные разделители
+          </AntSelect.Option>
+          <AntSelect.Option value="big">
+            Крупная все разделители
+          </AntSelect.Option>
+          <AntSelect.Option value="small">
+            Маленькая, черезполосица без разделителей
+          </AntSelect.Option>
         </AntSelect>
       </div>
       <div className={styles.item}>
@@ -36,34 +41,64 @@ const Editor = ({
         <div>
           <AntSelect
             defaultValue="bold"
-            onChange={onChange('head')}
-            value={classNames({ ...style.head })}
+            onChange={stylesChange('head')}
+            value={props.styles.head}
             style={{ width: '100%' }}
           >
-            <AntSelect.Option value="bold">Тектст жирный</AntSelect.Option>
-            <AntSelect.Option value="normal">Текст нормальный</AntSelect.Option>
+            <AntSelect.Option value="bold">
+              Тектст жирный
+            </AntSelect.Option>
+            <AntSelect.Option value="normal">
+              Текст нормальный
+            </AntSelect.Option>
           </AntSelect>
         </div>
       </div>
     </div>
-    <AntCheckbox onChange={onChange('hideHeader')} checked={style.hideHeader}>
-      Скрыть заголовки
-    </AntCheckbox><br />
-    <AntCheckbox onChange={onChange('equalColumnsWidth')} checked={style.equalColumnsWidth}>
-      Колонки равной ширины
-    </AntCheckbox>
+    <div>
+      <AntCheckbox
+        onChange={stylesChange('hideHeader')}
+        checked={props.styles.hideHeader}
+      >
+        Скрыть заголовки
+      </AntCheckbox>
+    </div>
+    <div>
+      <AntCheckbox
+        onChange={stylesChange('equalColumnsWidth')}
+        checked={props.styles.equalColumnsWidth}
+      >
+        Колонки равной ширины
+      </AntCheckbox>
+    </div>
     <div className={styles.buttonwrapper}>
-      <AntButton type="primary" onClick={saveSettings}>Применить</AntButton>
-      <AntButton type="ghost" onClick={closeEditor}>Отменить</AntButton>
+      <AntButton type="primary" onClick={saveSettings}>
+        Применить
+      </AntButton>
+      <AntButton type="ghost" onClick={closeEditor}>
+        Отменить
+      </AntButton>
     </div>
   </div>
 );
 
 Editor.propTypes = {
-  saveSettings: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  style: PropTypes.object.isRequired,
+  saveSettings: PropTypes.func.isRequired,
+  stylesChange: PropTypes.func.isRequired,
+  styles: PropTypes.shape({
+    head: PropTypes.oneOf([
+      'bold',
+      'normal',
+    ]).isRequired,
+    body: PropTypes.oneOf([
+      'big',
+      'small',
+      'compact',
+    ]).isRequired,
+    hideHeader: PropTypes.bool,
+    equalColumnsWidth: PropTypes.bool,
+  }).isRequired,
 };
 
 export default Editor;
