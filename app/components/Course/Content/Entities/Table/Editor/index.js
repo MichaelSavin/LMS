@@ -11,7 +11,7 @@ import styles from './styles.css';
 const Editor = ({
   saveSettings,
   closeEditor,
-  onChange,
+  stylesChange,
   ...props
 }) => (
   <div className={styles.editor}>
@@ -23,7 +23,7 @@ const Editor = ({
           style={{ width: '100%' }}
           defaultValue="big"
           value={props.styles.body}
-          onChange={onChange('body')}
+          onChange={stylesChange('body')}
         >
           <AntSelect.Option value="compact">
             Компактная горизонтальные разделители
@@ -41,7 +41,7 @@ const Editor = ({
         <div>
           <AntSelect
             defaultValue="bold"
-            onChange={onChange('head')}
+            onChange={stylesChange('head')}
             value={props.styles.head}
             style={{ width: '100%' }}
           >
@@ -57,7 +57,7 @@ const Editor = ({
     </div>
     <div>
       <AntCheckbox
-        onChange={onChange('hideHeader')}
+        onChange={stylesChange('hideHeader')}
         checked={props.styles.hideHeader}
       >
         Скрыть заголовки
@@ -65,7 +65,7 @@ const Editor = ({
     </div>
     <div>
       <AntCheckbox
-        onChange={onChange('equalColumnsWidth')}
+        onChange={stylesChange('equalColumnsWidth')}
         checked={props.styles.equalColumnsWidth}
       >
         Колонки равной ширины
@@ -83,9 +83,9 @@ const Editor = ({
 );
 
 Editor.propTypes = {
-  saveSettings: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
+  saveSettings: PropTypes.func.isRequired,
+  stylesChange: PropTypes.func.isRequired,
   styles: PropTypes.shape({
     head: PropTypes.oneOf([
       'bold',

@@ -24,7 +24,7 @@ import Editor from './Editor';
 import styles from './styles.css';
 
 const toggleColumnFixedWidth = (isEqual, content) => {
-  const { columns } = content;
+  const { columns } = content.data;
   return {
     ...content,
     styles: set([
@@ -33,75 +33,82 @@ const toggleColumnFixedWidth = (isEqual, content) => {
       isEqual,
       content.styles,
     ),
-    columns: columns.map((column) => ({
-      ...column,
-      width: isEqual
-        ? `${100 / columns.length}%`
-        : null,
-    })),
+    data: {
+      ...content.data,
+      columns: columns.map((column) => ({
+        ...column,
+        width: isEqual
+          ? `${100 / columns.length}%`
+          : null,
+      })),
+    },
   };
 };
 
-const convertRawToDraftEditorState = (object) =>
-  object && ({
-    ...object,
-    dataSource: object.dataSource.map((row) => (
-      Object.keys(row).reduce((newRow, key) => (
-        key === 'key' ? newRow : {
-          ...newRow,
-          [key]: EditorState
-            .createWithContent(
-            convertFromRaw(row[key]),
+const convertRawToDraftEditorState = (content) =>
+  content && ({
+    ...content,
+    data: {
+      rows: content.data.rows.map((row) => (
+        Object.keys(row).reduce((newRow, key) => (
+          key === 'key' ? newRow : {
+            ...newRow,
+            [key]: EditorState
+              .createWithContent(
+              convertFromRaw(row[key]),
+              entitiesDecorator
+            ),
+          }
+        ), row)
+      )),
+      columns: content.data.columns.map((column) => ({
+        ...column,
+        content: EditorState
+          .createWithContent(
+            convertFromRaw(column.content),
             entitiesDecorator
           ),
-        }
-      ), row)
-    )),
-    columns: object.columns.map((column) => ({
-      ...column,
-      titleData: EditorState
-        .createWithContent(
-          convertFromRaw(column.titleData),
-          entitiesDecorator
-        ),
-      title: (<Cell
-        value={
-          EditorState
-            .createWithContent(
-              convertFromRaw(column.titleData),
-              entitiesDecorator
-            )
-        }
-        isReadOnly
-      />),
-      render(value) {
-        return <Cell value={value} isReadOnly />;
-      },
-    })),
+        title: (<Cell
+          value={
+            EditorState
+              .createWithContent(
+                convertFromRaw(column.content),
+                entitiesDecorator
+              )
+          }
+          isReadOnly
+        />),
+        render(value) {
+          return <Cell value={value} isReadOnly />;
+        },
+      })),
+    },
   });
 
-const convertDraftEditorStateToRow = (object) => ({
-  ...object,
-  dataSource: object.dataSource.map((row) => (
-    Object.keys(row).reduce((newRow, key) => (
-      row[key] instanceof EditorState ? {
-        ...newRow,
-        [key]: convertToRaw(
-          row[key]
-            .getCurrentContent()
-        ),
-      } : newRow
-    ), { ...row })
-  )),
-  columns: object.columns.map((column) => ({
-    ...column,
-    title: null,
-    render: null,
-    titleData: convertToRaw(
-      column.titleData
-        .getCurrentContent()
-    ),
-  })),
+const convertDraftEditorStateToRow = (content) => ({
+  ...content,
+  data: {
+    rows: content.data.rows.map((row) => (
+      Object.keys(row).reduce((newRow, key) => (
+        row[key] instanceof EditorState ? {
+          ...newRow,
+          [key]: convertToRaw(
+            row[key]
+              .getCurrentContent()
+          ),
+        } : newRow
+      ), { ...row })
+    )),
+    columns: content.data.columns.map((column) => ({
+      ...column,
+      title: null,
+      render: null,
+      content: convertToRaw(
+        column.content
+          .getCurrentContent()
+      ),
+    })),
+  },
 });
 
 
@@ -118,7 +125,8 @@ class Table extends Component {
   onCellChange = (index, key) => (value) => {
     this.setState({
       temp: set([
-        'dataSource',
+        'data',
+        'rows',
         index,
         key,
       ],
@@ -131,26 +139,28 @@ class Table extends Component {
   addColumn = (columnKey) => () => {
     const dataIndex = `index${random(0, 999)}`;
     const { temp } = this.state;
-    const dataSource = temp.dataSource
+    const rows = temp.data.rows
       .map((row) => ({
         ...row,
         [dataIndex]: EditorState.createEmpty(),
       }));
     const columns = [
-      ...temp.columns.slice(0, columnKey),
+      ...temp.data.columns.slice(0, columnKey),
       {
-        titleData: EditorState.createEmpty(),
+        content: EditorState.createEmpty(),
         dataIndex,
       },
-      ...temp.columns.slice(columnKey),
+      ...temp.data.columns.slice(columnKey),
     ];
     this.setState({
       temp: toggleColumnFixedWidth(
         temp.styles.equalColumnsWidth,
         {
           ...temp,
-          columns: this.makeEditableColumns(columns),
-          dataSource,
+          data: {
+            columns: this.makeEditableColumns(columns),
+            rows,
+          },
         }
       ),
     });
@@ -159,8 +169,10 @@ class Table extends Component {
   delColumn = (columnKey) => () => {
     const {
       temp: {
-        columns,
-        dataSource,
+        data: {
+          columns,
+          rows,
+        },
       },
       temp,
     } = this.state;
@@ -170,32 +182,36 @@ class Table extends Component {
         temp.styles.equalColumnsWidth,
         {
           ...temp,
-          dataSource: dataSource
-            .map((row) => omit(dataIndex, row)),
-          columns: this.makeEditableColumns(
-            columns.filter((value, key) => key !== columnKey)
-          ),
+          data: {
+            rows: rows
+              .map((row) => omit(dataIndex, row)),
+            columns: this.makeEditableColumns(
+              columns.filter((value, key) => key !== columnKey)
+            ),
+          },
         }
       ),
     });
   }
 
   addRow = (columnKey, index) => () => {
-    const newDataSource = [...this.state.temp.dataSource];
-    const newRow = Object.keys(newDataSource[0])
+    const newrows = [...this.state.temp.data.rows];
+    const newRow = Object.keys(newrows[0])
       .reduce((row, key) => (
         key === 'key' ? row : {
           ...row,
           [key]: EditorState.createEmpty(),
-        }), { ...newDataSource[0], key: `${random(0, 999)}` });
+        }), { ...newrows[0], key: `${random(0, 999)}` });
     this.setState({
-      temp: set([
-        'dataSource',
-      ],
+      temp: set(
         [
-          ...newDataSource.slice(0, index),
+          'data',
+          'rows',
+        ],
+        [
+          ...newrows.slice(0, index),
           newRow,
-          ...newDataSource.slice(index),
+          ...newrows.slice(index),
         ],
         this.state.temp,
       ),
@@ -203,28 +219,30 @@ class Table extends Component {
   }
 
   delRow = (columnKey, index) => () => {
-    const { dataSource } = this.state.temp;
-    if (dataSource.length > 1) {
+    const { rows } = this.state.temp.data;
+    if (rows.length > 1) {
       this.setState({
         temp: set([
-          'dataSource',
+          'data',
+          'rows',
         ],
-          dataSource.filter((value, key) => key !== index),
+          rows.filter((value, key) => key !== index),
           this.state.temp,
         ),
       });
     }
   }
 
-  headChange = (columnKey) => (titleData) => {
+  headChange = (columnKey) => (content) => {
     const { temp } = this.state;
     this.setState({
       temp: set([
+        'data',
         'columns',
         columnKey,
       ],
         {
-          ...temp.columns[columnKey],
+          ...temp.data.columns[columnKey],
           // https://ant.design/components/table/#Column
           // Ант таблица может рендерить кастомный React.Elment
           // который передаеться ей через свойство title
@@ -236,11 +254,11 @@ class Table extends Component {
             addColumn={this.addColumn}
             delColumn={this.delColumn}
             index={-1}
-            value={titleData}
+            value={content}
             onChange={this.headChange(columnKey)}
             columnKey={columnKey}
           />,
-          titleData,
+          content,
         },
         temp,
       ),
@@ -249,38 +267,52 @@ class Table extends Component {
 
   editMode = () => {
     const { content: {
-      columns,
+      data: {
+        columns,
+        rows,
+      },
     }, content } = this.state;
     this.setState({
       isReadOnly: false,
       temp: {
         ...content,
-        columns: this.makeEditableColumns(columns),
+        data: {
+          rows,
+          columns: this.makeEditableColumns(columns),
+        },
       },
     }, this.context.toggleReadOnly);
   }
 
   saveSettings = () => {
     const {
-      temp: { columns },
+      temp: {
+        data: {
+          columns,
+          rows,
+        },
+      },
       temp,
     } =
       this.state;
     const content = {
       ...temp,
-      columns: columns.map((column) => ({
-        ...column,
-        title: (<Cell
-          value={column.titleData}
-          isReadOnly
-        />),
-        render: (value) => (
-          <Cell
-            value={value}
+      data: {
+        rows,
+        columns: columns.map((column) => ({
+          ...column,
+          title: (<Cell
+            value={column.content}
             isReadOnly
-          />
-        ),
-      })),
+          />),
+          render: (value) => (
+            <Cell
+              value={value}
+              isReadOnly
+            />
+          ),
+        })),
+      },
     };
     Entity.mergeData(
       this.props.entityKey, {
@@ -311,7 +343,7 @@ class Table extends Component {
       // https://ant.design/components/table/#Column
         <Cell
           index={-1}
-          value={column.titleData}
+          value={column.content}
           onChange={this.headChange(key)}
           columnKey={key}
           addRow={this.addRow}
@@ -335,7 +367,7 @@ class Table extends Component {
       ),
     }))
 
-  editorOnChange = (type) => (event) => {
+  stylesChange = (type) => (event) => {
     // Если событие произошло в Ant.Select
     // то в параметре функции передается
     // значение select а не event!
@@ -374,7 +406,7 @@ class Table extends Component {
 
   render() {
     const content = this.state.temp || this.state.content;
-    const { dataSource, columns } = content;
+    const { rows, columns } = content.data;
     const { isReadOnly } = this.state;
     return (<div
       className={classNames(
@@ -390,7 +422,7 @@ class Table extends Component {
       <AntTable
         columns={columns}
         pagination={false}
-        dataSource={dataSource}
+        dataSource={rows}
         showHeader={!content.styles.hideHeader}
         bordered={get(['body'], content.styles) === 'big'}
       />
@@ -412,7 +444,7 @@ class Table extends Component {
         : <div className={styles.editor}>
           <Editor
             styles={content.styles}
-            onChange={this.editorOnChange}
+            stylesChange={this.stylesChange}
             closeEditor={this.closeEditor}
             saveSettings={this.saveSettings}
           />
@@ -455,9 +487,16 @@ Table.propTypes = {
     }).isRequired,
     /* https://ant.design/components/table/#How-To-Use */
     data: PropTypes.shape({
-      rows: PropTypes.arrayOf( // dataSource
+      rows: PropTypes.arrayOf( // rows
         PropTypes.objectOf(
-          PropTypes.instanceOf(EditorState),
+            PropTypes.oneOfType([
+              PropTypes.string,
+              PropTypes.instanceOf(EditorState),
+              PropTypes.shape({
+                blocks: PropTypes.arrayOf(PropTypes.object.isRequired),
+                entityMap: PropTypes.object.isRequired,
+              }),
+            ]),
         ).isRequired,
       ).isRequired,
       /* https://ant.design/components/table/#Column */
@@ -502,7 +541,7 @@ Table.propTypes = {
 //     }).isRequired,
 //     /* https://ant.design/components/table/#How-To-Use */
 //     data: PropTypes.shape({
-//       rows: PropTypes.arrayOf( // dataSource
+//       rows: PropTypes.arrayOf( // rows
 //         PropTypes.objectOf(
 //           PropTypes.instanceOf(EditorState),
 //         ).isRequired,
@@ -539,27 +578,29 @@ Table.defaultProps = {
       body: 'big',
       head: 'bold',
     },
-    columns: [{
-      titleData: emptyEditorStateRaw,
-      dataIndex: 'name',
-    }, {
-      titleData: emptyEditorStateRaw,
-      dataIndex: 'age',
-    }, {
-      titleData: emptyEditorStateRaw,
-      dataIndex: 'address',
-    }],
-    dataSource: [{
-      key: '0',
-      name: emptyEditorStateRaw,
-      age: emptyEditorStateRaw,
-      address: emptyEditorStateRaw,
-    }, {
-      key: '1',
-      name: emptyEditorStateRaw,
-      age: emptyEditorStateRaw,
-      address: emptyEditorStateRaw,
-    }],
+    data: {
+      columns: [{
+        content: emptyEditorStateRaw,
+        dataIndex: 'name',
+      }, {
+        content: emptyEditorStateRaw,
+        dataIndex: 'age',
+      }, {
+        content: emptyEditorStateRaw,
+        dataIndex: 'address',
+      }],
+      rows: [{
+        key: '0',
+        name: emptyEditorStateRaw,
+        age: emptyEditorStateRaw,
+        address: emptyEditorStateRaw,
+      }, {
+        key: '1',
+        name: emptyEditorStateRaw,
+        age: emptyEditorStateRaw,
+        address: emptyEditorStateRaw,
+      }],
+    },
   },
 };
 
