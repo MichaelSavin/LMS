@@ -159,7 +159,29 @@ class Editor extends Component {
     });
   }
 
-  // Методы передаваемые через context
+  // Глобальные методы передаваемые через context
+  moveBlock = (blockKey, waySign) => {
+    const { editorState } = this.state;
+    const blocksArray = editorState.getCurrentContent().getBlocksAsArray();
+    const blockIndex = findIndex((block) => block.getKey() === blockKey, blocksArray);
+    const block = blocksArray[blockIndex];
+    const shortArray = [].concat(
+      blocksArray.slice(0, blockIndex),
+      blocksArray.slice(blockIndex + 1)
+    );
+    const newBlocksArray = [].concat(
+      shortArray.slice(0, blockIndex + waySign),
+      [block],
+      shortArray.slice(blockIndex + waySign)
+    );
+    const newEditorState = EditorState.push(
+      this.state.editorState,
+      ContentState.createFromBlockArray(newBlocksArray),
+      ' '
+    );
+    this.onChange(newEditorState);
+  }
+
   removeBlock = (blockKey) => {
     const { editorState } = this.state;
     const content = this.state.editorState.getCurrentContent();
@@ -191,28 +213,6 @@ class Editor extends Component {
         ),
         ' '
     ));
-  }
-
-  moveBlock = (blockKey, waySign) => {
-    const { editorState } = this.state;
-    const blocksArray = editorState.getCurrentContent().getBlocksAsArray();
-    const blockIndex = findIndex((block) => block.getKey() === blockKey, blocksArray);
-    const block = blocksArray[blockIndex];
-    const shortArray = [].concat(
-      blocksArray.slice(0, blockIndex),
-      blocksArray.slice(blockIndex + 1)
-    );
-    const newBlocksArray = [].concat(
-      shortArray.slice(0, blockIndex + waySign),
-      [block],
-      shortArray.slice(blockIndex + waySign)
-    );
-    const newEditorState = EditorState.push(
-      this.state.editorState,
-      ContentState.createFromBlockArray(newBlocksArray),
-      ' '
-    );
-    this.onChange(newEditorState);
   }
 
   render() {
