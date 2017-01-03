@@ -3,7 +3,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Editor as Draft,
+  // Editor as Draft,
   Entity,
   Modifier,
   RichUtils,
@@ -20,6 +20,9 @@ import {
 import {
   findIndex,
 } from 'lodash/fp';
+import Draft from 'draft-js-plugins-editor';
+import createSideToolbarPlugin from 'draft-js-side-toolbar-plugin';
+import 'draft-js-side-toolbar-plugin/lib/plugin.css';
 import {
   blockRenderer,
   entitiesDecorator,
@@ -28,6 +31,10 @@ import {
 // import Popup from './Popup';
 import styles from './styles.css';
 import Toolbar from './Toolbar';
+
+const sideToolbarPlugin = createSideToolbarPlugin();
+const { SideToolbar } = sideToolbarPlugin;
+const plugins = [sideToolbarPlugin];
 
 class Editor extends Component {
 
@@ -232,6 +239,7 @@ class Editor extends Component {
         >
           <Draft
             ref="editor"
+            plugins={plugins}
             onBlur={this.setFocusStatus}
             onFocus={this.setFocusStatus}
             onChange={this.onChange}
@@ -246,6 +254,7 @@ class Editor extends Component {
             // ref={this.setReference}
             // spellCheck
           />
+          <SideToolbar />
           { /*
             <Popup
               isFocused={isFocused}
