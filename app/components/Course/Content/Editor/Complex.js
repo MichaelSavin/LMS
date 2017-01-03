@@ -8,6 +8,7 @@ import {
   Modifier,
   RichUtils,
   EditorState,
+  ContentState,
   convertToRaw,
   convertFromRaw,
   SelectionState,
@@ -16,6 +17,9 @@ import {
 import {
   customStyleMap,
 } from 'draftjs-utils';
+import {
+  findIndex,
+} from 'lodash/fp';
 import {
   blockRenderer,
   entitiesDecorator,
@@ -43,9 +47,10 @@ class Editor extends Component {
 
   getChildContext() {
     return {
+      moveBlock: this.moveBlock,
       removeBlock: this.removeBlock,
-      duplicateBlock: this.duplicateBlock,
       toggleReadOnly: this.toggleReadOnly,
+      duplicateBlock: this.duplicateBlock,
     };
   }
 
@@ -98,18 +103,6 @@ class Editor extends Component {
     isFocused: e.type === 'focus',
   })
 
-  toggleReadOnly = () => {
-    const { editorState, isReadOnly } = this.state;
-    // Для сохранения изменений добавил установку фокуса
-    // TODO чтобы работало надо что-то поменять в редакторе.
-    this.setState({
-      editorState: isReadOnly
-        ? EditorState.moveFocusToEnd(editorState)
-        : editorState,
-      isReadOnly: !isReadOnly,
-    });
-  }
-
   blockStyleFn = (block) => {
     const blockAlignment =
       block.getData()
@@ -154,6 +147,19 @@ class Editor extends Component {
 
   focusEditor = () => this.refs.editor.focus();
 
+  toggleReadOnly = () => {
+    const { editorState, isReadOnly } = this.state;
+    // Для сохранения изменений добавил установку фокуса
+    // TODO чтобы работало надо что-то поменять в редакторе.
+    this.setState({
+      editorState: isReadOnly
+        ? EditorState.moveFocusToEnd(editorState)
+        : editorState,
+      isReadOnly: !isReadOnly,
+    });
+  }
+
+  // Методы передаваемые через context
   removeBlock = (blockKey) => {
     const { editorState } = this.state;
     const content = this.state.editorState.getCurrentContent();
@@ -185,6 +191,28 @@ class Editor extends Component {
         ),
         ' '
     ));
+  }
+
+  moveBlock = (blockKey, waySign) => {
+    const { editorState } = this.state;
+    const blocksArray = editorState.getCurrentContent().getBlocksAsArray();
+    const blockIndex = findIndex((block) => block.getKey() === blockKey, blocksArray);
+    const block = blocksArray[blockIndex];
+    const shortArray = [].concat(
+      blocksArray.slice(0, blockIndex),
+      blocksArray.slice(blockIndex + 1)
+    );
+    const newBlocksArray = [].concat(
+      shortArray.slice(0, blockIndex + waySign),
+      [block],
+      shortArray.slice(blockIndex + waySign)
+    );
+    const newEditorState = EditorState.push(
+      this.state.editorState,
+      ContentState.createFromBlockArray(newBlocksArray),
+      ' '
+    );
+    this.onChange(newEditorState);
   }
 
   render() {
@@ -236,6 +264,7 @@ Editor.childContextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
   removeBlock: PropTypes.func.isRequired,
   duplicateBlock: PropTypes.func.isRequired,
+  moveBlock: PropTypes.func.isRequired,
 };
 
 Editor.propTypes = {

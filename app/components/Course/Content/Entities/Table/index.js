@@ -406,6 +406,10 @@ class Table extends Component {
 
   duplicateBlock = () => this.context.duplicateBlock(this.props.entityKey);
 
+  moveBlockUp = () => this.context.moveBlock(this.props.blockKey, -1);
+
+  moveBlockDown = () => this.context.moveBlock(this.props.blockKey, 1);
+
   render() {
     const content = this.state.temp || this.state.content;
     const { rows, columns } = content.data;
@@ -430,6 +434,18 @@ class Table extends Component {
       />
       {isReadOnly ?
         <div className={styles.actions}>
+          <AntButton
+            type="primary"
+            icon="up-square"
+            className={styles.icon}
+            onClick={this.moveBlockUp}
+          />
+          <AntButton
+            icon="down-square"
+            type="primary"
+            className={styles.icon}
+            onClick={this.moveBlockDown}
+          />
           <AntButton
             type="danger"
             icon="close-circle"
@@ -528,53 +544,6 @@ Table.propTypes = {
   }).isRequired,
 };
 
-// // Новая структура данных компонента
-
-// Table.propTypes = {
-//   entityKey: PropTypes.string.isRequired,
-//   blockKey: PropTypes.string.isRequired,
-//   content: PropTypes.shape({
-//     styles: PropTypes.shape({
-//       table: PropTypes.shape({
-//         head: PropTypes.oneOf([
-//           'bold',
-//           'normal',
-//         ]).isRequired,
-//         body: PropTypes.oneOf([
-//           'big',
-//           'small',
-//           'compact',
-//         ]).isRequired,
-//       }).isRequired,
-//     }).isRequired,
-//     /* https://ant.design/components/table/#How-To-Use */
-//     data: PropTypes.shape({
-//       rows: PropTypes.arrayOf( // rows
-//         PropTypes.objectOf(
-//           PropTypes.instanceOf(EditorState),
-//         ).isRequired,
-//       ).isRequired,
-//       /* https://ant.design/components/table/#Column */
-//       columns: PropTypes.arrayOf(
-//         PropTypes.shape({
-//           title: PropTypes.element,
-//           width: PropTypes.number,
-//           render: PropTypes.func,
-//           content: PropTypes.oneOfType([
-//             PropTypes.instanceOf(EditorState),
-//             /* https://facebook.github.io/draft-js/docs/api-reference-data-conversion.html#converttoraw */
-//             PropTypes.shape({
-//               blocks: PropTypes.arrayOf(PropTypes.object.isRequired),
-//               entityMap: PropTypes.object.isRequired,
-//             }).isRequired,
-//           ]).isRequired,
-//           dataIndex: PropTypes.string.isRequired,
-//         }).isRequired,
-//       ).isRequired,
-//     }).isRequired,
-//   }).isRequired,
-// };
-
 const emptyEditorStateRaw = convertToRaw(
   EditorState.createEmpty()
     .getCurrentContent()
@@ -616,6 +585,7 @@ Table.contextTypes = {
   removeBlock: PropTypes.func,
   duplicateBlock: PropTypes.func,
   toggleReadOnly: PropTypes.func,
+  moveBlock: PropTypes.func,
 };
 
 export default Table;
