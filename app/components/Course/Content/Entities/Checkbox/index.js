@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
+import Immutable, { fromJS, Set } from 'immutable';
 import { Button as AntButton } from 'antd';
-import Immutable, { fromJS } from 'immutable';
+import { arrayMove } from 'react-sortable-hoc';
 import localForage from 'localforage';
 import classNames from 'classnames';
 import { Entity } from 'draft-js';
@@ -15,6 +16,7 @@ class Checkbox extends Component {
     const { content } = props;
     this.state = {
       drag: null,
+      errors: Set(),
       editing: false,
       content: fromJS({
         editor: content,
@@ -63,6 +65,9 @@ class Checkbox extends Component {
     ) || (
       this.state.editing !==
       nextState.editing
+    ) || !Immutable.is(
+      this.state.errors,
+      nextState.errors
     );
   }
 
@@ -129,43 +134,39 @@ class Checkbox extends Component {
           'editor',
           ...location,
         ],
-          content.getIn([
-            'editor',
-            ...location,
-          ]).withMutations(
-            (options) => options
-              .set(
-                oldIndex,
-                content.getIn([
-                  'editor',
-                  ...location,
-                ]).get(newIndex)
-              )
-              .set(
-                newIndex,
-                content.getIn([
-                  'editor',
-                  ...location,
-                ]).get(oldIndex)
-              )
-          )
+          fromJS(
+            arrayMove(
+              content.getIn([
+                'editor',
+                ...location,
+              ]).toJS(),
+              oldIndex,
+              newIndex,
+            )
+          ),
         ),
       }), this.addStateToHistory
     );
   };
 
-  changeContent = (location) => (event) => {
+  changeContent = (location) => (validator) => (event) => {
+    const {
+      errors,
+      content,
+    } = this.state;
+    const value = event.type
+      ? event.target.value   // для инпутов
+      : event.target.checked; // для чекбоксов
     this.setState({
-      content: this.state
-        .content
-        .setIn([
-          'editor',
-          ...location,
-        ],
-        event.target.value
-        ||
-        event.target.checked
+      content: content.setIn([
+        'editor',
+        ...location,
+      ],
+        value
       ),
+      errors: !value || !validator.rule
+        ? errors.add(validator.message)
+        : errors.delete(validator.message),
     }, this.addStateToHistory);
   }
 
@@ -224,6 +225,7 @@ class Checkbox extends Component {
   closeEditor = () => {
     this.setState({
       editing: false,
+      errors: this.state.errors.clear(),
     }, this.context.toggleReadOnly);
   }
 
@@ -240,6 +242,7 @@ class Checkbox extends Component {
         'component',
         content.get('editor'),
       ),
+      errors: this.state.errors.clear(),
     }, this.context.toggleReadOnly);
   }
 
@@ -249,6 +252,7 @@ class Checkbox extends Component {
         editor,
         component,
       },
+      errors,
       editing,
     } = this.state;
     return (
@@ -268,13 +272,13 @@ class Checkbox extends Component {
         {editing &&
           <div className={styles.editor}>
             <Editor
+              errors={errors}
               content={editor}
               storage={this.storage}
               addContent={this.addContent}
               dragContent={this.dragContent}
               closeEditor={this.closeEditor}
               uploadImage={this.uploadImage}
-              removeImage={this.removeImage}
               saveContent={this.saveContent}
               undoHistory={this.undoHistory}
               redoHistory={this.redoHistory}

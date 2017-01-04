@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 import {
   Icon as AntIcon,
-  Form as AntForm,
   Tabs as AntTabs,
   Input as AntInput,
   Button as AntButton,
@@ -18,10 +17,12 @@ import {
 } from 'react-sortable-hoc';
 import ImmutablePropTypes from
   'react-immutable-proptypes';
+import Validator from 'components/UI/Validator';
 import Dropzone from 'react-dropzone';
 import styles from './styles.css';
 
 const Editor = ({
+  errors,
   content,
   storage,
   addContent,
@@ -33,19 +34,12 @@ const Editor = ({
   redoHistory,
   changeContent,
   removeContent,
-  form: {
-    resetFields,
-    validateFields,
-    getFieldDecorator,
- },
 }) => {
+  const hasErrors = !errors.isEmpty();
   const validateAndSave = () => {
-    validateFields((err) => {
-      if (!err) { saveContent(); }
-    });
+    if (!hasErrors) { saveContent(); }
   };
   const resetAndClose = () => {
-    resetFields();
     closeEditor();
   };
   return (
@@ -65,6 +59,21 @@ const Editor = ({
           />
         </div>
       </div>
+      {hasErrors &&
+        <div className={styles.errors}>
+          <div className={styles.text}>
+            Необходимо заполнить поля:
+          </div>
+          {errors.map((error, index) =>
+            <div
+              key={index}
+              className={styles.error}
+            >
+              {error}
+            </div>
+          )}
+        </div>
+      }
       <AntTabs
         className={styles.variants}
         tabBarExtraContent={
@@ -136,27 +145,22 @@ const Editor = ({
               key={variantIndex}
               className={styles.variant}
             >
-              <AntForm.Item>
-                {getFieldDecorator('question', {
-                  rules: [{
-                    required: true,
-                    message: 'Это поле не может быть пустым!',
-                  }],
-                  initialValue: variant.get('question'),
-                })(
-                  <AntInput
-                    rows={4}
-                    size="default"
-                    type="textarea"
-                    onChange={changeContent([
-                      'variants',
-                      variantIndex,
-                      'question',
-                    ])}
-                    className={styles.question}
-                  />
-                )}
-              </AntForm.Item>
+              <Validator
+                hint={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
+                value={variant.get('question')}
+                onChange={changeContent([
+                  'variants',
+                  variantIndex,
+                  'question',
+                ])}
+              >
+                <AntInput
+                  rows={4}
+                  size="default"
+                  type="textarea"
+                  className={styles.question}
+                />
+              </Validator>
               <AntCollapse
                 className={styles.data}
                 defaultActiveKey="1"
@@ -193,28 +197,19 @@ const Editor = ({
                               <Sortable.Handler />
                             </div>
                             <div className={styles.text}>
-                              <AntForm.Item>
-                                {getFieldDecorator(
-                                  `variant.${variantIndex}.option.${optionIndex}.text`, {
-                                    rules: [{
-                                      required: true,
-                                      message: 'Укажите текст варианта ответа!',
-                                    }],
-                                    initialValue: option.get('text'),
-                                  }
-                                )(
-                                  <AntInput
-                                    size="default"
-                                    onChange={changeContent([
-                                      'variants',
-                                      variantIndex,
-                                      'options',
-                                      optionIndex,
-                                      'text',
-                                    ])}
-                                  />
-                                )}
-                              </AntForm.Item>
+                              <Validator
+                                hint={`Вариант №${variantIndex + 1} - Ответ №${optionIndex + 1}`}
+                                value={option.get('text')}
+                                onChange={changeContent([
+                                  'variants',
+                                  variantIndex,
+                                  'options',
+                                  optionIndex,
+                                  'text',
+                                ])}
+                              >
+                                <AntInput size="default" />
+                              </Validator>
                             </div>
                             <div className={styles.image}>
                               {option.get('image')
@@ -441,11 +436,6 @@ const Sortable = {
 };
 
 Editor.propTypes = {
-  form: PropTypes.shape({
-    resetFields: PropTypes.func.isRequired,
-    validateFields: PropTypes.func.isRequired,
-    getFieldDecorator: PropTypes.func.isRequired,
-  }).isRequired,
   addContent: PropTypes.func.isRequired,
   dragContent: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
@@ -478,6 +468,9 @@ Editor.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
+  errors: ImmutablePropTypes.setOf(
+    PropTypes.string.isRequired
+  ),
   storage: PropTypes.shape({
     images: PropTypes.objectOf(
       PropTypes.string.isRequired,
@@ -488,8 +481,4 @@ Editor.propTypes = {
   }).isRequired,
 };
 
-export default AntForm.create({
-  mapPropsToFields: () => ({
-    name: { value: undefined },
-  }),
-})(Editor);
+export default Editor;
