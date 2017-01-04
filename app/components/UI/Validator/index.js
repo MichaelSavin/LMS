@@ -9,6 +9,8 @@ const Validator = ({
   children,
   onChange,
 }) => {
+  // * Локальная валидация *
+  // Красная рамка вокруг инпута
   const error = !value || !rule(value);
   return (
     <div className={styles.validator}>
@@ -18,6 +20,9 @@ const Validator = ({
         onChange: onChange(
           (errors, value) => ({ // eslint-disable-line
             errors: !value || !rule(value)
+              // * Глобальная валидация *
+              // Общий блок со всеми сообщениями
+              // валидаторов вверху компонента
               ? errors.add(hint)
               : errors.delete(hint),
           })
