@@ -150,23 +150,21 @@ class Checkbox extends Component {
   };
 
   changeContent = (location) => (validator) => (event) => {
-    const {
-      errors,
-      content,
-    } = this.state;
     const value = event.type
-      ? event.target.value   // для инпутов
+      ? event.target.value    // для инпутов
       : event.target.checked; // для чекбоксов
     this.setState({
-      content: content.setIn([
+      content: this.state.content.setIn([
         'editor',
         ...location,
       ],
         value
       ),
-      errors: !value || !validator.rule
-        ? errors.add(validator.message)
-        : errors.delete(validator.message),
+      // Подмешивание сообщений валидатора
+      // в состояние компонента, правила
+      // валидации передаются через props
+      // компонента Validator
+      ...validator(this.state.errors, value),
     }, this.addStateToHistory);
   }
 

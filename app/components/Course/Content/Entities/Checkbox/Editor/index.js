@@ -147,6 +147,7 @@ const Editor = ({
             >
               <Validator
                 hint={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
+                rule={(value) => value.trim().length > 3}
                 value={variant.get('question')}
                 onChange={changeContent([
                   'variants',
