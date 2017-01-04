@@ -19,7 +19,9 @@ import {
 } from 'draftjs-utils';
 import {
   findIndex,
+  unnest,
 } from 'lodash/fp';
+import Sortable from 'sortablejs';
 import {
   blockRenderer,
   entitiesDecorator,
@@ -29,8 +31,34 @@ import {
 import styles from './styles.css';
 import Toolbar from './Toolbar';
 
-class Editor extends Component {
+const helper = (obj) => ({
+  key: obj.getKey(),
+  type: obj.getType(),
+});
 
+let tempChunk = []; // eslint-disable-line fp/no-let
+const splitByChunks = (newArr, block, key, arr) => {
+  const type = /unordered-list-item|ordered-list-item/.test(block.getType()) && block.getType();
+  if (!key) {
+    tempChunk = [block]; // eslint-disable-line fp/no-mutation
+    return newArr;
+  } else if (key === arr.length - 1) {
+    if (type && type === tempChunk[0].getType()) {
+      return newArr.concat([tempChunk.concat(block)]);
+    }
+    return newArr.concat(tempChunk.length > 1 ? [tempChunk] : tempChunk, [block]);
+  } else if (type && type === tempChunk[0].getType()) {
+    tempChunk = [].concat(tempChunk, block); // eslint-disable-line fp/no-mutation
+    return newArr;
+  }
+  const ans = newArr.concat(
+    tempChunk.length > 1 ? [tempChunk] : tempChunk
+  );
+  tempChunk = [block]; // eslint-disable-line fp/no-mutation
+  return ans;
+};
+
+class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -52,6 +80,10 @@ class Editor extends Component {
       toggleReadOnly: this.toggleReadOnly,
       duplicateBlock: this.duplicateBlock,
     };
+  }
+
+  componentDidUpdate() {
+    this.makeSortable();
   }
 
   onChange = (editorState) => {
@@ -102,6 +134,43 @@ class Editor extends Component {
   setFocusStatus = (e) => this.setState({
     isFocused: e.type === 'focus',
   })
+
+  makeSortable = () => {
+    const el = document.querySelector('.public-DraftEditor-content > div');
+    Sortable.create(el, {
+      animation: 350,
+      // handle: '.dragger__handle',
+      // draggable: '.azure',
+      onEnd: (event) => {
+        const { oldIndex, newIndex } = event;
+        console.log(oldIndex);
+        console.log(newIndex);
+        const { editorState } = this.state;
+        const blocksArray = editorState.getCurrentContent().getBlocksAsArray();
+        const chunkedBlocks = blocksArray.reduce(splitByChunks, []);
+        console.log(chunkedBlocks);
+
+        const block = chunkedBlocks[oldIndex];
+        const shortArray = [].concat(
+          chunkedBlocks.slice(0, oldIndex),
+          chunkedBlocks.slice(oldIndex + 1)
+        );
+        const newBlocksArray = [].concat(
+          shortArray.slice(0, newIndex),
+          [block],
+          shortArray.slice(newIndex)
+        );
+        console.log(blocksArray.map(helper));
+        console.log(unnest(newBlocksArray).map(helper));
+        const newEditorState = EditorState.push(
+          this.state.editorState,
+          ContentState.createFromBlockArray(unnest(newBlocksArray)),
+          ' '
+        );
+        this.onChange(newEditorState);
+      },
+    });
+  };
 
   blockStyleFn = (block) => {
     const blockAlignment =

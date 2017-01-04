@@ -93,6 +93,7 @@
     "redux-storage-merger-immutablejs": "1.0.3",
     "reselect": "2.5.4",
     "sanitize.css": "4.1.0",
+    "sortablejs": "^1.5.0-rc1",
     "warning": "3.0.0",
     "whatwg-fetch": "2.0.1"
   },

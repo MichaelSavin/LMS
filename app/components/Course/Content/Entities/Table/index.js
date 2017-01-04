@@ -441,6 +441,11 @@ class Table extends Component {
             onClick={this.moveBlockUp}
           />
           <AntButton
+            type="primary"
+            icon="ellipsis"
+            className={classNames(styles.icon, 'dragger')}
+          />
+          <AntButton
             icon="down-square"
             type="primary"
             className={styles.icon}
