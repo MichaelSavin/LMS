@@ -170,11 +170,8 @@ class Checkbox extends Component {
 
   addStateToHistory = () => {
     /* eslint-disable */
-    this.history.present =
-      this.state.content.get('editor');
-    this.history.past.push(
-      this.state.content.get('editor'),
-    );
+    this.history.present = this.state;
+    this.history.past.push(this.state);
     /* eslint-enable */
   }
 
@@ -184,12 +181,7 @@ class Checkbox extends Component {
       this.history.future.push(this.history.present);
       this.history.present = this.history.past.pop();
       /* eslint-enable */
-      this.setState({
-        content: this.state.content.set(
-          'editor',
-          this.history.present,
-        ),
-      });
+      this.setState(this.history.present);
     }
   }
 
@@ -199,12 +191,7 @@ class Checkbox extends Component {
       this.history.past.push(this.history.present);
       this.history.present = this.history.future.pop();
       /* eslint-enable */
-      this.setState({
-        content: this.state.content.set(
-          'editor',
-          this.history.present,
-        ),
-      });
+      this.setState(this.history.present);
     }
   }
 
