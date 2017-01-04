@@ -31,27 +31,22 @@ import {
 import styles from './styles.css';
 import Toolbar from './Toolbar';
 
-const helper = (obj) => ({
-  key: obj.getKey(),
-  type: obj.getType(),
-});
-
 let tempChunk = []; // eslint-disable-line fp/no-let
-const splitByChunks = (newArr, block, key, arr) => {
+const splitByChunks = (chunkedBlocks, block, key, array) => {
   const type = /unordered-list-item|ordered-list-item/.test(block.getType()) && block.getType();
-  if (!key) {
+  if (!key) { // Если это первый элемент в массиве
     tempChunk = [block]; // eslint-disable-line fp/no-mutation
-    return newArr;
-  } else if (key === arr.length - 1) {
+    return chunkedBlocks;
+  } else if (key === array.length - 1) { // Если это последний элемент в массиве
     if (type && type === tempChunk[0].getType()) {
-      return newArr.concat([tempChunk.concat(block)]);
+      return chunkedBlocks.concat([tempChunk.concat(block)]);
     }
-    return newArr.concat(tempChunk.length > 1 ? [tempChunk] : tempChunk, [block]);
+    return chunkedBlocks.concat(tempChunk.length > 1 ? [tempChunk] : tempChunk, [block]);
   } else if (type && type === tempChunk[0].getType()) {
     tempChunk = [].concat(tempChunk, block); // eslint-disable-line fp/no-mutation
-    return newArr;
+    return chunkedBlocks;
   }
-  const ans = newArr.concat(
+  const ans = chunkedBlocks.concat(
     tempChunk.length > 1 ? [tempChunk] : tempChunk
   );
   tempChunk = [block]; // eslint-disable-line fp/no-mutation
@@ -139,17 +134,17 @@ class Editor extends Component {
     const el = document.querySelector('.public-DraftEditor-content > div');
     Sortable.create(el, {
       animation: 350,
-      // handle: '.dragger__handle',
-      // draggable: '.azure',
+      handle: '.dragger__handle',
+      chosenClass: styles.chosen,
+      ghostClass: styles.ghost,
       onEnd: (event) => {
         const { oldIndex, newIndex } = event;
-        console.log(oldIndex);
-        console.log(newIndex);
         const { editorState } = this.state;
         const blocksArray = editorState.getCurrentContent().getBlocksAsArray();
+        // Т.к каждый элемент списка ul>li или ol>li для draft отдельный блок,
+        // приходиться делить список блоков на чанки для правильной сортировки
+        // пример [h1, table, li, li, li, h1] => [h1, table, [li, li, li], h1]
         const chunkedBlocks = blocksArray.reduce(splitByChunks, []);
-        console.log(chunkedBlocks);
-
         const block = chunkedBlocks[oldIndex];
         const shortArray = [].concat(
           chunkedBlocks.slice(0, oldIndex),
@@ -160,8 +155,6 @@ class Editor extends Component {
           [block],
           shortArray.slice(newIndex)
         );
-        console.log(blocksArray.map(helper));
-        console.log(unnest(newBlocksArray).map(helper));
         const newEditorState = EditorState.push(
           this.state.editorState,
           ContentState.createFromBlockArray(unnest(newBlocksArray)),

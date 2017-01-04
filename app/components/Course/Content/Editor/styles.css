@@ -2,6 +2,14 @@
   background-color: #EEE;
   min-height: 230px;
   padding: 0 10px 10px;
+
+  & .chosen {
+    opacity: 0.2;
+  }
+
+  & .ghost {
+    opacity: 0.8;
+  }
 }
 
 .buttons {

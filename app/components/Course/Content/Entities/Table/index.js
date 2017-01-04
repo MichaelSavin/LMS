@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Icon as AntIcon,
   Table as AntTable,
   Button as AntButton,
 } from 'antd';
@@ -440,14 +441,15 @@ class Table extends Component {
             className={styles.icon}
             onClick={this.moveBlockUp}
           />
-          <AntButton
-            type="primary"
+          <span
             icon="ellipsis"
-            className={classNames(styles.icon, 'dragger')}
-          />
+            className={classNames(styles.icon, 'dragger__handle')}
+          >
+            <AntIcon type="ellipsis" />
+          </span>
           <AntButton
-            icon="down-square"
             type="primary"
+            icon="down-square"
             className={styles.icon}
             onClick={this.moveBlockDown}
           />
