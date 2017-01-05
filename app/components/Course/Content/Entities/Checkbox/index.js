@@ -247,31 +247,26 @@ class Checkbox extends Component {
           { [styles.editing]: editing },
         )}
       >
-        <div className={styles.preview}>
-          <Preview
-            content={editing ? editor : component}
-            storage={this.storage}
-            changeContent={this.changeContent}
-          />
-        </div>
-        {editing &&
-          <div className={styles.editor}>
-            <Editor
-              errors={errors}
-              content={editor}
-              storage={this.storage}
-              addContent={this.addContent}
-              dragContent={this.dragContent}
-              closeEditor={this.closeEditor}
-              uploadImage={this.uploadImage}
-              saveContent={this.saveContent}
-              undoHistory={this.undoHistory}
-              redoHistory={this.redoHistory}
-              removeContent={this.removeContent}
-              changeContent={this.changeContent}
-            />
-          </div>
-        }
+        <Preview
+          content={editing ? editor : component}
+          storage={this.storage}
+          changeContent={this.changeContent}
+        />
+        <Editor
+          isOpen={editing}
+          errors={errors}
+          content={editor}
+          storage={this.storage}
+          addContent={this.addContent}
+          dragContent={this.dragContent}
+          closeEditor={this.closeEditor}
+          uploadImage={this.uploadImage}
+          saveContent={this.saveContent}
+          undoHistory={this.undoHistory}
+          redoHistory={this.redoHistory}
+          removeContent={this.removeContent}
+          changeContent={this.changeContent}
+        />
         {editing
           /* eslint-disable */
           ? <div className={styles.actions}>

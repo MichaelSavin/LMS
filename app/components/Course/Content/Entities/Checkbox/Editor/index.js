@@ -15,6 +15,7 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
+import classNames from 'classnames';
 import ImmutablePropTypes from
   'react-immutable-proptypes';
 import Validator from 'components/UI/Validator';
@@ -22,6 +23,7 @@ import Dropzone from 'react-dropzone';
 import styles from './styles.css';
 
 const Editor = ({
+  isOpen,
   errors,
   content,
   storage,
@@ -43,7 +45,12 @@ const Editor = ({
     closeEditor();
   };
   return (
-    <div className={styles.editor}>
+    <div
+      className={classNames(
+        styles.editor,
+        { [styles.hidden]: !isOpen }
+      )}
+    >
       <div className={styles.title}>
         <div className={styles.text}>
           Редактирование компонента
@@ -437,6 +444,7 @@ const Sortable = {
 };
 
 Editor.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
   addContent: PropTypes.func.isRequired,
   dragContent: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
