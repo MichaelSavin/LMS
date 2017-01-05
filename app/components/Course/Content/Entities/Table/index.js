@@ -589,10 +589,10 @@ Table.defaultProps = {
 };
 
 Table.contextTypes = {
+  moveBlock: PropTypes.func,
   removeBlock: PropTypes.func,
   duplicateBlock: PropTypes.func,
   toggleReadOnly: PropTypes.func,
-  moveBlock: PropTypes.func,
 };
 
 export default Table;
