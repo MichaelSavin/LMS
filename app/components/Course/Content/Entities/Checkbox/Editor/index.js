@@ -146,9 +146,9 @@ const Editor = ({
               className={styles.variant}
             >
               <Validator
-                hint={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
                 rule={(value) => value.trim().length > 3}
                 value={variant.get('question')}
+                message={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
                 onChange={changeContent([
                   'variants',
                   variantIndex,
@@ -199,8 +199,8 @@ const Editor = ({
                             </div>
                             <div className={styles.text}>
                               <Validator
-                                hint={`Вариант №${variantIndex + 1} - Ответ №${optionIndex + 1}`}
                                 value={option.get('text')}
+                                message={`Вариант №${variantIndex + 1} - Ответ №${optionIndex + 1}`}
                                 onChange={changeContent([
                                   'variants',
                                   variantIndex,

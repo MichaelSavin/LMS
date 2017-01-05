@@ -23,15 +23,15 @@ const Validator = ({
               // * Глобальная валидация *
               // Общий блок со всеми сообщениями
               // валидаторов вверху компонента
-              ? errors.add(hint)
-              : errors.delete(hint),
+              ? errors.add(message)
+              : errors.delete(message),
           })
         ),
         className: error ? 'error' : '',
       })}
-      { error && message &&
-        <div className={styles.message}>
-          {message}
+      {error && hint &&
+        <div className={styles.hint}>
+          {hint}
         </div>
       }
     </div>
@@ -40,9 +40,9 @@ const Validator = ({
 
 Validator.propTypes = {
   rule: PropTypes.func,
-  hint: PropTypes.string.isRequired,
+  hint: PropTypes.string,
   value: PropTypes.string,
-  message: PropTypes.string,
+  message: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
   onChange: PropTypes.func.isRequired,
 };

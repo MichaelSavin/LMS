@@ -1,7 +1,7 @@
 .validator {
   margin-bottom: 15px;
 
-  & .message {
+  & .hint {
     color: red;
     font-size: 13px;
   }
