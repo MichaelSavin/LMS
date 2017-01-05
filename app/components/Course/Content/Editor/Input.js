@@ -120,7 +120,7 @@ DraftInput.childContextTypes = {
 };
 
 DraftInput.propTypes = {
-  value: PropTypes.instanceOf(EditorState),
+  value: PropTypes.instanceOf(EditorState).isRequired,
   onChange: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,
