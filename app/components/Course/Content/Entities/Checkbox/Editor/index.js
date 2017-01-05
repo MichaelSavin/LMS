@@ -152,36 +152,46 @@ const Editor = ({
               key={variantIndex}
               className={styles.variant}
             >
-              <Validator
-                rule={(value) => value.trim().length > 3}
-                value={variant.get('question')}
-                message={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
-                onChange={changeContent([
-                  'variants',
-                  variantIndex,
-                  'question',
-                ])}
-              >
-                <AntInput
-                  rows={4}
-                  size="default"
-                  type="textarea"
-                  className={styles.question}
-                />
-              </Validator>
+              <div className={styles.question}>
+                <Validator
+                  rule={(value) => value.trim().length > 3}
+                  value={variant.get('question')}
+                  message={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
+                  onChange={changeContent([
+                    'variants',
+                    variantIndex,
+                    'question',
+                  ])}
+                >
+                  <AntInput
+                    rows={4}
+                    size="default"
+                    type="textarea"
+                  />
+                </Validator>
+              </div>
               <AntCollapse
-                className={styles.data}
-                defaultActiveKey="1"
+                className={styles.section}
+                defaultActiveKey="2"
               >
                 <AntCollapse.Panel
                   key="1"
-                  header={variant
-                    .get('options')
-                    .filter((option) =>
-                      option.get('correct') === true
-                    ).isEmpty()
-                      ? 'Варианты ответов не заданы'
-                      : 'Заданы'
+                  header={
+                    <div className={styles.header}>
+                      <div className={styles.text}>
+                        Варианты ответов
+                      </div>
+                      <div className={styles.notifier}>
+                        {variant
+                          .get('options')
+                          .filter(
+                            (option) => option.get('correct') === true
+                          ).isEmpty()
+                            ? <div className={styles.undefined}>Не заданы</div>
+                            : <div className={styles.defined}>Заданы</div>
+                        }
+                      </div>
+                    </div>
                   }
                 >
                   <div className={styles.options}>
@@ -272,7 +282,9 @@ const Editor = ({
                                   'options',
                                   optionIndex,
                                   'correct',
-                                ])}
+                                ])(
+                                  () => {} // Замыкание пустого валидатора
+                                )}
                               />
                             </div>
                             <div className={styles.remove}>
@@ -297,6 +309,7 @@ const Editor = ({
                         </div>
                       )}
                       <AntButton
+                        size="small"
                         type="primary"
                         onClick={addContent([
                           'variants',
@@ -326,22 +339,56 @@ const Editor = ({
                         key={explanationIndex}
                         className={styles.explanation}
                       >
-                        {explanation.get('text')}
+                        <div className={styles.text}>
+                          <Validator
+                            value={explanation.get('text')}
+                            message={`Вариант №${variantIndex + 1} - Пояснение к правильному ответу №${explanationIndex + 1}`}
+                            onChange={changeContent([
+                              'variants',
+                              variantIndex,
+                              'explanations',
+                              explanationIndex,
+                              'text',
+                            ])}
+                          >
+                            <AntInput size="default" />
+                          </Validator>
+                        </div>
+                        <div className={styles.remove}>
+                          <AntPopconfirm
+                            title="Удалить вариант ответа?"
+                            okText="Да"
+                            onConfirm={removeContent([
+                              'variants',
+                              variantIndex,
+                              'explanations',
+                              explanationIndex,
+                            ])}
+                            cancelText="Нет"
+                          >
+                            <AntIcon
+                              type="close"
+                              className={styles.icon}
+                            />
+                          </AntPopconfirm>
+                        </div>
                       </div>
                     )}
+                    <AntButton
+                      size="small"
+                      type="primary"
+                      onClick={addContent([
+                        'variants',
+                        variantIndex,
+                        'explanations',
+                      ], {
+                        text: 'Новое объяснение',
+                      })}
+                      className={styles.add}
+                    >
+                      Добавить пояснение к ответу
+                    </AntButton>
                   </div>
-                  <AntButton
-                    type="primary"
-                    onClick={addContent([
-                      'variants',
-                      variantIndex,
-                      'explanations',
-                    ], {
-                      text: 'Новое объяснение',
-                    })}
-                  >
-                    Добавить пояснение к ответу
-                  </AntButton>
                 </AntCollapse.Panel>
                 <AntCollapse.Panel
                   key="3"

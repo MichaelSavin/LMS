@@ -1,6 +1,4 @@
 .validator {
-  margin-bottom: 15px;
-
   & .hint {
     color: red;
     font-size: 13px;

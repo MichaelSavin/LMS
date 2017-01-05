@@ -72,18 +72,51 @@
       & .question {
         font-size: 13px;
         margin-top: 5px;
+        margin-bottom: 15px;
       }
 
-      & .data {
+      & .section {
         font-size: 13px;
         font-weight: 500;
         margin-bottom: 25px;
 
+        & .header {
+          display: flex;
+          align-items: center;
+          flex-direction: row;
+          justify-content: space-between;
+
+          & .text {
+            /* ... */
+          }
+
+          & .notifier {
+            color: black;
+            padding: 0 10px;
+
+            & .defined {
+              padding: 5px 10px;
+              display: inline;
+              border-radius: 5px;
+              background: #99FF83;
+            }
+
+            & .undefined {
+              padding: 5px 10px;
+              display: inline;
+              border-radius: 5px;
+              background: #FF8383;
+            }
+          }
+        }
+
         & .options {
           & .option li {
             display: flex;
+            align-items: center;
+            margin-bottom: 15px;
             flex-direction: row;
-            justify-content: space-around;
+            justify-content: space-between;
 
             & .drag {
               cursor: grab;
@@ -148,22 +181,63 @@
 
     & .hints {
       & .hint {
-        padding: 10px 0;
+        display: flex;
+        padding: 0 0 10px;
         font-weight: normal;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & .text {
+          width: 97.5%;
+        }
+
+        & .remove {
+          color: red;
+        }
       }
     }
 
     & .competences {
       & .competence {
-        padding: 10px 0;
+        display: flex;
+        padding: 0 0 10px;
         font-weight: normal;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & .text {
+          width: 97.5%;
+        }
+
+        & .remove {
+          color: red;
+        }
       }
     }
 
     & .explanations {
       & .explanation {
-        padding: 10px 0;
+        display: flex;
+        padding: 0 0 10px;
         font-weight: normal;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & .text {
+          width: 97.5%;
+        }
+
+        & .remove {
+          color: red;
+          cursor: pointer;
+        }
+      }
+
+      & .add {
+        /* ... */
       }
     }
   }
@@ -183,6 +257,10 @@ body > li { /* Для D&D */
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+
+  & .text {
+    width: 90%;
+  }
 }
 
 :global .ant-form-item {
