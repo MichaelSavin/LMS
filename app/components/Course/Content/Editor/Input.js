@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import {
   Editor as Draft,
+  EditorState,
 } from 'draft-js';
 import {
   customStyleMap,
@@ -119,7 +120,7 @@ DraftInput.childContextTypes = {
 };
 
 DraftInput.propTypes = {
-  value: PropTypes.object,
+  value: PropTypes.instanceOf(EditorState),
   onChange: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,

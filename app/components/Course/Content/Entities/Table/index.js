@@ -55,9 +55,9 @@ const convertRawToDraftEditorState = (content) =>
             ...newRow,
             [key]: EditorState
               .createWithContent(
-              convertFromRaw(row[key]),
-              entitiesDecorator
-            ),
+                convertFromRaw(row[key]),
+                entitiesDecorator
+              ),
           }
         ), row)
       )),
@@ -85,7 +85,7 @@ const convertRawToDraftEditorState = (content) =>
     },
   });
 
-const convertDraftEditorStateToRow = (content) => ({
+const convertDraftEditorStateToRaw = (content) => ({
   ...content,
   data: {
     rows: content.data.rows.map((row) => (
@@ -122,7 +122,7 @@ class Table extends Component {
     };
   }
 
-  onCellChange = (index, key) => (value) => {
+  changeCell = (index, key) => (value) => {
     this.setState({
       temp: set([
         'data',
@@ -166,7 +166,7 @@ class Table extends Component {
     });
   }
 
-  delColumn = (columnKey) => () => {
+  deleteColumn = (columnKey) => () => {
     const {
       temp: {
         data: {
@@ -218,7 +218,7 @@ class Table extends Component {
     });
   }
 
-  delRow = (columnKey, index) => () => {
+  deleteRow = (columnKey, index) => () => {
     const { rows } = this.state.temp.data;
     if (rows.length > 1) {
       this.setState({
@@ -233,7 +233,7 @@ class Table extends Component {
     }
   }
 
-  headChange = (columnKey) => (content) => {
+  changeHeaderCell = (columnKey) => (content) => {
     const { temp } = this.state;
     this.setState({
       temp: set([
@@ -250,12 +250,12 @@ class Table extends Component {
           // весь элемент с новыми пропсами
           title: <Cell
             addRow={this.addRow}
-            delRow={this.delRow}
+            deleteRow={this.deleteRow}
             addColumn={this.addColumn}
-            delColumn={this.delColumn}
+            deleteColumn={this.deleteColumn}
             index={-1}
             value={content}
-            onChange={this.headChange(columnKey)}
+            onChange={this.changeHeaderCell(columnKey)}
             columnKey={columnKey}
           />,
           content,
@@ -316,7 +316,7 @@ class Table extends Component {
     };
     Entity.mergeData(
       this.props.entityKey, {
-        content: convertDraftEditorStateToRow(temp),
+        content: convertDraftEditorStateToRaw(temp),
       }
     );
     this.setState({
@@ -344,30 +344,30 @@ class Table extends Component {
         <Cell
           index={-1}
           value={column.content}
-          onChange={this.headChange(key)}
+          onChange={this.changeHeaderCell(key)}
           columnKey={key}
           addRow={this.addRow}
-          delRow={this.delRow}
+          deleteRow={this.deleteRow}
           addColumn={this.addColumn}
-          delColumn={this.delColumn}
+          deleteColumn={this.deleteColumn}
         />),
       render: (text, record, index) => (
       // Функция для рендера ячейки
       // https://ant.design/components/table/#Column
         <Cell
           addRow={this.addRow}
-          delRow={this.delRow}
+          deleteRow={this.deleteRow}
           addColumn={this.addColumn}
-          delColumn={this.delColumn}
+          deleteColumn={this.deleteColumn}
           index={index}
           value={text}
-          onChange={this.onCellChange(index, column.dataIndex)}
+          onChange={this.changeCell(index, column.dataIndex)}
           columnKey={key}
         />
       ),
     }))
 
-  stylesChange = (type) => (event) => {
+  changeStyle = (type) => (event) => {
     // Если событие произошло в Ant.Select
     // то в параметре функции передается
     // значение select а не event!
@@ -423,7 +423,7 @@ class Table extends Component {
         columns={columns}
         pagination={false}
         dataSource={rows}
-        showHeader={!content.styles.hideHeader}
+        showHeader={!content.styles.isHeaderHide}
         bordered={get(['body'], content.styles) === 'big'}
       />
       {isReadOnly ?
@@ -444,7 +444,7 @@ class Table extends Component {
         : <div className={styles.editor}>
           <Editor
             styles={content.styles}
-            stylesChange={this.stylesChange}
+            changeStyle={this.changeStyle}
             closeEditor={this.closeEditor}
             saveSettings={this.saveSettings}
           />
@@ -473,7 +473,7 @@ Table.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     styles: PropTypes.shape({
-      hideHeader: PropTypes.bool,
+      isHeaderHide: PropTypes.bool,
       equalColumnsWidth: PropTypes.bool,
       head: PropTypes.oneOf([
         'bold',
@@ -519,53 +519,6 @@ Table.propTypes = {
     }).isRequired,
   }).isRequired,
 };
-
-// // Новая структура данных компонента
-
-// Table.propTypes = {
-//   entityKey: PropTypes.string.isRequired,
-//   blockKey: PropTypes.string.isRequired,
-//   content: PropTypes.shape({
-//     styles: PropTypes.shape({
-//       table: PropTypes.shape({
-//         head: PropTypes.oneOf([
-//           'bold',
-//           'normal',
-//         ]).isRequired,
-//         body: PropTypes.oneOf([
-//           'big',
-//           'small',
-//           'compact',
-//         ]).isRequired,
-//       }).isRequired,
-//     }).isRequired,
-//     /* https://ant.design/components/table/#How-To-Use */
-//     data: PropTypes.shape({
-//       rows: PropTypes.arrayOf( // rows
-//         PropTypes.objectOf(
-//           PropTypes.instanceOf(EditorState),
-//         ).isRequired,
-//       ).isRequired,
-//       /* https://ant.design/components/table/#Column */
-//       columns: PropTypes.arrayOf(
-//         PropTypes.shape({
-//           title: PropTypes.element,
-//           width: PropTypes.number,
-//           render: PropTypes.func,
-//           content: PropTypes.oneOfType([
-//             PropTypes.instanceOf(EditorState),
-//             /* https://facebook.github.io/draft-js/docs/api-reference-data-conversion.html#converttoraw */
-//             PropTypes.shape({
-//               blocks: PropTypes.arrayOf(PropTypes.object.isRequired),
-//               entityMap: PropTypes.object.isRequired,
-//             }).isRequired,
-//           ]).isRequired,
-//           dataIndex: PropTypes.string.isRequired,
-//         }).isRequired,
-//       ).isRequired,
-//     }).isRequired,
-//   }).isRequired,
-// };
 
 const emptyEditorStateRaw = convertToRaw(
   EditorState.createEmpty()

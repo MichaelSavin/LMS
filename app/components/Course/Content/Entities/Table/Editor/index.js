@@ -11,7 +11,7 @@ import styles from './styles.css';
 const Editor = ({
   saveSettings,
   closeEditor,
-  stylesChange,
+  changeStyle,
   ...props
 }) => (
   <div className={styles.editor}>
@@ -23,7 +23,7 @@ const Editor = ({
           style={{ width: '100%' }}
           defaultValue="big"
           value={props.styles.body}
-          onChange={stylesChange('body')}
+          onChange={changeStyle('body')}
         >
           <AntSelect.Option value="compact">
             Компактная горизонтальные разделители
@@ -41,7 +41,7 @@ const Editor = ({
         <div>
           <AntSelect
             defaultValue="bold"
-            onChange={stylesChange('head')}
+            onChange={changeStyle('head')}
             value={props.styles.head}
             style={{ width: '100%' }}
           >
@@ -57,21 +57,21 @@ const Editor = ({
     </div>
     <div>
       <AntCheckbox
-        onChange={stylesChange('hideHeader')}
-        checked={props.styles.hideHeader}
+        onChange={changeStyle('isHeaderHide')}
+        checked={props.styles.isHeaderHide}
       >
         Скрыть заголовки
       </AntCheckbox>
     </div>
     <div>
       <AntCheckbox
-        onChange={stylesChange('equalColumnsWidth')}
+        onChange={changeStyle('equalColumnsWidth')}
         checked={props.styles.equalColumnsWidth}
       >
         Колонки равной ширины
       </AntCheckbox>
     </div>
-    <div className={styles.buttonwrapper}>
+    <div className={styles.confirms}>
       <AntButton type="primary" onClick={saveSettings}>
         Применить
       </AntButton>
@@ -85,7 +85,7 @@ const Editor = ({
 Editor.propTypes = {
   closeEditor: PropTypes.func.isRequired,
   saveSettings: PropTypes.func.isRequired,
-  stylesChange: PropTypes.func.isRequired,
+  changeStyle: PropTypes.func.isRequired,
   styles: PropTypes.shape({
     head: PropTypes.oneOf([
       'bold',
@@ -96,7 +96,7 @@ Editor.propTypes = {
       'small',
       'compact',
     ]).isRequired,
-    hideHeader: PropTypes.bool,
+    isHeaderHide: PropTypes.bool,
     equalColumnsWidth: PropTypes.bool,
   }).isRequired,
 };
