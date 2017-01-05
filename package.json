@@ -72,6 +72,7 @@
     "lodash": "4.17.2",
     "rc-color-picker": "^1.1.0",
     "react": "15.3.2",
+    "react-copy-to-clipboard": "4.2.3",
     "react-dom": "15.3.2",
     "react-dropzone": "3.7.3",
     "react-helmet": "3.2.2",

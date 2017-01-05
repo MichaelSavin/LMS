@@ -118,5 +118,8 @@
         "config": "./internals/webpack/webpack.test.babel.js"
       }
     }
+  },
+  "globals": {
+    "window": true
   }
 }

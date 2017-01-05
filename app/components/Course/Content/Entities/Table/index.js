@@ -17,6 +17,7 @@ import {
   convertFromRaw,
 } from 'draft-js';
 import classNames from 'classnames';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import {
   entitiesDecorator,
 } from '../../Entities';
@@ -416,6 +417,7 @@ class Table extends Component {
     const { rows, columns } = content.data;
     const { isReadOnly } = this.state;
     return (<div
+      id={`id${this.props.blockKey}`}
       className={classNames(
         styles.table,
         styles[content.styles.head],
@@ -426,6 +428,7 @@ class Table extends Component {
       )}
       onDoubleClick={isReadOnly && this.editMode}
     >
+      <a href="/0-0-0/editor#id2p9j9">/0-0-0/editor#id2p9j9</a>
       <AntTable
         columns={columns}
         pagination={false}
@@ -435,6 +438,29 @@ class Table extends Component {
       />
       {isReadOnly ?
         <div className={styles.actions}>
+          <CopyToClipboard
+            text={
+              `${
+              window.location.pathname
+              }#id${
+              this.props.blockKey
+              }`
+            }
+          >
+            <AntButton
+              type="primary"
+              icon="paper-clip"
+              className={styles.icon}
+            >
+            Скопировать: {
+                `${
+                  window.location.pathname
+                }#id${
+                  this.props.blockKey
+                }`
+              }
+            </AntButton>
+          </CopyToClipboard>
           <AntButton
             type="primary"
             icon="up-square"
