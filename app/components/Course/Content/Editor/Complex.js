@@ -38,19 +38,37 @@ const splitByChunks = (chunkedBlocks, block, key, array) => {
     tempChunk = [block]; // eslint-disable-line fp/no-mutation
     return chunkedBlocks;
   } else if (key === array.length - 1) { // Если это последний элемент в массиве
+    // Если тип подходящий и прошлый тип был такой-же
+    // объединяем временные блоки и этот блок в чанк
     if (type && type === tempChunk[0].getType()) {
-      return chunkedBlocks.concat([tempChunk.concat(block)]);
+      return [
+        ...chunkedBlocks,
+        [
+          ...tempChunk,
+          block,
+        ],
+      ];
     }
-    return chunkedBlocks.concat(tempChunk.length > 1 ? [tempChunk] : tempChunk, [block]);
+    return [
+      ...chunkedBlocks,
+      tempChunk,
+      block,
+    ];
+  // Если тип подходящий и прошлый тип был такой-же
   } else if (type && type === tempChunk[0].getType()) {
-    tempChunk = [].concat(tempChunk, block); // eslint-disable-line fp/no-mutation
+    tempChunk = [ // eslint-disable-line fp/no-mutation
+      ...tempChunk,
+      block,
+    ];
     return chunkedBlocks;
   }
-  const ans = chunkedBlocks.concat(
-    tempChunk.length > 1 ? [tempChunk] : tempChunk
-  );
+  // Если тип прошлого блока отличается от нового
+  const newChunkedBlocks = [
+    ...chunkedBlocks,
+    tempChunk,
+  ];
   tempChunk = [block]; // eslint-disable-line fp/no-mutation
-  return ans;
+  return newChunkedBlocks;
 };
 
 class Editor extends Component {
@@ -77,6 +95,10 @@ class Editor extends Component {
     };
   }
 
+  componentDidMount() {
+    this.makeSortable();
+  }
+
   componentDidUpdate() {
     this.makeSortable();
   }
@@ -98,9 +120,9 @@ class Editor extends Component {
       // this.state.editorState.getCurrentContent()
     // ) {
     editUnit({
+      unitId,
       sectionId,
       subsectionId,
-      unitId,
       content: convertToRaw(
         editorState.getCurrentContent()
       ),
@@ -146,15 +168,15 @@ class Editor extends Component {
         // пример [h1, table, li, li, li, h1] => [h1, table, [li, li, li], h1]
         const chunkedBlocks = blocksArray.reduce(splitByChunks, []);
         const block = chunkedBlocks[oldIndex];
-        const shortArray = [].concat(
-          chunkedBlocks.slice(0, oldIndex),
-          chunkedBlocks.slice(oldIndex + 1)
-        );
-        const newBlocksArray = [].concat(
-          shortArray.slice(0, newIndex),
-          [block],
-          shortArray.slice(newIndex)
-        );
+        const shortArray = [
+          ...chunkedBlocks.slice(0, oldIndex),
+          ...chunkedBlocks.slice(oldIndex + 1),
+        ];
+        const newBlocksArray = [
+          ...shortArray.slice(0, newIndex),
+          block,
+          ...shortArray.slice(newIndex),
+        ];
         const newEditorState = EditorState.push(
           this.state.editorState,
           ContentState.createFromBlockArray(unnest(newBlocksArray)),
@@ -212,7 +234,8 @@ class Editor extends Component {
   toggleReadOnly = () => {
     const { editorState, isReadOnly } = this.state;
     // Для сохранения изменений добавил установку фокуса
-    // TODO чтобы работало надо что-то поменять в редакторе.
+    // чтобы работало надо что-то поменять в редакторе.
+    // TODO нужно найти способо сохранять автоматически
     this.setState({
       editorState: isReadOnly
         ? EditorState.moveFocusToEnd(editorState)
@@ -227,15 +250,15 @@ class Editor extends Component {
     const blocksArray = editorState.getCurrentContent().getBlocksAsArray();
     const blockIndex = findIndex((block) => block.getKey() === blockKey, blocksArray);
     const block = blocksArray[blockIndex];
-    const shortArray = [].concat(
-      blocksArray.slice(0, blockIndex),
-      blocksArray.slice(blockIndex + 1)
-    );
-    const newBlocksArray = [].concat(
-      shortArray.slice(0, blockIndex + waySign),
-      [block],
-      shortArray.slice(blockIndex + waySign)
-    );
+    const shortArray = [
+      ...blocksArray.slice(0, blockIndex),
+      ...blocksArray.slice(blockIndex + 1),
+    ];
+    const newBlocksArray = [
+      ...shortArray.slice(0, blockIndex + waySign),
+      block,
+      ...shortArray.slice(blockIndex + waySign),
+    ];
     const newEditorState = EditorState.push(
       this.state.editorState,
       ContentState.createFromBlockArray(newBlocksArray),
@@ -249,10 +272,10 @@ class Editor extends Component {
     const content = this.state.editorState.getCurrentContent();
     const block = content.getBlockForKey(blockKey);
     const targetRange = new SelectionState({
-      anchorKey: blockKey,
-      anchorOffset: 0,
       focusKey: blockKey,
+      anchorKey: blockKey,
       focusOffset: block.getLength(),
+      anchorOffset: 0,
     });
     const withoutBlock = Modifier.removeRange(content, targetRange, 'backward');
     const resetBlock = Modifier.setBlockType(
@@ -323,19 +346,19 @@ class Editor extends Component {
 }
 
 Editor.childContextTypes = {
-  toggleReadOnly: PropTypes.func.isRequired,
-  removeBlock: PropTypes.func.isRequired,
-  duplicateBlock: PropTypes.func.isRequired,
   moveBlock: PropTypes.func.isRequired,
+  removeBlock: PropTypes.func.isRequired,
+  toggleReadOnly: PropTypes.func.isRequired,
+  duplicateBlock: PropTypes.func.isRequired,
 };
 
 Editor.propTypes = {
-  actions: PropTypes.object, // http://stackoverflow.com/a/33427304
   unit: PropTypes.shape({
     sectionId: PropTypes.string.isRequired,
     subsectionId: PropTypes.string.isRequired,
     unitId: PropTypes.string.isRequired,
   }),
+  actions: PropTypes.object, // http://stackoverflow.com/a/33427304
   content: PropTypes.object,
 };
 
