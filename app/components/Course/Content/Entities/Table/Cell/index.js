@@ -20,8 +20,8 @@ const Cell = ({
   delColumn,
   isReadOnly,
 }) => (
-  <div className="editable-cell">
-    <div className="editable-cell-input-wrapper">
+  <div className="cell">
+    <div className="input">
       <DraftInput
         value={value}
         onChange={onChange}
@@ -43,9 +43,10 @@ const Cell = ({
   </div>);
 
 Cell.propTypes = {
+  value: PropTypes.instanceOf(EditorState).isRequired,
+  index: PropTypes.number,
   addRow: PropTypes.func,
   delRow: PropTypes.func,
-  index: PropTypes.number,
   onChange: PropTypes.func,
   addColumn: PropTypes.func,
   delColumn: PropTypes.func,
@@ -53,7 +54,6 @@ Cell.propTypes = {
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,
   columnKey: PropTypes.number,
-  value: PropTypes.instanceOf(EditorState).isRequired,
 };
 
 Cell.defaultProps = {
