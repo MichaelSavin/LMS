@@ -1,12 +1,11 @@
 import React, {
-  Component,
   PropTypes,
+  PureComponent,
 } from 'react';
 import {
   set,
   update,
   remove,
-  isEqual,
 } from 'lodash/fp';
 import {
   arrayMove,
@@ -17,7 +16,7 @@ import Preview from './Preview';
 import Editor from './Editor';
 import './styles.css';
 
-class Timeline extends Component {
+class Timeline extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -33,29 +32,6 @@ class Timeline extends Component {
 
   componentDidMount() {
     this.receiveImages(this.state);
-  }
-
-  shouldComponentUpdate(
-    nextProps,
-    nextState
-  ) {
-    if (!isEqual(
-    ...[this.state, nextState]
-      .map((state) => state
-        .temp
-        .steps
-        .map((step) =>
-          step.image
-        )
-      )
-    )) {
-      this.receiveImages(this.state);
-      return false;
-    }
-    return !isEqual(
-      this.state,
-      nextState
-    );
   }
 
   openModal = () => {
