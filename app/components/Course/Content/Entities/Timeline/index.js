@@ -5,7 +5,7 @@ import React, {
 import {
   set,
   update,
-  remove,
+  pullAt,
 } from 'lodash/fp';
 import {
   arrayMove,
@@ -106,12 +106,7 @@ class Timeline extends PureComponent {
     this.setState({
       temp: update(
         'steps',
-        (steps) => remove(
-          (step) => steps.indexOf(
-            step
-          ) === index,
-          steps,
-        ),
+        (steps) => pullAt([index], steps),
         this.state.temp,
       ),
     });
