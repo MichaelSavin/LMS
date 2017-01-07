@@ -70,7 +70,6 @@ class Timeline extends Component {
   saveSettings = () => {
     const content =
       this.state.temp;
-    console.log(content);
     this.setState({
       modal: false,
       content,
@@ -155,18 +154,15 @@ class Timeline extends Component {
   };
 
   receiveImages = (state) => {
-    state.temp.steps.forEach(({
-      image,
-    }) => {
-      if (image) {
-        localForage
-          .getItem(image)
-          .then((value) => {
-            this.images[image] = value;
-            this.forceUpdate();
-          });
+    state.temp.steps.forEach(
+      async (step) => {
+        if (step.image) {
+          const data = await localForage.getItem(step.image);
+          this.images[step.image] = data;
+          this.forceUpdate();
+        }
       }
-    });
+    );
   }
 
   uploadImage = (index) => (files) => {
@@ -178,24 +174,23 @@ class Timeline extends Component {
     ].join('');
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onloadend = () => { // eslint-disable-line
-      localForage.setItem(
+    reader.onloadend = async () => { // eslint-disable-line
+      await localForage.setItem(
         name,
         reader.result,
-      ).then(() => {
-        this.setState({
-          temp: set([
-            'steps',
-            index,
-            'image',
-          ],
-            name,
-            this.state.temp,
-          ),
-        });
-        this.images[name] = reader.result;
-        this.forceUpdate();
+      );
+      this.setState({
+        temp: set([
+          'steps',
+          index,
+          'image',
+        ],
+          name,
+          this.state.temp,
+        ),
       });
+      this.images[name] = reader.result;
+      this.forceUpdate();
     };
   }
 
