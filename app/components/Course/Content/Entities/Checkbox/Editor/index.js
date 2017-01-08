@@ -180,11 +180,9 @@ const Editor = ({
                       <div className={styles.notifier}>
                         {variant
                           .options
-                          .filter(
-                            (option) => option.isCorrect === true
-                          ).length === 0
-                            ? <div className={styles.undefined}>Не заданы</div>
-                            : <div className={styles.defined}>Заданы</div>
+                          .some((option) => option.isCorrect === true)
+                            ? <div className={styles.defined}>Заданы</div>
+                            : <div className={styles.undefined}>Не заданы</div>
                         }
                       </div>
                     </div>
