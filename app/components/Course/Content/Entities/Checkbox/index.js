@@ -1,5 +1,5 @@
 import React, { PureComponent, PropTypes } from 'react';
-import { get, set, update, unset } from 'lodash/fp';
+import { get, set, last, update, pullAt, dropRight } from 'lodash/fp';
 import { Button as AntButton } from 'antd';
 import { arrayMove } from 'react-sortable-hoc';
 import localForage from 'localforage';
@@ -97,8 +97,9 @@ class Checkbox extends PureComponent {
   removeContent = (location) => (event) => {
     if (event) { event.stopPropagation(); }
     this.setState({
-      content: unset(
-        ['editor', ...location],
+      content: update(
+        ['editor', ...dropRight(1, location)],
+        (data) => pullAt([last(location)], data),
         this.state.content
       ),
     }, this.addStateToHistory);
