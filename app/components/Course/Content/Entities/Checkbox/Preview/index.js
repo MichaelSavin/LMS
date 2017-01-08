@@ -5,8 +5,6 @@ import {
   Button as AntButton,
   Checkbox as AntCheckbox,
   } from 'antd';
-import ImmutablePropTypes from
-  'react-immutable-proptypes';
 import styles from './styles.css';
 
 const Preview = ({
@@ -16,35 +14,24 @@ const Preview = ({
 }) =>
   <div className={styles.preview}>
     <div className={styles.question}>
-      {content.getIn([
-        'variants',
-        0,
-        'question',
-      ])}
+      {/* Показывает первый вариант задания */}
+      {content.variants[0].question}
     </div>
     <div className={styles.options}>
       {/* Показывает первый вариант задания */}
-      {content.getIn([
-        'variants',
-        0,
-        'options',
-      ]).map((
-         option,
-         index
+      {content.variants[0].options
+        .map((
+          option,
+          index
       ) =>
         <div
           key={index}
           className={styles.option}
         >
-          {option.get('image') &&
+          {option.image &&
             <div className={styles.image}>
               <img
-                src={storage.images[
-                  option.getIn([
-                    'image',
-                    'name',
-                  ])
-                ]}
+                src={storage.images[option.image.name]}
                 role="presentation"
                 width={250}
               />
@@ -53,17 +40,17 @@ const Preview = ({
           <div className={styles.checkbox}>
             <AntCheckbox
               key={index}
-              checked={option.get('checked')}
+              checked={option.isChecked}
               onChange={changeContent([
                 'options',
                 index,
-                'checked',
+                'isChecked',
               ])}
               className={styles.answer}
             />
           </div>
           <div className={styles.text}>
-            {option.get('text')}
+            {option.text}
           </div>
         </div>
       )}
@@ -77,24 +64,24 @@ const Preview = ({
   </div>;
 
 Preview.propTypes = {
-  content: ImmutablePropTypes.mapContains({
-    points: ImmutablePropTypes.map.isRequired,
-    variants: ImmutablePropTypes.listOf(
-      ImmutablePropTypes.mapContains({
+  content: PropTypes.shape({
+    points: PropTypes.object.isRequired,
+    variants: PropTypes.arrayOf(
+      PropTypes.shape({
         question: PropTypes.string.isRequired,
-        options: ImmutablePropTypes.listOf(
-          ImmutablePropTypes.mapContains({
+        options: PropTypes.arrayOf(
+          PropTypes.shape({
             text: PropTypes.string.isRequired,
-            image: ImmutablePropTypes.mapContains({
+            image: PropTypes.shape({
               name: PropTypes.string.isRequired,
               text: PropTypes.string.isRequired,
-              crop: ImmutablePropTypes.mapContains({
+              crop: PropTypes.shape({
                 size: PropTypes.object.isRequired,
                 name: PropTypes.string.isRequired,
               }),
             }),
-            checked: PropTypes.bool.isRequired,
-            correct: PropTypes.bool.isRequired,
+            isChecked: PropTypes.bool.isRequired,
+            isCorrect: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
       }).isRequired,

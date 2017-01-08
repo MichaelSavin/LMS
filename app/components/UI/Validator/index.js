@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { pull, concat, uniq } from 'lodash/fp';
 import styles from './styles.css';
 
 const Validator = ({
@@ -23,8 +24,8 @@ const Validator = ({
               // * Глобальная валидация *
               // Общий блок со всеми сообщениями
               // валидаторов вверху компонента
-              ? errors.add(message)
-              : errors.delete(message),
+              ? uniq(concat(message, errors))
+              : pull(message, errors),
           })
         ),
         className: error ? 'error' : '',

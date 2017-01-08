@@ -16,8 +16,6 @@ import {
   SortableContainer,
 } from 'react-sortable-hoc';
 import classNames from 'classnames';
-import ImmutablePropTypes from
-  'react-immutable-proptypes';
 import Validator from 'components/UI/Validator';
 import Dropzone from 'react-dropzone';
 import styles from './styles.css';
@@ -37,7 +35,7 @@ const Editor = ({
   changeContent,
   removeContent,
 }) => {
-  const hasErrors = !errors.isEmpty();
+  const hasErrors = errors.length > 0; // !
   const validateAndSave = () => {
     if (!hasErrors) { saveContent(); }
   };
@@ -87,30 +85,28 @@ const Editor = ({
           <AntButton
             size="small"
             type="primary"
-            onClick={addContent([
-              'variants',
-            ], {
+            onClick={addContent(['variants'], {
               question: 'Вопрос',
               options: [{
                 text: 'Вариант 1',
                 image: undefined,
-                checked: false,
-                correct: false,
+                isChecked: false,
+                isCorrect: false,
               }, {
                 text: 'Вариант 2',
                 image: undefined,
-                checked: false,
-                correct: false,
+                isChecked: false,
+                isCorrect: false,
               }, {
                 text: 'Вариант 3',
                 image: undefined,
-                checked: false,
-                correct: false,
+                isChecked: false,
+                isCorrect: false,
               }, {
                 text: 'Вариант 4',
                 image: undefined,
-                checked: false,
-                correct: false,
+                isChecked: false,
+                isCorrect: false,
               }],
               hints: [],
               competences: [],
@@ -121,7 +117,7 @@ const Editor = ({
           </AntButton>
         }
       >
-        {content.get('variants').map((
+        {content.variants.map((
           variant, variantIndex
         ) =>
           <AntTabs.TabPane
@@ -155,7 +151,7 @@ const Editor = ({
               <div className={styles.question}>
                 <Validator
                   rule={(value) => value.trim().length > 3}
-                  value={variant.get('question')}
+                  value={variant.question}
                   message={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
                   onChange={changeContent([
                     'variants',
@@ -183,10 +179,10 @@ const Editor = ({
                       </div>
                       <div className={styles.notifier}>
                         {variant
-                          .get('options')
+                          .options
                           .filter(
-                            (option) => option.get('correct') === true
-                          ).isEmpty()
+                            (option) => option.correct === true
+                          ).length === 0
                             ? <div className={styles.undefined}>Не заданы</div>
                             : <div className={styles.defined}>Заданы</div>
                         }
@@ -203,7 +199,7 @@ const Editor = ({
                       ])}
                       useDragHandle
                     >
-                      {variant.get('options').map((
+                      {variant.options.map((
                         option, optionIndex
                       ) =>
                         <div
@@ -216,7 +212,7 @@ const Editor = ({
                             </div>
                             <div className={styles.text}>
                               <Validator
-                                value={option.get('text')}
+                                value={option.text}
                                 message={`Вариант №${variantIndex + 1} - Ответ №${optionIndex + 1}`}
                                 onChange={changeContent([
                                   'variants',
@@ -230,16 +226,11 @@ const Editor = ({
                               </Validator>
                             </div>
                             <div className={styles.image}>
-                              {option.get('image')
+                              {option.image
                                 /* eslint-disable */
                                 ? <div className={styles.preview}>
                                     <img
-                                      src={storage[
-                                        option.getIn([
-                                          'image',
-                                          'name',
-                                        ])
-                                      ]}
+                                      src={storage[option.image.name]}
                                       role="presentation"
                                     />
                                     <AntIcon
@@ -266,8 +257,8 @@ const Editor = ({
                                       className={styles.dropzone}
                                     />
                                     <AntIcon
-                                      className={styles.icon}
                                       type="camera"
+                                      className={styles.icon}
                                     />
                                   </div>
                                 /* eslint-enable */
@@ -275,7 +266,7 @@ const Editor = ({
                             </div>
                             <div className={styles.checkbox}>
                               <AntCheckbox
-                                checked={option.get('correct')}
+                                checked={option.correct}
                                 onChange={changeContent([
                                   'variants',
                                   variantIndex,
@@ -318,8 +309,8 @@ const Editor = ({
                         ], {
                           text: 'Новый вариант',
                           image: undefined,
-                          checked: false,
-                          correct: false,
+                          isChecked: false,
+                          isCorrect: false,
                         })}
                       >
                         Добавить вариант ответа
@@ -332,7 +323,7 @@ const Editor = ({
                   header="Пояснения к правильному ответу"
                 >
                   <div className={styles.explanations}>
-                    {variant.get('explanations').map((
+                    {variant.explanations.map((
                       explanation, explanationIndex
                     ) =>
                       <div
@@ -341,7 +332,7 @@ const Editor = ({
                       >
                         <div className={styles.text}>
                           <Validator
-                            value={explanation.get('text')}
+                            value={explanation.text}
                             message={`Вариант №${variantIndex + 1} - Пояснение к правильному ответу №${explanationIndex + 1}`}
                             onChange={changeContent([
                               'variants',
@@ -395,14 +386,14 @@ const Editor = ({
                   header="Подсказки"
                 >
                   <div className={styles.hints}>
-                    {variant.get('hints').map((
+                    {variant.hints.map((
                       hint, hintIndex
                     ) =>
                       <div
                         key={hintIndex}
                         className={styles.hint}
                       >
-                        {hint.get('text')}
+                        {hint.text}
                       </div>
                     )}
                   </div>
@@ -424,14 +415,14 @@ const Editor = ({
                   header="Компетенции"
                 >
                   <div className={styles.competences}>
-                    {variant.get('competences').map((
+                    {variant.competences.map((
                       competence, competenceIndex
                     ) =>
                       <div
                         key={competenceIndex}
                         className={styles.competence}
                       >
-                        {competence.get('text')}
+                        {competence.text}
                       </div>
                     )}
                   </div>
@@ -501,30 +492,30 @@ Editor.propTypes = {
   redoHistory: PropTypes.func.isRequired,
   removeContent: PropTypes.func.isRequired,
   changeContent: PropTypes.func.isRequired,
-  content: ImmutablePropTypes.mapContains({
-    points: ImmutablePropTypes.map.isRequired,
-    variants: ImmutablePropTypes.listOf(
-      ImmutablePropTypes.mapContains({
+  content: PropTypes.shape({
+    points: PropTypes.object.isRequired,
+    variants: PropTypes.arrayOf(
+      PropTypes.shape({
         question: PropTypes.string.isRequired,
-        options: ImmutablePropTypes.listOf(
-          ImmutablePropTypes.mapContains({
+        options: PropTypes.arrayOf(
+          PropTypes.shape({
             text: PropTypes.string.isRequired,
-            image: ImmutablePropTypes.mapContains({
+            image: PropTypes.shape({
               name: PropTypes.string.isRequired,
               text: PropTypes.string.isRequired,
-              crop: ImmutablePropTypes.mapContains({
+              crop: PropTypes.shape({
                 size: PropTypes.object.isRequired,
                 name: PropTypes.string.isRequired,
               }),
             }),
-            checked: PropTypes.bool.isRequired,
-            correct: PropTypes.bool.isRequired,
+            isChecked: PropTypes.bool.isRequired,
+            isCorrect: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
       }).isRequired,
     ).isRequired,
   }).isRequired,
-  errors: ImmutablePropTypes.setOf(
+  errors: PropTypes.arrayOf(
     PropTypes.string.isRequired
   ),
   storage: PropTypes.shape({
