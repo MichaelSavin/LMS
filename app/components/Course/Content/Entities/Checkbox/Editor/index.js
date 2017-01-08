@@ -181,7 +181,7 @@ const Editor = ({
                         {variant
                           .options
                           .filter(
-                            (option) => option.correct === true
+                            (option) => option.isCorrect === true
                           ).length === 0
                             ? <div className={styles.undefined}>Не заданы</div>
                             : <div className={styles.defined}>Заданы</div>
@@ -266,13 +266,13 @@ const Editor = ({
                             </div>
                             <div className={styles.checkbox}>
                               <AntCheckbox
-                                checked={option.correct}
+                                checked={option.isCorrect}
                                 onChange={changeContent([
                                   'variants',
                                   variantIndex,
                                   'options',
                                   optionIndex,
-                                  'correct',
+                                  'isCorrect',
                                 ])(
                                   () => {} // Замыкание пустого валидатора
                                 )}
