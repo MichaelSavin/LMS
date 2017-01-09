@@ -69,18 +69,55 @@
         }
       }
 
-      & .question {
-        font-size: 13px;
-        margin-top: 5px;
-        margin-bottom: 15px;
+      & .data {
+        display: flex;
+        flex-direction: row;
+
+        & .question {
+          flex: 8;
+          font-size: 13px;
+          margin-top: 5px;
+          margin-bottom: 15px;
+        }
+
+        & .points {
+          flex: 1;
+          padding: 5px 15px;
+          font-size: 13px;
+          text-align: center;
+          font-weight: 500;
+
+          & textarea {
+            height: 70px;
+            font-size: 18px;
+            text-align: center;
+            padding-top: 20px;
+          }
+        }
+
+        & .attemps {
+          flex: 1;
+          padding: 5px 15px;
+          font-size: 13px;
+          text-align: center;
+          font-weight: 500;
+
+          & textarea {
+            height: 70px;
+            font-size: 18px;
+            text-align: center;
+            padding-top: 20px;
+          }
+        }
       }
 
-      & .section {
+      & .sections {
         font-size: 13px;
         font-weight: 500;
         margin-bottom: 25px;
 
-        & .header {
+        /* Общая для всех секций */
+        & .info {
           display: flex;
           align-items: center;
           flex-direction: row;
@@ -111,63 +148,87 @@
         }
 
         & .options {
-          & .option li {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-direction: row;
-            justify-content: space-between;
+          & ul { /* SortableContainer */
+            & .option {
+              & li { /* SortableElement */
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                flex-direction: row;
+                justify-content: space-between;
 
-            & .drag {
-              cursor: grab;
-            }
+                & .drag {
+                  cursor: grab;
+                }
 
-            & .text {
-              width: 90%;
-            }
+                & .text {
+                  width: 90%;
+                }
 
-            & .image {
-              & .preview {
-                & img {
-                  width: 70px;
-                  height: 70px;
+                & .image {
+                  & .preview {
+                    & img {
+                      width: 70px;
+                      height: 70px;
+                    }
+
+                    & .remove {
+                      top: -7px;
+                      right: -5px;
+                      color: #FFF;
+                      cursor: pointer;
+                      padding: 3px;
+                      position: absolute;
+                      font-size: 12px;
+                      border-radius: 50%;
+                      background-color: red;
+                    }
+                  }
+
+                  & .upload {
+                    width: 28px;
+                    height: 28px;
+                    border: 1px solid #D9D9D9;
+                    display: flex;
+                    align-items: center;
+                    border-radius: 5px;
+                    justify-content: center;
+                    background-color: #F7F7F7;
+
+                    & .dropzone {
+                      /* ... */
+                    }
+
+                    & .icon {
+                      /* ... */
+                    }
+                  }
+                }
+
+                & .checkbox {
+                  /* ... */
                 }
 
                 & .remove {
-                  top: -7px;
-                  right: -5px;
-                  color: #FFF;
+                  color: red;
                   cursor: pointer;
-                  padding: 3px;
-                  position: absolute;
-                  font-size: 12px;
-                  border-radius: 50%;
-                  background-color: red;
-                }
-              }
-
-              & .upload {
-                width: 28px;
-                height: 28px;
-                border: 1px solid #D9D9D9;
-                display: flex;
-                align-items: center;
-                border-radius: 5px;
-                justify-content: center;
-                background-color: #F7F7F7;
-
-                & .dropzone {
-                  /* ... */
-                }
-
-                & .icon {
-                  /* ... */
                 }
               }
             }
+          }
+        }
 
-            & .checkbox {
-              /* ... */
+        & .hints {
+          & .hint {
+            display: flex;
+            padding: 0 0 10px;
+            font-weight: normal;
+            align-items: center;
+            flex-direction: row;
+            justify-content: space-between;
+
+            & .text {
+              width: 97.5%;
             }
 
             & .remove {
@@ -176,70 +237,50 @@
             }
           }
         }
-      }
-    }
 
-    & .hints {
-      & .hint {
-        display: flex;
-        padding: 0 0 10px;
-        font-weight: normal;
-        align-items: center;
-        flex-direction: row;
-        justify-content: space-between;
+        & .competences {
+          & .competence {
+            display: flex;
+            padding: 0 0 10px;
+            font-weight: normal;
+            align-items: center;
+            flex-direction: row;
+            justify-content: space-between;
 
-        & .text {
-          width: 97.5%;
+            & .text {
+              width: 97.5%;
+            }
+
+            & .remove {
+              color: red;
+              cursor: pointer;
+            }
+          }
         }
 
-        & .remove {
-          color: red;
-          cursor: pointer;
+        & .explanations {
+          & .explanation {
+            display: flex;
+            padding: 0 0 10px;
+            font-weight: normal;
+            align-items: center;
+            flex-direction: row;
+            justify-content: space-between;
+
+            & .text {
+              width: 97.5%;
+            }
+
+            & .remove {
+              color: red;
+              cursor: pointer;
+            }
+          }
+
+          & .add {
+            /* ... */
+          }
         }
-      }
-    }
-
-    & .competences {
-      & .competence {
-        display: flex;
-        padding: 0 0 10px;
-        font-weight: normal;
-        align-items: center;
-        flex-direction: row;
-        justify-content: space-between;
-
-        & .text {
-          width: 97.5%;
-        }
-
-        & .remove {
-          color: red;
-          cursor: pointer;
-        }
-      }
-    }
-
-    & .explanations {
-      & .explanation {
-        display: flex;
-        padding: 0 0 10px;
-        font-weight: normal;
-        align-items: center;
-        flex-direction: row;
-        justify-content: space-between;
-
-        & .text {
-          width: 97.5%;
-        }
-
-        & .remove {
-          color: red;
-          cursor: pointer;
-        }
-      }
-
-      & .add {
-        /* ... */
       }
     }
   }

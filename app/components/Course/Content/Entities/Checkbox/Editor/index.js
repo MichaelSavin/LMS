@@ -148,32 +148,72 @@ const Editor = ({
               key={variantIndex}
               className={styles.variant}
             >
-              <div className={styles.question}>
-                <Validator
-                  rule={(value) => value.trim().length > 3}
-                  value={variant.question}
-                  message={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
-                  onChange={changeContent([
-                    'variants',
-                    variantIndex,
-                    'question',
-                  ])}
-                >
-                  <AntInput
-                    rows={4}
-                    size="default"
-                    type="textarea"
-                  />
-                </Validator>
+              <div className={styles.data}>
+                <div className={styles.question}>
+                  <Validator
+                    rule={(value) => value.trim().length > 3}
+                    value={variant.question}
+                    message={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
+                    onChange={changeContent([
+                      'variants',
+                      variantIndex,
+                      'question',
+                    ])}
+                  >
+                    <AntInput
+                      rows={4}
+                      size="default"
+                      type="textarea"
+                    />
+                  </Validator>
+                </div>
+                <div className={styles.points}>
+                  <Validator
+                    rule={() => true}
+                    value={variant.points}
+                    message={`Вариант №${variantIndex + 1} - Баллы за задание`}
+                    onChange={changeContent([
+                      'variants',
+                      variantIndex,
+                      'points',
+                    ])}
+                  >
+                    <AntInput
+                      rows={3}
+                      size="default"
+                      type="textarea"
+                    />
+                  </Validator>
+                  Баллы
+                </div>
+                <div className={styles.attemps}>
+                  <Validator
+                    rule={() => true}
+                    value={variant.attemps}
+                    message={`Вариант №${variantIndex + 1} - Количество попыток`}
+                    onChange={changeContent([
+                      'variants',
+                      variantIndex,
+                      'attemps',
+                    ])}
+                  >
+                    <AntInput
+                      rows={3}
+                      size="default"
+                      type="textarea"
+                    />
+                  </Validator>
+                  Попытки
+                </div>
               </div>
               <AntCollapse
-                className={styles.section}
+                className={styles.sections}
                 defaultActiveKey="1"
               >
                 <AntCollapse.Panel
                   key="1"
                   header={
-                    <div className={styles.header}>
+                    <div className={styles.info}>
                       <div className={styles.text}>
                         Варианты ответов
                       </div>
@@ -320,7 +360,7 @@ const Editor = ({
                 <AntCollapse.Panel
                   key="2"
                   header={
-                    <div className={styles.header}>
+                    <div className={styles.info}>
                       <div className={styles.text}>
                         Пояснения
                       </div>
@@ -396,7 +436,7 @@ const Editor = ({
                 <AntCollapse.Panel
                   key="3"
                   header={
-                    <div className={styles.header}>
+                    <div className={styles.info}>
                       <div className={styles.text}>
                         Подсказки
                       </div>
@@ -472,7 +512,7 @@ const Editor = ({
                 <AntCollapse.Panel
                   key="4"
                   header={
-                    <div className={styles.header}>
+                    <div className={styles.info}>
                       <div className={styles.text}>
                         Компетенции
                       </div>
@@ -602,6 +642,8 @@ Editor.propTypes = {
     points: PropTypes.object.isRequired,
     variants: PropTypes.arrayOf(
       PropTypes.shape({
+        points: PropTypes.number,
+        attempts: PropTypes.number,
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({

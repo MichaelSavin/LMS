@@ -62,6 +62,8 @@ Preview.propTypes = {
     points: PropTypes.object.isRequired,
     variants: PropTypes.arrayOf(
       PropTypes.shape({
+        points: PropTypes.number,
+        attempts: PropTypes.number,
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({

@@ -279,9 +279,10 @@ class Checkbox extends PureComponent {
 Checkbox.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    points: PropTypes.object.isRequired,
     variants: PropTypes.arrayOf(
       PropTypes.shape({
+        points: PropTypes.number,
+        attempts: PropTypes.number,
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({
@@ -320,8 +321,9 @@ Checkbox.propTypes = {
 
 Checkbox.defaultProps = {
   content: {
-    points: {},
     variants: [{
+      points: undefined,
+      attempts: undefined,
       question: 'Вопрос',
       options: [{
         text: 'Вариант 1',
