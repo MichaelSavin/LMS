@@ -12,13 +12,13 @@ const Cell = ({
   value,
   index,
   addRow,
-  deleteRow,
   onChange,
+  deleteRow,
   className,
   columnKey,
   addColumn,
-  deleteColumn,
   isReadOnly,
+  deleteColumn,
 }) => (
   <div className="cell">
     <div className="input">
