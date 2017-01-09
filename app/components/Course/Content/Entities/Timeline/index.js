@@ -1,12 +1,11 @@
 import React, {
-  Component,
   PropTypes,
+  PureComponent,
 } from 'react';
 import {
   set,
   update,
-  remove,
-  isEqual,
+  pullAt,
 } from 'lodash/fp';
 import {
   arrayMove,
@@ -17,7 +16,7 @@ import Preview from './Preview';
 import Editor from './Editor';
 import './styles.css';
 
-class Timeline extends Component {
+class Timeline extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -33,29 +32,6 @@ class Timeline extends Component {
 
   componentDidMount() {
     this.receiveImages(this.state);
-  }
-
-  shouldComponentUpdate(
-    nextProps,
-    nextState
-  ) {
-    if (!isEqual(
-    ...[this.state, nextState]
-      .map((state) => state
-        .temp
-        .steps
-        .map((step) =>
-          step.image
-        )
-      )
-    )) {
-      this.receiveImages(this.state);
-      return false;
-    }
-    return !isEqual(
-      this.state,
-      nextState
-    );
   }
 
   openModal = () => {
@@ -130,12 +106,7 @@ class Timeline extends Component {
     this.setState({
       temp: update(
         'steps',
-        (steps) => remove(
-          (step) => steps.indexOf(
-            step
-          ) === index,
-          steps,
-        ),
+        (steps) => pullAt([index], steps),
         this.state.temp,
       ),
     });
@@ -154,18 +125,15 @@ class Timeline extends Component {
   };
 
   receiveImages = (state) => {
-    state.temp.steps.forEach(({
-      image,
-    }) => {
-      if (image) {
-        localForage
-          .getItem(image)
-          .then((value) => {
-            this.images[image] = value;
-            this.forceUpdate();
-          });
+    state.temp.steps.forEach(
+      async (step) => {
+        if (step.image) {
+          const data = await localForage.getItem(step.image);
+          this.images[step.image] = data;
+          this.forceUpdate();
+        }
       }
-    });
+    );
   }
 
   uploadImage = (index) => (files) => {
@@ -177,24 +145,23 @@ class Timeline extends Component {
     ].join('');
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onloadend = () => { // eslint-disable-line
-      localForage.setItem(
+    reader.onloadend = async () => { // eslint-disable-line
+      await localForage.setItem(
         name,
         reader.result,
-      ).then(() => {
-        this.setState({
-          temp: set([
-            'steps',
-            index,
-            'image',
-          ],
-            name,
-            this.state.temp,
-          ),
-        });
-        this.images[name] = reader.result;
-        this.forceUpdate();
+      );
+      this.setState({
+        temp: set([
+          'steps',
+          index,
+          'image',
+        ],
+          name,
+          this.state.temp,
+        ),
       });
+      this.images[name] = reader.result;
+      this.forceUpdate();
     };
   }
 

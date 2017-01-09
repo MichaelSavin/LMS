@@ -29,38 +29,6 @@
     }
   }
 
-  &.normal {
-    & thead > tr > th {
-      font-weight: normal;
-    }
-  }
-
-  &.compact {
-    padding: 0 10px;
-
-    & thead > tr > th {
-      border-bottom: 1px solid #E9E9E9;
-    }
-
-    & tbody > tr:last-child > td {
-      border-bottom: none;
-    }
-  }
-
-  &.small {
-    & tr:nth-child(even) {
-      background: #F7F7F7;
-    }
-
-    & thead > tr > th {
-      background: #F7F7F7;
-    }
-
-    & tbody > tr > td {
-      border-bottom: none;
-    }
-  }
-
   & .editing {
     border: none;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
@@ -70,13 +38,45 @@
   & .editor {
     margin-top: 30px;
   }
+}
 
-  &:hover {
-    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+.table.normal {
+  & thead > tr > th {
+    font-weight: normal;
+  }
+}
 
-    & .icon {
-      visibility: visible;
-    }
+.table.compact {
+  padding: 0 10px;
+
+  & thead > tr > th {
+    border-bottom: 1px solid #E9E9E9;
+  }
+
+  & tbody > tr:last-child > td {
+    border-bottom: none;
+  }
+}
+
+.table.small {
+  & tr:nth-child(even) {
+    background: #F7F7F7;
+  }
+
+  & thead > tr > th {
+    background: #F7F7F7;
+  }
+
+  & tbody > tr > td {
+    border-bottom: none;
+  }
+}
+
+.table:hover {
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+
+  & .icon {
+    visibility: visible;
   }
 }
 

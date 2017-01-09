@@ -1,6 +1,6 @@
 /* eslint max-len: 0 */
 import React, { PropTypes } from 'react';
-import { getOr } from 'lodash/fp';
+import { get } from 'lodash/fp';
 
 const svg = {
   checkbox: { paths: ['m5 22.5h5v-5h-5v5z m0-10h5v-5h-5v5z m0 20h5v-5h-5v5z m10-10h20v-5h-20v5z m0-10h20v-5h-20v5z m0 20h20v-5h-20v5z'] },
@@ -96,11 +96,11 @@ const Icon = ({
   <span onClick={action}>
     <svg
       style={{ color }}
-      width={getOr(size + 7.5, [type, 'width'], svg)}
-      height={getOr(size, [type, 'height'], svg)}
-      viewBox={getOr('0 0 45 45', [type, 'viewBox'], svg)}
+      width={get([type, 'width'], svg) || size + 7.5}
+      height={get([type, 'height'], svg) || size}
+      viewBox={get([type, 'viewBox'], svg) || '0 0 45 45'}
     >
-      {getOr([], [type, 'paths'], svg).map((d, key) => <path key={key} d={d} />)}
+      {get([type, 'paths'], svg).map((d, key) => <path key={key} d={d} />) || []}
       {svg[type].children}
     </svg>
   </span>

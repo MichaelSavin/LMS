@@ -1,0 +1,35 @@
+.preview {
+  padding: 15px;
+
+  & .question {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  & .options {
+    display: flex;
+    flex-direction: column;
+
+    & .option {
+      display: flex;
+      padding: 5px 0;
+      align-items: center;
+      flex-direction: row;
+
+      & .text {
+        font-size: 13px;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  & .attemps {
+    padding-top: 15px;
+    text-align: left;
+  }
+}
+
+:global .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+  margin-left: 0 !important;
+}

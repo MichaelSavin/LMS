@@ -12,16 +12,16 @@ const Cell = ({
   value,
   index,
   addRow,
-  delRow,
+  deleteRow,
   onChange,
   className,
   columnKey,
   addColumn,
-  delColumn,
+  deleteColumn,
   isReadOnly,
 }) => (
-  <div className="editable-cell">
-    <div className="editable-cell-input-wrapper">
+  <div className="cell">
+    <div className="input">
       <DraftInput
         value={value}
         onChange={onChange}
@@ -34,26 +34,26 @@ const Cell = ({
         && <Dropdown
           index={index}
           addRow={addRow}
-          delRow={delRow}
+          deleteRow={deleteRow}
           addColumn={addColumn}
-          delColumn={delColumn}
+          deleteColumn={deleteColumn}
           columnKey={columnKey}
         />
     }
   </div>);
 
 Cell.propTypes = {
-  addRow: PropTypes.func,
-  delRow: PropTypes.func,
+  value: PropTypes.instanceOf(EditorState).isRequired,
   index: PropTypes.number,
+  addRow: PropTypes.func,
+  deleteRow: PropTypes.func,
   onChange: PropTypes.func,
   addColumn: PropTypes.func,
-  delColumn: PropTypes.func,
-  editTable: PropTypes.func,
+  deleteColumn: PropTypes.func,
+  // editTable: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,
   columnKey: PropTypes.number,
-  value: PropTypes.instanceOf(EditorState).isRequired,
 };
 
 Cell.defaultProps = {

@@ -1,11 +1,7 @@
 {
-  "presets": [
-    [
-      "latest",
-      {
-        "modules": false
-      }
-    ],
+  "presets": [[
+    "latest", { "modules": false }
+  ],
     "react",
     "stage-0"
   ],
@@ -21,19 +17,14 @@
       ]
     }
   },
-  "plugins": [
-    [
-      "import", {
-        "libraryName": "antd",
-        "style": "css"
-      }
-    ],
-    [
-      "extensible-destructuring",
-      {
-        "mode": "optout",
-        "impl": "immutable"
-      }
-    ]
+  "plugins": [[
+    "import", {
+      "libraryName": "antd",
+      "style": "css"
+    }], [
+    "extensible-destructuring", {
+      "mode": "optout",
+      "impl": "immutable"
+    }]
   ]
 }

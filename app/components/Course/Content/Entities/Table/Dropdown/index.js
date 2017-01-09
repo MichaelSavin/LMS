@@ -1,67 +1,74 @@
 import React, {
   PropTypes,
 } from 'react';
-import { Menu, Dropdown as AntDropdown, Icon } from 'antd';
+import {
+  Menu as AntMenu,
+  Icon as AntIcon,
+  Dropdown as AntDropdown,
+} from 'antd';
 import styles from './styles.css';
 
 const Dropdown = ({
   index,
   addRow,
-  delRow,
+  deleteRow,
   columnKey,
   addColumn,
-  delColumn,
+  deleteColumn,
 }) => (
   <div className={styles.dropdown}>
     <AntDropdown
       overlay={
-        <Menu className={styles.menu}>
-          <Menu.Item key="0">
+        <AntMenu className={styles.menu}>
+          <AntMenu.Item key="0">
             <a onClick={addColumn(columnKey + 1, index)}>
               Добавить колонку справа
             </a>
-          </Menu.Item>
-          <Menu.Item key="1">
+          </AntMenu.Item>
+          <AntMenu.Item key="1">
             <a onClick={addColumn(columnKey, index)}>
               Добавить колонку слево
             </a>
-          </Menu.Item>
-          <Menu.Item key="2">
-            <a onClick={delColumn(columnKey, index)}>
+          </AntMenu.Item>
+          <AntMenu.Item key="2">
+            <a onClick={deleteColumn(columnKey, index)}>
               Удалить колонку
             </a>
-          </Menu.Item>
-          <Menu.Divider />
-          {index >= 0 && <Menu.Item key="3">
-            <a onClick={addRow(columnKey, index)}>
-              Добавить ряд сверху
-            </a>
-          </Menu.Item>}
-          <Menu.Item key="4">
+          </AntMenu.Item>
+          <AntMenu.Divider />
+          {
+            index >= 0 &&
+            <AntMenu.Item key="3">
+              <a onClick={addRow(columnKey, index)}>
+                Добавить ряд сверху
+              </a>
+            </AntMenu.Item>
+          }
+          <AntMenu.Item key="4">
             <a onClick={addRow(columnKey, index + 1)}>
               Добавить ряд снизу
             </a>
-          </Menu.Item>
-          {index >= 0 && <Menu.Item key="5">
-            <a onClick={delRow(columnKey, index)}>
+          </AntMenu.Item>
+          {index >= 0 && <AntMenu.Item key="5">
+            <a onClick={deleteRow(columnKey, index)}>
               Удалить ряд
             </a>
-          </Menu.Item>}
-        </Menu>
+          </AntMenu.Item>}
+        </AntMenu>
       }
     >
-      <Icon type="down" className={styles.icon} />
+      <AntIcon type="down" className={styles.icon} />
     </AntDropdown>
   </div>
 );
 
 Dropdown.propTypes = {
-  addRow: PropTypes.func.isRequired,
-  delRow: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
-  addColumn: PropTypes.func.isRequired,
-  delColumn: PropTypes.func.isRequired,
+  addRow: PropTypes.func.isRequired,
+  deleteRow: PropTypes.func.isRequired,
   columnKey: PropTypes.number.isRequired,
+  addColumn: PropTypes.func.isRequired,
+  deleteColumn: PropTypes.func.isRequired,
 };
 
 export default Dropdown;
