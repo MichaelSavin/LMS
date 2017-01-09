@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import {
   Editor as Draft,
+  EditorState,
 } from 'draft-js';
 import {
   customStyleMap,
@@ -22,7 +23,7 @@ class DraftInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      readOnly: false,
+      isReadOnly: false,
       popupOpen: true,
     };
   }
@@ -52,13 +53,13 @@ class DraftInput extends Component {
 
   lockDraft = () => {
     this.setState({
-      readOnly: true,
+      isReadOnly: true,
     });
   }
 
   unlockDraft = () => {
     this.setState({
-      readOnly: false,
+      isReadOnly: false,
     }, this.focusEditor);
   }
 
@@ -66,39 +67,42 @@ class DraftInput extends Component {
 
   render() {
     const {
-      readOnly,
+      isReadOnly,
       popupIsOpen,
     } = this.state;
     const {
       value: editorState,
+      className,
     } = this.props;
     return (
-      <div className={styles.input}>
+      <div className={className || styles.input}>
         <Draft
           ref="editor"
           onBlur={this.setFocusStatus}
           onFocus={this.setFocusStatus}
-          readOnly={readOnly}
+          readOnly={isReadOnly || this.props.isReadOnly}
           onChange={this.onChange}
           editorState={editorState}
           customStyleMap={customStyleMap}
           handleKeyCommand={this.handleKeyCommand}
         />
-        <div className={styles.icon}>
-          <Button
-            size="small"
-            onClick={() => {
-              insertEntity(
-                'TEX',
-                editorState,
-                this.onChange,
-                'INPUT'
-              );
-            }}
-          >
-            <Icon type="function" />
-          </Button>
-        </div>
+        {!className &&
+          <div className={styles.icon}>
+            <Button
+              size="small"
+              onClick={() => {
+                insertEntity(
+                  'TEX',
+                  editorState,
+                  this.onChange,
+                  'INPUT'
+                );
+              }}
+            >
+              <Icon type="function" />
+            </Button>
+          </div>
+        }
         <Popup
           isFocused={popupIsOpen}
           editorRef={this.refs.editor}
@@ -116,8 +120,10 @@ DraftInput.childContextTypes = {
 };
 
 DraftInput.propTypes = {
-  value: PropTypes.object,
-  onChange: PropTypes.func.isRequired,
+  value: PropTypes.instanceOf(EditorState).isRequired,
+  onChange: PropTypes.func,
+  isReadOnly: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default DraftInput;
