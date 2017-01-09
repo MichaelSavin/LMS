@@ -95,14 +95,14 @@
             padding: 0 10px;
 
             & .defined {
-              padding: 5px 10px;
+              padding: 3px 10px;
               display: inline;
               border-radius: 5px;
               background: #99FF83;
             }
 
             & .undefined {
-              padding: 5px 10px;
+              padding: 3px 10px;
               display: inline;
               border-radius: 5px;
               background: #FF8383;

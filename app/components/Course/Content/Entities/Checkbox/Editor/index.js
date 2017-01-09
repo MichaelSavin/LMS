@@ -168,7 +168,7 @@ const Editor = ({
               </div>
               <AntCollapse
                 className={styles.section}
-                defaultActiveKey="2"
+                defaultActiveKey="1"
               >
                 <AntCollapse.Panel
                   key="1"
@@ -319,7 +319,19 @@ const Editor = ({
 
                 <AntCollapse.Panel
                   key="2"
-                  header="Пояснения к правильному ответу"
+                  header={
+                    <div className={styles.header}>
+                      <div className={styles.text}>
+                        Пояснения
+                      </div>
+                      <div className={styles.notifier}>
+                        {variant.explanations.length !== 0
+                          ? <div className={styles.defined}>Заданы</div>
+                          : <div className={styles.undefined}>Не заданы</div>
+                        }
+                      </div>
+                    </div>
+                  }
                 >
                   <div className={styles.explanations}>
                     {variant.explanations.map((
@@ -372,7 +384,7 @@ const Editor = ({
                         variantIndex,
                         'explanations',
                       ], {
-                        text: 'Новое объяснение',
+                        text: 'Новое пояснение',
                       })}
                       className={styles.add}
                     >
@@ -383,7 +395,19 @@ const Editor = ({
 
                 <AntCollapse.Panel
                   key="3"
-                  header="Подсказки"
+                  header={
+                    <div className={styles.header}>
+                      <div className={styles.text}>
+                        Подсказки
+                      </div>
+                      <div className={styles.notifier}>
+                        {variant.hints.length !== 0
+                          ? <div className={styles.defined}>Заданы</div>
+                          : <div className={styles.undefined}>Не заданы</div>
+                        }
+                      </div>
+                    </div>
+                  }
                 >
                   <div className={styles.hints}>
                     {variant.hints.map((
@@ -447,7 +471,19 @@ const Editor = ({
 
                 <AntCollapse.Panel
                   key="4"
-                  header="Компетенции"
+                  header={
+                    <div className={styles.header}>
+                      <div className={styles.text}>
+                        Компетенции
+                      </div>
+                      <div className={styles.notifier}>
+                        {variant.competences.length !== 0
+                          ? <div className={styles.defined}>Заданы</div>
+                          : <div className={styles.undefined}>Не заданы</div>
+                        }
+                      </div>
+                    </div>
+                  }
                 >
                   <div className={styles.competences}>
                     {variant.competences.map((
