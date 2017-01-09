@@ -16,7 +16,9 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
+import { Link } from 'react-router';
 import classNames from 'classnames';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import {
   entitiesDecorator,
 } from '../../Entities';
@@ -417,7 +419,13 @@ class Table extends Component {
     const content = this.state.temp || this.state.content;
     const { rows, columns } = content.data;
     const { isReadOnly } = this.state;
+    const anchorUrl = `${
+      window.location.pathname
+    }#id${
+      this.props.blockKey
+    }`;
     return (<div
+      id={`id${this.props.blockKey}`}
       className={classNames(
         styles.table,
         styles[content.styles.head],
@@ -428,6 +436,10 @@ class Table extends Component {
       )}
       onDoubleClick={isReadOnly && this.editMode}
     >
+      {/* Временная ссылка для демострации переходов */}
+      <Link to="/0-0-0/editor#id2p9j9">
+        /0-0-0/editor#id2p9j9
+      </Link>
       <AntTable
         columns={columns}
         pagination={false}
@@ -437,6 +449,15 @@ class Table extends Component {
       />
       {isReadOnly ?
         <div className={styles.actions}>
+          <CopyToClipboard text={anchorUrl}>
+            <AntButton
+              type="primary"
+              icon="paper-clip"
+              className={styles.icon}
+            >
+              Скопировать: {anchorUrl}
+            </AntButton>
+          </CopyToClipboard>
           <AntButton
             type="primary"
             icon="up-square"

@@ -99,8 +99,10 @@ class Editor extends Component {
     this.makeSortable();
   }
 
-  componentDidUpdate() {
-    this.makeSortable();
+  componentDidUpdate(prevProps, prevState) {
+    const oldBlocks = prevState.editorState.getCurrentContent().getBlocksAsArray().length;
+    const blocks = this.state.editorState.getCurrentContent().getBlocksAsArray().length;
+    if (oldBlocks !== blocks) this.makeSortable();
   }
 
   onChange = (editorState) => {

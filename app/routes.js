@@ -36,7 +36,25 @@ const router = (store, history) => {
       <Router
         history={history}
         key={Math.random()}
-        render={applyRouterMiddleware(useScroll())}
+        render={applyRouterMiddleware(
+          useScroll((prevRouterProps, routerProps) => {
+            const { hash } = routerProps.location;
+            if (hash) {
+              const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+              const block = document.querySelector(hash);
+              const dimentions = block ? block.getBoundingClientRect() : {};
+              console.log([0, scrollTop + dimentions.top]);
+              return [0, scrollTop + dimentions.top];
+            }
+            if (routerProps.routes.some((route) => route.ignoreScrollBehavior)) {
+              return false;
+            }
+            if (routerProps.routes.some((route) => route.scrollToTop)) {
+              return [0, 0];
+            }
+            return true;
+          })
+        )}
       >
         {routes}
       </Router>
