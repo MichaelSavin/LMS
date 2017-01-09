@@ -1,0 +1,285 @@
+.editor.hidden {
+  display: none;
+}
+
+.editor {
+  padding: 15px;
+  border-top: 2.5px solid rgb(45, 183, 245);
+  padding-top: 0;
+
+  & .title {
+    width: 103%;
+    color: white;
+    padding: 5px 15px;
+    display: flex;
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: -15px;
+    border-bottom: 2.5px solid rgb(45, 183, 245);
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: rgb(45, 183, 245);
+
+    & .actions {
+      height: 20px;
+      margin-top: -4px;
+      margin-right: -2px;
+
+      & button {
+        transform: scale(0.8);
+      }
+    }
+  }
+
+  & .errors {
+    color: white;
+    width: 103%;
+    padding: 10px;
+    background: #F44;
+    margin-left: -15px;
+
+    & .text {
+      color: black;
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    & .error {
+      font-size: 13px;
+      font-weight: 500;
+    }
+  }
+
+  & .variants {
+    margin-top: -7.5px;
+
+    & .variant {
+      & > .remove {
+        color: red;
+
+        /* display: none; */
+        margin-left: 10px;
+        margin-right: -5px;
+      }
+
+      &:hover {
+        & > .remove {
+          /* display: inline-block; */
+        }
+      }
+
+      & .question {
+        font-size: 13px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+      }
+
+      & .section {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 25px;
+
+        & .header {
+          display: flex;
+          align-items: center;
+          flex-direction: row;
+          justify-content: space-between;
+
+          & .text {
+            /* ... */
+          }
+
+          & .notifier {
+            color: black;
+            padding: 0 10px;
+
+            & .defined {
+              padding: 5px 10px;
+              display: inline;
+              border-radius: 5px;
+              background: #99FF83;
+            }
+
+            & .undefined {
+              padding: 5px 10px;
+              display: inline;
+              border-radius: 5px;
+              background: #FF8383;
+            }
+          }
+        }
+
+        & .options {
+          & .option li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-direction: row;
+            justify-content: space-between;
+
+            & .drag {
+              cursor: grab;
+            }
+
+            & .text {
+              width: 90%;
+            }
+
+            & .image {
+              & .preview {
+                & img {
+                  width: 70px;
+                  height: 70px;
+                }
+
+                & .remove {
+                  top: -7px;
+                  right: -5px;
+                  color: #FFF;
+                  cursor: pointer;
+                  padding: 3px;
+                  position: absolute;
+                  font-size: 12px;
+                  border-radius: 50%;
+                  background-color: red;
+                }
+              }
+
+              & .upload {
+                width: 28px;
+                height: 28px;
+                border: 1px solid #D9D9D9;
+                display: flex;
+                align-items: center;
+                border-radius: 5px;
+                justify-content: center;
+                background-color: #F7F7F7;
+
+                & .dropzone {
+                  /* ... */
+                }
+
+                & .icon {
+                  /* ... */
+                }
+              }
+            }
+
+            & .checkbox {
+              /* ... */
+            }
+
+            & .remove {
+              color: red;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+
+    & .hints {
+      & .hint {
+        display: flex;
+        padding: 0 0 10px;
+        font-weight: normal;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & .text {
+          width: 97.5%;
+        }
+
+        & .remove {
+          color: red;
+        }
+      }
+    }
+
+    & .competences {
+      & .competence {
+        display: flex;
+        padding: 0 0 10px;
+        font-weight: normal;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & .text {
+          width: 97.5%;
+        }
+
+        & .remove {
+          color: red;
+        }
+      }
+    }
+
+    & .explanations {
+      & .explanation {
+        display: flex;
+        padding: 0 0 10px;
+        font-weight: normal;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & .text {
+          width: 97.5%;
+        }
+
+        & .remove {
+          color: red;
+          cursor: pointer;
+        }
+      }
+
+      & .add {
+        /* ... */
+      }
+    }
+  }
+
+  & .actions {
+    & .save {
+      /* ... */
+    }
+
+    & .cancel {
+      margin-left: 15px;
+    }
+  }
+}
+
+body > li { /* Для D&D */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  & .text {
+    width: 90%;
+  }
+}
+
+:global .ant-form-item {
+  margin-bottom: 0;
+}
+
+:global .ant-form-item-control {
+  line-height: 0;
+  margin-bottom: 16px;
+}
+
+:global .ant-form-item-control::before {
+  content: none;
+}
+
+:global .ant-row::before {
+  content: none;
+}
+
+:global .ant-tabs-tabpane {
+  height: auto !important;
+}
