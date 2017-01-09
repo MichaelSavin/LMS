@@ -223,7 +223,6 @@ class Checkbox extends PureComponent {
         <Preview
           content={editing ? editor : component}
           storage={this.storage}
-          changeContent={this.changeContent}
         />
         <Editor
           isOpen={editing}

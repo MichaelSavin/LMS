@@ -10,7 +10,6 @@ import styles from './styles.css';
 const Preview = ({
   content,
   storage,
-  changeContent,
 }) =>
   <div className={styles.preview}>
     <div className={styles.question}>
@@ -40,12 +39,7 @@ const Preview = ({
           <div className={styles.checkbox}>
             <AntCheckbox
               key={index}
-              checked={option.isChecked}
-              onChange={changeContent([
-                'options',
-                index,
-                'isChecked',
-              ])}
+              checked={option.isCorrect}
               className={styles.answer}
             />
           </div>
@@ -95,7 +89,6 @@ Preview.propTypes = {
       PropTypes.string.isRequired,
     ).isRequired,
   }).isRequired,
-  changeContent: PropTypes.func.isRequired,
 };
 
 export default Preview;
