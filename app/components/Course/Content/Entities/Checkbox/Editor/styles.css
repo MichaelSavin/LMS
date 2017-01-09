@@ -194,6 +194,7 @@
 
         & .remove {
           color: red;
+          cursor: pointer;
         }
       }
     }
@@ -213,6 +214,7 @@
 
         & .remove {
           color: red;
+          cursor: pointer;
         }
       }
     }

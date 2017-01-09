@@ -316,6 +316,7 @@ const Editor = ({
                     </Sortable.List>
                   </div>
                 </AntCollapse.Panel>
+
                 <AntCollapse.Panel
                   key="2"
                   header="Пояснения к правильному ответу"
@@ -379,6 +380,7 @@ const Editor = ({
                     </AntButton>
                   </div>
                 </AntCollapse.Panel>
+
                 <AntCollapse.Panel
                   key="3"
                   header="Подсказки"
@@ -391,23 +393,58 @@ const Editor = ({
                         key={hintIndex}
                         className={styles.hint}
                       >
-                        {hint.text}
+                        <div className={styles.text}>
+                          <Validator
+                            value={hint.text}
+                            message={`Вариант №${variantIndex + 1} - Подсказка к ответу №${hintIndex + 1}`}
+                            onChange={changeContent([
+                              'variants',
+                              variantIndex,
+                              'hints',
+                              hintIndex,
+                              'text',
+                            ])}
+                          >
+                            <AntInput size="default" />
+                          </Validator>
+                        </div>
+                        <div className={styles.remove}>
+                          <AntPopconfirm
+                            title="Удалить подсказку?"
+                            okText="Да"
+                            onConfirm={removeContent([
+                              'variants',
+                              variantIndex,
+                              'hints',
+                              hintIndex,
+                            ])}
+                            cancelText="Нет"
+                          >
+                            <AntIcon
+                              type="close"
+                              className={styles.icon}
+                            />
+                          </AntPopconfirm>
+                        </div>
                       </div>
                     )}
+                    <AntButton
+                      size="small"
+                      type="primary"
+                      onClick={addContent([
+                        'variants',
+                        variantIndex,
+                        'hints',
+                      ], {
+                        text: 'Новая подсказка',
+                      })}
+                      className={styles.add}
+                    >
+                      Добавить подсказку
+                    </AntButton>
                   </div>
-                  <AntButton
-                    type="primary"
-                    onClick={addContent([
-                      'variants',
-                      variantIndex,
-                      'hints',
-                    ], {
-                      text: 'Новая подсказка',
-                    })}
-                  >
-                    Добавить подсказку
-                  </AntButton>
                 </AntCollapse.Panel>
+
                 <AntCollapse.Panel
                   key="4"
                   header="Компетенции"
@@ -420,23 +457,58 @@ const Editor = ({
                         key={competenceIndex}
                         className={styles.competence}
                       >
-                        {competence.text}
+                        <div className={styles.text}>
+                          <Validator
+                            value={competence.text}
+                            message={`Вариант №${variantIndex + 1} - Подсказка к ответу №${competenceIndex + 1}`}
+                            onChange={changeContent([
+                              'variants',
+                              variantIndex,
+                              'competences',
+                              competenceIndex,
+                              'text',
+                            ])}
+                          >
+                            <AntInput size="default" />
+                          </Validator>
+                        </div>
+                        <div className={styles.remove}>
+                          <AntPopconfirm
+                            title="Удалить подсказку?"
+                            okText="Да"
+                            onConfirm={removeContent([
+                              'variants',
+                              variantIndex,
+                              'competences',
+                              competenceIndex,
+                            ])}
+                            cancelText="Нет"
+                          >
+                            <AntIcon
+                              type="close"
+                              className={styles.icon}
+                            />
+                          </AntPopconfirm>
+                        </div>
                       </div>
                     )}
+                    <AntButton
+                      size="small"
+                      type="primary"
+                      onClick={addContent([
+                        'variants',
+                        variantIndex,
+                        'competences',
+                      ], {
+                        text: 'Новая компетенция',
+                      })}
+                      className={styles.add}
+                    >
+                      Добавить подсказку
+                    </AntButton>
                   </div>
-                  <AntButton
-                    type="primary"
-                    onClick={addContent([
-                      'variants',
-                      variantIndex,
-                      'competences',
-                    ], {
-                      text: 'Новая компетенция',
-                    })}
-                  >
-                    Добавить компетенцию
-                  </AntButton>
                 </AntCollapse.Panel>
+
               </AntCollapse>
             </div>
           </AntTabs.TabPane>
