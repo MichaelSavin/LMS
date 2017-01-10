@@ -466,7 +466,7 @@ class Table extends Component {
           />
           <span
             icon="ellipsis"
-            className={classNames(styles.icon, 'dragger__handle')}
+            className={classNames(styles.icon, 'sortable-handle')}
           >
             <AntIcon type="ellipsis" />
           </span>
