@@ -31,44 +31,54 @@ import {
 import styles from './styles.css';
 import Toolbar from './Toolbar';
 
-let tempChunk = []; // eslint-disable-line fp/no-let
-const splitByChunks = (chunkedBlocks, block, key, array) => {
+const splitByChunks = ({ tempChunk, chunkedBlocks }, block, index, array) => {
   const type = /unordered-list-item|ordered-list-item/.test(block.getType()) && block.getType();
-  if (!key) { // Если это первый элемент в массиве
-    tempChunk = [block]; // eslint-disable-line fp/no-mutation
-    return chunkedBlocks;
-  } else if (key === array.length - 1) { // Если это последний элемент в массиве
+  if (!index) { // Если это первый элемент в массиве
+    return {
+      tempChunk: [block],
+      chunkedBlocks,
+    };
+  } else if (index === array.length - 1) { // Если это последний элемент в массиве
     // Если тип подходящий и прошлый тип был такой-же
     // объединяем временные блоки и этот блок в чанк
     if (type && type === tempChunk[0].getType()) {
-      return [
-        ...chunkedBlocks,
-        [
-          ...tempChunk,
-          block,
+      return {
+        tempChunk,
+        chunkedBlocks: [
+          ...chunkedBlocks,
+          [
+            ...tempChunk,
+            block,
+          ],
         ],
-      ];
+      };
     }
-    return [
-      ...chunkedBlocks,
+    return {
       tempChunk,
-      block,
-    ];
+      chunkedBlocks: [
+        ...chunkedBlocks,
+        tempChunk,
+        block,
+      ],
+    };
   // Если тип подходящий и прошлый тип был такой-же
   } else if (type && type === tempChunk[0].getType()) {
-    tempChunk = [ // eslint-disable-line fp/no-mutation
-      ...tempChunk,
-      block,
-    ];
-    return chunkedBlocks;
+    return {
+      tempChunk: [
+        ...tempChunk,
+        block,
+      ],
+      chunkedBlocks,
+    };
   }
   // Если тип прошлого блока отличается от нового
-  const newChunkedBlocks = [
-    ...chunkedBlocks,
-    tempChunk,
-  ];
-  tempChunk = [block]; // eslint-disable-line fp/no-mutation
-  return newChunkedBlocks;
+  return {
+    chunkedBlocks: [
+      ...chunkedBlocks,
+      tempChunk,
+    ],
+    tempChunk: [block],
+  };
 };
 
 class Editor extends Component {
@@ -154,7 +164,7 @@ class Editor extends Component {
 
   makeSortable = () => {
     const el = document.querySelector('.public-DraftEditor-content > div');
-    Sortable.create(el, {
+    Sortable.create(el, { // https://github.com/RubaXa/Sortable#options
       animation: 350,
       handle: '.dragger__handle',
       chosenClass: styles.chosen,
@@ -166,7 +176,13 @@ class Editor extends Component {
         // Т.к каждый элемент списка ul>li или ol>li для draft отдельный блок,
         // приходиться делить список блоков на чанки для правильной сортировки
         // пример [h1, table, li, li, li, h1] => [h1, table, [li, li, li], h1]
-        const chunkedBlocks = blocksArray.reduce(splitByChunks, []);
+        const { chunkedBlocks } = blocksArray.reduce(
+          splitByChunks,
+          {
+            tempChunk: [],
+            chunkedBlocks: [],
+          }
+        );
         const block = chunkedBlocks[oldIndex];
         const shortArray = [
           ...chunkedBlocks.slice(0, oldIndex),
