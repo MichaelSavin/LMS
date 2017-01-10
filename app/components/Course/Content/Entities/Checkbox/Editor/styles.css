@@ -32,12 +32,6 @@
   }
 
   & .errors {
-    color: white;
-    width: 103%;
-    padding: 10px;
-    background: #F44;
-    margin-left: -15px;
-
     & .text {
       color: black;
       font-size: 15px;
@@ -46,8 +40,12 @@
     }
 
     & .error {
+      width: 103%;
+      padding: 10px;
       font-size: 13px;
+      background: #FF8383;
       font-weight: 500;
+      margin-left: -15px;
     }
   }
 

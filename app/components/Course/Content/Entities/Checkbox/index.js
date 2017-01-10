@@ -119,20 +119,33 @@ class Checkbox extends PureComponent {
     }, this.addStateToHistory);
   };
 
-  changeContent = (location) => (event) => {
-    const value = event.type
-      ? event.target.value    // для инпутов
-      : event.target.checked; // для чекбоксов
+  changeContent = (location, value) => {
     this.setState({
-      content: set([
-        'editor',
-        ...location,
-      ],
-        value,
-        this.state.content
-      ),
+      content: {
+        ...this.state.content,
+        editor: set(
+          location,
+          value,
+          this.state.content.editor
+        ),
+      },
     }, this.addStateToHistory);
   }
+
+  // changeContent = (location) => (event) => {
+  //   const value = event.type
+  //     ? event.target.value    // для инпутов
+  //     : event.target.checked; // для чекбоксов
+  //   this.setState({
+  //     content: set([
+  //       'editor',
+  //       ...location,
+  //     ],
+  //       value,
+  //       this.state.content
+  //     ),
+  //   }, this.addStateToHistory);
+  // }
 
   addStateToHistory = () => {
     /* eslint-disable */
@@ -221,7 +234,6 @@ class Checkbox extends PureComponent {
           errors={errors}
           content={editor}
           storage={this.storage}
-          component={component}
           addContent={this.addContent}
           dragContent={this.dragContent}
           closeEditor={this.closeEditor}

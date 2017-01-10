@@ -15,7 +15,7 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
-import { get } from 'lodash';
+import { get, compact } from 'lodash';
 import flatten from 'object-end-keys';
 import { createForm } from 'rc-form';
 import classNames from 'classnames';
@@ -23,45 +23,49 @@ import Dropzone from 'react-dropzone';
 import styles from './styles.css';
 
 const Editor = ({
-  form,
   isOpen,
-  // errors,
   content,
   storage,
-  component, // Данные компонента для сброса формы
   addContent,
   dragContent,
-  // closeEditor,
+  closeEditor,
   uploadImage,
-  // saveContent,
+  saveContent,
   undoHistory,
   redoHistory,
-  changeContent,
+  // changeContent,
   removeContent,
   form: {
     // resetFields,
-    getFieldsValue,
+    getFieldError,
+    getFieldProps,
+    // getFieldsProps,
+    // getFieldsValue,
     validateFields,
-    setFieldsValue,
+    // getFieldsError,
+    // setFieldsValue,
     getFieldDecorator,
   },
 }) => {
   const validateAndSave = () => {
-    console.log(getFieldsValue());
     validateFields((error, values) => {
       if (!error) {
-        console.log('ok', values);
+        saveContent(); // передача в данных из формы
       } else {
         console.log('error', error, values);
       }
     });
-    // saveContent();
   };
 
   const resetAndClose = () => {
-    // resetFields(); // Обнуление ошибок
-    setFieldsValue(component); // Обнуление формы
+    closeEditor();
   };
+
+  const fieldsErrors = compact(
+    flatten(content).map(
+      (field) => getFieldError(field)
+    )
+  );
 
   return (
     <div
@@ -85,16 +89,20 @@ const Editor = ({
           />
         </div>
       </div>
-      {
-        <div className={styles.errors}>
-          <div className={styles.text}>
-            Необходимо заполнить поля:
-          </div>
-          <div className={styles.error}>
-            {form.getFieldError('variants[0].question')}
-          </div>
+      <div className={styles.errors}>
+        {/* <div className={styles.text}>
+          Необходимо заполнить поля:
         </div>
-      }
+        */ }
+        {fieldsErrors.map((error, index) =>
+          <div
+            key={index}
+            className={styles.error}
+          >
+            {error}
+          </div>
+        )}
+      </div>
       <AntTabs
         className={styles.variants}
         tabBarExtraContent={
@@ -166,6 +174,7 @@ const Editor = ({
             >
               <div className={styles.data}>
                 <div className={styles.question}>
+                  {/*
                   {getFieldDecorator(`variants[${variantIndex}].question`, {
                     initialValue: variant.question,
                     rules: [{
@@ -177,13 +186,26 @@ const Editor = ({
                       rows={4}
                       size="default"
                       type="textarea"
-                      onChange={changeContent([
-                        'variants',
-                        variantIndex,
-                        'question',
-                      ])}
+                      // onChange={changeContent([
+                      //   'variants',
+                      //   variantIndex,
+                      //   'question',
+                      // ])}
                     />
                   )}
+                  */}
+                  <AntInput
+                    rows={4}
+                    size="default"
+                    type="textarea"
+                    {...getFieldProps(`variants[${variantIndex}].question`, {
+                      initialValue: variant.question,
+                      rules: [{
+                        required: true,
+                        message: `Вариант №${variantIndex + 1} - Вопрос к заданию`,
+                      }],
+                    })}
+                  />
                 </div>
                 <div className={styles.points}>
                   {getFieldDecorator(`variants[${variantIndex}].points`, {
@@ -195,11 +217,11 @@ const Editor = ({
                   })(
                     <AntInput
                       size="default"
-                      onChange={changeContent([
-                        'variants',
-                        variantIndex,
-                        'points',
-                      ])}
+                      // onChange={changeContent([
+                      //   'variants',
+                      //   variantIndex,
+                      //   'points',
+                      // ])}
                     />
                   )}
                   Баллы
@@ -214,11 +236,11 @@ const Editor = ({
                   })(
                     <AntInput
                       size="default"
-                      onChange={changeContent([
-                        'variants',
-                        variantIndex,
-                        'attemps',
-                      ])}
+                      // onChange={changeContent([
+                      //   'variants',
+                      //   variantIndex,
+                      //   'attemps',
+                      // ])}
                     />
                   )}
                   Попытки
@@ -233,7 +255,7 @@ const Editor = ({
                   header={
                     <div className={styles.info}>
                       <div className={styles.text}>
-                        Варианты ответов
+                        Ответы
                       </div>
                       <div className={styles.notifier}>
                         {variant
@@ -276,13 +298,13 @@ const Editor = ({
                               })(
                                 <AntInput
                                   size="default"
-                                  onChange={changeContent([
-                                    'variants',
-                                    variantIndex,
-                                    'options',
-                                    optionIndex,
-                                    'text',
-                                  ])}
+                                  // onChange={changeContent([
+                                  //   'variants',
+                                  //   variantIndex,
+                                  //   'options',
+                                  //   optionIndex,
+                                  //   'text',
+                                  // ])}
                                 />
                               )}
                             </div>
@@ -328,13 +350,13 @@ const Editor = ({
                             <div className={styles.checkbox}>
                               <AntCheckbox
                                 checked={option.isCorrect}
-                                onChange={changeContent([
-                                  'variants',
-                                  variantIndex,
-                                  'options',
-                                  optionIndex,
-                                  'isCorrect',
-                                ])}
+                                // onChange={changeContent([
+                                //   'variants',
+                                //   variantIndex,
+                                //   'options',
+                                //   optionIndex,
+                                //   'isCorrect',
+                                // ])}
                               />
                             </div>
                             <div className={styles.remove}>
@@ -412,13 +434,13 @@ const Editor = ({
                           })(
                             <AntInput
                               size="default"
-                              onChange={changeContent([
-                                'variants',
-                                variantIndex,
-                                'explanations',
-                                explanationIndex,
-                                'text',
-                              ])}
+                              // onChange={changeContent([
+                              //   'variants',
+                              //   variantIndex,
+                              //   'explanations',
+                              //   explanationIndex,
+                              //   'text',
+                              // ])}
                             />
                           )}
                         </div>
@@ -426,12 +448,12 @@ const Editor = ({
                           <AntPopconfirm
                             title="Удалить пояснение?"
                             okText="Да"
-                            onConfirm={removeContent([
-                              'variants',
-                              variantIndex,
-                              'explanations',
-                              explanationIndex,
-                            ])}
+                            // onConfirm={removeContent([
+                            //   'variants',
+                            //   variantIndex,
+                            //   'explanations',
+                            //   explanationIndex,
+                            // ])}
                             cancelText="Нет"
                           >
                             <AntIcon
@@ -493,13 +515,13 @@ const Editor = ({
                           })(
                             <AntInput
                               size="default"
-                              onChange={changeContent([
-                                'variants',
-                                variantIndex,
-                                'hints',
-                                hintIndex,
-                                'text',
-                              ])}
+                              // onChange={changeContent([
+                              //   'variants',
+                              //   variantIndex,
+                              //   'hints',
+                              //   hintIndex,
+                              //   'text',
+                              // ])}
                             />
                           )}
                         </div>
@@ -575,13 +597,13 @@ const Editor = ({
                           })(
                             <AntInput
                               size="default"
-                              onChange={changeContent([
-                                'variants',
-                                variantIndex,
-                                'competences',
-                                competenceIndex,
-                                'text',
-                              ])}
+                              // onChange={changeContent([
+                              //   'variants',
+                              //   variantIndex,
+                              //   'competences',
+                              //   competenceIndex,
+                              //   'text',
+                              // ])}
                             />
                           )}
                         </div>
@@ -649,7 +671,6 @@ const Editor = ({
   );
 };
 
-
 const Sortable = {
   List: SortableContainer(
     (props) => <ul>{props.children}</ul>
@@ -667,16 +688,15 @@ const Sortable = {
 
 Editor.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  component: PropTypes.object.isRequired, // Временно
   addContent: PropTypes.func.isRequired,
   dragContent: PropTypes.func.isRequired,
-  // closeEditor: PropTypes.func.isRequired,
+  closeEditor: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
-  // saveContent: PropTypes.func.isRequired,
+  saveContent: PropTypes.func.isRequired,
   undoHistory: PropTypes.func.isRequired,
   redoHistory: PropTypes.func.isRequired,
   removeContent: PropTypes.func.isRequired,
-  changeContent: PropTypes.func.isRequired,
+  // changeContent: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
@@ -701,9 +721,6 @@ Editor.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
-  // errors: PropTypes.arrayOf(
-  //   PropTypes.string.isRequired
-  // ),
   storage: PropTypes.shape({
     images: PropTypes.objectOf(
       PropTypes.string.isRequired,
@@ -714,6 +731,7 @@ Editor.propTypes = {
   }).isRequired,
   form: PropTypes.shape({
     resetFields: PropTypes.func.isRequired,
+    getFieldError: PropTypes.func.isRequired,
     getFieldsValue: PropTypes.func.isRequired,
     validateFields: PropTypes.func.isRequired,
     setFieldsValue: PropTypes.func.isRequired,
@@ -722,14 +740,26 @@ Editor.propTypes = {
 };
 
 export default createForm({
+  // Замена локальных методов onChange
+  onFieldsChange(props, fields) {
+    Object.values(fields).forEach(
+      ({ name, value }) => {
+        props.changeContent(name, value);
+      }
+    );
+  },
   // Синхронизация данных в HOC формы
   // с данными из state компонента
+  // Когда в форму приходят новые данные - отключается валидатор
   mapPropsToFields({ content }) {
     return flatten(content).reduce(
       (fields, name) => ({
         ...fields,
         [name]: {
-          value: get(content, name),
+          value: get(
+            content,
+            name
+          ),
         },
       }), {});
   },
