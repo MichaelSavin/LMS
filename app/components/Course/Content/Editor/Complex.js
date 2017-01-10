@@ -81,6 +81,19 @@ const splitByChunks = ({ tempChunk, chunkedBlocks }, block, index, array) => {
   };
 };
 
+const swapBlocks = (blocks, oldIndex, newIndex) => {
+  const block = blocks[oldIndex];
+  const shortArray = [
+    ...blocks.slice(0, oldIndex),
+    ...blocks.slice(oldIndex + 1),
+  ];
+  return [
+    ...shortArray.slice(0, newIndex),
+    block,
+    ...shortArray.slice(newIndex),
+  ];
+};
+
 class Editor extends Component {
   constructor(props) {
     super(props);
@@ -166,7 +179,7 @@ class Editor extends Component {
     const el = document.querySelector('.public-DraftEditor-content > div');
     Sortable.create(el, { // https://github.com/RubaXa/Sortable#options
       animation: 350,
-      handle: '.dragger__handle',
+      handle: '.sortable-handle',
       chosenClass: styles.chosen,
       ghostClass: styles.ghost,
       onEnd: (event) => {
@@ -183,18 +196,9 @@ class Editor extends Component {
             chunkedBlocks: [],
           }
         );
-        const block = chunkedBlocks[oldIndex];
-        const shortArray = [
-          ...chunkedBlocks.slice(0, oldIndex),
-          ...chunkedBlocks.slice(oldIndex + 1),
-        ];
-        const newBlocksArray = [
-          ...shortArray.slice(0, newIndex),
-          block,
-          ...shortArray.slice(newIndex),
-        ];
+        const newBlocksArray = swapBlocks(chunkedBlocks, oldIndex, newIndex);
         const newEditorState = EditorState.push(
-          this.state.editorState,
+          editorState,
           ContentState.createFromBlockArray(unnest(newBlocksArray)),
           ' '
         );
@@ -261,22 +265,13 @@ class Editor extends Component {
   }
 
   // Глобальные методы передаваемые через context
-  moveBlock = (blockKey, waySign) => {
+  moveBlock = (blockKey, direction) => {
     const { editorState } = this.state;
     const blocksArray = editorState.getCurrentContent().getBlocksAsArray();
     const blockIndex = findIndex((block) => block.getKey() === blockKey, blocksArray);
-    const block = blocksArray[blockIndex];
-    const shortArray = [
-      ...blocksArray.slice(0, blockIndex),
-      ...blocksArray.slice(blockIndex + 1),
-    ];
-    const newBlocksArray = [
-      ...shortArray.slice(0, blockIndex + waySign),
-      block,
-      ...shortArray.slice(blockIndex + waySign),
-    ];
+    const newBlocksArray = swapBlocks(blocksArray, blockIndex, blockIndex + direction);
     const newEditorState = EditorState.push(
-      this.state.editorState,
+      editorState,
       ContentState.createFromBlockArray(newBlocksArray),
       ' '
     );
