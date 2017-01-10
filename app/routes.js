@@ -42,9 +42,11 @@ const router = (store, history) => {
             if (hash) {
               const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
               const block = document.querySelector(hash);
-              const dimentions = block ? block.getBoundingClientRect() : {};
-              console.log([0, scrollTop + dimentions.top]);
-              return [0, scrollTop + dimentions.top];
+              if (block) {
+                const dimentions = block.getBoundingClientRect();
+                return [0, scrollTop + dimentions.top];
+              }
+              return false;
             }
             if (routerProps.routes.some((route) => route.ignoreScrollBehavior)) {
               return false;
