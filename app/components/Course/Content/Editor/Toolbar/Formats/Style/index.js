@@ -52,6 +52,33 @@ class Style extends Component {
     }
   }
 
+  toggleLink = (style) => {
+    const {
+      editorState,
+      changeEditorState,
+    } = this.props;
+    const newState = RichUtils
+      .toggleInlineStyle(
+        editorState,
+        style
+      );
+    changeEditorState(
+      style === 'SUBSCRIPT' || style === 'SUPERSCRIPT'
+        ? EditorState.push(
+            newState,
+            Modifier.removeInlineStyle(
+              newState.getCurrentContent(),
+              newState.getSelection(),
+              style === 'SUBSCRIPT'
+                ? 'SUPERSCRIPT'
+                : 'SUBSCRIPT',
+            ),
+            'change-inline-style'
+          )
+        : newState
+    );
+  };
+
   toggleStyle = (style) => {
     const {
       editorState,
@@ -126,6 +153,16 @@ class Style extends Component {
           </Option>
         )
       }
+        <Option
+          value="LINK"
+          active={textStyles.LINK}
+          onClick={this.toggleLink}
+          inPopup={inPopup}
+        >
+          <span className={styles.icon}>
+            <Icon type="link" size={16} />
+          </span>
+        </Option>
       </div>
     );
   }

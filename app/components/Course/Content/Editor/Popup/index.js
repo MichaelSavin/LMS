@@ -6,6 +6,7 @@ import {
   getVisibleSelectionRect,
 } from 'draft-js';
 import classNames from 'classnames';
+import styles from './styles.css';
 import Style from '../Toolbar/Formats/Style';
 
 class Popup extends Component {
@@ -36,9 +37,8 @@ class Popup extends Component {
 
   setBarPosition = () => {
     const { editor } = this.props.editorRef.refs;
-    const { toolbar } = this.refs;
     const selectionCoords = this
-      .getSelectionCoords(editor, toolbar);
+      .getSelectionCoords(editor, this.toolbar);
     if (selectionCoords && (
       !this.state.position ||
       this.state.position.top !==
@@ -80,7 +80,7 @@ class Popup extends Component {
 
   render() {
     const {
-      isFocused,
+      isFocused = true,
       editorState,
       changeEditorState,
     } = this.props;
@@ -91,6 +91,7 @@ class Popup extends Component {
     return isFocused ? (
       <div
         className={classNames(
+          styles.popup,
           'ant-tooltip',
           'ant-tooltip-placement-top',
           !isOpen ? 'ant-tooltip-hidden' : ''
@@ -100,7 +101,7 @@ class Popup extends Component {
         <div className="ant-tooltip-content">
           <div className="ant-tooltip-arrow" />
           <div
-            ref="toolbar"
+            ref={(toolbar) => { this.toolbar = toolbar; }}
             className="ant-tooltip-inner"
             onMouseDown={(event) =>
               event.preventDefault()
