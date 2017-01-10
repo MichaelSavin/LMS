@@ -15,33 +15,54 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
+import { get } from 'lodash';
+import flatten from 'object-end-keys';
+import { createForm } from 'rc-form';
 import classNames from 'classnames';
-import Validator from 'components/UI/Validator';
 import Dropzone from 'react-dropzone';
 import styles from './styles.css';
 
 const Editor = ({
+  form,
   isOpen,
-  errors,
+  // errors,
   content,
   storage,
+  component, // Данные компонента для сброса формы
   addContent,
   dragContent,
-  closeEditor,
+  // closeEditor,
   uploadImage,
-  saveContent,
+  // saveContent,
   undoHistory,
   redoHistory,
   changeContent,
   removeContent,
+  form: {
+    // resetFields,
+    getFieldsValue,
+    validateFields,
+    setFieldsValue,
+    getFieldDecorator,
+  },
 }) => {
-  const hasErrors = errors.length > 0; // !
   const validateAndSave = () => {
-    if (!hasErrors) { saveContent(); }
+    console.log(getFieldsValue());
+    validateFields((error, values) => {
+      if (!error) {
+        console.log('ok', values);
+      } else {
+        console.log('error', error, values);
+      }
+    });
+    // saveContent();
   };
+
   const resetAndClose = () => {
-    closeEditor();
+    // resetFields(); // Обнуление ошибок
+    setFieldsValue(component); // Обнуление формы
   };
+
   return (
     <div
       className={classNames(
@@ -64,19 +85,14 @@ const Editor = ({
           />
         </div>
       </div>
-      {hasErrors &&
+      {
         <div className={styles.errors}>
           <div className={styles.text}>
             Необходимо заполнить поля:
           </div>
-          {errors.map((error, index) =>
-            <div
-              key={index}
-              className={styles.error}
-            >
-              {error}
-            </div>
-          )}
+          <div className={styles.error}>
+            {form.getFieldError('variants[0].question')}
+          </div>
         </div>
       }
       <AntTabs
@@ -150,59 +166,61 @@ const Editor = ({
             >
               <div className={styles.data}>
                 <div className={styles.question}>
-                  <Validator
-                    rule={(value) => value.trim().length > 3}
-                    value={variant.question}
-                    message={`Вариант №${variantIndex + 1} - Вопрос к заданию`}
-                    onChange={changeContent([
-                      'variants',
-                      variantIndex,
-                      'question',
-                    ])}
-                  >
+                  {getFieldDecorator(`variants[${variantIndex}].question`, {
+                    initialValue: variant.question,
+                    rules: [{
+                      required: true,
+                      message: `Вариант №${variantIndex + 1} - Вопрос к заданию`,
+                    }],
+                  })(
                     <AntInput
                       rows={4}
                       size="default"
                       type="textarea"
+                      onChange={changeContent([
+                        'variants',
+                        variantIndex,
+                        'question',
+                      ])}
                     />
-                  </Validator>
+                  )}
                 </div>
                 <div className={styles.points}>
-                  <Validator
-                    rule={() => true}
-                    value={variant.points}
-                    message={`Вариант №${variantIndex + 1} - Баллы за задание`}
-                    onChange={changeContent([
-                      'variants',
-                      variantIndex,
-                      'points',
-                    ])}
-                  >
+                  {getFieldDecorator(`variants[${variantIndex}].points`, {
+                    initialValue: variant.points,
+                    rules: [{
+                      required: true,
+                      message: `Вариант №${variantIndex + 1} - Баллы за задание`,
+                    }],
+                  })(
                     <AntInput
-                      rows={3}
                       size="default"
-                      type="textarea"
+                      onChange={changeContent([
+                        'variants',
+                        variantIndex,
+                        'points',
+                      ])}
                     />
-                  </Validator>
+                  )}
                   Баллы
                 </div>
                 <div className={styles.attemps}>
-                  <Validator
-                    rule={() => true}
-                    value={variant.attemps}
-                    message={`Вариант №${variantIndex + 1} - Количество попыток`}
-                    onChange={changeContent([
-                      'variants',
-                      variantIndex,
-                      'attemps',
-                    ])}
-                  >
+                  {getFieldDecorator(`variants[${variantIndex}].attemps`, {
+                    initialValue: variant.attemps,
+                    rules: [{
+                      required: true,
+                      message: `Вариант №${variantIndex + 1} - Количество попыток`,
+                    }],
+                  })(
                     <AntInput
-                      rows={3}
                       size="default"
-                      type="textarea"
+                      onChange={changeContent([
+                        'variants',
+                        variantIndex,
+                        'attemps',
+                      ])}
                     />
-                  </Validator>
+                  )}
                   Попытки
                 </div>
               </div>
@@ -249,19 +267,24 @@ const Editor = ({
                               <Sortable.Handler />
                             </div>
                             <div className={styles.text}>
-                              <Validator
-                                value={option.text}
-                                message={`Вариант №${variantIndex + 1} - Ответ №${optionIndex + 1}`}
-                                onChange={changeContent([
-                                  'variants',
-                                  variantIndex,
-                                  'options',
-                                  optionIndex,
-                                  'text',
-                                ])}
-                              >
-                                <AntInput size="default" />
-                              </Validator>
+                              {getFieldDecorator(`variants[${variantIndex}].options[${optionIndex}].text`, {
+                                initialValue: option.text,
+                                rules: [{
+                                  required: true,
+                                  message: `Вариант №${variantIndex + 1} - Ответ №${optionIndex + 1}`,
+                                }],
+                              })(
+                                <AntInput
+                                  size="default"
+                                  onChange={changeContent([
+                                    'variants',
+                                    variantIndex,
+                                    'options',
+                                    optionIndex,
+                                    'text',
+                                  ])}
+                                />
+                              )}
                             </div>
                             <div className={styles.image}>
                               {option.image
@@ -311,9 +334,7 @@ const Editor = ({
                                   'options',
                                   optionIndex,
                                   'isCorrect',
-                                ])(
-                                  () => {} // Замыкание пустого валидатора
-                                )}
+                                ])}
                               />
                             </div>
                             <div className={styles.remove}>
@@ -382,23 +403,28 @@ const Editor = ({
                         className={styles.explanation}
                       >
                         <div className={styles.text}>
-                          <Validator
-                            value={explanation.text}
-                            message={`Вариант №${variantIndex + 1} - Пояснение к правильному ответу №${explanationIndex + 1}`}
-                            onChange={changeContent([
-                              'variants',
-                              variantIndex,
-                              'explanations',
-                              explanationIndex,
-                              'text',
-                            ])}
-                          >
-                            <AntInput size="default" />
-                          </Validator>
+                          {getFieldDecorator(`variants[${variantIndex}].explanations[${explanationIndex}].text`, {
+                            initialValue: explanation.text,
+                            rules: [{
+                              required: true,
+                              message: `Вариант №${variantIndex + 1} - Пояснение к правильному ответу №${explanationIndex + 1}`,
+                            }],
+                          })(
+                            <AntInput
+                              size="default"
+                              onChange={changeContent([
+                                'variants',
+                                variantIndex,
+                                'explanations',
+                                explanationIndex,
+                                'text',
+                              ])}
+                            />
+                          )}
                         </div>
                         <div className={styles.remove}>
                           <AntPopconfirm
-                            title="Удалить вариант ответа?"
+                            title="Удалить пояснение?"
                             okText="Да"
                             onConfirm={removeContent([
                               'variants',
@@ -458,19 +484,24 @@ const Editor = ({
                         className={styles.hint}
                       >
                         <div className={styles.text}>
-                          <Validator
-                            value={hint.text}
-                            message={`Вариант №${variantIndex + 1} - Подсказка к ответу №${hintIndex + 1}`}
-                            onChange={changeContent([
-                              'variants',
-                              variantIndex,
-                              'hints',
-                              hintIndex,
-                              'text',
-                            ])}
-                          >
-                            <AntInput size="default" />
-                          </Validator>
+                          {getFieldDecorator(`variants[${variantIndex}].hints[${hintIndex}].text`, {
+                            initialValue: hint.text,
+                            rules: [{
+                              required: true,
+                              message: `Вариант №${variantIndex + 1} - Подсказка №${hintIndex + 1}`,
+                            }],
+                          })(
+                            <AntInput
+                              size="default"
+                              onChange={changeContent([
+                                'variants',
+                                variantIndex,
+                                'hints',
+                                hintIndex,
+                                'text',
+                              ])}
+                            />
+                          )}
                         </div>
                         <div className={styles.remove}>
                           <AntPopconfirm
@@ -534,23 +565,29 @@ const Editor = ({
                         className={styles.competence}
                       >
                         <div className={styles.text}>
-                          <Validator
-                            value={competence.text}
-                            message={`Вариант №${variantIndex + 1} - Подсказка к ответу №${competenceIndex + 1}`}
-                            onChange={changeContent([
-                              'variants',
-                              variantIndex,
-                              'competences',
-                              competenceIndex,
-                              'text',
-                            ])}
-                          >
-                            <AntInput size="default" />
-                          </Validator>
+
+                          {getFieldDecorator(`variants[${variantIndex}].competences[${competenceIndex}].text`, {
+                            initialValue: competence.text,
+                            rules: [{
+                              required: true,
+                              message: `Вариант №${variantIndex + 1} - Компетенция №${competenceIndex + 1}`,
+                            }],
+                          })(
+                            <AntInput
+                              size="default"
+                              onChange={changeContent([
+                                'variants',
+                                variantIndex,
+                                'competences',
+                                competenceIndex,
+                                'text',
+                              ])}
+                            />
+                          )}
                         </div>
                         <div className={styles.remove}>
                           <AntPopconfirm
-                            title="Удалить подсказку?"
+                            title="Удалить компетенцию?"
                             okText="Да"
                             onConfirm={removeContent([
                               'variants',
@@ -612,6 +649,7 @@ const Editor = ({
   );
 };
 
+
 const Sortable = {
   List: SortableContainer(
     (props) => <ul>{props.children}</ul>
@@ -629,17 +667,17 @@ const Sortable = {
 
 Editor.propTypes = {
   isOpen: PropTypes.bool.isRequired,
+  component: PropTypes.object.isRequired, // Временно
   addContent: PropTypes.func.isRequired,
   dragContent: PropTypes.func.isRequired,
-  closeEditor: PropTypes.func.isRequired,
+  // closeEditor: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
-  saveContent: PropTypes.func.isRequired,
+  // saveContent: PropTypes.func.isRequired,
   undoHistory: PropTypes.func.isRequired,
   redoHistory: PropTypes.func.isRequired,
   removeContent: PropTypes.func.isRequired,
   changeContent: PropTypes.func.isRequired,
   content: PropTypes.shape({
-    points: PropTypes.object.isRequired,
     variants: PropTypes.arrayOf(
       PropTypes.shape({
         points: PropTypes.number,
@@ -663,9 +701,9 @@ Editor.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
-  errors: PropTypes.arrayOf(
-    PropTypes.string.isRequired
-  ),
+  // errors: PropTypes.arrayOf(
+  //   PropTypes.string.isRequired
+  // ),
   storage: PropTypes.shape({
     images: PropTypes.objectOf(
       PropTypes.string.isRequired,
@@ -674,6 +712,25 @@ Editor.propTypes = {
       PropTypes.string.isRequired,
     ).isRequired,
   }).isRequired,
+  form: PropTypes.shape({
+    resetFields: PropTypes.func.isRequired,
+    getFieldsValue: PropTypes.func.isRequired,
+    validateFields: PropTypes.func.isRequired,
+    setFieldsValue: PropTypes.func.isRequired,
+    getFieldDecorator: PropTypes.func.isRequired,
+  }),
 };
 
-export default Editor;
+export default createForm({
+  // Синхронизация данных в HOC формы
+  // с данными из state компонента
+  mapPropsToFields({ content }) {
+    return flatten(content).reduce(
+      (fields, name) => ({
+        ...fields,
+        [name]: {
+          value: get(content, name),
+        },
+      }), {});
+  },
+})(Editor);

@@ -59,7 +59,6 @@ const Preview = ({
 
 Preview.propTypes = {
   content: PropTypes.shape({
-    points: PropTypes.object.isRequired,
     variants: PropTypes.arrayOf(
       PropTypes.shape({
         points: PropTypes.number,

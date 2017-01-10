@@ -16,7 +16,6 @@ class Checkbox extends PureComponent {
     const { content } = props;
     this.state = {
       drag: null,
-      errors: [],
       editing: false,
       content: {
         editor: content,
@@ -120,7 +119,7 @@ class Checkbox extends PureComponent {
     }, this.addStateToHistory);
   };
 
-  changeContent = (location) => (validator) => (event) => {
+  changeContent = (location) => (event) => {
     const value = event.type
       ? event.target.value    // для инпутов
       : event.target.checked; // для чекбоксов
@@ -132,11 +131,6 @@ class Checkbox extends PureComponent {
         value,
         this.state.content
       ),
-      // Подмешивание сообщений валидатора
-      // в состояние компонента, правила
-      // валидации передаются через props
-      // компонента Validator
-      ...validator(this.state.errors, value),
     }, this.addStateToHistory);
   }
 
@@ -182,7 +176,6 @@ class Checkbox extends PureComponent {
   closeEditor = () => {
     this.setState({
       editing: false,
-      errors: [],
     }, this.context.toggleReadOnly);
   }
 
@@ -200,7 +193,6 @@ class Checkbox extends PureComponent {
         content.editor,
         content
       ),
-      errors: [],
     }, this.context.toggleReadOnly);
   }
 
@@ -229,6 +221,7 @@ class Checkbox extends PureComponent {
           errors={errors}
           content={editor}
           storage={this.storage}
+          component={component}
           addContent={this.addContent}
           dragContent={this.dragContent}
           closeEditor={this.closeEditor}

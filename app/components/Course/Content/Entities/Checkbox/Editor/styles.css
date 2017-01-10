@@ -87,11 +87,11 @@
           text-align: center;
           font-weight: 500;
 
-          & textarea {
-            height: 70px;
+          & input {
+            height: 65px;
             font-size: 18px;
             text-align: center;
-            padding-top: 20px;
+            padding-top: 7.5px;
           }
         }
 
@@ -102,11 +102,11 @@
           text-align: center;
           font-weight: 500;
 
-          & textarea {
-            height: 70px;
+          & input {
+            height: 65px;
             font-size: 18px;
             text-align: center;
-            padding-top: 20px;
+            padding-top: 7.5px;
           }
         }
       }
