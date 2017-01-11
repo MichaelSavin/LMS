@@ -345,7 +345,7 @@ class Editor extends Component {
             // spellCheck
           />
           <Popup
-            isFocused //={this.state.isFocused}
+            isFocused // ={this.state.isFocused}
             editorRef={this.refs.editor}
             editorState={editorState}
             changeEditorState={this.onChange}

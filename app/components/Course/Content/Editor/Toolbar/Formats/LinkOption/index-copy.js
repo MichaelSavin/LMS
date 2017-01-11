@@ -19,6 +19,27 @@ import Icon from 'components/UI/Icon';
 import styles from './styles.css';
 import Option from '../Option';
 
+// const Link = ({ entityKey, children }) => {
+//   const { url } = Entity.get(entityKey).getData();
+//   return (
+//     <a href={url} style={styles.link}>
+//       {children}
+//     </a>
+//   );
+// };
+
+function findLinkEntities(contentBlock, callback) {
+  contentBlock.findEntityRanges(
+    (character) => {
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        Entity.get(entityKey).getType() === 'LINK'
+      );
+    },
+    callback
+  );
+}
 
 class LinkEditorExample extends React.Component {
   constructor(props) {
@@ -67,7 +88,7 @@ class LinkEditorExample extends React.Component {
 
   _confirmLink(e) {
     e.preventDefault();
-    const {editorState, urlValue} = this.state;
+    const { editorState, urlValue } = this.state;
     const entityKey = Entity.create('LINK', 'MUTABLE', { url: urlValue });
     this.setState({
       editorState: RichUtils.toggleLink(
@@ -90,7 +111,7 @@ class LinkEditorExample extends React.Component {
 
   _removeLink(e) {
     e.preventDefault();
-    const {editorState} = this.state;
+    const { editorState } = this.state;
     const selection = editorState.getSelection();
     if (!selection.isCollapsed()) {
       this.setState({
@@ -141,40 +162,18 @@ class LinkEditorExample extends React.Component {
             onChange={this.onChange}
             placeholder="Enter some text..."
             ref="editor"
-            />
+          />
         </div>
         <input
           onClick={this.logState}
           style={styles.button}
           type="button"
           value="Log State"
-          />
+        />
       </div>
     );
   }
 }
-
-function findLinkEntities(contentBlock, callback) {
-  contentBlock.findEntityRanges(
-    (character) => {
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        Entity.get(entityKey).getType() === 'LINK'
-      );
-    },
-    callback
-  );
-}
-
-const Link = (props) => {
-  const {url} = Entity.get(props.entityKey).getData();
-  return (
-    <a href={url} style={styles.link}>
-      {props.children}
-    </a>
-  );
-};
 
 const styles = {
   root: {
@@ -208,167 +207,3 @@ const styles = {
     textDecoration: 'underline',
   },
 };
-
-
-
-
-class Link extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      styles: {},
-    };
-  }
-
-  componentWillMount() {
-    const {
-      editorState,
-    } = this.props;
-    if (editorState) {
-      this.setState({
-        styles:
-          getSelectionInlineStyle(
-            editorState
-          ),
-      });
-    }
-  }
-
-  componentWillReceiveProps(props) {
-    if (
-      props.editorState !==
-      this.props.editorState
-    ) {
-      this.setState({
-        styles:
-          getSelectionInlineStyle(
-            props.editorState
-          ),
-      });
-    }
-  }
-
-  toggleLink = (style) => {
-    const {
-      editorState,
-      changeEditorState,
-    } = this.props;
-    const newState = RichUtils
-      .toggleInlineStyle(
-        editorState,
-        style
-      );
-    changeEditorState(
-      style === 'SUBSCRIPT' || style === 'SUPERSCRIPT'
-        ? EditorState.push(
-            newState,
-            Modifier.removeInlineStyle(
-              newState.getCurrentContent(),
-              newState.getSelection(),
-              style === 'SUBSCRIPT'
-                ? 'SUPERSCRIPT'
-                : 'SUBSCRIPT',
-            ),
-            'change-inline-style'
-          )
-        : newState
-    );
-  };
-
-  toggleStyle = (style) => {
-    const {
-      editorState,
-      changeEditorState,
-    } = this.props;
-    const newState = RichUtils
-      .toggleInlineStyle(
-        editorState,
-        style
-      );
-    changeEditorState(
-      style === 'SUBSCRIPT' || style === 'SUPERSCRIPT'
-        ? EditorState.push(
-            newState,
-            Modifier.removeInlineStyle(
-              newState.getCurrentContent(),
-              newState.getSelection(),
-              style === 'SUBSCRIPT'
-                ? 'SUPERSCRIPT'
-                : 'SUBSCRIPT',
-            ),
-            'change-inline-style'
-          )
-        : newState
-    );
-  };
-
-  render() {
-    const {
-      styles: textStyles,
-    } = this.state;
-    const {
-      inPopup,
-    } = this.props;
-    return (
-      <div className={styles.text}>
-        {[{
-          value: 'BOLD',
-          icon: 'bold',
-        }, {
-          value: 'ITALIC',
-          icon: 'italic',
-        }, {
-          value: 'UNDERLINE',
-          icon: 'underline',
-        }, {
-          value: 'STRIKETHROUGH',
-          icon: 'strikethrough',
-        }, {
-          value: 'CODE',
-          icon: 'monospace',
-        }, {
-          value: 'SUPERSCRIPT',
-          icon: 'superscript',
-        }, {
-          value: 'SUBSCRIPT',
-          icon: 'subscript',
-        }].map(({
-          value,
-          icon,
-        }, index) =>
-          <Option
-            key={index}
-            value={value}
-            active={textStyles[value]}
-            onClick={this.toggleStyle}
-            inPopup={inPopup}
-          >
-            <span className={styles.icon}>
-              <Icon type={icon} size={16} />
-            </span>
-          </Option>
-        )
-      }
-        <Option
-          value="LINK"
-          active={textStyles.LINK}
-          onClick={this.toggleLink}
-          inPopup={inPopup}
-        >
-          <span className={styles.icon}>
-            <Icon type="link" size={16} />
-          </span>
-        </Option>
-      </div>
-    );
-  }
-}
-
-Link.propTypes = {
-  inPopup: PropTypes.bool,
-  editorState: PropTypes.object.isRequired,
-  changeEditorState: PropTypes.func.isRequired,
-};
-
-export default Link;

@@ -1,0 +1,14 @@
+.input {
+  position: absolute;
+  background-color: #404040;
+  width: 90%;
+}
+
+.icon {
+  width: 15px;
+  height: 15px;
+}
+
+.confirm {
+  margin-left: 10px;
+}

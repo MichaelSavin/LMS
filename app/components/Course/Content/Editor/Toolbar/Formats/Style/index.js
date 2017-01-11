@@ -13,6 +13,7 @@ import {
 import Icon from 'components/UI/Icon';
 import styles from './styles.css';
 import Option from '../Option';
+import LinkOption from '../LinkOption';
 
 
 class Style extends Component {
@@ -153,16 +154,7 @@ class Style extends Component {
           </Option>
         )
       }
-        <Option
-          value="LINK"
-          active={textStyles.LINK}
-          onClick={this.toggleLink}
-          inPopup={inPopup}
-        >
-          <span className={styles.icon}>
-            <Icon type="link" size={16} />
-          </span>
-        </Option>
+        <LinkOption {...this.props} />
       </div>
     );
   }
