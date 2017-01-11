@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Icon as AntIcon,
   Table as AntTable,
   Button as AntButton,
 } from 'antd';
@@ -122,6 +123,7 @@ class Table extends Component {
     };
   }
 
+
   changeCell = (index, key) => (value) => {
     this.setState({
       temp: set([
@@ -232,6 +234,7 @@ class Table extends Component {
       });
     }
   }
+
 
   changeHeaderCell = (columnKey) => (content) => {
     const { temp } = this.state;
@@ -404,6 +407,12 @@ class Table extends Component {
 
   deleteBlock = () => this.context.removeBlock(this.props.blockKey);
 
+  duplicateBlock = () => this.context.duplicateBlock(this.props.entityKey);
+
+  moveBlockUp = () => this.context.moveBlock(this.props.blockKey, -1);
+
+  moveBlockDown = () => this.context.moveBlock(this.props.blockKey, 1);
+
   render() {
     const content = this.state.temp || this.state.content;
     const { rows, columns } = content.data;
@@ -429,10 +438,34 @@ class Table extends Component {
       {isReadOnly ?
         <div className={styles.actions}>
           <AntButton
+            type="primary"
+            icon="up-square"
+            className={styles.icon}
+            onClick={this.moveBlockUp}
+          />
+          <span
+            icon="ellipsis"
+            className={classNames(styles.icon, 'sortable-handle')}
+          >
+            <AntIcon type="ellipsis" />
+          </span>
+          <AntButton
+            type="primary"
+            icon="down-square"
+            className={styles.icon}
+            onClick={this.moveBlockDown}
+          />
+          <AntButton
             type="danger"
             icon="close-circle"
             className={styles.icon}
             onClick={this.deleteBlock}
+          />
+          <AntButton
+            icon="copy"
+            type="primary"
+            className={styles.icon}
+            onClick={this.duplicateBlock}
           />
           <AntButton
             icon="edit"
@@ -558,8 +591,10 @@ Table.defaultProps = {
 };
 
 Table.contextTypes = {
-  toggleReadOnly: PropTypes.func,
+  moveBlock: PropTypes.func,
   removeBlock: PropTypes.func,
+  duplicateBlock: PropTypes.func,
+  toggleReadOnly: PropTypes.func,
 };
 
 export default Table;

@@ -83,9 +83,6 @@ const Editor = ({
 );
 
 Editor.propTypes = {
-  closeEditor: PropTypes.func.isRequired,
-  saveSettings: PropTypes.func.isRequired,
-  changeStyle: PropTypes.func.isRequired,
   styles: PropTypes.shape({
     head: PropTypes.oneOf([
       'bold',
@@ -99,6 +96,9 @@ Editor.propTypes = {
     isHeaderHide: PropTypes.bool,
     equalColumnsWidth: PropTypes.bool,
   }).isRequired,
+  closeEditor: PropTypes.func.isRequired,
+  changeStyle: PropTypes.func.isRequired,
+  saveSettings: PropTypes.func.isRequired,
 };
 
 export default Editor;

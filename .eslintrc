@@ -35,8 +35,8 @@
       2,
       "always-multiline"
     ],
-    "func-style": [2, "expression", { 
-      "allowArrowFunctions": true 
+    "func-style": [2, "expression", {
+      "allowArrowFunctions": true
     }],
     "import/no-extraneous-dependencies": 0,
     "import/no-named-as-default": 0,
@@ -45,14 +45,14 @@
     "indent": [
       2,
       2,
-      { 
+      {
         "SwitchCase": 1,
         "MemberExpression": 1,
         "VariableDeclarator": 1
       }
     ],
-    "newline-per-chained-call": [2, { 
-      "ignoreChainWithDepth": 3 
+    "newline-per-chained-call": [2, {
+      "ignoreChainWithDepth": 3
     }],
     "no-console": 1,
     "arrow-parens": [2, "always"],
@@ -72,7 +72,7 @@
     "react/jsx-no-bind": [1, {
       "allowArrowFunctions": true
     }],
- 
+
     "jsx-a11y/mouse-events-have-key-events": 1,
     "jsx-a11y/no-static-element-interactions": 0,
     "jsx-a11y/role-has-required-aria-props": 1,
@@ -102,13 +102,13 @@
     "fp/no-let": 2,
     "fp/no-mutation": [2, {
       "allowThis": true,
-      "exceptions": [{ 
+      "exceptions": [{
         "property": "propTypes"
       }, { 
         "property": "defaultProps"
-      }, { 
+      }, {
         "property": "contextTypes"
-      }, { 
+      }, {
         "property": "childContextTypes"
       }]
     }]

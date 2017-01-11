@@ -4,16 +4,24 @@ import React, {
 } from 'react';
 import {
   Editor as Draft,
+  Entity,
+  Modifier,
   RichUtils,
   EditorState,
+  ContentState,
   convertToRaw,
   convertFromRaw,
-  Modifier,
   SelectionState,
+  AtomicBlockUtils,
 } from 'draft-js';
 import {
   customStyleMap,
 } from 'draftjs-utils';
+import {
+  findIndex,
+  unnest,
+} from 'lodash/fp';
+import Sortable from 'sortablejs';
 import {
   blockRenderer,
   entitiesDecorator,
@@ -23,8 +31,70 @@ import {
 import styles from './styles.css';
 import Toolbar from './Toolbar';
 
-class Editor extends Component {
+const splitByChunks = ({ tempChunk, chunkedBlocks }, block, index, array) => {
+  const type = /unordered-list-item|ordered-list-item/.test(block.getType()) && block.getType();
+  if (!index) { // Если это первый элемент в массиве
+    return {
+      tempChunk: [block],
+      chunkedBlocks,
+    };
+  } else if (index === array.length - 1) { // Если это последний элемент в массиве
+    // Если тип подходящий и прошлый тип был такой-же
+    // объединяем временные блоки и этот блок в чанк
+    if (type && type === tempChunk[0].getType()) {
+      return {
+        tempChunk,
+        chunkedBlocks: [
+          ...chunkedBlocks,
+          [
+            ...tempChunk,
+            block,
+          ],
+        ],
+      };
+    }
+    return {
+      tempChunk,
+      chunkedBlocks: [
+        ...chunkedBlocks,
+        tempChunk,
+        block,
+      ],
+    };
+  // Если тип подходящий и прошлый тип был такой-же
+  } else if (type && type === tempChunk[0].getType()) {
+    return {
+      tempChunk: [
+        ...tempChunk,
+        block,
+      ],
+      chunkedBlocks,
+    };
+  }
+  // Если тип прошлого блока отличается от нового
+  return {
+    chunkedBlocks: [
+      ...chunkedBlocks,
+      tempChunk,
+    ],
+    tempChunk: [block],
+  };
+};
 
+const swapBlocks = (blocks, oldIndex, newIndex) => {
+  const block = blocks[oldIndex];
+  const shortArray = [
+    ...blocks.slice(0, oldIndex),
+    ...blocks.slice(oldIndex + 1),
+  ];
+  return [
+    ...shortArray.slice(0, newIndex),
+    block,
+    ...shortArray.slice(newIndex),
+  ];
+};
+
+class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,9 +111,19 @@ class Editor extends Component {
 
   getChildContext() {
     return {
-      toggleReadOnly: this.toggleReadOnly,
+      moveBlock: this.moveBlock,
       removeBlock: this.removeBlock,
+      toggleReadOnly: this.toggleReadOnly,
+      duplicateBlock: this.duplicateBlock,
     };
+  }
+
+  componentDidMount() {
+    this.makeSortable();
+  }
+
+  componentDidUpdate() {
+    this.makeSortable();
   }
 
   onChange = (editorState) => {
@@ -63,9 +143,9 @@ class Editor extends Component {
       // this.state.editorState.getCurrentContent()
     // ) {
     editUnit({
+      unitId,
       sectionId,
       subsectionId,
-      unitId,
       content: convertToRaw(
         editorState.getCurrentContent()
       ),
@@ -95,17 +175,37 @@ class Editor extends Component {
     isFocused: e.type === 'focus',
   })
 
-  toggleReadOnly = () => {
-    const { editorState, isReadOnly } = this.state;
-    // Для сохранения изменений добавил установку фокуса
-    // TODO чтобы работало надо что-то поменять в редакторе.
-    this.setState({
-      editorState: isReadOnly
-        ? EditorState.moveFocusToEnd(editorState)
-        : editorState,
-      isReadOnly: !isReadOnly,
+  makeSortable = () => {
+    const el = document.querySelector('.public-DraftEditor-content > div');
+    Sortable.create(el, { // https://github.com/RubaXa/Sortable#options
+      animation: 350,
+      handle: '.sortable-handle',
+      chosenClass: styles.chosen,
+      ghostClass: styles.ghost,
+      onEnd: (event) => {
+        const { oldIndex, newIndex } = event;
+        const { editorState } = this.state;
+        const blocksArray = editorState.getCurrentContent().getBlocksAsArray();
+        // Т.к каждый элемент списка ul>li или ol>li для draft отдельный блок,
+        // приходиться делить список блоков на чанки для правильной сортировки
+        // пример [h1, table, li, li, li, h1] => [h1, table, [li, li, li], h1]
+        const { chunkedBlocks } = blocksArray.reduce(
+          splitByChunks,
+          {
+            tempChunk: [],
+            chunkedBlocks: [],
+          }
+        );
+        const newBlocksArray = swapBlocks(chunkedBlocks, oldIndex, newIndex);
+        const newEditorState = EditorState.push(
+          editorState,
+          ContentState.createFromBlockArray(unnest(newBlocksArray)),
+          ' '
+        );
+        this.onChange(newEditorState);
+      },
     });
-  }
+  };
 
   blockStyleFn = (block) => {
     const blockAlignment =
@@ -151,15 +251,42 @@ class Editor extends Component {
 
   focusEditor = () => this.refs.editor.focus();
 
+  toggleReadOnly = () => {
+    const { editorState, isReadOnly } = this.state;
+    // Для сохранения изменений добавил установку фокуса
+    // чтобы работало надо что-то поменять в редакторе.
+    // TODO нужно найти способо сохранять автоматически
+    this.setState({
+      editorState: isReadOnly
+        ? EditorState.moveFocusToEnd(editorState)
+        : editorState,
+      isReadOnly: !isReadOnly,
+    });
+  }
+
+  // Глобальные методы передаваемые через context
+  moveBlock = (blockKey, direction) => {
+    const { editorState } = this.state;
+    const blocksArray = editorState.getCurrentContent().getBlocksAsArray();
+    const blockIndex = findIndex((block) => block.getKey() === blockKey, blocksArray);
+    const newBlocksArray = swapBlocks(blocksArray, blockIndex, blockIndex + direction);
+    const newEditorState = EditorState.push(
+      editorState,
+      ContentState.createFromBlockArray(newBlocksArray),
+      ' '
+    );
+    this.onChange(newEditorState);
+  }
+
   removeBlock = (blockKey) => {
     const { editorState } = this.state;
     const content = this.state.editorState.getCurrentContent();
     const block = content.getBlockForKey(blockKey);
     const targetRange = new SelectionState({
-      anchorKey: blockKey,
-      anchorOffset: 0,
       focusKey: blockKey,
+      anchorKey: blockKey,
       focusOffset: block.getLength(),
+      anchorOffset: 0,
     });
     const withoutBlock = Modifier.removeRange(content, targetRange, 'backward');
     const resetBlock = Modifier.setBlockType(
@@ -171,6 +298,17 @@ class Editor extends Component {
     this.onChange(
       EditorState.forceSelection(newState, resetBlock.getSelectionAfter())
     );
+  }
+
+  duplicateBlock = (entityKey) => {
+    this.onChange(AtomicBlockUtils
+      .insertAtomicBlock(
+        this.state.editorState,
+        Entity.add(
+          Entity.get(entityKey)
+        ),
+        ' '
+    ));
   }
 
   render() {
@@ -219,17 +357,19 @@ class Editor extends Component {
 }
 
 Editor.childContextTypes = {
-  toggleReadOnly: PropTypes.func.isRequired,
+  moveBlock: PropTypes.func.isRequired,
   removeBlock: PropTypes.func.isRequired,
+  toggleReadOnly: PropTypes.func.isRequired,
+  duplicateBlock: PropTypes.func.isRequired,
 };
 
 Editor.propTypes = {
-  actions: PropTypes.object, // http://stackoverflow.com/a/33427304
   unit: PropTypes.shape({
     sectionId: PropTypes.string.isRequired,
     subsectionId: PropTypes.string.isRequired,
     unitId: PropTypes.string.isRequired,
   }),
+  actions: PropTypes.object, // http://stackoverflow.com/a/33427304
   content: PropTypes.object,
 };
 

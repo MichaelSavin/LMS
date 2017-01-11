@@ -63,12 +63,12 @@ const Dropdown = ({
 );
 
 Dropdown.propTypes = {
+  index: PropTypes.number.isRequired,
   addRow: PropTypes.func.isRequired,
   deleteRow: PropTypes.func.isRequired,
-  index: PropTypes.number.isRequired,
+  columnKey: PropTypes.number.isRequired,
   addColumn: PropTypes.func.isRequired,
   deleteColumn: PropTypes.func.isRequired,
-  columnKey: PropTypes.number.isRequired,
 };
 
 export default Dropdown;

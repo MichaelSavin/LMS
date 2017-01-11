@@ -12,13 +12,13 @@ const Cell = ({
   value,
   index,
   addRow,
-  deleteRow,
   onChange,
+  deleteRow,
   className,
   columnKey,
   addColumn,
-  deleteColumn,
   isReadOnly,
+  deleteColumn,
 }) => (
   <div className="cell">
     <div className="input">
@@ -50,7 +50,7 @@ Cell.propTypes = {
   onChange: PropTypes.func,
   addColumn: PropTypes.func,
   deleteColumn: PropTypes.func,
-  editTable: PropTypes.func,
+  // editTable: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,
   columnKey: PropTypes.number,
