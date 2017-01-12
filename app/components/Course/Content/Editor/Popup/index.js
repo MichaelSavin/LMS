@@ -80,7 +80,7 @@ class Popup extends Component {
 
   render() {
     const {
-      isFocused = true,
+      isFocused,
       editorState,
       changeEditorState,
     } = this.props;

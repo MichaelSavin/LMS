@@ -15,13 +15,13 @@ import styles from './styles.css';
 import Option from '../Option';
 import LinkOption from '../LinkOption';
 
-
 class Style extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       styles: {},
+      isLink: false,
     };
   }
 

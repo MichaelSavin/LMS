@@ -2,6 +2,8 @@
   position: absolute;
   background-color: #404040;
   width: 90%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .icon {
@@ -11,4 +13,5 @@
 
 .confirm {
   margin-left: 10px;
+  cursor: pointer;
 }
