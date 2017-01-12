@@ -1,7 +1,9 @@
 import React, {
   PropTypes,
+  Component,
 } from 'react';
 import {
+  Form as AntForm,
   Icon as AntIcon,
   Tabs as AntTabs,
   Input as AntInput,
@@ -15,285 +17,464 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
-import { get, compact } from 'lodash';
+import {
+  get,
+  set,
+  last,
+  update,
+  pullAt,
+  compact,
+  dropRight,
+} from 'lodash/fp';
 import flatten from 'object-end-keys';
 import { createForm } from 'rc-form';
 import classNames from 'classnames';
 import Dropzone from 'react-dropzone';
 import styles from './styles.css';
 
-const Editor = ({
-  isOpen,
-  content,
-  storage,
-  addContent,
-  dragContent,
-  closeEditor,
-  uploadImage,
-  saveContent,
-  undoHistory,
-  redoHistory,
-  // changeContent,
-  removeContent,
-  form: {
-    // resetFields,
-    getFieldError,
-    getFieldProps,
-    // getFieldsProps,
-    // getFieldsValue,
-    validateFields,
-    // getFieldsError,
-    // setFieldsValue,
-    getFieldDecorator,
-  },
-}) => {
-  const validateAndSave = () => {
+class Editor extends Component {
+
+  componentWillMount() {
+    const {
+      content,
+      form: {
+        setFieldsValue,
+      },
+    } = this.props;
+    setFieldsValue({ content });
+  }
+
+  getFieldsErrors = () => {
+    const {
+      form: {
+        getFieldError,
+        getFieldsValue,
+      },
+    } = this.props;
+    return compact(
+      flatten(getFieldsValue()).map(
+        (field) => getFieldError(field)
+      )
+    );
+  }
+
+  getCustomErrors = () => [];
+
+  resetAndClose = () => {
+    this.props.closeEditor();
+  };
+
+  validateAndSave = () => {
+    const {
+      saveContent,
+      form: {
+        validateFields,
+        getFieldsValue,
+      },
+    } = this.props;
     validateFields((error, values) => {
       if (!error) {
-        saveContent(); // передача в данных из формы
+        saveContent(getFieldsValue());
       } else {
-        console.log('error', error, values);
+        console.log('Errors:', error, values);
       }
     });
   };
 
-  const resetAndClose = () => {
-    closeEditor();
-  };
+  addContent = (location, content) => () => {
+    const {
+      form: {
+        getFieldValue,
+        setFieldsValue,
+      },
+    } = this.props;
+    setFieldsValue({
+      content: update(
+        location,
+        (data) => data.concat([content]),
+        getFieldValue('content'),
+      ),
+    });
+  }
 
-  const fieldsErrors = compact(
-    flatten(content).map(
-      (field) => getFieldError(field)
-    )
-  );
+  // removeContent = (location) => (event) => {
+  //   if (event) { event.stopPropagation(); }
+  //   this.setState({
+  //     content: update(
+  //       ['editor', ...dropRight(1, location)],
+  //       (data) => pullAt([last(location)], data),
+  //       this.state.content
+  //     ),
+  //   });
+  // }
 
-  return (
-    <div
-      className={classNames(
-        styles.editor,
-        { [styles.hidden]: !isOpen }
-      )}
-    >
-      <div className={styles.title}>
-        <div className={styles.text}>
-          Редактирование компонента
-        </div>
-        <div className={styles.actions}>
-          <AntButton
-            icon="arrow-left"
-            onClick={undoHistory}
-          />
-          <AntButton
-            icon="arrow-right"
-            onClick={redoHistory}
-          />
-        </div>
-      </div>
-      <div className={styles.errors}>
-        {/* <div className={styles.text}>
-          Необходимо заполнить поля:
-        </div>
-        */ }
-        {fieldsErrors.map((error, index) =>
-          <div
-            key={index}
-            className={styles.error}
-          >
-            {error}
+  // dragContent = (location) => ({ oldIndex, newIndex }) => {
+  //   const { content } = this.state;
+  //   this.setState({
+  //     content: set(
+  //       ['editor', ...location],
+  //       arrayMove(
+  //         get(['editor', ...location], content),
+  //         oldIndex,
+  //         newIndex,
+  //       ),
+  //       content
+  //     ),
+  //   });
+  // };
+
+  render() {
+    const {
+      isOpen,
+      content,
+      // storage,
+      form: {
+        // getFieldValue,
+        getFieldsValue,
+        getFieldDecorator,
+      },
+    } = this.props;
+    // console.log(getFieldsValue());
+    getFieldDecorator('content', { initialValue: content });
+    const { variants } = getFieldsValue().content;
+    return (
+      <AntForm>
+        <div
+          className={classNames(
+            styles.editor,
+            { [styles.hidden]: !isOpen }
+          )}
+        >
+          <div className={styles.title}>
+            <div className={styles.text}>
+              Редактирование компонента
+            </div>
+            { /*
+            <div className={styles.actions}>
+              <AntButton
+                icon="arrow-left"
+                onClick={undoHistory}
+              />
+              <AntButton
+                icon="arrow-right"
+                onClick={redoHistory}
+              />
+            </div>
+            */ }
           </div>
-        )}
-      </div>
-      <AntTabs
-        className={styles.variants}
-        tabBarExtraContent={
-          <AntButton
-            size="small"
-            type="primary"
-            onClick={addContent(['variants'], {
-              question: 'Вопрос',
-              options: [{
-                text: 'Вариант 1',
-                image: undefined,
-                isChecked: false,
-                isCorrect: false,
-              }, {
-                text: 'Вариант 2',
-                image: undefined,
-                isChecked: false,
-                isCorrect: false,
-              }, {
-                text: 'Вариант 3',
-                image: undefined,
-                isChecked: false,
-                isCorrect: false,
-              }, {
-                text: 'Вариант 4',
-                image: undefined,
-                isChecked: false,
-                isCorrect: false,
-              }],
-              hints: [],
-              competences: [],
-              explanations: [],
-            })}
-          >
-            Добавить вариант задания
-          </AntButton>
-        }
-      >
-        {content.variants.map((
-          variant, variantIndex
-        ) =>
-          <AntTabs.TabPane
-            key={variantIndex}
-            tab={
-              <div className={styles.variant}>
-                {`Вариант ${variantIndex + 1}`}
-                {variantIndex > 0 &&
-                  <AntPopconfirm
-                    title="Удалить вариант?"
-                    onConfirm={removeContent([
-                      'variants',
-                      variantIndex,
-                    ])}
-                    okText="Да"
-                    cancelText="Нет"
-                  >
-                    <AntIcon
-                      type="close"
-                      className={styles.remove}
-                    />
-                  </AntPopconfirm>
-                }
+          <div className={styles.errors}>
+            {/* <div className={styles.text}>
+              Необходимо заполнить поля:
+            </div>
+            */ }
+            {this.getFieldsErrors().map((error, index) =>
+              <div
+                key={index}
+                className={styles.error}
+              >
+                {error}
               </div>
+            )}
+          </div>
+          <AntTabs
+            className={styles.variants}
+            tabBarExtraContent={
+              <AntButton
+                size="small"
+                type="primary"
+                onClick={this.addContent(['variants'], {
+                  question: 'Вопрос',
+                  options: [{
+                    text: 'Вариант 1',
+                    image: undefined,
+                    isChecked: false,
+                    isCorrect: false,
+                  }, {
+                    text: 'Вариант 2',
+                    image: undefined,
+                    isChecked: false,
+                    isCorrect: false,
+                  }, {
+                    text: 'Вариант 3',
+                    image: undefined,
+                    isChecked: false,
+                    isCorrect: false,
+                  }, {
+                    text: 'Вариант 4',
+                    image: undefined,
+                    isChecked: false,
+                    isCorrect: false,
+                  }],
+                  hints: [],
+                  competences: [],
+                  explanations: [],
+                })}
+              >
+                Добавить вариант задания
+              </AntButton>
             }
           >
-            <div
-              key={variantIndex}
-              className={styles.variant}
-            >
-              <div className={styles.data}>
-                <div className={styles.question}>
-                  {/*
-                  {getFieldDecorator(`variants[${variantIndex}].question`, {
-                    initialValue: variant.question,
-                    rules: [{
-                      required: true,
-                      message: `Вариант №${variantIndex + 1} - Вопрос к заданию`,
-                    }],
-                  })(
-                    <AntInput
-                      rows={4}
-                      size="default"
-                      type="textarea"
-                      // onChange={changeContent([
-                      //   'variants',
-                      //   variantIndex,
-                      //   'question',
-                      // ])}
-                    />
-                  )}
-                  */}
-                  <AntInput
-                    rows={4}
-                    size="default"
-                    type="textarea"
-                    {...getFieldProps(`variants[${variantIndex}].question`, {
-                      initialValue: variant.question,
-                      rules: [{
-                        required: true,
-                        message: `Вариант №${variantIndex + 1} - Вопрос к заданию`,
-                      }],
-                    })}
-                  />
-                </div>
-                <div className={styles.points}>
-                  {getFieldDecorator(`variants[${variantIndex}].points`, {
-                    initialValue: variant.points,
-                    rules: [{
-                      required: true,
-                      message: `Вариант №${variantIndex + 1} - Баллы за задание`,
-                    }],
-                  })(
-                    <AntInput
-                      size="default"
-                      // onChange={changeContent([
-                      //   'variants',
-                      //   variantIndex,
-                      //   'points',
-                      // ])}
-                    />
-                  )}
-                  Баллы
-                </div>
-                <div className={styles.attemps}>
-                  {getFieldDecorator(`variants[${variantIndex}].attemps`, {
-                    initialValue: variant.attemps,
-                    rules: [{
-                      required: true,
-                      message: `Вариант №${variantIndex + 1} - Количество попыток`,
-                    }],
-                  })(
-                    <AntInput
-                      size="default"
-                      // onChange={changeContent([
-                      //   'variants',
-                      //   variantIndex,
-                      //   'attemps',
-                      // ])}
-                    />
-                  )}
-                  Попытки
-                </div>
-              </div>
-              <AntCollapse
-                className={styles.sections}
-                defaultActiveKey="1"
+            {variants.map((
+              variant, variantIndex
+            ) =>
+              <AntTabs.TabPane
+                key={variantIndex}
+                tab={
+                  <div className={styles.variant}>
+                    {`Вариант ${variantIndex + 1}`}
+                    {variantIndex > 0 &&
+                      <AntPopconfirm
+                        title="Удалить вариант?"
+                        // onConfirm={removeContent([
+                        //   'variants',
+                        //   variantIndex,
+                        // ])}
+                        okText="Да"
+                        cancelText="Нет"
+                      >
+                        <AntIcon
+                          type="close"
+                          className={styles.remove}
+                        />
+                      </AntPopconfirm>
+                    }
+                  </div>
+                }
               >
-                <AntCollapse.Panel
-                  key="1"
-                  header={
-                    <div className={styles.info}>
-                      <div className={styles.text}>
-                        Ответы
-                      </div>
-                      <div className={styles.notifier}>
-                        {variant
-                          .options
-                          .some((option) => option.isCorrect === true)
-                            ? <div className={styles.defined}>Заданы</div>
-                            : <div className={styles.undefined}>Не заданы</div>
-                        }
-                      </div>
-                    </div>
-                  }
+                <div
+                  key={variantIndex}
+                  className={styles.variant}
                 >
-                  <div className={styles.options}>
-                    <Sortable.List
-                      onSortEnd={dragContent([
-                        'variants',
-                        variantIndex,
-                        'options',
-                      ])}
-                      useDragHandle
+                  <div className={styles.data}>
+                    <div className={styles.question}>
+                      <AntForm.Item>
+                        {getFieldDecorator(`form.variants[${variantIndex}].question`, {
+                          initialValue: variant.question,
+                          rules: [{
+                            required: true,
+                            message: `Вариант №${variantIndex + 1} - Вопрос к заданию`,
+                          }],
+                        })(
+                          <AntInput
+                            rows={4}
+                            size="default"
+                            type="textarea"
+                          />
+                        )}
+                      </AntForm.Item>
+                    </div>
+                    <div className={styles.points}>
+                      <AntForm.Item>
+                        {getFieldDecorator(`form.variants[${variantIndex}].points`, {
+                          initialValue: variant.points,
+                          rules: [{
+                            required: true,
+                            message: `Вариант №${variantIndex + 1} - Баллы за задание`,
+                          }],
+                        })(
+                          <AntInput size="default" />
+                        )}
+                      </AntForm.Item>
+                      Баллы
+                    </div>
+                    <div className={styles.attemps}>
+                      <AntForm.Item>
+                        {getFieldDecorator(`form.variants[${variantIndex}].attempts`, {
+                          initialValue: variant.attemps,
+                          rules: [{
+                            required: true,
+                            message: `Вариант №${variantIndex + 1} - Количество попыток`,
+                          }],
+                        })(
+                          <AntInput size="default" />
+                        )}
+                        Попытки
+                      </AntForm.Item>
+                    </div>
+                  </div>
+                  {/*
+                  <AntCollapse
+                    className={styles.sections}
+                    defaultActiveKey="1"
+                  >
+                    <AntCollapse.Panel
+                      key="1"
+                      header={
+                        <div className={styles.info}>
+                          <div className={styles.text}>
+                            Ответы
+                          </div>
+                          <div className={styles.notifier}>
+                            {variant
+                              .options
+                              .some((option) => option.isCorrect === true)
+                                ? <div className={styles.defined}>Заданы</div>
+                                : <div className={styles.undefined}>Не заданы</div>
+                            }
+                          </div>
+                        </div>
+                      }
                     >
-                      {variant.options.map((
-                        option, optionIndex
-                      ) =>
-                        <div
-                          key={optionIndex}
-                          className={styles.option}
+                      <div className={styles.options}>
+                        <Sortable.List
+                          onSortEnd={dragContent([
+                            'variants',
+                            variantIndex,
+                            'options',
+                          ])}
+                          useDragHandle
                         >
-                          <Sortable.Item index={optionIndex}>
-                            <div className={styles.drag}>
-                              <Sortable.Handler />
+                          {variant.options.map((
+                            option, optionIndex
+                          ) =>
+                            <div
+                              key={optionIndex}
+                              className={styles.option}
+                            >
+                              <Sortable.Item index={optionIndex}>
+                                <div className={styles.drag}>
+                                  <Sortable.Handler />
+                                </div>
+                                <div className={styles.text}>
+                                  {getFieldDecorator(`variants[${variantIndex}].options[${optionIndex}].text`, {
+                                    initialValue: option.text,
+                                    rules: [{
+                                      required: true,
+                                      message: `Вариант №${variantIndex + 1} - Ответ №${optionIndex + 1}`,
+                                    }],
+                                  })(
+                                    <AntInput
+                                      size="default"
+                                      // onChange={changeContent([
+                                      //   'variants',
+                                      //   variantIndex,
+                                      //   'options',
+                                      //   optionIndex,
+                                      //   'text',
+                                      // ])}
+                                    />
+                                  )}
+                                </div>
+                                <div className={styles.image}>
+                                  {option.image
+                                    ? <div className={styles.preview}>
+                                        <img
+                                          src={storage[option.image.name]}
+                                          role="presentation"
+                                        />
+                                        <AntIcon
+                                          type="close"
+                                          onClick={removeContent([
+                                            'variants',
+                                            variantIndex,
+                                            'options',
+                                            optionIndex,
+                                            'image',
+                                          ])}
+                                          className={styles.remove}
+                                        />
+                                      </div>
+                                    : <div className={styles.upload}>
+                                        <Dropzone
+                                          onDrop={uploadImage([
+                                            'variants',
+                                            variantIndex,
+                                            'options',
+                                            optionIndex,
+                                          ])}
+                                          multiple={false}
+                                          className={styles.dropzone}
+                                        />
+                                        <AntIcon
+                                          type="camera"
+                                          className={styles.icon}
+                                        />
+                                      </div>
+                                  }
+                                </div>
+                                <div className={styles.checkbox}>
+                                  <AntCheckbox
+                                    checked={option.isCorrect}
+                                    // onChange={changeContent([
+                                    //   'variants',
+                                    //   variantIndex,
+                                    //   'options',
+                                    //   optionIndex,
+                                    //   'isCorrect',
+                                    // ])}
+                                  />
+                                </div>
+                                <div className={styles.remove}>
+                                  <AntPopconfirm
+                                    title="Удалить вариант ответа?"
+                                    okText="Да"
+                                    onConfirm={removeContent([
+                                      'variants',
+                                      variantIndex,
+                                      'options',
+                                      optionIndex,
+                                    ])}
+                                    cancelText="Нет"
+                                  >
+                                    <AntIcon
+                                      type="close"
+                                      className={styles.icon}
+                                    />
+                                  </AntPopconfirm>
+                                </div>
+                              </Sortable.Item>
                             </div>
+                          )}
+                          <AntButton
+                            size="small"
+                            type="primary"
+                            onClick={addContent([
+                              'variants',
+                              variantIndex,
+                              'options',
+                            ], {
+                              text: 'Новый вариант',
+                              image: undefined,
+                              isChecked: false,
+                              isCorrect: false,
+                            })}
+                          >
+                            Добавить вариант ответа
+                          </AntButton>
+                        </Sortable.List>
+                      </div>
+                    </AntCollapse.Panel>
+
+                    <AntCollapse.Panel
+                      key="2"
+                      header={
+                        <div className={styles.info}>
+                          <div className={styles.text}>
+                            Пояснения
+                          </div>
+                          <div className={styles.notifier}>
+                            {variant.explanations.length !== 0
+                              ? <div className={styles.defined}>Заданы</div>
+                              : <div className={styles.undefined}>Не заданы</div>
+                            }
+                          </div>
+                        </div>
+                      }
+                    >
+                      <div className={styles.explanations}>
+                        {variant.explanations.map((
+                          explanation, explanationIndex
+                        ) =>
+                          <div
+                            key={explanationIndex}
+                            className={styles.explanation}
+                          >
                             <div className={styles.text}>
-                              {getFieldDecorator(`variants[${variantIndex}].options[${optionIndex}].text`, {
-                                initialValue: option.text,
+                              {getFieldDecorator(`variants[${variantIndex}].explanations[${explanationIndex}].text`, {
+                                initialValue: explanation.text,
                                 rules: [{
                                   required: true,
-                                  message: `Вариант №${variantIndex + 1} - Ответ №${optionIndex + 1}`,
+                                  message: `Вариант №${variantIndex + 1} - Пояснение к правильному ответу №${explanationIndex + 1}`,
                                 }],
                               })(
                                 <AntInput
@@ -301,73 +482,103 @@ const Editor = ({
                                   // onChange={changeContent([
                                   //   'variants',
                                   //   variantIndex,
-                                  //   'options',
-                                  //   optionIndex,
+                                  //   'explanations',
+                                  //   explanationIndex,
                                   //   'text',
                                   // ])}
                                 />
                               )}
                             </div>
-                            <div className={styles.image}>
-                              {option.image
-                                /* eslint-disable */
-                                ? <div className={styles.preview}>
-                                    <img
-                                      src={storage[option.image.name]}
-                                      role="presentation"
-                                    />
-                                    <AntIcon
-                                      type="close"
-                                      onClick={removeContent([
-                                        'variants',
-                                        variantIndex,
-                                        'options',
-                                        optionIndex,
-                                        'image',
-                                      ])}
-                                      className={styles.remove}
-                                    />
-                                  </div>
-                                : <div className={styles.upload}>
-                                    <Dropzone
-                                      onDrop={uploadImage([
-                                        'variants',
-                                        variantIndex,
-                                        'options',
-                                        optionIndex,
-                                      ])}
-                                      multiple={false}
-                                      className={styles.dropzone}
-                                    />
-                                    <AntIcon
-                                      type="camera"
-                                      className={styles.icon}
-                                    />
-                                  </div>
-                                /* eslint-enable */
-                              }
-                            </div>
-                            <div className={styles.checkbox}>
-                              <AntCheckbox
-                                checked={option.isCorrect}
-                                // onChange={changeContent([
+                            <div className={styles.remove}>
+                              <AntPopconfirm
+                                title="Удалить пояснение?"
+                                okText="Да"
+                                // onConfirm={removeContent([
                                 //   'variants',
                                 //   variantIndex,
-                                //   'options',
-                                //   optionIndex,
-                                //   'isCorrect',
+                                //   'explanations',
+                                //   explanationIndex,
                                 // ])}
-                              />
+                                cancelText="Нет"
+                              >
+                                <AntIcon
+                                  type="close"
+                                  className={styles.icon}
+                                />
+                              </AntPopconfirm>
+                            </div>
+                          </div>
+                        )}
+                        <AntButton
+                          size="small"
+                          type="primary"
+                          onClick={addContent([
+                            'variants',
+                            variantIndex,
+                            'explanations',
+                          ], {
+                            text: 'Новое пояснение',
+                          })}
+                          className={styles.add}
+                        >
+                          Добавить пояснение к ответу
+                        </AntButton>
+                      </div>
+                    </AntCollapse.Panel>
+
+                    <AntCollapse.Panel
+                      key="3"
+                      header={
+                        <div className={styles.info}>
+                          <div className={styles.text}>
+                            Подсказки
+                          </div>
+                          <div className={styles.notifier}>
+                            {variant.hints.length !== 0
+                              ? <div className={styles.defined}>Заданы</div>
+                              : <div className={styles.undefined}>Не заданы</div>
+                            }
+                          </div>
+                        </div>
+                      }
+                    >
+                      <div className={styles.hints}>
+                        {variant.hints.map((
+                          hint, hintIndex
+                        ) =>
+                          <div
+                            key={hintIndex}
+                            className={styles.hint}
+                          >
+                            <div className={styles.text}>
+                              {getFieldDecorator(`variants[${variantIndex}].hints[${hintIndex}].text`, {
+                                initialValue: hint.text,
+                                rules: [{
+                                  required: true,
+                                  message: `Вариант №${variantIndex + 1} - Подсказка №${hintIndex + 1}`,
+                                }],
+                              })(
+                                <AntInput
+                                  size="default"
+                                  // onChange={changeContent([
+                                  //   'variants',
+                                  //   variantIndex,
+                                  //   'hints',
+                                  //   hintIndex,
+                                  //   'text',
+                                  // ])}
+                                />
+                              )}
                             </div>
                             <div className={styles.remove}>
                               <AntPopconfirm
-                                title="Удалить вариант ответа?"
+                                title="Удалить подсказку?"
                                 okText="Да"
                                 onConfirm={removeContent([
                                   'variants',
                                   variantIndex,
-                                  'options',
-                                  optionIndex,
+                                  'hints',
+                                  hintIndex,
                                 ])}
                                 cancelText="Нет"
                               >
@@ -377,299 +588,137 @@ const Editor = ({
                                 />
                               </AntPopconfirm>
                             </div>
-                          </Sortable.Item>
-                        </div>
-                      )}
-                      <AntButton
-                        size="small"
-                        type="primary"
-                        onClick={addContent([
-                          'variants',
-                          variantIndex,
-                          'options',
-                        ], {
-                          text: 'Новый вариант',
-                          image: undefined,
-                          isChecked: false,
-                          isCorrect: false,
-                        })}
-                      >
-                        Добавить вариант ответа
-                      </AntButton>
-                    </Sortable.List>
-                  </div>
-                </AntCollapse.Panel>
+                          </div>
+                        )}
+                        <AntButton
+                          size="small"
+                          type="primary"
+                          onClick={addContent([
+                            'variants',
+                            variantIndex,
+                            'hints',
+                          ], {
+                            text: 'Новая подсказка',
+                          })}
+                          className={styles.add}
+                        >
+                          Добавить подсказку
+                        </AntButton>
+                      </div>
+                    </AntCollapse.Panel>
 
-                <AntCollapse.Panel
-                  key="2"
-                  header={
-                    <div className={styles.info}>
-                      <div className={styles.text}>
-                        Пояснения
-                      </div>
-                      <div className={styles.notifier}>
-                        {variant.explanations.length !== 0
-                          ? <div className={styles.defined}>Заданы</div>
-                          : <div className={styles.undefined}>Не заданы</div>
-                        }
-                      </div>
-                    </div>
-                  }
-                >
-                  <div className={styles.explanations}>
-                    {variant.explanations.map((
-                      explanation, explanationIndex
-                    ) =>
-                      <div
-                        key={explanationIndex}
-                        className={styles.explanation}
-                      >
-                        <div className={styles.text}>
-                          {getFieldDecorator(`variants[${variantIndex}].explanations[${explanationIndex}].text`, {
-                            initialValue: explanation.text,
-                            rules: [{
-                              required: true,
-                              message: `Вариант №${variantIndex + 1} - Пояснение к правильному ответу №${explanationIndex + 1}`,
-                            }],
-                          })(
-                            <AntInput
-                              size="default"
-                              // onChange={changeContent([
-                              //   'variants',
-                              //   variantIndex,
-                              //   'explanations',
-                              //   explanationIndex,
-                              //   'text',
-                              // ])}
-                            />
-                          )}
+                    <AntCollapse.Panel
+                      key="4"
+                      header={
+                        <div className={styles.info}>
+                          <div className={styles.text}>
+                            Компетенции
+                          </div>
+                          <div className={styles.notifier}>
+                            {variant.competences.length !== 0
+                              ? <div className={styles.defined}>Заданы</div>
+                              : <div className={styles.undefined}>Не заданы</div>
+                            }
+                          </div>
                         </div>
-                        <div className={styles.remove}>
-                          <AntPopconfirm
-                            title="Удалить пояснение?"
-                            okText="Да"
-                            // onConfirm={removeContent([
-                            //   'variants',
-                            //   variantIndex,
-                            //   'explanations',
-                            //   explanationIndex,
-                            // ])}
-                            cancelText="Нет"
-                          >
-                            <AntIcon
-                              type="close"
-                              className={styles.icon}
-                            />
-                          </AntPopconfirm>
-                        </div>
-                      </div>
-                    )}
-                    <AntButton
-                      size="small"
-                      type="primary"
-                      onClick={addContent([
-                        'variants',
-                        variantIndex,
-                        'explanations',
-                      ], {
-                        text: 'Новое пояснение',
-                      })}
-                      className={styles.add}
+                      }
                     >
-                      Добавить пояснение к ответу
-                    </AntButton>
-                  </div>
-                </AntCollapse.Panel>
-
-                <AntCollapse.Panel
-                  key="3"
-                  header={
-                    <div className={styles.info}>
-                      <div className={styles.text}>
-                        Подсказки
-                      </div>
-                      <div className={styles.notifier}>
-                        {variant.hints.length !== 0
-                          ? <div className={styles.defined}>Заданы</div>
-                          : <div className={styles.undefined}>Не заданы</div>
-                        }
-                      </div>
-                    </div>
-                  }
-                >
-                  <div className={styles.hints}>
-                    {variant.hints.map((
-                      hint, hintIndex
-                    ) =>
-                      <div
-                        key={hintIndex}
-                        className={styles.hint}
-                      >
-                        <div className={styles.text}>
-                          {getFieldDecorator(`variants[${variantIndex}].hints[${hintIndex}].text`, {
-                            initialValue: hint.text,
-                            rules: [{
-                              required: true,
-                              message: `Вариант №${variantIndex + 1} - Подсказка №${hintIndex + 1}`,
-                            }],
-                          })(
-                            <AntInput
-                              size="default"
-                              // onChange={changeContent([
-                              //   'variants',
-                              //   variantIndex,
-                              //   'hints',
-                              //   hintIndex,
-                              //   'text',
-                              // ])}
-                            />
-                          )}
-                        </div>
-                        <div className={styles.remove}>
-                          <AntPopconfirm
-                            title="Удалить подсказку?"
-                            okText="Да"
-                            onConfirm={removeContent([
-                              'variants',
-                              variantIndex,
-                              'hints',
-                              hintIndex,
-                            ])}
-                            cancelText="Нет"
+                      <div className={styles.competences}>
+                        {variant.competences.map((
+                          competence, competenceIndex
+                        ) =>
+                          <div
+                            key={competenceIndex}
+                            className={styles.competence}
                           >
-                            <AntIcon
-                              type="close"
-                              className={styles.icon}
-                            />
-                          </AntPopconfirm>
-                        </div>
-                      </div>
-                    )}
-                    <AntButton
-                      size="small"
-                      type="primary"
-                      onClick={addContent([
-                        'variants',
-                        variantIndex,
-                        'hints',
-                      ], {
-                        text: 'Новая подсказка',
-                      })}
-                      className={styles.add}
-                    >
-                      Добавить подсказку
-                    </AntButton>
-                  </div>
-                </AntCollapse.Panel>
+                            <div className={styles.text}>
 
-                <AntCollapse.Panel
-                  key="4"
-                  header={
-                    <div className={styles.info}>
-                      <div className={styles.text}>
-                        Компетенции
+                              {getFieldDecorator(`variants[${variantIndex}].competences[${competenceIndex}].text`, {
+                                initialValue: competence.text,
+                                rules: [{
+                                  required: true,
+                                  message: `Вариант №${variantIndex + 1} - Компетенция №${competenceIndex + 1}`,
+                                }],
+                              })(
+                                <AntInput
+                                  size="default"
+                                  // onChange={changeContent([
+                                  //   'variants',
+                                  //   variantIndex,
+                                  //   'competences',
+                                  //   competenceIndex,
+                                  //   'text',
+                                  // ])}
+                                />
+                              )}
+                            </div>
+                            <div className={styles.remove}>
+                              <AntPopconfirm
+                                title="Удалить компетенцию?"
+                                okText="Да"
+                                onConfirm={removeContent([
+                                  'variants',
+                                  variantIndex,
+                                  'competences',
+                                  competenceIndex,
+                                ])}
+                                cancelText="Нет"
+                              >
+                                <AntIcon
+                                  type="close"
+                                  className={styles.icon}
+                                />
+                              </AntPopconfirm>
+                            </div>
+                          </div>
+                        )}
+                        <AntButton
+                          size="small"
+                          type="primary"
+                          onClick={addContent([
+                            'variants',
+                            variantIndex,
+                            'competences',
+                          ], {
+                            text: 'Новая компетенция',
+                          })}
+                          className={styles.add}
+                        >
+                          Добавить подсказку
+                        </AntButton>
                       </div>
-                      <div className={styles.notifier}>
-                        {variant.competences.length !== 0
-                          ? <div className={styles.defined}>Заданы</div>
-                          : <div className={styles.undefined}>Не заданы</div>
-                        }
-                      </div>
-                    </div>
-                  }
-                >
-                  <div className={styles.competences}>
-                    {variant.competences.map((
-                      competence, competenceIndex
-                    ) =>
-                      <div
-                        key={competenceIndex}
-                        className={styles.competence}
-                      >
-                        <div className={styles.text}>
+                    </AntCollapse.Panel>
 
-                          {getFieldDecorator(`variants[${variantIndex}].competences[${competenceIndex}].text`, {
-                            initialValue: competence.text,
-                            rules: [{
-                              required: true,
-                              message: `Вариант №${variantIndex + 1} - Компетенция №${competenceIndex + 1}`,
-                            }],
-                          })(
-                            <AntInput
-                              size="default"
-                              // onChange={changeContent([
-                              //   'variants',
-                              //   variantIndex,
-                              //   'competences',
-                              //   competenceIndex,
-                              //   'text',
-                              // ])}
-                            />
-                          )}
-                        </div>
-                        <div className={styles.remove}>
-                          <AntPopconfirm
-                            title="Удалить компетенцию?"
-                            okText="Да"
-                            onConfirm={removeContent([
-                              'variants',
-                              variantIndex,
-                              'competences',
-                              competenceIndex,
-                            ])}
-                            cancelText="Нет"
-                          >
-                            <AntIcon
-                              type="close"
-                              className={styles.icon}
-                            />
-                          </AntPopconfirm>
-                        </div>
-                      </div>
-                    )}
-                    <AntButton
-                      size="small"
-                      type="primary"
-                      onClick={addContent([
-                        'variants',
-                        variantIndex,
-                        'competences',
-                      ], {
-                        text: 'Новая компетенция',
-                      })}
-                      className={styles.add}
-                    >
-                      Добавить подсказку
-                    </AntButton>
-                  </div>
-                </AntCollapse.Panel>
-
-              </AntCollapse>
-            </div>
-          </AntTabs.TabPane>
-        )}
-      </AntTabs>
-      <div className={styles.actions}>
-        <AntButton
-          type="primary"
-          icon="check"
-          onClick={validateAndSave}
-          className={styles.save}
-        >
-          Сохранить
-        </AntButton>
-        <AntButton
-          type="default"
-          icon="rollback"
-          onClick={resetAndClose}
-          className={styles.cancel}
-        >
-          Отменить
-        </AntButton>
+                  </AntCollapse>
+                  */}
+                </div>
+              </AntTabs.TabPane>
+            )}
+          </AntTabs>
+          <div className={styles.actions}>
+            <AntButton
+              type="primary"
+              icon="check"
+              onClick={this.validateAndSave}
+              className={styles.save}
+            >
+              Сохранить
+            </AntButton>
+            <AntButton
+              type="default"
+              icon="rollback"
+              onClick={this.resetAndClose}
+              className={styles.cancel}
+            >
+              Отменить
+            </AntButton>
+          </div>
+        
       </div>
-    </div>
-  );
-};
+      </AntForm>
+    );
+  }
+}
 
 const Sortable = {
   List: SortableContainer(
@@ -688,15 +737,8 @@ const Sortable = {
 
 Editor.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  addContent: PropTypes.func.isRequired,
-  dragContent: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
-  uploadImage: PropTypes.func.isRequired,
   saveContent: PropTypes.func.isRequired,
-  undoHistory: PropTypes.func.isRequired,
-  redoHistory: PropTypes.func.isRequired,
-  removeContent: PropTypes.func.isRequired,
-  // changeContent: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
@@ -739,28 +781,4 @@ Editor.propTypes = {
   }),
 };
 
-export default createForm({
-  // Замена локальных методов onChange
-  onFieldsChange(props, fields) {
-    Object.values(fields).forEach(
-      ({ name, value }) => {
-        props.changeContent(name, value);
-      }
-    );
-  },
-  // Синхронизация данных в HOC формы
-  // с данными из state компонента
-  // Когда в форму приходят новые данные - отключается валидатор
-  mapPropsToFields({ content }) {
-    return flatten(content).reduce(
-      (fields, name) => ({
-        ...fields,
-        [name]: {
-          value: get(
-            content,
-            name
-          ),
-        },
-      }), {});
-  },
-})(Editor);
+export default createForm()(Editor);

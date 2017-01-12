@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
+import Sample from './Sample';
 import styles from './styles.css';
 
 class Checkbox extends PureComponent {
@@ -53,126 +54,62 @@ class Checkbox extends PureComponent {
       });
   }
 
-  uploadImage = (location) => (files) => {
-    const image = {
-      data: files[0].slice(0),
-      name: [
-        files[0].lastModified,
-        files[0].size,
-        files[0].name,
-      ].join(''),
-    };
-    const reader = new FileReader();
-    reader.readAsDataURL(image.data);
-    // eslint-disable-next-line
-    reader.onloadend = () => {
-      this.storage.images[
-        image.name
-      ] = reader.result;
-      this.setState({
-        content: set([
-          'editor',
-          ...location,
-          'image',
-          'name',
-        ],
-          image.name,
-          this.state.content
-        ),
-      }, this.addStateToHistory);
-    };
-  }
-
-  addContent = (location, content) => () => {
-    this.setState({
-      content: update(
-        ['editor', ...location],
-        (data) => data.concat([content]),
-        this.state.content,
-      ),
-    });
-  }
-
-  removeContent = (location) => (event) => {
-    if (event) { event.stopPropagation(); }
-    this.setState({
-      content: update(
-        ['editor', ...dropRight(1, location)],
-        (data) => pullAt([last(location)], data),
-        this.state.content
-      ),
-    }, this.addStateToHistory);
-  }
-
-  dragContent = (location) => ({ oldIndex, newIndex }) => {
-    const { content } = this.state;
-    this.setState({
-      content: set(
-        ['editor', ...location],
-        arrayMove(
-          get(['editor', ...location], content),
-          oldIndex,
-          newIndex,
-        ),
-        content
-      ),
-    }, this.addStateToHistory);
-  };
-
-  changeContent = (location, value) => {
-    this.setState({
-      content: {
-        ...this.state.content,
-        editor: set(
-          location,
-          value,
-          this.state.content.editor
-        ),
-      },
-    }, this.addStateToHistory);
-  }
-
-  // changeContent = (location) => (event) => {
-  //   const value = event.type
-  //     ? event.target.value    // для инпутов
-  //     : event.target.checked; // для чекбоксов
-  //   this.setState({
-  //     content: set([
-  //       'editor',
-  //       ...location,
-  //     ],
-  //       value,
-  //       this.state.content
-  //     ),
-  //   }, this.addStateToHistory);
+  // uploadImage = (location) => (files) => {
+  //   const image = {
+  //     data: files[0].slice(0),
+  //     name: [
+  //       files[0].lastModified,
+  //       files[0].size,
+  //       files[0].name,
+  //     ].join(''),
+  //   };
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(image.data);
+  //   // eslint-disable-next-line
+  //   reader.onloadend = () => {
+  //     this.storage.images[
+  //       image.name
+  //     ] = reader.result;
+  //     this.setState({
+  //       content: set([
+  //         'editor',
+  //         ...location,
+  //         'image',
+  //         'name',
+  //       ],
+  //         image.name,
+  //         this.state.content
+  //       ),
+  //     }, this.addStateToHistory);
+  //   };
   // }
 
-  addStateToHistory = () => {
-    /* eslint-disable */
-    this.history.present = this.state;
-    this.history.past.push(this.state);
-    /* eslint-enable */
-  }
+  // addStateToHistory = () => {
+  //   /* eslint-disable */
+  //   this.history.present = this.state;
+  //   this.history.past.push(this.state);
+  //   /* eslint-enable */
+  // }
 
-  undoHistory = () => {
-    if (this.history.past.length > 0) {
-      /* eslint-disable */
-      this.history.future.push(this.history.present);
-      this.history.present = this.history.past.pop();
-      /* eslint-enable */
-      this.setState(this.history.present);
-    }
-  }
+  // undoHistory = () => {
+  //   if (this.history.past.length > 0) {
+  //     /* eslint-disable */
+  //     this.history.future.push(this.history.present);
+  //     this.history.present = this.history.past.pop();
+  //     /* eslint-enable */
+  //     this.setState(this.history.present);
+  //   }
+  // }
 
-  redoHistory = () => {
-    if (this.history.future.length > 0) {
-      /* eslint-disable */
-      this.history.past.push(this.history.present);
-      this.history.present = this.history.future.pop();
-      /* eslint-enable */
-      this.setState(this.history.present);
-    }
-  }
+  // redoHistory = () => {
+  //   if (this.history.future.length > 0) {
+  //     /* eslint-disable */
+  //     this.history.past.push(this.history.present);
+  //     this.history.present = this.history.future.pop();
+  //     /* eslint-enable */
+  //     this.setState(this.history.present);
+  //   }
+  // }
 
   openEditor = () => {
     const { content } = this.state;
@@ -215,7 +152,6 @@ class Checkbox extends PureComponent {
         editor,
         component,
       },
-      errors,
       editing,
     } = this.state;
     return (
@@ -231,19 +167,20 @@ class Checkbox extends PureComponent {
         />
         <Editor
           isOpen={editing}
-          errors={errors}
+          // errors={errors}
           content={editor}
-          storage={this.storage}
-          addContent={this.addContent}
-          dragContent={this.dragContent}
+          // storage={this.storage}
+          // addContent={this.addContent}
+          // dragContent={this.dragContent}
           closeEditor={this.closeEditor}
-          uploadImage={this.uploadImage}
+          // uploadImage={this.uploadImage}
           saveContent={this.saveContent}
-          undoHistory={this.undoHistory}
-          redoHistory={this.redoHistory}
-          removeContent={this.removeContent}
-          changeContent={this.changeContent}
+          // undoHistory={this.undoHistory}
+          // redoHistory={this.redoHistory}
+          // removeContent={this.removeContent}
+          // changeContent={this.changeContent}
         />
+        {editing && <Sample />}
         {editing
           /* eslint-disable */
           ? <div className={styles.actions}>
