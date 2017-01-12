@@ -1,13 +1,16 @@
 import React, { PureComponent, PropTypes } from 'react';
-import { get, set, last, update, pullAt, dropRight } from 'lodash/fp';
+import {
+  // get,
+  set,
+  // last, update, pullAt, dropRight
+} from 'lodash/fp';
 import { Button as AntButton } from 'antd';
-import { arrayMove } from 'react-sortable-hoc';
+// import { arrayMove } from 'react-sortable-hoc';
 import localForage from 'localforage';
 import classNames from 'classnames';
 import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
-import Sample from './Sample';
 import styles from './styles.css';
 
 class Checkbox extends PureComponent {
@@ -180,7 +183,6 @@ class Checkbox extends PureComponent {
           // removeContent={this.removeContent}
           // changeContent={this.changeContent}
         />
-        {editing && <Sample />}
         {editing
           /* eslint-disable */
           ? <div className={styles.actions}>

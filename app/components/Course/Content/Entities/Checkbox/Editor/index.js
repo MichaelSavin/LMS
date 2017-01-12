@@ -18,13 +18,13 @@ import {
   SortableContainer,
 } from 'react-sortable-hoc';
 import {
-  get,
-  set,
-  last,
+  // get,
+  // set,
+  // last,
   update,
-  pullAt,
+  // pullAt,
   compact,
-  dropRight,
+  // dropRight,
 } from 'lodash/fp';
 import flatten from 'object-end-keys';
 import { createForm } from 'rc-form';
@@ -37,9 +37,7 @@ class Editor extends Component {
   componentWillMount() {
     const {
       content,
-      form: {
-        setFieldsValue,
-      },
+      form: { setFieldsValue },
     } = this.props;
     setFieldsValue({ content });
   }
@@ -51,14 +49,23 @@ class Editor extends Component {
         getFieldsValue,
       },
     } = this.props;
-    return compact(
-      flatten(getFieldsValue()).map(
-        (field) => getFieldError(field)
+    return (
+      compact(
+        flatten(
+          getFieldsValue()
+        ).map(
+          (field) => getFieldError(field)
+        )
       )
     );
   }
 
   getCustomErrors = () => [];
+
+  getErrors = () => [
+    ...this.getFieldsErrors(),
+    ...this.getCustomErrors(),
+  ]
 
   resetAndClose = () => {
     this.props.closeEditor();
@@ -68,13 +75,13 @@ class Editor extends Component {
     const {
       saveContent,
       form: {
+        getFieldValue,
         validateFields,
-        getFieldsValue,
       },
     } = this.props;
     validateFields((error, values) => {
       if (!error) {
-        saveContent(getFieldsValue());
+        saveContent(getFieldValue('content'));
       } else {
         console.log('Errors:', error, values);
       }
@@ -129,14 +136,14 @@ class Editor extends Component {
       content,
       // storage,
       form: {
-        // getFieldValue,
-        getFieldsValue,
+        getFieldValue,
         getFieldDecorator,
       },
     } = this.props;
-    // console.log(getFieldsValue());
+
+    // Инициализация формы начальными значениями
     getFieldDecorator('content', { initialValue: content });
-    const { variants } = getFieldsValue().content;
+
     return (
       <AntForm>
         <div
@@ -167,7 +174,7 @@ class Editor extends Component {
               Необходимо заполнить поля:
             </div>
             */ }
-            {this.getFieldsErrors().map((error, index) =>
+            {this.getErrors().map((error, index) =>
               <div
                 key={index}
                 className={styles.error}
@@ -214,7 +221,7 @@ class Editor extends Component {
               </AntButton>
             }
           >
-            {variants.map((
+            {getFieldValue('content').variants.map((
               variant, variantIndex
             ) =>
               <AntTabs.TabPane
@@ -292,7 +299,6 @@ class Editor extends Component {
                       </AntForm.Item>
                     </div>
                   </div>
-                  {/*
                   <AntCollapse
                     className={styles.sections}
                     defaultActiveKey="1"
@@ -317,11 +323,11 @@ class Editor extends Component {
                     >
                       <div className={styles.options}>
                         <Sortable.List
-                          onSortEnd={dragContent([
-                            'variants',
-                            variantIndex,
-                            'options',
-                          ])}
+                          // onSortEnd={dragContent([
+                          //   'variants',
+                          //   variantIndex,
+                          //   'options',
+                          // ])}
                           useDragHandle
                         >
                           {variant.options.map((
@@ -357,6 +363,7 @@ class Editor extends Component {
                                 </div>
                                 <div className={styles.image}>
                                   {option.image
+                                    /* eslint-disable */
                                     ? <div className={styles.preview}>
                                         <img
                                           src={storage[option.image.name]}
@@ -376,12 +383,12 @@ class Editor extends Component {
                                       </div>
                                     : <div className={styles.upload}>
                                         <Dropzone
-                                          onDrop={uploadImage([
-                                            'variants',
-                                            variantIndex,
-                                            'options',
-                                            optionIndex,
-                                          ])}
+                                          // onDrop={uploadImage([
+                                          //   'variants',
+                                          //   variantIndex,
+                                          //   'options',
+                                          //   optionIndex,
+                                          // ])}
                                           multiple={false}
                                           className={styles.dropzone}
                                         />
@@ -390,6 +397,7 @@ class Editor extends Component {
                                           className={styles.icon}
                                         />
                                       </div>
+                                    /* eslint-enable */
                                   }
                                 </div>
                                 <div className={styles.checkbox}>
@@ -408,12 +416,12 @@ class Editor extends Component {
                                   <AntPopconfirm
                                     title="Удалить вариант ответа?"
                                     okText="Да"
-                                    onConfirm={removeContent([
-                                      'variants',
-                                      variantIndex,
-                                      'options',
-                                      optionIndex,
-                                    ])}
+                                    // onConfirm={removeContent([
+                                    //   'variants',
+                                    //   variantIndex,
+                                    //   'options',
+                                    //   optionIndex,
+                                    // ])}
                                     cancelText="Нет"
                                   >
                                     <AntIcon
@@ -428,7 +436,7 @@ class Editor extends Component {
                           <AntButton
                             size="small"
                             type="primary"
-                            onClick={addContent([
+                            onClick={this.addContent([
                               'variants',
                               variantIndex,
                               'options',
@@ -444,7 +452,6 @@ class Editor extends Component {
                         </Sortable.List>
                       </div>
                     </AntCollapse.Panel>
-
                     <AntCollapse.Panel
                       key="2"
                       header={
@@ -512,7 +519,7 @@ class Editor extends Component {
                         <AntButton
                           size="small"
                           type="primary"
-                          onClick={addContent([
+                          onClick={this.addContent([
                             'variants',
                             variantIndex,
                             'explanations',
@@ -525,7 +532,6 @@ class Editor extends Component {
                         </AntButton>
                       </div>
                     </AntCollapse.Panel>
-
                     <AntCollapse.Panel
                       key="3"
                       header={
@@ -574,12 +580,12 @@ class Editor extends Component {
                               <AntPopconfirm
                                 title="Удалить подсказку?"
                                 okText="Да"
-                                onConfirm={removeContent([
-                                  'variants',
-                                  variantIndex,
-                                  'hints',
-                                  hintIndex,
-                                ])}
+                                // onConfirm={removeContent([
+                                //   'variants',
+                                //   variantIndex,
+                                //   'hints',
+                                //   hintIndex,
+                                // ])}
                                 cancelText="Нет"
                               >
                                 <AntIcon
@@ -593,7 +599,7 @@ class Editor extends Component {
                         <AntButton
                           size="small"
                           type="primary"
-                          onClick={addContent([
+                          onClick={this.addContent([
                             'variants',
                             variantIndex,
                             'hints',
@@ -606,7 +612,6 @@ class Editor extends Component {
                         </AntButton>
                       </div>
                     </AntCollapse.Panel>
-
                     <AntCollapse.Panel
                       key="4"
                       header={
@@ -632,7 +637,6 @@ class Editor extends Component {
                             className={styles.competence}
                           >
                             <div className={styles.text}>
-
                               {getFieldDecorator(`variants[${variantIndex}].competences[${competenceIndex}].text`, {
                                 initialValue: competence.text,
                                 rules: [{
@@ -656,12 +660,12 @@ class Editor extends Component {
                               <AntPopconfirm
                                 title="Удалить компетенцию?"
                                 okText="Да"
-                                onConfirm={removeContent([
-                                  'variants',
-                                  variantIndex,
-                                  'competences',
-                                  competenceIndex,
-                                ])}
+                                // onConfirm={removeContent([
+                                //   'variants',
+                                //   variantIndex,
+                                //   'competences',
+                                //   competenceIndex,
+                                // ])}
                                 cancelText="Нет"
                               >
                                 <AntIcon
@@ -675,7 +679,7 @@ class Editor extends Component {
                         <AntButton
                           size="small"
                           type="primary"
-                          onClick={addContent([
+                          onClick={this.addContent([
                             'variants',
                             variantIndex,
                             'competences',
@@ -688,9 +692,7 @@ class Editor extends Component {
                         </AntButton>
                       </div>
                     </AntCollapse.Panel>
-
                   </AntCollapse>
-                  */}
                 </div>
               </AntTabs.TabPane>
             )}
@@ -713,8 +715,7 @@ class Editor extends Component {
               Отменить
             </AntButton>
           </div>
-        
-      </div>
+        </div>
       </AntForm>
     );
   }
@@ -763,14 +764,14 @@ Editor.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
-  storage: PropTypes.shape({
-    images: PropTypes.objectOf(
-      PropTypes.string.isRequired,
-    ).isRequired,
-    crops: PropTypes.objectOf(
-      PropTypes.string.isRequired,
-    ).isRequired,
-  }).isRequired,
+  // storage: PropTypes.shape({
+  //   images: PropTypes.objectOf(
+  //     PropTypes.string.isRequired,
+  //   ).isRequired,
+  //   crops: PropTypes.objectOf(
+  //     PropTypes.string.isRequired,
+  //   ).isRequired,
+  // }).isRequired,
   form: PropTypes.shape({
     resetFields: PropTypes.func.isRequired,
     getFieldError: PropTypes.func.isRequired,
