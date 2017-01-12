@@ -185,15 +185,17 @@ class Checkbox extends PureComponent {
           content={isEditing ? editor : component}
           storage={this.storage}
         />
-        <Editor
-          isOpen={isEditing}
-          content={editor}
-          // storage={this.storage}
-          closeEditor={this.closeEditor}
-          // uploadImage={this.uploadImage}
-          saveContent={this.saveContent}
-          syncContent={this.syncContent}
-        />
+        {isEditing &&
+          <Editor
+            isOpen={isEditing}
+            content={editor}
+            // storage={this.storage}
+            closeEditor={this.closeEditor}
+            // uploadImage={this.uploadImage}
+            saveContent={this.saveContent}
+            syncContent={this.syncContent}
+          />
+        }
         {isEditing
           /* eslint-disable */
           ? <div className={styles.actions}>

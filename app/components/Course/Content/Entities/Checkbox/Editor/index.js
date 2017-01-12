@@ -45,8 +45,8 @@ class Editor extends Component {
   // Предотвращение бесконечного ререндера
   // создаваемого методом syncWithEditor
   shouldComponentUpdate(nextProps) {
-    return this.props.content === nextProps.content ||
-      this.props.isOpen !== nextProps.isOpen;
+    return this.props.content === nextProps.content; // ||
+      // this.props.isOpen !== nextProps.isOpen;
   }
 
   // Синхронизация данных, измененных внутри
@@ -156,7 +156,7 @@ class Editor extends Component {
 
   render() {
     const {
-      isOpen,
+      // isOpen,
       content,
       // storage,
       form: {
@@ -173,7 +173,7 @@ class Editor extends Component {
         <div
           className={classNames(
             styles.editor,
-            { [styles.hidden]: !isOpen }
+            // { [styles.hidden]: !isOpen }
           )}
         >
           <div className={styles.title}>
@@ -768,7 +768,7 @@ const Sortable = {
 };
 
 Editor.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
+  // isOpen: PropTypes.bool.isRequired,
   closeEditor: PropTypes.func.isRequired,
   saveContent: PropTypes.func.isRequired,
   syncContent: PropTypes.func.isRequired,
