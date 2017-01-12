@@ -19,12 +19,11 @@ class Checkbox extends PureComponent {
     super(props);
     const { content } = props;
     this.state = {
-      drag: null,
-      editing: false,
       content: {
         editor: content,
         component: content,
       },
+      isEditing: false,
     };
     this.storage = {
       crops: {},
@@ -114,6 +113,18 @@ class Checkbox extends PureComponent {
   //   }
   // }
 
+  // Синхронизания данных формы из
+  // Editor с предпросмотром в Preview
+  syncContent = (content) => {
+    this.setState({
+      content: set(
+        ['editor'],
+        content,
+        this.state.content
+      ),
+    });
+  }
+
   openEditor = () => {
     const { content } = this.state;
     this.setState({
@@ -122,13 +133,19 @@ class Checkbox extends PureComponent {
         content.component,
         content
       ),
-      editing: true,
+      isEditing: true,
     }, this.context.toggleReadOnly);
   }
 
   closeEditor = () => {
+    const { content } = this.state;
     this.setState({
-      editing: false,
+      content: set(
+        ['editor'],
+        content.component,
+        content
+      ),
+      isEditing: false,
     }, this.context.toggleReadOnly);
   }
 
@@ -140,12 +157,12 @@ class Checkbox extends PureComponent {
       }
     );
     this.setState({
-      editing: false,
       content: set(
         ['component'],
         content.editor,
         content
       ),
+      isEditing: false,
     }, this.context.toggleReadOnly);
   }
 
@@ -155,35 +172,29 @@ class Checkbox extends PureComponent {
         editor,
         component,
       },
-      editing,
+      isEditing,
     } = this.state;
     return (
       <div
         className={classNames(
           styles.checkbox,
-          { [styles.editing]: editing },
+          { [styles.editing]: isEditing },
         )}
       >
         <Preview
-          content={editing ? editor : component}
+          content={isEditing ? editor : component}
           storage={this.storage}
         />
         <Editor
-          isOpen={editing}
-          // errors={errors}
+          isOpen={isEditing}
           content={editor}
           // storage={this.storage}
-          // addContent={this.addContent}
-          // dragContent={this.dragContent}
           closeEditor={this.closeEditor}
           // uploadImage={this.uploadImage}
           saveContent={this.saveContent}
-          // undoHistory={this.undoHistory}
-          // redoHistory={this.redoHistory}
-          // removeContent={this.removeContent}
-          // changeContent={this.changeContent}
+          syncContent={this.syncContent}
         />
-        {editing
+        {isEditing
           /* eslint-disable */
           ? <div className={styles.actions}>
               <AntButton

@@ -34,12 +34,36 @@ import styles from './styles.css';
 
 class Editor extends Component {
 
-  componentWillMount() {
+  // componentWillMount() {
+  //   const {
+  //     content,
+  //     form: { setFieldsValue },
+  //   } = this.props;
+  //   setFieldsValue({ content });
+  // }
+
+  // Предотвращение бесконечного ререндера
+  // создаваемого методом syncWithEditor
+  shouldComponentUpdate(nextProps) {
+    return this.props.content === nextProps.content ||
+      this.props.isOpen !== nextProps.isOpen;
+  }
+
+  // Синхронизация данных, измененных внутри
+  // формы, с данными основного компонента
+  componentDidUpdate() {
     const {
-      content,
-      form: { setFieldsValue },
+      syncContent,
+      form: { getFieldValue },
     } = this.props;
-    setFieldsValue({ content });
+    syncContent({
+      // Подмешивание измененных полей
+      ...this.props.content,
+      ...getFieldValue('form'),
+      // Если поля, при первом рендере, нет в
+      // getFieldDecorator, то оно заменяется
+      // на undefined в getFieldValue('form')
+    });
   }
 
   getFieldsErrors = () => {
@@ -73,11 +97,11 @@ class Editor extends Component {
 
   validateAndSave = () => {
     const {
-      saveContent,
       form: {
         getFieldValue,
         validateFields,
       },
+      saveContent,
     } = this.props;
     validateFields((error, values) => {
       if (!error) {
@@ -295,8 +319,8 @@ class Editor extends Component {
                         })(
                           <AntInput size="default" />
                         )}
-                        Попытки
                       </AntForm.Item>
+                      Попытки
                     </div>
                   </div>
                   <AntCollapse
@@ -342,7 +366,7 @@ class Editor extends Component {
                                   <Sortable.Handler />
                                 </div>
                                 <div className={styles.text}>
-                                  {getFieldDecorator(`variants[${variantIndex}].options[${optionIndex}].text`, {
+                                  {getFieldDecorator(`form.variants[${variantIndex}].options[${optionIndex}].text`, {
                                     initialValue: option.text,
                                     rules: [{
                                       required: true,
@@ -452,6 +476,9 @@ class Editor extends Component {
                         </Sortable.List>
                       </div>
                     </AntCollapse.Panel>
+                    {/* eslint-disable */}
+                    {/* Необходимо задавать значения всех пустых массивов через getFieldDecorator */}
+                    {getFieldDecorator(`form.variants[${variantIndex}].explanations`, { initialValue: [] })}
                     <AntCollapse.Panel
                       key="2"
                       header={
@@ -477,7 +504,7 @@ class Editor extends Component {
                             className={styles.explanation}
                           >
                             <div className={styles.text}>
-                              {getFieldDecorator(`variants[${variantIndex}].explanations[${explanationIndex}].text`, {
+                              {getFieldDecorator(`form.variants[${variantIndex}].explanations[${explanationIndex}].text`, {
                                 initialValue: explanation.text,
                                 rules: [{
                                   required: true,
@@ -532,6 +559,8 @@ class Editor extends Component {
                         </AntButton>
                       </div>
                     </AntCollapse.Panel>
+                    {/* Необходимо задавать значения всех пустых массивов через getFieldDecorator */}
+                    {getFieldDecorator(`form.variants[${variantIndex}].hints`, { initialValue: [] })}
                     <AntCollapse.Panel
                       key="3"
                       header={
@@ -557,7 +586,7 @@ class Editor extends Component {
                             className={styles.hint}
                           >
                             <div className={styles.text}>
-                              {getFieldDecorator(`variants[${variantIndex}].hints[${hintIndex}].text`, {
+                              {getFieldDecorator(`form.variants[${variantIndex}].hints[${hintIndex}].text`, {
                                 initialValue: hint.text,
                                 rules: [{
                                   required: true,
@@ -612,6 +641,8 @@ class Editor extends Component {
                         </AntButton>
                       </div>
                     </AntCollapse.Panel>
+                    {/* Необходимо задавать значения всех пустых массивов через getFieldDecorator */}
+                    {getFieldDecorator(`form.variants[${variantIndex}].competences`, { initialValue: [] })}
                     <AntCollapse.Panel
                       key="4"
                       header={
@@ -637,7 +668,7 @@ class Editor extends Component {
                             className={styles.competence}
                           >
                             <div className={styles.text}>
-                              {getFieldDecorator(`variants[${variantIndex}].competences[${competenceIndex}].text`, {
+                              {getFieldDecorator(`form.variants[${variantIndex}].competences[${competenceIndex}].text`, {
                                 initialValue: competence.text,
                                 rules: [{
                                   required: true,
@@ -740,6 +771,7 @@ Editor.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   closeEditor: PropTypes.func.isRequired,
   saveContent: PropTypes.func.isRequired,
+  syncContent: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
