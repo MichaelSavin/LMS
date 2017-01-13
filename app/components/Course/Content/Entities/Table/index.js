@@ -477,6 +477,24 @@ class Table extends Component {
             onClick={this.moveBlockDown}
           />
           <AntButton
+            type="primary"
+            icon="up-square"
+            className={styles.icon}
+            onClick={this.moveBlockUp}
+          />
+          <span
+            icon="ellipsis"
+            className={classNames(styles.icon, 'sortable-handle')}
+          >
+            <AntIcon type="ellipsis" />
+          </span>
+          <AntButton
+            type="primary"
+            icon="down-square"
+            className={styles.icon}
+            onClick={this.moveBlockDown}
+          />
+          <AntButton
             type="danger"
             icon="close-circle"
             className={styles.icon}
