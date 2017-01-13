@@ -4,8 +4,8 @@ import React, {
 } from 'react';
 import { Icon as AntIcon } from 'antd';
 import {
-  RichUtils,
   Entity,
+  RichUtils,
 } from 'draft-js';
 import Icon from 'components/UI/Icon';
 import { getSelectionEntityKey } from 'utils';
@@ -75,36 +75,50 @@ class LinkOption extends Component {
     });
   }
 
+  removeLink = (e) => {
+    e.preventDefault();
+    const { editorState, changeEditorState } = this.props;
+    const { selection } = this.state;
+    changeEditorState(
+      RichUtils.toggleLink(
+        editorState,
+        selection,
+        null
+      )
+    );
+    this.setState({
+      linkValue: '',
+      isShowInput: false,
+    }, this.context.toggleReadOnly);
+  }
+
   inputChange = (e) => {
-    console.log(e.target.value);
     this.setState({
       linkValue: e.target.value,
     });
   }
 
-  inputClick = (e) => {
-    console.log(e);
+  inputClick = () => {
     this.input.focus();
+    // Ставит курсор в конец строки, без этого курсора вообще нет
     this.input.selectionStart = this.input.selectionEnd = this.input.value.length;
   }
 
   selectInputValue = () => this.input.setSelectionRange(0, this.input.value.length)
 
-  _removeLink = (e) => {
-    e.preventDefault();
-    const { editorState } = this.props;
-    const selection = editorState.getSelection();
-    if (!selection.isCollapsed()) {
-      this.setState({
-        editorState: RichUtils.toggleLink(editorState, selection, null),
-      });
+  refInput = (input) => { this.input = input; }
+
+  inputKeyDown = (e) => {
+    if (e.which === 13) {
+      e.preventDefault();
+      this.confirmLink();
     }
   }
 
   render() {
     const {
-      isShowInput,
       linkValue,
+      isShowInput,
     } = this.state;
     const {
       inPopup,
@@ -113,15 +127,24 @@ class LinkOption extends Component {
       isShowInput ?
         <div className={styles.input}>
           <input
-            ref={(input) => { this.input = input; }}
-            onDoubleClick={this.selectInputValue}
-            onClick={this.inputClick}
-            value={linkValue}
+            ref={this.refInput}
             type="text"
-            autoFocus
+            value={linkValue}
+            onBlur={this.cancelClick}
+            onClick={this.inputClick}
             onChange={this.inputChange}
+            autoFocus
+            onKeyDown={this.inputKeyDown}
+            onDoubleClick={this.selectInputValue}
           />
           <div>
+            {linkValue &&
+              <AntIcon
+                type="delete"
+                onClick={this.removeLink}
+                className={styles.confirm}
+              />
+            }
             <AntIcon
               type="check"
               onClick={this.confirmLink}
@@ -134,9 +157,8 @@ class LinkOption extends Component {
             />
           </div>
         </div>
-          :
+        :
         <Option
-          value="LINK"
           active={!!linkValue}
           onClick={this.showInput}
           inPopup={inPopup}

@@ -4,6 +4,10 @@
   width: 90%;
   display: flex;
   justify-content: space-between;
+
+  & input {
+    flex-grow: 1;
+  }
 }
 
 .icon {
