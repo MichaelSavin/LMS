@@ -26,7 +26,6 @@ class LinkOption extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
     if (nextProps.editorState !== this.props.editorState) {
       this.setState({
         linkValue: this.getLinkValue(
@@ -61,7 +60,6 @@ class LinkOption extends Component {
     this.context.toggleReadOnly(false);
     const { editorState, changeEditorState } = this.props;
     const { linkValue, selection } = this.state;
-    console.log(linkValue);
     const entityKey = Entity.create('LINK', 'MUTABLE', { url: linkValue });
     changeEditorState(
       RichUtils.toggleLink(
