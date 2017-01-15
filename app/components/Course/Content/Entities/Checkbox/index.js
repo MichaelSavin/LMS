@@ -5,7 +5,6 @@ import {
   // last, update, pullAt, dropRight
 } from 'lodash/fp';
 import { Button as AntButton } from 'antd';
-// import { arrayMove } from 'react-sortable-hoc';
 import localForage from 'localforage';
 import classNames from 'classnames';
 import { Entity } from 'draft-js';
@@ -113,8 +112,8 @@ class Checkbox extends PureComponent {
   //   }
   // }
 
-  // Синхронизания данных формы из
-  // Editor с предпросмотром в Preview
+  // Синхронизания данных формы из формы
+  // в Editor с предпросмотром в Preview
   syncContent = (content) => {
     this.setState({
       content: set(

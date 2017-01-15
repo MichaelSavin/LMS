@@ -13,18 +13,19 @@ import {
   Popconfirm as AntPopconfirm,
 } from 'antd';
 import {
+  arrayMove,
   SortableHandle,
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
 import {
-  // get,
-  // set,
-  // last,
+  get,
+  set,
+  last,
   update,
-  // pullAt,
+  pullAt,
   compact,
-  // dropRight,
+  dropRight,
 } from 'lodash/fp';
 import flatten from 'object-end-keys';
 import { createForm } from 'rc-form';
@@ -70,9 +71,17 @@ class Editor extends Component {
     const {
       form: {
         getFieldError,
+        // getFieldValue,
         getFieldsValue,
       },
     } = this.props;
+    console.log(
+      compact(
+        flatten(
+          getFieldsValue()
+        )
+      )
+    );
     return (
       compact(
         flatten(
@@ -128,31 +137,53 @@ class Editor extends Component {
     });
   }
 
-  // removeContent = (location) => (event) => {
-  //   if (event) { event.stopPropagation(); }
-  //   this.setState({
-  //     content: update(
-  //       ['editor', ...dropRight(1, location)],
-  //       (data) => pullAt([last(location)], data),
-  //       this.state.content
-  //     ),
-  //   });
-  // }
+  // [WIP] - Не обновляется валидатор
+  removeContent = (location) => (event) => {
+    console.log('REMOVE');
+    if (event) { event.stopPropagation(); }
+    const {
+      form: {
+        getFieldValue,
+        setFieldsValue,
+      },
+    } = this.props;
+    // console.log(getFieldValue('form'));
+    // console.log(update(
+    //   dropRight(1, location),
+    //   (data) => pullAt([last(location)], data),
+    //   getFieldValue('form')
+    // ));
+    setFieldsValue({
+      content: update(
+        dropRight(1, location),
+        (data) => pullAt([last(location)], data),
+        getFieldValue('content')
+      ),
+    });
+  }
 
-  // dragContent = (location) => ({ oldIndex, newIndex }) => {
-  //   const { content } = this.state;
-  //   this.setState({
-  //     content: set(
-  //       ['editor', ...location],
-  //       arrayMove(
-  //         get(['editor', ...location], content),
-  //         oldIndex,
-  //         newIndex,
-  //       ),
-  //       content
-  //     ),
-  //   });
-  // };
+  // [WIP] - Работает не так как нужно, не обновляется валидатор
+  dragContent = (location) => ({ oldIndex, newIndex }) => {
+    console.log('DRAG');
+    const {
+      form: {
+        getFieldValue,
+        setFieldsValue,
+      },
+    } = this.props;
+    const content = getFieldValue('form');
+    setFieldsValue({
+      content: set(
+        location,
+        arrayMove(
+          get(location, content),
+          oldIndex,
+          newIndex,
+        ),
+        content,
+      ),
+    });
+  };
 
   render() {
     const {
@@ -256,10 +287,10 @@ class Editor extends Component {
                     {variantIndex > 0 &&
                       <AntPopconfirm
                         title="Удалить вариант?"
-                        // onConfirm={removeContent([
-                        //   'variants',
-                        //   variantIndex,
-                        // ])}
+                        onConfirm={this.removeContent([
+                          'variants',
+                          variantIndex,
+                        ])}
                         okText="Да"
                         cancelText="Нет"
                       >
@@ -278,48 +309,45 @@ class Editor extends Component {
                 >
                   <div className={styles.data}>
                     <div className={styles.question}>
-                      <AntForm.Item>
-                        {getFieldDecorator(`form.variants[${variantIndex}].question`, {
-                          initialValue: variant.question,
-                          rules: [{
-                            required: true,
-                            message: `Вариант №${variantIndex + 1} - Вопрос к заданию`,
-                          }],
-                        })(
-                          <AntInput
-                            rows={4}
-                            size="default"
-                            type="textarea"
-                          />
-                        )}
-                      </AntForm.Item>
+                      {getFieldDecorator(`form.variants[${variantIndex}].question`, {
+                        validateTrigger: ['onChange', 'onBlur'],
+                        initialValue: variant.question,
+                        rules: [{
+                          required: true,
+                          message: `Вариант №${variantIndex + 1} - Вопрос к заданию`,
+                        }],
+                      })(
+                        <AntInput
+                          rows={4}
+                          size="default"
+                          type="textarea"
+                        />
+                      )}
                     </div>
                     <div className={styles.points}>
-                      <AntForm.Item>
-                        {getFieldDecorator(`form.variants[${variantIndex}].points`, {
-                          initialValue: variant.points,
-                          rules: [{
-                            required: true,
-                            message: `Вариант №${variantIndex + 1} - Баллы за задание`,
-                          }],
-                        })(
-                          <AntInput size="default" />
-                        )}
-                      </AntForm.Item>
+                      {getFieldDecorator(`form.variants[${variantIndex}].points`, {
+                        validateTrigger: ['onChange', 'onBlur'],
+                        initialValue: variant.points,
+                        rules: [{
+                          required: true,
+                          message: `Вариант №${variantIndex + 1} - Баллы за задание`,
+                        }],
+                      })(
+                        <AntInput size="default" />
+                      )}
                       Баллы
                     </div>
                     <div className={styles.attemps}>
-                      <AntForm.Item>
-                        {getFieldDecorator(`form.variants[${variantIndex}].attempts`, {
-                          initialValue: variant.attemps,
-                          rules: [{
-                            required: true,
-                            message: `Вариант №${variantIndex + 1} - Количество попыток`,
-                          }],
-                        })(
-                          <AntInput size="default" />
-                        )}
-                      </AntForm.Item>
+                      {getFieldDecorator(`form.variants[${variantIndex}].attempts`, {
+                        validateTrigger: ['onChange', 'onBlur'],
+                        initialValue: variant.attemps,
+                        rules: [{
+                          required: true,
+                          message: `Вариант №${variantIndex + 1} - Количество попыток`,
+                        }],
+                      })(
+                        <AntInput size="default" />
+                      )}
                       Попытки
                     </div>
                   </div>
@@ -347,11 +375,11 @@ class Editor extends Component {
                     >
                       <div className={styles.options}>
                         <Sortable.List
-                          // onSortEnd={dragContent([
-                          //   'variants',
-                          //   variantIndex,
-                          //   'options',
-                          // ])}
+                          onSortEnd={this.dragContent([
+                            'variants',
+                            variantIndex,
+                            'options',
+                          ])}
                           useDragHandle
                         >
                           {variant.options.map((
@@ -367,6 +395,7 @@ class Editor extends Component {
                                 </div>
                                 <div className={styles.text}>
                                   {getFieldDecorator(`form.variants[${variantIndex}].options[${optionIndex}].text`, {
+                                    validateTrigger: ['onChange', 'onBlur'],
                                     initialValue: option.text,
                                     rules: [{
                                       required: true,
@@ -440,12 +469,12 @@ class Editor extends Component {
                                   <AntPopconfirm
                                     title="Удалить вариант ответа?"
                                     okText="Да"
-                                    // onConfirm={removeContent([
-                                    //   'variants',
-                                    //   variantIndex,
-                                    //   'options',
-                                    //   optionIndex,
-                                    // ])}
+                                    onConfirm={this.removeContent([
+                                      'variants',
+                                      variantIndex,
+                                      'options',
+                                      optionIndex,
+                                    ])}
                                     cancelText="Нет"
                                   >
                                     <AntIcon
@@ -478,7 +507,13 @@ class Editor extends Component {
                     </AntCollapse.Panel>
                     {/* eslint-disable */}
                     {/* Необходимо задавать значения всех пустых массивов через getFieldDecorator */}
-                    {getFieldDecorator(`form.variants[${variantIndex}].explanations`, { initialValue: [] })}
+                    {getFieldDecorator(`form.variants[${variantIndex}].explanations`, { 
+                      initialValue: [],
+                      rules: [{
+                        required: true,
+                        message: `Вариант №${variantIndex + 1} - Необходимо добавить пояснения`,
+                      }] 
+                    })}
                     <AntCollapse.Panel
                       key="2"
                       header={
@@ -505,6 +540,7 @@ class Editor extends Component {
                           >
                             <div className={styles.text}>
                               {getFieldDecorator(`form.variants[${variantIndex}].explanations[${explanationIndex}].text`, {
+                                validateTrigger: ['onChange', 'onBlur'],
                                 initialValue: explanation.text,
                                 rules: [{
                                   required: true,
@@ -587,6 +623,7 @@ class Editor extends Component {
                           >
                             <div className={styles.text}>
                               {getFieldDecorator(`form.variants[${variantIndex}].hints[${hintIndex}].text`, {
+                                validateTrigger: ['onChange', 'onBlur'],
                                 initialValue: hint.text,
                                 rules: [{
                                   required: true,
@@ -669,6 +706,7 @@ class Editor extends Component {
                           >
                             <div className={styles.text}>
                               {getFieldDecorator(`form.variants[${variantIndex}].competences[${competenceIndex}].text`, {
+                                validateTrigger: ['onChange', 'onBlur'],
                                 initialValue: competence.text,
                                 rules: [{
                                   required: true,
