@@ -1,10 +1,7 @@
 import React, { PureComponent, PropTypes } from 'react';
-import {
-  // get,
-  set,
-  // last, update, pullAt, dropRight
-} from 'lodash/fp';
+import { get, set, last, update, pullAt, dropRight } from 'lodash/fp';
 import { Button as AntButton } from 'antd';
+import { arrayMove } from 'react-sortable-hoc';
 import localForage from 'localforage';
 import classNames from 'classnames';
 import { Entity } from 'draft-js';
@@ -18,11 +15,12 @@ class Checkbox extends PureComponent {
     super(props);
     const { content } = props;
     this.state = {
+      drag: null,
+      editing: false,
       content: {
         editor: content,
         component: content,
       },
-      isEditing: false,
     };
     this.storage = {
       crops: {},
@@ -55,73 +53,112 @@ class Checkbox extends PureComponent {
       });
   }
 
-  // uploadImage = (location) => (files) => {
-  //   const image = {
-  //     data: files[0].slice(0),
-  //     name: [
-  //       files[0].lastModified,
-  //       files[0].size,
-  //       files[0].name,
-  //     ].join(''),
-  //   };
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(image.data);
-  //   // eslint-disable-next-line
-  //   reader.onloadend = () => {
-  //     this.storage.images[
-  //       image.name
-  //     ] = reader.result;
-  //     this.setState({
-  //       content: set([
-  //         'editor',
-  //         ...location,
-  //         'image',
-  //         'name',
-  //       ],
-  //         image.name,
-  //         this.state.content
-  //       ),
-  //     }, this.addStateToHistory);
-  //   };
-  // }
+  uploadImage = (location) => (files) => {
+    const image = {
+      data: files[0].slice(0),
+      name: [
+        files[0].lastModified,
+        files[0].size,
+        files[0].name,
+      ].join(''),
+    };
+    const reader = new FileReader();
+    reader.readAsDataURL(image.data);
+    // eslint-disable-next-line
+    reader.onloadend = () => {
+      this.storage.images[
+        image.name
+      ] = reader.result;
+      this.setState({
+        content: set([
+          'editor',
+          ...location,
+          'image',
+          'name',
+        ],
+          image.name,
+          this.state.content
+        ),
+      }, this.addStateToHistory);
+    };
+  }
 
-  // addStateToHistory = () => {
-  //   /* eslint-disable */
-  //   this.history.present = this.state;
-  //   this.history.past.push(this.state);
-  //   /* eslint-enable */
-  // }
-
-  // undoHistory = () => {
-  //   if (this.history.past.length > 0) {
-  //     /* eslint-disable */
-  //     this.history.future.push(this.history.present);
-  //     this.history.present = this.history.past.pop();
-  //     /* eslint-enable */
-  //     this.setState(this.history.present);
-  //   }
-  // }
-
-  // redoHistory = () => {
-  //   if (this.history.future.length > 0) {
-  //     /* eslint-disable */
-  //     this.history.past.push(this.history.present);
-  //     this.history.present = this.history.future.pop();
-  //     /* eslint-enable */
-  //     this.setState(this.history.present);
-  //   }
-  // }
-
-  // Синхронизания данных формы из формы
-  // в Editor с предпросмотром в Preview
-  syncContent = (content) => {
+  addContent = (location, content) => () => {
     this.setState({
-      content: set(
-        ['editor'],
-        content,
-        this.state.content
+      content: update(
+        ['editor', ...location],
+        (data) => data.concat([content]),
+        this.state.content,
       ),
     });
+  }
+
+  removeContent = (location) => (event) => {
+    if (event) { event.stopPropagation(); }
+    this.setState({
+      content: update(
+        ['editor', ...dropRight(1, location)],
+        (data) => pullAt([last(location)], data),
+        this.state.content
+      ),
+    }, this.addStateToHistory);
+  }
+
+  dragContent = (location) => ({ oldIndex, newIndex }) => {
+    const { content } = this.state;
+    this.setState({
+      content: set(
+        ['editor', ...location],
+        arrayMove(
+          get(['editor', ...location], content),
+          oldIndex,
+          newIndex,
+        ),
+        content
+      ),
+    }, this.addStateToHistory);
+  };
+
+  changeContent = (location) => (event) => {
+    const value = event.type
+      ? event.target.value    // для инпутов
+      : event.target.checked; // для чекбоксов
+    this.setState({
+      content: set([
+        'editor',
+        ...location,
+      ],
+        value,
+        this.state.content
+      ),
+    }, this.addStateToHistory);
+  }
+
+  addStateToHistory = () => {
+    /* eslint-disable */
+    this.history.present = this.state;
+    this.history.past.push(this.state);
+    /* eslint-enable */
+  }
+
+  undoHistory = () => {
+    if (this.history.past.length > 0) {
+      /* eslint-disable */
+      this.history.future.push(this.history.present);
+      this.history.present = this.history.past.pop();
+      /* eslint-enable */
+      this.setState(this.history.present);
+    }
+  }
+
+  redoHistory = () => {
+    if (this.history.future.length > 0) {
+      /* eslint-disable */
+      this.history.past.push(this.history.present);
+      this.history.present = this.history.future.pop();
+      /* eslint-enable */
+      this.setState(this.history.present);
+    }
   }
 
   openEditor = () => {
@@ -132,19 +169,13 @@ class Checkbox extends PureComponent {
         content.component,
         content
       ),
-      isEditing: true,
+      editing: true,
     }, this.context.toggleReadOnly);
   }
 
   closeEditor = () => {
-    const { content } = this.state;
     this.setState({
-      content: set(
-        ['editor'],
-        content.component,
-        content
-      ),
-      isEditing: false,
+      editing: false,
     }, this.context.toggleReadOnly);
   }
 
@@ -156,12 +187,12 @@ class Checkbox extends PureComponent {
       }
     );
     this.setState({
+      editing: false,
       content: set(
         ['component'],
         content.editor,
         content
       ),
-      isEditing: false,
     }, this.context.toggleReadOnly);
   }
 
@@ -171,31 +202,36 @@ class Checkbox extends PureComponent {
         editor,
         component,
       },
-      isEditing,
+      errors,
+      editing,
     } = this.state;
     return (
       <div
         className={classNames(
           styles.checkbox,
-          { [styles.editing]: isEditing },
+          { [styles.editing]: editing },
         )}
       >
         <Preview
-          content={isEditing ? editor : component}
+          content={editing ? editor : component}
           storage={this.storage}
         />
-        {isEditing &&
-          <Editor
-            isOpen={isEditing}
-            content={editor}
-            // storage={this.storage}
-            closeEditor={this.closeEditor}
-            // uploadImage={this.uploadImage}
-            saveContent={this.saveContent}
-            syncContent={this.syncContent}
-          />
-        }
-        {isEditing
+        <Editor
+          isOpen={editing}
+          errors={errors}
+          content={editor}
+          storage={this.storage}
+          addContent={this.addContent}
+          dragContent={this.dragContent}
+          closeEditor={this.closeEditor}
+          uploadImage={this.uploadImage}
+          saveContent={this.saveContent}
+          undoHistory={this.undoHistory}
+          redoHistory={this.redoHistory}
+          removeContent={this.removeContent}
+          changeContent={this.changeContent}
+        />
+        {editing
           /* eslint-disable */
           ? <div className={styles.actions}>
               <AntButton
