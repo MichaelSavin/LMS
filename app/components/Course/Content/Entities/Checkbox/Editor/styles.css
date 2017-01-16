@@ -163,7 +163,7 @@
                 }
 
                 & .text {
-                  width: 90%;
+                  width: 85%;
                 }
 
                 & .image {
@@ -187,32 +187,28 @@
                   }
 
                   & .upload {
-                    width: 28px;
-                    height: 28px;
-                    border: 1px solid #D9D9D9;
-                    display: flex;
                     align-items: center;
-                    border-radius: 5px;
                     justify-content: center;
-                    background-color: #F7F7F7;
 
                     & .dropzone {
                       /* ... */
                     }
 
                     & .icon {
-                      /* ... */
+                      cursor: pointer;
+                      font-size: 25px;
                     }
                   }
                 }
 
                 & .checkbox {
-                  /* ... */
+                  transform: scale(1.25);
                 }
 
                 & .remove {
                   color: red;
                   cursor: pointer;
+                  transform: scale(1.25);
                 }
               }
             }

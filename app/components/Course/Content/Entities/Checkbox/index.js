@@ -311,8 +311,8 @@ Checkbox.propTypes = {
 Checkbox.defaultProps = {
   content: {
     variants: [{
-      points: 1,
-      attempts: 1,
+      points: '1',
+      attempts: '1',
       question: 'Вопрос',
       options: [{
         text: 'Вариант 1',

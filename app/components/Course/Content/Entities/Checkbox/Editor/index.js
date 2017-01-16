@@ -6,6 +6,7 @@ import {
   Tabs as AntTabs,
   Input as AntInput,
   Button as AntButton,
+  Upload as AntUpload,
   Collapse as AntCollapse,
   Checkbox as AntCheckbox,
   Popconfirm as AntPopconfirm,
@@ -17,7 +18,6 @@ import {
 } from 'react-sortable-hoc';
 import { isEmpty } from 'lodash/fp';
 import classNames from 'classnames';
-import Dropzone from 'react-dropzone';
 import styles from './styles.css';
 
 const Editor = ({
@@ -65,10 +65,6 @@ const Editor = ({
         </div>
       </div>
       <div className={styles.errors}>
-        {/* <div className={styles.text}>
-          Необходимо заполнить поля:
-        </div>
-        */ }
         {Object.values(errors).map((error, index) =>
           <div
             key={index}
@@ -272,20 +268,22 @@ const Editor = ({
                                     />
                                   </div>
                                 : <div className={styles.upload}>
-                                    <Dropzone
-                                      onDrop={uploadImage([
+                                    <AntUpload
+                                      accept="image/*"
+                                      onChange={uploadImage([
                                         'variants',
                                         variantIndex,
                                         'options',
                                         optionIndex,
                                       ])}
-                                      multiple={false}
-                                      className={styles.dropzone}
-                                    />
-                                    <AntIcon
-                                      type="camera"
-                                      className={styles.icon}
-                                    />
+                                      showUploadList={false}
+                                    >
+                                      <AntIcon
+                                        type="camera"
+                                        className={styles.icon}
+                                      />
+                                    </AntUpload>
+                                    
                                   </div>
                                 /* eslint-enable */
                               }
@@ -570,7 +568,6 @@ const Editor = ({
                     </AntButton>
                   </div>
                 </AntCollapse.Panel>
-
               </AntCollapse>
             </div>
           </AntTabs.TabPane>
