@@ -1,6 +1,6 @@
 .editor {
   padding: 15px;
-  border-top: 2.5px solid rgb(45, 183, 245);
+  border-top: 2.5px solid #108EE9;
   padding-top: 0;
 
   & .title {
@@ -11,10 +11,10 @@
     font-size: 13px;
     font-weight: 500;
     margin-left: -15px;
-    border-bottom: 2.5px solid rgb(45, 183, 245);
+    border-bottom: 2.5px solid #108EE9;
     flex-direction: row;
     justify-content: space-between;
-    background-color: rgb(45, 183, 245);
+    background-color: #108EE9;
 
     & .actions {
       height: 20px;

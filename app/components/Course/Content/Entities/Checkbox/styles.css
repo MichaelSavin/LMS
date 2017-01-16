@@ -9,12 +9,12 @@
 
 .checkbox:hover {
   /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
-  border: 2.5px solid rgb(45, 183, 245);
+  border: 2.5px solid #108EE9;
 }
 
 .checkbox.editing {
   /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
-  border: 2.5px solid rgb(45, 183, 245);
+  border: 2.5px solid #108EE9;
 }
 
 .checkbox .edit {
