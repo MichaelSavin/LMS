@@ -32,6 +32,10 @@
   }
 
   & .errors {
+    width: 103%;
+    background: #FFC3C3;
+    margin-left: -15px;
+
     & .text {
       color: black;
       font-size: 15px;
@@ -39,13 +43,15 @@
       margin-bottom: 10px;
     }
 
+    & .error:first-child {
+      padding-top: 10px;
+    }
+
     & .error {
-      width: 103%;
-      padding: 10px;
       font-size: 13px;
-      background: #FF8383;
-      font-weight: 500;
-      margin-left: -15px;
+      font-weight: 600;
+      padding-left: 10px;
+      padding-bottom: 10px;
     }
   }
 
