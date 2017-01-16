@@ -51,6 +51,14 @@
 }
 
 :global(.ant-input.error):focus {
+  border-color: red;
+}
+
+:global(.ant-input.error):active {
+  border-color: red;
+}
+
+:global(.ant-input.error):focus {
   box-shadow: 0 0 0 2px rgba(245, 45, 45, 0.2);
 }
 
