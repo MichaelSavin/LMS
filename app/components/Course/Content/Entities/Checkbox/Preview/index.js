@@ -10,12 +10,11 @@ import styles from './styles.css';
 const Preview = ({
   content,
   storage,
-  changeContent,
 }) =>
   <div className={styles.preview}>
     <div className={styles.question}>
       {/* Показывает первый вариант задания */}
-      {content.variants[0].question}
+      {content.variants[0].question || '?'}
     </div>
     <div className={styles.options}>
       {/* Показывает первый вариант задания */}
@@ -40,34 +39,34 @@ const Preview = ({
           <div className={styles.checkbox}>
             <AntCheckbox
               key={index}
-              checked={option.isChecked}
-              onChange={changeContent([
-                'options',
-                index,
-                'isChecked',
-              ])}
+              checked={option.isCorrect}
               className={styles.answer}
             />
           </div>
           <div className={styles.text}>
-            {option.text}
+            {option.text || '?'}
           </div>
         </div>
       )}
     </div>
-    <div className={styles.attemps}>
+    <div className={styles.attempts}>
       <AntButton type="dashed">
         <div>Количество попыток</div>
-        <div>Попытка 1 из 3</div>
+        <div>
+          Попытка 1 из {
+            content.variants[0].attempts || '?'
+          }
+        </div>
       </AntButton>
     </div>
   </div>;
 
 Preview.propTypes = {
   content: PropTypes.shape({
-    points: PropTypes.object.isRequired,
     variants: PropTypes.arrayOf(
       PropTypes.shape({
+        points: PropTypes.string,
+        attempts: PropTypes.string,
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({
@@ -95,7 +94,6 @@ Preview.propTypes = {
       PropTypes.string.isRequired,
     ).isRequired,
   }).isRequired,
-  changeContent: PropTypes.func.isRequired,
 };
 
 export default Preview;

@@ -15,13 +15,11 @@ class Checkbox extends PureComponent {
     super(props);
     const { content } = props;
     this.state = {
-      drag: null,
-      errors: [],
-      editing: false,
       content: {
         editor: content,
         component: content,
       },
+      isEditing: false,
     };
     this.storage = {
       crops: {},
@@ -120,7 +118,7 @@ class Checkbox extends PureComponent {
     }, this.addStateToHistory);
   };
 
-  changeContent = (location) => (validator) => (event) => {
+  changeContent = (location) => (event) => {
     const value = event.type
       ? event.target.value    // для инпутов
       : event.target.checked; // для чекбоксов
@@ -132,11 +130,6 @@ class Checkbox extends PureComponent {
         value,
         this.state.content
       ),
-      // Подмешивание сообщений валидатора
-      // в состояние компонента, правила
-      // валидации передаются через props
-      // компонента Validator
-      ...validator(this.state.errors, value),
     }, this.addStateToHistory);
   }
 
@@ -175,14 +168,13 @@ class Checkbox extends PureComponent {
         content.component,
         content
       ),
-      editing: true,
+      isEditing: true,
     }, this.context.toggleReadOnly);
   }
 
   closeEditor = () => {
     this.setState({
-      editing: false,
-      errors: [],
+      isEditing: false,
     }, this.context.toggleReadOnly);
   }
 
@@ -194,83 +186,79 @@ class Checkbox extends PureComponent {
       }
     );
     this.setState({
-      editing: false,
       content: set(
         ['component'],
         content.editor,
         content
       ),
-      errors: [],
+      isEditing: false,
     }, this.context.toggleReadOnly);
   }
 
   render() {
     const {
-      content: {
-        editor,
-        component,
-      },
-      errors,
-      editing,
+      content,
+      isEditing,
     } = this.state;
     return (
       <div
         className={classNames(
           styles.checkbox,
-          { [styles.editing]: editing },
+          { [styles.editing]: isEditing },
         )}
       >
         <Preview
-          content={editing ? editor : component}
+          content={isEditing
+            ? content.editor
+            : content.component
+          }
           storage={this.storage}
-          changeContent={this.changeContent}
         />
-        <Editor
-          isOpen={editing}
-          errors={errors}
-          content={editor}
-          storage={this.storage}
-          addContent={this.addContent}
-          dragContent={this.dragContent}
-          closeEditor={this.closeEditor}
-          uploadImage={this.uploadImage}
-          saveContent={this.saveContent}
-          undoHistory={this.undoHistory}
-          redoHistory={this.redoHistory}
-          removeContent={this.removeContent}
-          changeContent={this.changeContent}
-        />
-        {editing
+        {isEditing &&
+          <Editor
+            content={content.editor}
+            storage={this.storage}
+            addContent={this.addContent}
+            dragContent={this.dragContent}
+            closeEditor={this.closeEditor}
+            uploadImage={this.uploadImage}
+            saveContent={this.saveContent}
+            undoHistory={this.undoHistory}
+            redoHistory={this.redoHistory}
+            removeContent={this.removeContent}
+            changeContent={this.changeContent}
+          />
+        }
+        {!isEditing && // Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением
           /* eslint-disable */
-          ? <div className={styles.actions}>
-              <AntButton
-                type="primary"
-                icon="check"
-                onClick={this.saveContent}
-                className={styles.save}
-              >
-                Сохранить
-              </AntButton>
-              <AntButton
-                type="default"
-                icon="rollback"
-                onClick={this.closeEditor}
-                className={styles.cancel}
-              >
-                Отменить
-              </AntButton>
-            </div>
-          : <div className={styles.actions}>
-              <AntButton
-                type="primary"
-                icon="edit"
-                onClick={this.openEditor}
-                className={styles.edit}
-              >
-                Редактировать
-              </AntButton>
-            </div>
-          /* eslint-enable */
+          // ? <div className={styles.actions}>
+          //     <AntButton
+          //       type="primary"
+          //       icon="check"
+          //       onClick={this.saveContent}
+          //       className={styles.save}
+          //     >
+          //       Сохранить
+          //     </AntButton>
+          //     <AntButton
+          //       type="default"
+          //       icon="rollback"
+          //       onClick={this.closeEditor}
+          //       className={styles.cancel}
+          //     >
+          //       Отменить
+          //     </AntButton>
+          //   </div>
+          <div className={styles.actions}>
+            <AntButton
+              type="primary"
+              icon="edit"
+              onClick={this.openEditor}
+              className={styles.edit}
+            >
+              Редактировать
+            </AntButton>
+          </div>
         }
       </div>
     );
@@ -280,9 +268,10 @@ class Checkbox extends PureComponent {
 Checkbox.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    points: PropTypes.object.isRequired,
     variants: PropTypes.arrayOf(
       PropTypes.shape({
+        points: PropTypes.number,
+        attempts: PropTypes.number,
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({
@@ -321,14 +310,15 @@ Checkbox.propTypes = {
 
 Checkbox.defaultProps = {
   content: {
-    points: {},
     variants: [{
+      points: 1,
+      attempts: 1,
       question: 'Вопрос',
       options: [{
         text: 'Вариант 1',
         image: undefined,
         isChecked: false,
-        isCorrect: false,
+        isCorrect: true,
       }, {
         text: 'Вариант 2',
         image: undefined,
@@ -345,9 +335,15 @@ Checkbox.defaultProps = {
         isChecked: false,
         isCorrect: false,
       }],
-      hints: [],
-      competences: [],
-      explanations: [],
+      hints: [{ 
+        text: 'Новая подсказка' 
+      }],
+      competences: [{ 
+        text: 'Новая компетенция' 
+      }],
+      explanations: [{ 
+        text: 'Новое объяснение' 
+      }],
     }],
   },
 };

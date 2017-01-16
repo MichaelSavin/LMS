@@ -9,12 +9,12 @@
 
 .checkbox:hover {
   /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
-  border: 2.5px solid rgb(45, 183, 245);
+  border: 2.5px solid #108EE9;
 }
 
 .checkbox.editing {
   /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
-  border: 2.5px solid rgb(45, 183, 245);
+  border: 2.5px solid #108EE9;
 }
 
 .checkbox .edit {
@@ -44,6 +44,14 @@
     transition: all 0s;
     border-radius: 0 5px 0 0;
   }
+}
+
+:global(.ant-input.error) {
+  border-color: red;
+}
+
+:global(.ant-input.error):focus {
+  box-shadow: 0 0 0 2px rgba(245, 45, 45, 0.2);
 }
 
 :global .ant-checkbox-group .ant-checkbox-wrapper {
