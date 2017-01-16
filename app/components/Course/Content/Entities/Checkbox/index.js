@@ -229,37 +229,36 @@ class Checkbox extends PureComponent {
             changeContent={this.changeContent}
           />
         }
-        {isEditing
+        {!isEditing && // Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением
           /* eslint-disable */
-          ? <div className={styles.actions}>
-              <AntButton
-                type="primary"
-                icon="check"
-                onClick={this.saveContent}
-                className={styles.save}
-              >
-                Сохранить
-              </AntButton>
-              <AntButton
-                type="default"
-                icon="rollback"
-                onClick={this.closeEditor}
-                className={styles.cancel}
-              >
-                Отменить
-              </AntButton>
-            </div>
-          : <div className={styles.actions}>
-              <AntButton
-                type="primary"
-                icon="edit"
-                onClick={this.openEditor}
-                className={styles.edit}
-              >
-                Редактировать
-              </AntButton>
-            </div>
-          /* eslint-enable */
+          // ? <div className={styles.actions}>
+          //     <AntButton
+          //       type="primary"
+          //       icon="check"
+          //       onClick={this.saveContent}
+          //       className={styles.save}
+          //     >
+          //       Сохранить
+          //     </AntButton>
+          //     <AntButton
+          //       type="default"
+          //       icon="rollback"
+          //       onClick={this.closeEditor}
+          //       className={styles.cancel}
+          //     >
+          //       Отменить
+          //     </AntButton>
+          //   </div>
+          <div className={styles.actions}>
+            <AntButton
+              type="primary"
+              icon="edit"
+              onClick={this.openEditor}
+              className={styles.edit}
+            >
+              Редактировать
+            </AntButton>
+          </div>
         }
       </div>
     );
@@ -312,14 +311,14 @@ Checkbox.propTypes = {
 Checkbox.defaultProps = {
   content: {
     variants: [{
-      points: undefined,
-      attempts: undefined,
+      points: 1,
+      attempts: 1,
       question: 'Вопрос',
       options: [{
         text: 'Вариант 1',
         image: undefined,
         isChecked: false,
-        isCorrect: false,
+        isCorrect: true,
       }, {
         text: 'Вариант 2',
         image: undefined,
@@ -336,9 +335,15 @@ Checkbox.defaultProps = {
         isChecked: false,
         isCorrect: false,
       }],
-      hints: [],
-      competences: [],
-      explanations: [],
+      hints: [{ 
+        text: 'Новая подсказка' 
+      }],
+      competences: [{ 
+        text: 'Новая компетенция' 
+      }],
+      explanations: [{ 
+        text: 'Новое объяснение' 
+      }],
     }],
   },
 };

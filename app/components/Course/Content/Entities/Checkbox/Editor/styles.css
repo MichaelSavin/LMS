@@ -2,6 +2,7 @@
   padding: 15px;
   border-top: 2.5px solid #108EE9;
   padding-top: 0;
+  background-color: #F9F9F9;
 
   & .title {
     width: 103%;
