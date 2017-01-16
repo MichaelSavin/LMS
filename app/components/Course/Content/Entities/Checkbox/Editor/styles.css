@@ -1,7 +1,3 @@
-.editor.hidden {
-  display: none;
-}
-
 .editor {
   padding: 15px;
   border-top: 2.5px solid rgb(45, 183, 245);

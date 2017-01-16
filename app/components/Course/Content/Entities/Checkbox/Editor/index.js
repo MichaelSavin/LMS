@@ -21,7 +21,6 @@ import Dropzone from 'react-dropzone';
 import styles from './styles.css';
 
 const Editor = ({
-  isOpen,
   content,
   storage,
   addContent,
@@ -48,10 +47,7 @@ const Editor = ({
 
   return (
     <div
-      className={classNames(
-        styles.editor,
-        { [styles.hidden]: !isOpen }
-      )}
+      className={classNames(styles.editor)}
     >
       <div className={styles.title}>
         <div className={styles.text}>
@@ -597,7 +593,6 @@ const Sortable = {
 };
 
 Editor.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
   addContent: PropTypes.func.isRequired,
   dragContent: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,

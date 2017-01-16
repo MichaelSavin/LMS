@@ -15,12 +15,11 @@ class Checkbox extends PureComponent {
     super(props);
     const { content } = props;
     this.state = {
-      drag: null,
-      editing: false,
       content: {
         editor: content,
         component: content,
       },
+      isEditing: false,
     };
     this.storage = {
       crops: {},
@@ -169,13 +168,13 @@ class Checkbox extends PureComponent {
         content.component,
         content
       ),
-      editing: true,
+      isEditing: true,
     }, this.context.toggleReadOnly);
   }
 
   closeEditor = () => {
     this.setState({
-      editing: false,
+      isEditing: false,
     }, this.context.toggleReadOnly);
   }
 
@@ -187,51 +186,50 @@ class Checkbox extends PureComponent {
       }
     );
     this.setState({
-      editing: false,
       content: set(
         ['component'],
         content.editor,
         content
       ),
+      isEditing: false,
     }, this.context.toggleReadOnly);
   }
 
   render() {
     const {
-      content: {
-        editor,
-        component,
-      },
-      errors,
-      editing,
+      content,
+      isEditing,
     } = this.state;
     return (
       <div
         className={classNames(
           styles.checkbox,
-          { [styles.editing]: editing },
+          { [styles.editing]: isEditing },
         )}
       >
         <Preview
-          content={editing ? editor : component}
+          content={isEditing
+            ? content.editor
+            : content.component
+          }
           storage={this.storage}
         />
-        <Editor
-          isOpen={editing}
-          errors={errors}
-          content={editor}
-          storage={this.storage}
-          addContent={this.addContent}
-          dragContent={this.dragContent}
-          closeEditor={this.closeEditor}
-          uploadImage={this.uploadImage}
-          saveContent={this.saveContent}
-          undoHistory={this.undoHistory}
-          redoHistory={this.redoHistory}
-          removeContent={this.removeContent}
-          changeContent={this.changeContent}
-        />
-        {editing
+        {isEditing &&
+          <Editor
+            content={content.editor}
+            storage={this.storage}
+            addContent={this.addContent}
+            dragContent={this.dragContent}
+            closeEditor={this.closeEditor}
+            uploadImage={this.uploadImage}
+            saveContent={this.saveContent}
+            undoHistory={this.undoHistory}
+            redoHistory={this.redoHistory}
+            removeContent={this.removeContent}
+            changeContent={this.changeContent}
+          />
+        }
+        {isEditing
           /* eslint-disable */
           ? <div className={styles.actions}>
               <AntButton

@@ -14,7 +14,7 @@ const Preview = ({
   <div className={styles.preview}>
     <div className={styles.question}>
       {/* Показывает первый вариант задания */}
-      {content.variants[0].question}
+      {content.variants[0].question || '?'}
     </div>
     <div className={styles.options}>
       {/* Показывает первый вариант задания */}
@@ -44,15 +44,19 @@ const Preview = ({
             />
           </div>
           <div className={styles.text}>
-            {option.text}
+            {option.text || '?'}
           </div>
         </div>
       )}
     </div>
-    <div className={styles.attemps}>
+    <div className={styles.attempts}>
       <AntButton type="dashed">
         <div>Количество попыток</div>
-        <div>Попытка 1 из 3</div>
+        <div>
+          Попытка 1 из {
+            content.variants[0].attempts || '?'
+          }
+        </div>
       </AntButton>
     </div>
   </div>;
@@ -61,8 +65,8 @@ Preview.propTypes = {
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
-        points: PropTypes.number,
-        attempts: PropTypes.number,
+        points: PropTypes.string,
+        attempts: PropTypes.string,
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({
