@@ -46,6 +46,14 @@
   }
 }
 
+:global(.ant-input.error) {
+  border-color: red;
+}
+
+:global(.ant-input.error):focus {
+  box-shadow: 0 0 0 2px rgba(245, 45, 45, 0.2);
+}
+
 :global .ant-checkbox-group .ant-checkbox-wrapper {
   height: 30px;
   display: block !important;

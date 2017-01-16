@@ -159,6 +159,9 @@ const Editor = ({
                       variantIndex,
                       'question',
                     ])}
+                    className={classNames(
+                      { error: errors[`variants[${variantIndex}].question`] }
+                    )}
                   />
                 </div>
                 <div className={styles.points}>
@@ -170,6 +173,9 @@ const Editor = ({
                       variantIndex,
                       'points',
                     ])}
+                    className={classNames(
+                      { error: errors[`variants[${variantIndex}].points`] }
+                    )}
                   />
                   Баллы
                 </div>
@@ -182,6 +188,9 @@ const Editor = ({
                       variantIndex,
                       'attempts',
                     ])}
+                    className={classNames(
+                      { error: errors[`variants[${variantIndex}].attempts`] }
+                    )}
                   />
                   Попытки
                 </div>
@@ -237,6 +246,9 @@ const Editor = ({
                                   optionIndex,
                                   'text',
                                 ])}
+                                className={classNames(
+                                  { error: errors[`variants[${variantIndex}].options[${optionIndex}].text`] }
+                                )}
                               />
                             </div>
                             <div className={styles.image}>
@@ -365,6 +377,9 @@ const Editor = ({
                               explanationIndex,
                               'text',
                             ])}
+                            className={classNames(
+                              { error: errors[`variants[${variantIndex}].explanations[${explanationIndex}].text`] }
+                            )}
                           />
                         </div>
                         <div className={styles.remove}>
@@ -438,6 +453,9 @@ const Editor = ({
                               hintIndex,
                               'text',
                             ])}
+                            className={classNames(
+                              { error: errors[`variants[${variantIndex}].hints[${hintIndex}].text`] }
+                            )}
                           />
                         </div>
                         <div className={styles.remove}>
@@ -511,6 +529,9 @@ const Editor = ({
                               competenceIndex,
                               'text',
                             ])}
+                            className={classNames(
+                              { error: errors[`variants[${variantIndex}].competences[${competenceIndex}].text`] }
+                            )}
                           />
                         </div>
                         <div className={styles.remove}>
