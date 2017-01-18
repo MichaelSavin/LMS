@@ -79,7 +79,6 @@ Preview.propTypes = {
                 name: PropTypes.string.isRequired,
               }),
             }),
-            isChecked: PropTypes.bool.isRequired,
             isCorrect: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,

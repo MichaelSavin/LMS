@@ -284,7 +284,6 @@ Checkbox.propTypes = {
                 name: PropTypes.string.isRequired,
               }),
             }),
-            isChecked: PropTypes.bool.isRequired,
             isCorrect: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
@@ -317,22 +316,18 @@ Checkbox.defaultProps = {
       options: [{
         text: 'Вариант 1',
         image: undefined,
-        isChecked: false,
         isCorrect: true,
       }, {
         text: 'Вариант 2',
         image: undefined,
-        isChecked: false,
         isCorrect: false,
       }, {
         text: 'Вариант 3',
         image: undefined,
-        isChecked: false,
         isCorrect: false,
       }, {
         text: 'Вариант 4',
         image: undefined,
-        isChecked: false,
         isCorrect: false,
       }],
       hints: [{ 

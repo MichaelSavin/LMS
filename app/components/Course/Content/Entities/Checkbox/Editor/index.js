@@ -85,22 +85,18 @@ const Editor = ({
               options: [{
                 text: 'Вариант 1',
                 image: undefined,
-                isChecked: false,
                 isCorrect: false,
               }, {
                 text: 'Вариант 2',
                 image: undefined,
-                isChecked: false,
                 isCorrect: false,
               }, {
                 text: 'Вариант 3',
                 image: undefined,
-                isChecked: false,
                 isCorrect: false,
               }, {
                 text: 'Вариант 4',
                 image: undefined,
-                isChecked: false,
                 isCorrect: false,
               }],
               hints: [],
@@ -331,7 +327,6 @@ const Editor = ({
                         ], {
                           text: 'Новый вариант',
                           image: undefined,
-                          isChecked: false,
                           isCorrect: false,
                         })}
                       >
@@ -637,7 +632,6 @@ Editor.propTypes = {
                 name: PropTypes.string.isRequired,
               }),
             }),
-            isChecked: PropTypes.bool.isRequired,
             isCorrect: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
