@@ -1,0 +1,24 @@
+.preview.small {
+  width: 35px;
+  height: 25px;
+  cursor: pointer;
+  text-align: center;
+
+  & .image {
+    width: 35px;
+    height: 25px;
+  }
+
+  & .icon {
+    font-size: 25px;
+  }
+}
+
+.preview.auto {
+  width: 100%;
+
+  & .image {
+    width: 100%;
+  }
+}
+

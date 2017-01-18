@@ -30,21 +30,24 @@ const Preview = ({
           {option.image &&
             <div className={styles.image}>
               <img
-                src={storage.images[option.image.name]}
+                src={storage.crops[option.image.source]
+                  || storage.images[option.image.source]
+                }
                 role="presentation"
                 width={250}
               />
             </div>
           }
-          <div className={styles.checkbox}>
-            <AntCheckbox
-              key={index}
-              checked={option.isCorrect}
-              className={styles.answer}
-            />
-          </div>
-          <div className={styles.text}>
-            {option.text || '?'}
+          <div className={styles.answer}>
+            <div className={styles.checkbox}>
+              <AntCheckbox
+                key={index}
+                checked={option.isCorrect}
+              />
+            </div>
+            <div className={styles.text}>
+              {option.text || '?'}
+            </div>
           </div>
         </div>
       )}
@@ -72,12 +75,9 @@ Preview.propTypes = {
           PropTypes.shape({
             text: PropTypes.string.isRequired,
             image: PropTypes.shape({
-              name: PropTypes.string.isRequired,
               text: PropTypes.string.isRequired,
-              crop: PropTypes.shape({
-                size: PropTypes.object.isRequired,
-                name: PropTypes.string.isRequired,
-              }),
+              crop: PropTypes.string.isRequired,
+              source: PropTypes.string.isRequired,
             }),
             isCorrect: PropTypes.bool.isRequired,
           }).isRequired,

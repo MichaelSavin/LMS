@@ -6,7 +6,6 @@ import {
   Tabs as AntTabs,
   Input as AntInput,
   Button as AntButton,
-  Upload as AntUpload,
   Collapse as AntCollapse,
   Checkbox as AntCheckbox,
   Popconfirm as AntPopconfirm,
@@ -18,11 +17,12 @@ import {
 } from 'react-sortable-hoc';
 import { isEmpty } from 'lodash/fp';
 import classNames from 'classnames';
+import Uploader from 'components/UI/Uploader';
 import styles from './styles.css';
 
 const Editor = ({
   content,
-  storage,
+  // storage,
   addContent,
   dragContent,
   closeEditor,
@@ -244,45 +244,16 @@ const Editor = ({
                               />
                             </div>
                             <div className={styles.image}>
-                              {option.image
-                                /* eslint-disable */
-                                ? <div className={styles.preview}>
-                                    <img
-                                      src={storage[option.image.name]}
-                                      role="presentation"
-                                    />
-                                    <AntIcon
-                                      type="close"
-                                      onClick={removeContent([
-                                        'variants',
-                                        variantIndex,
-                                        'options',
-                                        optionIndex,
-                                        'image',
-                                      ])}
-                                      className={styles.remove}
-                                    />
-                                  </div>
-                                : <div className={styles.upload}>
-                                    <AntUpload
-                                      accept="image/*"
-                                      onChange={uploadImage([
-                                        'variants',
-                                        variantIndex,
-                                        'options',
-                                        optionIndex,
-                                      ])}
-                                      showUploadList={false}
-                                    >
-                                      <AntIcon
-                                        type="camera"
-                                        className={styles.icon}
-                                      />
-                                    </AntUpload>
-                                    
-                                  </div>
-                                /* eslint-enable */
-                              }
+                              <Uploader
+                                size="small"
+                                preload={option.image}
+                                onChange={uploadImage([
+                                  'variants',
+                                  variantIndex,
+                                  'options',
+                                  optionIndex,
+                                ])}
+                              />
                             </div>
                             <div className={styles.checkbox}>
                               <AntCheckbox
@@ -625,12 +596,9 @@ Editor.propTypes = {
           PropTypes.shape({
             text: PropTypes.string.isRequired,
             image: PropTypes.shape({
-              name: PropTypes.string.isRequired,
               text: PropTypes.string.isRequired,
-              crop: PropTypes.shape({
-                size: PropTypes.object.isRequired,
-                name: PropTypes.string.isRequired,
-              }),
+              crop: PropTypes.object,
+              source: PropTypes.string.isRequired,
             }),
             isCorrect: PropTypes.bool.isRequired,
           }).isRequired,
@@ -638,14 +606,14 @@ Editor.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
-  storage: PropTypes.shape({
-    images: PropTypes.objectOf(
-      PropTypes.string.isRequired,
-    ).isRequired,
-    crops: PropTypes.objectOf(
-      PropTypes.string.isRequired,
-    ).isRequired,
-  }).isRequired,
+  // storage: PropTypes.shape({
+  //   images: PropTypes.objectOf(
+  //     PropTypes.string.isRequired,
+  //   ).isRequired,
+  //   crops: PropTypes.objectOf(
+  //     PropTypes.string.isRequired,
+  //   ).isRequired,
+  // }).isRequired,
 };
 
 const validator = (content) => {

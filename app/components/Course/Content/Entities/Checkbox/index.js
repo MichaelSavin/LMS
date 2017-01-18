@@ -42,44 +42,63 @@ class Checkbox extends PureComponent {
           async (option) => {
             if (option.image) {
               const data = await localForage
-                .getItem(option.image.name);
+                .getItem(option.image.source);
               this.storage.images[
-                option.image.name
+                option.image.source
               ] = data;
-              this.forceUpdate();
+              if (option.image.crop) {
+                const canvas = document.createElement('canvas');
+                /* eslint-disable fp/no-mutation */
+                const pixelCrop = option.image.crop.pixels;
+                canvas.width = pixelCrop.width;
+                canvas.height = pixelCrop.height;
+                const context = canvas.getContext('2d');
+                const imageObj = new Image();
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                imageObj.src = this.storage.images[option.image.source];
+                imageObj.onload = () => {
+                /* eslint-enable fp/no-mutation */
+                  context.drawImage(
+                    imageObj,
+                    pixelCrop.x,
+                    pixelCrop.y,
+                    pixelCrop.width,
+                    pixelCrop.height,
+                    0, 0,
+                    pixelCrop.width,
+                    pixelCrop.height,
+                  );
+                  const binary = canvas.toDataURL('image/jpeg', 1);
+                  this.storage.crops[option.image.source] = binary;
+                  this.forceUpdate();
+                };
+              } else {
+                this.forceUpdate();
+              }
             }
           });
       });
   }
 
-  uploadImage = (location) => (files) => {
-    const image = {
-      data: files[0].slice(0),
-      name: [
-        files[0].lastModified,
-        files[0].size,
-        files[0].name,
-      ].join(''),
+  uploadImage = (location) => (data, image, crop) => {
+    this.storage.images = {
+      ...this.storage.images,
+      ...image,
     };
-    const reader = new FileReader();
-    reader.readAsDataURL(image.data);
-    // eslint-disable-next-line
-    reader.onloadend = () => {
-      this.storage.images[
-        image.name
-      ] = reader.result;
-      this.setState({
-        content: set([
-          'editor',
-          ...location,
-          'image',
-          'name',
-        ],
-          image.name,
-          this.state.content
-        ),
-      }, this.addStateToHistory);
+    this.storage.crops = {
+      ...this.storage.crops,
+      ...crop,
     };
+    this.setState({
+      content: set([
+        'editor',
+        ...location,
+        'image',
+      ],
+        data,
+        this.state.content
+      ),
+    }, this.addStateToHistory);
   }
 
   addContent = (location, content) => () => {
@@ -216,8 +235,8 @@ class Checkbox extends PureComponent {
         />
         {isEditing &&
           <Editor
-            content={content.editor}
             storage={this.storage}
+            content={content.editor}
             addContent={this.addContent}
             dragContent={this.dragContent}
             closeEditor={this.closeEditor}
@@ -229,7 +248,8 @@ class Checkbox extends PureComponent {
             changeContent={this.changeContent}
           />
         }
-        {!isEditing && // Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением
+        {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
+        {!isEditing &&
           /* eslint-disable */
           // ? <div className={styles.actions}>
           //     <AntButton
@@ -277,12 +297,9 @@ Checkbox.propTypes = {
           PropTypes.shape({
             text: PropTypes.string.isRequired,
             image: PropTypes.shape({
-              name: PropTypes.string.isRequired,
               text: PropTypes.string.isRequired,
-              crop: PropTypes.shape({
-                size: PropTypes.object.isRequired,
-                name: PropTypes.string.isRequired,
-              }),
+              crop: PropTypes.object,
+              source: PropTypes.string.isRequired,
             }),
             isCorrect: PropTypes.bool.isRequired,
           }).isRequired,

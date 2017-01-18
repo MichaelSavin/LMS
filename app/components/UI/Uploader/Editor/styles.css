@@ -1,0 +1,95 @@
+.header {
+  display: flex;
+  padding-right: 30px;
+  justify-content: space-between;
+}
+
+.editor {
+  & > .content {
+    flex-direction: column;
+
+    & .uploader {
+      & .preview {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        margin: 0 8px 0 -6px;
+
+        & .image {
+          margin: 20px;
+          width: 103.5px;
+          height: 103.5px;
+          border-radius: 5px;
+        }
+
+        & .remove {
+          color: white;
+          cursor: pointer;
+          padding: 2px;
+          font-size: 18px;
+          margin-top: 15px;
+          margin-left: -35px;
+          border-radius: 15px;
+          background-color: red;
+          z-index: 1;
+        }
+      }
+
+      & .upload {
+        & .icon {
+          color: #57C5F7;
+          margin: -5px 0 50px 0;
+          height: 60px;
+          font-size: 80px;
+          margin-top: -5px;
+        }
+
+        & .hint {
+          font-size: 13px;
+          margin: 20px 0;
+        }
+      }
+    }
+
+    & .alt {
+      padding: 0;
+      margin-top: 10px;
+    }
+  }
+
+  & > .preview {
+    flex-direction: column;
+    padding-bottom: 10px;
+
+    & .title {
+      width: 100%;
+      margin: 30px 0 35px;
+      font-size: 13px;
+      text-align: center;
+      font-weight: bold;
+      line-height: 0.1em;
+      border-bottom: 1px solid #EEE;
+
+      & .text {
+        padding: 0 10px;
+        background: #FFF;
+      }
+    }
+
+    & .component {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
+.aspects {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:global .ant-form-item {
+  margin-bottom: 5px;
+}
