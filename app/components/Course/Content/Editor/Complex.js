@@ -27,7 +27,7 @@ import {
   entitiesDecorator,
   addEOLtoInlineEntity,
 } from '../Entities';
-// import Popup from './Popup';
+import Popup from './Popup';
 import styles from './styles.css';
 import Toolbar from './Toolbar';
 
@@ -122,8 +122,10 @@ class Editor extends Component {
     this.makeSortable();
   }
 
-  componentDidUpdate() {
-    this.makeSortable();
+  componentDidUpdate(prevProps, prevState) {
+    const oldBlocks = prevState.editorState.getCurrentContent().getBlocksAsArray().length;
+    const blocks = this.state.editorState.getCurrentContent().getBlocksAsArray().length;
+    if (oldBlocks !== blocks) this.makeSortable();
   }
 
   onChange = (editorState) => {
@@ -251,11 +253,19 @@ class Editor extends Component {
 
   focusEditor = () => this.refs.editor.focus();
 
-  toggleReadOnly = () => {
+  toggleReadOnly = (option) => {
     const { editorState, isReadOnly } = this.state;
     // Для сохранения изменений добавил установку фокуса
     // чтобы работало надо что-то поменять в редакторе.
     // TODO нужно найти способо сохранять автоматически
+    if (option !== undefined) {
+      this.setState({
+        editorState: option
+          ? editorState
+          : EditorState.moveFocusToEnd(editorState),
+        isReadOnly: option,
+      });
+    }
     this.setState({
       editorState: isReadOnly
         ? EditorState.moveFocusToEnd(editorState)
@@ -342,14 +352,12 @@ class Editor extends Component {
             // ref={this.setReference}
             // spellCheck
           />
-          { /*
-            <Popup
-              isFocused={isFocused}
-              editorRef={this.refs.editor}
-              editorState={editorState}
-              changeEditorState={this.onChange}
-            />
-          */ }
+          <Popup
+            isFocused={this.state.isFocused}
+            editorRef={this.refs.editor}
+            editorState={editorState}
+            changeEditorState={this.onChange}
+          />
         </div>
       </div>
     );

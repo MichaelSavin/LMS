@@ -1,19 +1,20 @@
 import React, { PropTypes } from 'react';
 import { Entity } from 'draft-js';
+import { Link as RouterLink } from 'react-router';
+
 import styles from './styles.css';
 
 const Link = ({
   children,
   entityKey,
 }) => (
-  <a
-    target="_blank"
+  <RouterLink
     rel="noopener noreferrer"
-    href={Entity.get(entityKey).getData().url}
+    to={Entity.get(entityKey).getData().url}
     className={styles.link}
   >
     {children}
-  </a>
+  </RouterLink>
 );
 
 Link.propTypes = {

@@ -13,7 +13,7 @@ import {
 import Icon from 'components/UI/Icon';
 import styles from './styles.css';
 import Option from '../Option';
-
+import LinkOption from '../LinkOption';
 
 class Style extends Component {
 
@@ -21,6 +21,7 @@ class Style extends Component {
     super(props);
     this.state = {
       styles: {},
+      isLink: false,
     };
   }
 
@@ -51,6 +52,33 @@ class Style extends Component {
       });
     }
   }
+
+  toggleLink = (style) => {
+    const {
+      editorState,
+      changeEditorState,
+    } = this.props;
+    const newState = RichUtils
+      .toggleInlineStyle(
+        editorState,
+        style
+      );
+    changeEditorState(
+      style === 'SUBSCRIPT' || style === 'SUPERSCRIPT'
+        ? EditorState.push(
+            newState,
+            Modifier.removeInlineStyle(
+              newState.getCurrentContent(),
+              newState.getSelection(),
+              style === 'SUBSCRIPT'
+                ? 'SUPERSCRIPT'
+                : 'SUBSCRIPT',
+            ),
+            'change-inline-style'
+          )
+        : newState
+    );
+  };
 
   toggleStyle = (style) => {
     const {
@@ -126,6 +154,7 @@ class Style extends Component {
           </Option>
         )
       }
+        <LinkOption {...this.props} />
       </div>
     );
   }

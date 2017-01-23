@@ -1,0 +1,6 @@
+.popup {
+  & :global(.ant-tooltip-inner) {
+    max-width: 300px;
+    background-color: #404040;
+  }
+}
