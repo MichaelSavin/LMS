@@ -30,8 +30,10 @@ const Editor = ({
   saveContent,
   undoHistory,
   redoHistory,
+  environment,
   changeContent,
   removeContent,
+  changeEnvironment,
 }) => {
   const errors = validator(content);
 
@@ -75,7 +77,12 @@ const Editor = ({
         )}
       </div>
       <AntTabs
+        onChange={changeEnvironment([
+          'editor',
+          'variant',
+        ])}
         className={styles.variants}
+        activeKey={environment.editor.variant}
         tabBarExtraContent={
           <AntButton
             size="small"
@@ -85,19 +92,19 @@ const Editor = ({
               options: [{
                 text: 'Вариант 1',
                 image: undefined,
-                isCorrect: false,
+                correct: false,
               }, {
                 text: 'Вариант 2',
                 image: undefined,
-                isCorrect: false,
+                correct: false,
               }, {
                 text: 'Вариант 3',
                 image: undefined,
-                isCorrect: false,
+                correct: false,
               }, {
                 text: 'Вариант 4',
                 image: undefined,
-                isCorrect: false,
+                correct: false,
               }],
               hints: [],
               competences: [],
@@ -257,13 +264,13 @@ const Editor = ({
                             </div>
                             <div className={styles.checkbox}>
                               <AntCheckbox
-                                checked={option.isCorrect}
+                                checked={option.correct}
                                 onChange={changeContent([
                                   'variants',
                                   variantIndex,
                                   'options',
                                   optionIndex,
-                                  'isCorrect',
+                                  'correct',
                                 ])}
                               />
                             </div>
@@ -298,7 +305,7 @@ const Editor = ({
                         ], {
                           text: 'Новый вариант',
                           image: undefined,
-                          isCorrect: false,
+                          correct: false,
                         })}
                       >
                         Добавить вариант ответа
@@ -586,6 +593,7 @@ Editor.propTypes = {
   redoHistory: PropTypes.func.isRequired,
   removeContent: PropTypes.func.isRequired,
   changeContent: PropTypes.func.isRequired,
+  changeEnvironment: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
@@ -600,12 +608,18 @@ Editor.propTypes = {
               crop: PropTypes.object,
               source: PropTypes.string.isRequired,
             }),
-            isCorrect: PropTypes.bool.isRequired,
+            correct: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
       }).isRequired,
     ).isRequired,
   }).isRequired,
+  environment: PropTypes.shape({
+    editor: PropTypes.shape({
+      open: PropTypes.bool.isRequired,
+      variant: PropTypes.string.isRequired,
+    }).isRequired,
+  }),
   // storage: PropTypes.shape({
   //   images: PropTypes.objectOf(
   //     PropTypes.string.isRequired,
@@ -625,7 +639,7 @@ const validator = (content) => {
     if (!parseInt(variant.points, 10)) { errors[`variants[${variantIndex}].points`] = `Необходимо указать количество баллов в варианте №${variantIndex + 1}`; }
     if (!(variant.options.length > 0)) { errors[`variants[${variantIndex}].options`] = `Необходимо добавить варианты ответов в варианте №${variantIndex + 1}`; }
     variant.options.forEach((option, optionIndex) => { if (!option.text) { errors[`variants[${variantIndex}].options[${optionIndex}].text`] = `Необходимо указать текст ответа №${optionIndex + 1} в варианте №${variantIndex + 1}`; }});
-    if (!variant.options.some((option) => option.isCorrect === true)) { errors[`variants[${variantIndex}].options.checked`] = `Необходимо выбрать правильные варианты ответов в варианте №${variantIndex + 1}`; }
+    if (!variant.options.some((option) => option.correct === true)) { errors[`variants[${variantIndex}].options.checked`] = `Необходимо выбрать правильные варианты ответов в варианте №${variantIndex + 1}`; }
     if (!(variant.hints.length > 0)) { errors[`variants[${variantIndex}].hints`] = `Необходимо добавить подсказки в варианте №${variantIndex + 1}`; }
     if (!(variant.competences.length > 0)) { errors[`variants[${variantIndex}].competences`] = `Необходимо добавить компетенции в варианте №${variantIndex + 1}`; }
     if (!(variant.explanations.length > 0)) { errors[`variants[${variantIndex}].explanations`] = `Необходимо добавить пояснения в варианте №${variantIndex + 1}`; }

@@ -10,19 +10,16 @@ import styles from './styles.css';
 const Preview = ({
   content,
   storage,
+  environment: {
+    editor,
+  },
 }) =>
   <div className={styles.preview}>
     <div className={styles.question}>
-      {/* Показывает первый вариант задания */}
-      {content.variants[0].question || '?'}
+      {content.variants[editor.variant].question || '?'}
     </div>
     <div className={styles.options}>
-      {/* Показывает первый вариант задания */}
-      {content.variants[0].options
-        .map((
-          option,
-          index
-      ) =>
+      {content.variants[editor.variant].options.map((option, index) =>
         <div
           key={index}
           className={styles.option}
@@ -42,7 +39,7 @@ const Preview = ({
             <div className={styles.checkbox}>
               <AntCheckbox
                 key={index}
-                checked={option.isCorrect}
+                checked={option.correct}
               />
             </div>
             <div className={styles.text}>
@@ -53,11 +50,11 @@ const Preview = ({
       )}
     </div>
     <div className={styles.attempts}>
-      <AntButton type="dashed">
-        <div>Количество попыток</div>
+      <AntButton type="primary">
+        <div><b>Проверить ответ</b></div>
         <div>
           Попытка 1 из {
-            content.variants[0].attempts || '?'
+            content.variants[editor.variant].attempts || '?'
           }
         </div>
       </AntButton>
@@ -76,10 +73,10 @@ Preview.propTypes = {
             text: PropTypes.string.isRequired,
             image: PropTypes.shape({
               text: PropTypes.string.isRequired,
-              crop: PropTypes.string.isRequired,
+              crop: PropTypes.object,
               source: PropTypes.string.isRequired,
             }),
-            isCorrect: PropTypes.bool.isRequired,
+            correct: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
       }).isRequired,
@@ -93,6 +90,12 @@ Preview.propTypes = {
       PropTypes.string.isRequired,
     ).isRequired,
   }).isRequired,
+  environment: PropTypes.shape({
+    editor: PropTypes.shape({
+      open: PropTypes.bool.isRequired,
+      variant: PropTypes.string.isRequired,
+    }).isRequired,
+  }),
 };
 
 export default Preview;

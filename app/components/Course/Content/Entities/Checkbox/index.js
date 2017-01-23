@@ -1,5 +1,5 @@
 import React, { PureComponent, PropTypes } from 'react';
-import { get, set, last, update, pullAt, dropRight } from 'lodash/fp';
+import { get, set, last, update, pullAt, dropRight, random } from 'lodash/fp';
 import { Button as AntButton } from 'antd';
 import { arrayMove } from 'react-sortable-hoc';
 import localForage from 'localforage';
@@ -13,13 +13,21 @@ class Checkbox extends PureComponent {
 
   constructor(props) {
     super(props);
-    const { content } = props;
+    const {
+      content,
+      environment,
+    } = props;
     this.state = {
       content: {
         editor: content,
         component: content,
       },
-      isEditing: false,
+      /* Показ случайного варианта задания при загрузке*/
+      environment: set(
+        ['editor', 'variant'],
+        `${random(0, content.variants.length - 1)}`,
+        environment
+      ),
     };
     this.storage = {
       crops: {},
@@ -32,7 +40,11 @@ class Checkbox extends PureComponent {
     };
   }
 
+  // componentWillMount() {
+  // }
+
   componentDidMount() {
+    // Загрузка изображений в компонент
     this.state
       .content
       .editor
@@ -112,12 +124,26 @@ class Checkbox extends PureComponent {
   }
 
   removeContent = (location) => (event) => {
+    const {
+      content,
+      environment,
+    } = this.state;
     if (event) { event.stopPropagation(); }
+    const newContent = update(
+      ['editor', ...dropRight(1, location)],
+      (data) => pullAt([last(location)], data),
+      content
+    );
     this.setState({
-      content: update(
-        ['editor', ...dropRight(1, location)],
-        (data) => pullAt([last(location)], data),
-        this.state.content
+      content: newContent,
+      /* Переключение на предыдущий таб при удалении варианта */
+      environment: set(
+        ['editor', 'variant'],
+        `${newContent.editor.variants[environment.editor.variant]
+          ? environment.editor.variant
+          : newContent.editor.variants.length - 1
+        }`,
+        environment
       ),
     }, this.addStateToHistory);
   }
@@ -152,6 +178,16 @@ class Checkbox extends PureComponent {
     }, this.addStateToHistory);
   }
 
+  changeEnvironment = (location) => (value) => {
+    this.setState({
+      environment: set(
+        [...location],
+        value,
+        this.state.environment
+      ),
+    });
+  }
+
   addStateToHistory = () => {
     /* eslint-disable */
     this.history.present = this.state;
@@ -180,25 +216,41 @@ class Checkbox extends PureComponent {
   }
 
   openEditor = () => {
-    const { content } = this.state;
+    const {
+      content,
+      environment,
+    } = this.state;
     this.setState({
       content: set(
         ['editor'],
         content.component,
         content
       ),
-      isEditing: true,
+      environment: set(
+        ['editor', 'open'],
+        true,
+        environment
+      ),
     }, this.context.toggleReadOnly);
   }
 
   closeEditor = () => {
     this.setState({
-      isEditing: false,
+      environment: set(
+        ['editor'], {
+          open: false,
+          variant: '0',
+        },
+        this.state.environment
+      ),
     }, this.context.toggleReadOnly);
   }
 
   saveContent = () => {
-    const { content } = this.state;
+    const {
+      content,
+      environment,
+    } = this.state;
     Entity.replaceData(
       this.props.entityKey, {
         content: content.editor,
@@ -210,34 +262,43 @@ class Checkbox extends PureComponent {
         content.editor,
         content
       ),
-      isEditing: false,
+      environment: set(
+        ['editor'], {
+          open: false,
+          variant: '0',
+        },
+        environment
+      ),
     }, this.context.toggleReadOnly);
   }
 
   render() {
     const {
       content,
-      isEditing,
+      environment,
     } = this.state;
     return (
       <div
         className={classNames(
           styles.checkbox,
-          { [styles.editing]: isEditing },
+          { [styles.editing]: environment.editor.open },
         )}
       >
         <Preview
-          content={isEditing
-            ? content.editor
-            : content.component
+          content={
+            environment.editor.open
+              ? content.editor
+              : content.component
           }
           storage={this.storage}
+          environment={environment}
         />
-        {isEditing &&
+        {environment.editor.open &&
           <Editor
             storage={this.storage}
             content={content.editor}
             addContent={this.addContent}
+            environment={environment}
             dragContent={this.dragContent}
             closeEditor={this.closeEditor}
             uploadImage={this.uploadImage}
@@ -246,10 +307,11 @@ class Checkbox extends PureComponent {
             redoHistory={this.redoHistory}
             removeContent={this.removeContent}
             changeContent={this.changeContent}
+            changeEnvironment={this.changeEnvironment}
           />
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
-        {!isEditing &&
+        {!environment.editor.open &&
           /* eslint-disable */
           // ? <div className={styles.actions}>
           //     <AntButton
@@ -290,8 +352,8 @@ Checkbox.propTypes = {
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
-        points: PropTypes.number,
-        attempts: PropTypes.number,
+        points: PropTypes.string,
+        attempts: PropTypes.string,
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({
@@ -301,7 +363,7 @@ Checkbox.propTypes = {
               crop: PropTypes.object,
               source: PropTypes.string.isRequired,
             }),
-            isCorrect: PropTypes.bool.isRequired,
+            correct: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
         hints: PropTypes.arrayOf(
@@ -322,9 +384,16 @@ Checkbox.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
+  environment: PropTypes.shape({
+    editor: PropTypes.shape({
+      open: PropTypes.bool.isRequired,
+      variant: PropTypes.string.isRequired,
+    }).isRequired,
+  }),
 };
 
 Checkbox.defaultProps = {
+  /* Контент компонента */
   content: {
     variants: [{
       points: '1',
@@ -333,19 +402,19 @@ Checkbox.defaultProps = {
       options: [{
         text: 'Вариант 1',
         image: undefined,
-        isCorrect: true,
+        correct: true,
       }, {
         text: 'Вариант 2',
         image: undefined,
-        isCorrect: false,
+        correct: false,
       }, {
         text: 'Вариант 3',
         image: undefined,
-        isCorrect: false,
+        correct: false,
       }, {
         text: 'Вариант 4',
         image: undefined,
-        isCorrect: false,
+        correct: false,
       }],
       hints: [{ 
         text: 'Новая подсказка' 
@@ -357,6 +426,13 @@ Checkbox.defaultProps = {
         text: 'Новое объяснение' 
       }],
     }],
+  },
+  /* Cостояние компонента */
+  environment: {
+    editor: {
+      open: false,  // Окно редактора закрыто
+      variant: '0', // Выбран первый вариант
+    },
   },
 };
 
