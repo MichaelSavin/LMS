@@ -619,7 +619,7 @@ Editor.propTypes = {
       open: PropTypes.bool.isRequired,
       variant: PropTypes.string.isRequired,
     }).isRequired,
-  }),
+  }).isRequired,
   // storage: PropTypes.shape({
   //   images: PropTypes.objectOf(
   //     PropTypes.string.isRequired,

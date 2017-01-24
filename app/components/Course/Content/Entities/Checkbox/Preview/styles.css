@@ -1,8 +1,52 @@
 .preview {
   padding: 15px;
 
+  & .flag {
+    width: 250px;
+    display: flex;
+    padding: 10px;
+    position: relative;
+    font-size: 12px;
+    text-align: left;
+    user-select: none;
+    line-height: 16px;
+    background-color: rgb(255, 225, 153);
+
+    & .icon {
+      color: #DA4A00;
+      font-size: 15px;
+    }
+
+    & .content {
+      display: flex;
+      margin-left: 5px;
+      flex-direction: row;
+
+      & .text {
+        font-size: 14px;
+      }
+
+      & .points {
+        color: #888;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  & .flag::after {
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    content: '';
+    position: absolute;
+    border-top: 18px solid transparent;
+    border-right: 15px solid white;
+    border-bottom: 18px solid transparent;
+  }
+
   & .question {
-    margin: 0 0 10px;
+    margin: 15px 0 5px;
     font-size: 15px;
     font-weight: 500;
   }

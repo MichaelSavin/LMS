@@ -2,6 +2,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
+  Icon as AntIcon,
   Button as AntButton,
   Checkbox as AntCheckbox,
   } from 'antd';
@@ -15,6 +16,19 @@ const Preview = ({
   },
 }) =>
   <div className={styles.preview}>
+    <div className={styles.flag}>
+      <div className={styles.icon}>
+        <AntIcon type="tag" />
+      </div>
+      <div className={styles.content}>
+        <div className={styles.text}>
+          Контрольный ворос
+        </div>
+        <div className={styles.points}>
+          {content.variants[editor.variant].points || '?'} балла
+        </div>
+      </div>
+    </div>
     <div className={styles.question}>
       {content.variants[editor.variant].question || '?'}
     </div>
@@ -30,6 +44,7 @@ const Preview = ({
                 src={storage.crops[option.image.source]
                   || storage.images[option.image.source]
                 }
+                alt={option.image.text}
                 role="presentation"
                 width={250}
               />
@@ -95,7 +110,7 @@ Preview.propTypes = {
       open: PropTypes.bool.isRequired,
       variant: PropTypes.string.isRequired,
     }).isRequired,
-  }),
+  }).isRequired,
 };
 
 export default Preview;
