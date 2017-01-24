@@ -1,5 +1,15 @@
 import React, { PureComponent, PropTypes } from 'react';
-import { get, set, last, update, pullAt, dropRight, random } from 'lodash/fp';
+import {
+  get,
+  set,
+  last,
+  update,
+  random,
+  pullAt,
+  sample,
+  dropRight,
+  difference,
+} from 'lodash/fp';
 import { Button as AntButton } from 'antd';
 import { arrayMove } from 'react-sortable-hoc';
 import localForage from 'localforage';
@@ -18,6 +28,8 @@ class Checkbox extends PureComponent {
       environment,
     } = props;
     this.state = {
+      /* Подсказки, показываемые в превью */
+      hints: [],
       content: {
         editor: content,
         component: content,
@@ -272,8 +284,22 @@ class Checkbox extends PureComponent {
     }, this.context.toggleReadOnly);
   }
 
+  showHint = (variant) => () => {
+    this.setState({
+      hints: this.state.hints.concat([
+        sample(
+          difference(
+            this.state.content.component.variants[variant].hints,
+            this.state.hints,
+          ),
+        ),
+      ]),
+    });
+  }
+
   render() {
     const {
+      hints,
       content,
       environment,
     } = this.state;
@@ -285,12 +311,14 @@ class Checkbox extends PureComponent {
         )}
       >
         <Preview
+          hints={hints}
           content={
             environment.editor.open
               ? content.editor
               : content.component
           }
           storage={this.storage}
+          showHint={this.showHint}
           environment={environment}
         />
         {environment.editor.open &&

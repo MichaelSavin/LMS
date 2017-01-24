@@ -2,7 +2,7 @@
   padding: 15px;
 
   & .flag {
-    width: 250px;
+    width: 285px;
     display: flex;
     padding: 10px;
     position: relative;
@@ -19,15 +19,16 @@
 
     & .content {
       display: flex;
-      margin-left: 5px;
+      margin-left: 10px;
       flex-direction: row;
 
       & .text {
-        font-size: 14px;
+        font-size: 15px;
+        font-weight: 500;
       }
 
       & .points {
-        color: #888;
+        color: #555;
         margin-left: 10px;
       }
     }
@@ -45,10 +46,42 @@
     border-bottom: 18px solid transparent;
   }
 
+  & .showHint {
+    color: rgba(0, 0, 0, 0.65);
+    cursor: pointer;
+    border: 1px solid transparent;
+    display: inline-block;
+    padding: 4px 15px;
+    font-size: 14px;
+    margin-top: 15px;
+    text-align: center;
+    user-select: none;
+    border-color: #D9D9D9;
+    border-radius: 4px;
+    background-color: #F7F7F7;
+
+    & .text {
+      font-weight: bold;
+    }
+
+    & .count {
+      font-size: 12px;
+    }
+
+    & .info {
+      color: #AAA;
+      font-size: 10px;
+    }
+  }
+
   & .question {
     margin: 15px 0 5px;
     font-size: 15px;
     font-weight: 500;
+  }
+
+  & .hint {
+    font-size: 13px;
   }
 
   & .options {

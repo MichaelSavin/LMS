@@ -9,10 +9,14 @@ import {
 import styles from './styles.css';
 
 const Preview = ({
+  hints,
   content,
   storage,
+  showHint,
   environment: {
-    editor,
+    editor: {
+      variant,
+    },
   },
 }) =>
   <div className={styles.preview}>
@@ -25,15 +29,42 @@ const Preview = ({
           Контрольный вопрос
         </div>
         <div className={styles.points}>
-          {content.variants[editor.variant].points || '?'} балла
+          Баллы: <b>{content.variants[variant].points - hints.length || '?'}</b>
         </div>
       </div>
     </div>
+    { /* Остались ли еще баллы, которые можно использовать на подсказки? */
+      (content.variants[variant].points > hints.length + 1) &&
+      /* Остались ли еще неиспользованыые подсказки? */
+      (content.variants[variant].hints.length > hints.length) &&
+        <div
+          onClick={showHint(variant)}
+          className={styles.showHint}
+        >
+          <div className={styles.text}>
+            Показать подсказку
+          </div>
+          <div className={styles.count}>
+            Доступно подсказок: <b>{content.variants[variant].hints.length - hints.length}</b>
+          </div>
+          <div className={styles.info}>
+            за использование снимается 1 балл
+          </div>
+        </div>
+    }
     <div className={styles.question}>
-      {content.variants[editor.variant].question || '?'}
+      {content.variants[variant].question || '?'}
     </div>
+    {hints.map((hint, index) =>
+      <div
+        key={index}
+        className={styles.hint}
+      >
+        {hint.text}
+      </div>
+    )}
     <div className={styles.options}>
-      {content.variants[editor.variant].options.map((option, index) =>
+      {content.variants[variant].options.map((option, index) =>
         <div
           key={index}
           className={styles.option}
@@ -69,7 +100,7 @@ const Preview = ({
         <div><b>Проверить ответ</b></div>
         <div>
           Попытка 1 из {
-            content.variants[editor.variant].attempts || '?'
+            content.variants[variant].attempts || '?'
           }
         </div>
       </AntButton>
@@ -77,6 +108,10 @@ const Preview = ({
   </div>;
 
 Preview.propTypes = {
+  hints: PropTypes.arrayOf(
+    PropTypes.string,
+  ).isRequired,
+  showHint: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
