@@ -22,7 +22,7 @@ const Preview = ({
       </div>
       <div className={styles.content}>
         <div className={styles.text}>
-          Контрольный ворос
+          Контрольный вопрос
         </div>
         <div className={styles.points}>
           {content.variants[editor.variant].points || '?'} балла
