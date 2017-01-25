@@ -10,6 +10,7 @@ import {
   dropRight,
   difference,
 } from 'lodash/fp';
+import Sortable from 'sortablejs';
 import { Button as AntButton } from 'antd';
 import { arrayMove } from 'react-sortable-hoc';
 import localForage from 'localforage';
@@ -103,6 +104,25 @@ class Checkbox extends PureComponent {
           });
       });
   }
+
+  makeSortable = (e) => {
+    console.log(e);
+    const name = e.getAttribute('data-id');
+    Sortable.create(e, { // https://github.com/RubaXa/Sortable#options
+      group: {
+        name,
+        pull: ['pull', 'put'],
+        put: ['pull', 'put'],
+      },
+      animation: 350,
+      handle: '.sortable-handle',
+      chosenClass: styles.chosen,
+      ghostClass: styles.ghost,
+      onEnd: (event) => {
+        console.log(event);
+      },
+    });
+  };
 
   uploadImage = (location) => (data, image, crop) => {
     this.storage.images = {
@@ -320,6 +340,7 @@ class Checkbox extends PureComponent {
           storage={this.storage}
           showHint={this.showHint}
           environment={environment}
+          makeSortable={this.makeSortable}
         />
         {environment.editor.open &&
           <Editor

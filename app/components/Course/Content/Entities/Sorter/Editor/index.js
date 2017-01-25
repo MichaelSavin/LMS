@@ -7,7 +7,6 @@ import {
   Input as AntInput,
   Button as AntButton,
   Collapse as AntCollapse,
-  Checkbox as AntCheckbox,
   Popconfirm as AntPopconfirm,
 } from 'antd';
 import {
@@ -262,7 +261,7 @@ const Editor = ({
                                 ])}
                               />
                             </div>
-                            <div className={styles.checkbox}>
+                            {/* <div className={styles.checkbox}>
                               <AntCheckbox
                                 checked={option.correct}
                                 onChange={changeContent([
@@ -273,7 +272,7 @@ const Editor = ({
                                   'correct',
                                 ])}
                               />
-                            </div>
+                            </div>*/}
                             <div className={styles.remove}>
                               <AntPopconfirm
                                 title="Удалить вариант ответа?"
@@ -639,7 +638,7 @@ const validator = (content) => {
     if (!parseInt(variant.points, 10)) { errors[`variants[${variantIndex}].points`] = `Необходимо указать количество баллов в варианте №${variantIndex + 1}`; }
     if (!(variant.options.length > 0)) { errors[`variants[${variantIndex}].options`] = `Необходимо добавить варианты ответов в варианте №${variantIndex + 1}`; }
     variant.options.forEach((option, optionIndex) => { if (!option.text) { errors[`variants[${variantIndex}].options[${optionIndex}].text`] = `Необходимо указать текст ответа №${optionIndex + 1} в варианте №${variantIndex + 1}`; }});
-    if (!variant.options.some((option) => option.correct === true)) { errors[`variants[${variantIndex}].options.checked`] = `Необходимо выбрать правильные варианты ответов в варианте №${variantIndex + 1}`; }
+    // if (!variant.options.some((option) => option.correct === true)) { errors[`variants[${variantIndex}].options.checked`] = `Необходимо выбрать правильные варианты ответов в варианте №${variantIndex + 1}`; }
     if (!(variant.hints.length > 0)) { errors[`variants[${variantIndex}].hints`] = `Необходимо добавить подсказки в варианте №${variantIndex + 1}`; }
     if (!(variant.competences.length > 0)) { errors[`variants[${variantIndex}].competences`] = `Необходимо добавить компетенции в варианте №${variantIndex + 1}`; }
     if (!(variant.explanations.length > 0)) { errors[`variants[${variantIndex}].explanations`] = `Необходимо добавить пояснения в варианте №${variantIndex + 1}`; }

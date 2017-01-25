@@ -4,8 +4,9 @@ import React, {
 import {
   Icon as AntIcon,
   Button as AntButton,
-  Checkbox as AntCheckbox,
+  // Checkbox as AntCheckbox,
   } from 'antd';
+import { shuffle } from 'lodash/fp';
 import styles from './styles.css';
 
 const Preview = ({
@@ -13,6 +14,7 @@ const Preview = ({
   content,
   storage,
   showHint,
+  makeSortable,
   environment: {
     editor: {
       variant,
@@ -63,8 +65,9 @@ const Preview = ({
         {hint.text}
       </div>
     )}
-    <div className={styles.options}>
-      {content.variants[variant].options.map((option, index) =>
+    <div className={styles.answers} ref={makeSortable} data-id="put" />
+    <div className={styles.options} ref={makeSortable} data-id="pull">
+      {shuffle(content.variants[variant].options).map((option, index) =>
         <div
           key={index}
           className={styles.option}
@@ -82,12 +85,20 @@ const Preview = ({
             </div>
           }
           <div className={styles.answer}>
-            <div className={styles.checkbox}>
-              <AntCheckbox
+            <div className={`sortable-handle ${styles.drager}`}>
+              <AntIcon
+                type="appstore-o"
                 key={index}
                 checked={option.correct}
               />
             </div>
+
+            {/* <div className={styles.checkbox}>
+              <AntCheckbox
+                key={index}
+                checked={option.correct}
+              />
+            </div>*/}
             <div className={styles.text}>
               {option.text || '?'}
             </div>
@@ -146,6 +157,7 @@ Preview.propTypes = {
       variant: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  makeSortable: PropTypes.func.isRequired,
 };
 
 export default Preview;

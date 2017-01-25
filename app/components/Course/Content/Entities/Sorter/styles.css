@@ -68,3 +68,13 @@
   line-height: 30px;
   margin-left: 0 !important;
 }
+
+.chosen {
+  opacity: 0.8;
+}
+
+.ghost {
+  color: #FFF;
+  border: 1px dashed #D9D9D9 !important;
+  opacity: 0.8;
+}

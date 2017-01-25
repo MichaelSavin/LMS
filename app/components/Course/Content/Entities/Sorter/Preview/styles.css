@@ -87,36 +87,48 @@
   & .options {
     display: flex;
     flex-direction: column;
-
-    & .option {
-      display: flex;
-      padding: 5px 0;
-      align-items: flex-start;
-      flex-direction: column;
-
-      & .image {
-        margin: 10px 0;
-      }
-
-      & .answer {
-        display: flex;
-        flex-direction: row;
-
-        & .checkbox {
-          display: flex;
-        }
-
-        & .text {
-          font-size: 13px;
-          margin-left: 10px;
-        }
-      }
-    }
   }
 
   & .attempts {
     padding-top: 15px;
     text-align: left;
+  }
+
+  .option {
+    display: flex;
+    padding: 5px;
+    align-items: flex-start;
+    flex-direction: column;
+    background: #FFF;
+    margin: 5px 0;
+    border: 1px solid #D9D9D9;
+
+    & .image {
+      margin: 10px 0;
+    }
+
+    & .answer {
+      display: flex;
+      flex-direction: row;
+
+      & .checkbox {
+        display: flex;
+      }
+
+      & .text {
+        font-size: 13px;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .answers {
+    min-width: 50px;
+    min-height: 36px;
+    background: #F7F7F7;
+    border: 1px solid #D9D9D9;
+    padding: 0 5px;
+    margin-bottom: 10px;
   }
 }
 
