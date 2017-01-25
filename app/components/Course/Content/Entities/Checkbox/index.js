@@ -52,9 +52,6 @@ class Checkbox extends PureComponent {
     };
   }
 
-  // componentWillMount() {
-  // }
-
   componentDidMount() {
     // Загрузка изображений в компонент
     this.state
@@ -289,8 +286,13 @@ class Checkbox extends PureComponent {
       hints: this.state.hints.concat([
         sample(
           difference(
-            this.state.content.component.variants[variant].hints,
-            this.state.hints,
+            this.state
+              .content
+              .component
+              .variants[variant]
+              .hints,
+            this.state
+              .hints,
           ),
         ),
       ]),

@@ -35,7 +35,7 @@ const Preview = ({
     </div>
     { /* Остались ли еще баллы, которые можно использовать на подсказки? */
       (content.variants[variant].points > hints.length + 1) &&
-      /* Остались ли еще неиспользованыые подсказки? */
+      /* Остались ли еще неиспользованные подсказки? */
       (content.variants[variant].hints.length > hints.length) &&
         <div
           onClick={showHint(variant)}
