@@ -6,112 +6,180 @@ import {
   Button as AntButton,
   Checkbox as AntCheckbox,
   } from 'antd';
+import classNames from 'classnames';
+import { isEmpty } from 'lodash/fp';
 import styles from './styles.css';
 
 const Preview = ({
-  hints,
   content,
   storage,
   showHint,
   environment: {
-    editor: {
-      variant,
-    },
+    hints,
+    status,
+    attemp,
+    editing,
+    answers,
+    variant,
   },
-}) =>
-  <div className={styles.preview}>
-    <div className={styles.flag}>
-      <div className={styles.icon}>
-        <AntIcon type="tag" />
-      </div>
-      <div className={styles.content}>
-        <div className={styles.text}>
-          Контрольный вопрос
+  chooseAnswer,
+  checkAnswers,
+}) => {
+  /* Количество баллов за задание, за вычетом использованных на подсказки */
+  const avaiblePoints = content.variants[variant].points - hints.length;
+  /* Количество неиспользованных подсказок */
+  const avaibleHints = content.variants[variant].hints.length - hints.length;
+  /* Количество оставшихся попыток */
+  const avaibleAttempts = content.variants[variant].attempts - (attemp - 1);
+
+  return (
+    <div className={styles.preview}>
+      <div className={styles.flag}>
+        <div className={styles.icon}>
+          <AntIcon type="tag" />
         </div>
-        <div className={styles.points}>
-          Баллы: <b>{content.variants[variant].points - hints.length || '?'}</b>
-        </div>
-      </div>
-    </div>
-    { /* Остались ли еще баллы, которые можно использовать на подсказки? */
-      (content.variants[variant].points > hints.length + 1) &&
-      /* Остались ли еще неиспользованные подсказки? */
-      (content.variants[variant].hints.length > hints.length) &&
-        <div
-          onClick={showHint(variant)}
-          className={styles.showHint}
-        >
+        <div className={styles.content}>
           <div className={styles.text}>
-            Показать подсказку
+            Контрольный вопрос
           </div>
-          <div className={styles.count}>
-            Доступно подсказок: <b>{content.variants[variant].hints.length - hints.length}</b>
-          </div>
-          <div className={styles.info}>
-            за использование снимается 1 балл
+          <div className={styles.points}>
+            Баллы: <b>{avaiblePoints || '?'}</b>
           </div>
         </div>
-    }
-    <div className={styles.question}>
-      {content.variants[variant].question || '?'}
-    </div>
-    {hints.map((hint, index) =>
-      <div
-        key={index}
-        className={styles.hint}
-      >
-        {hint.text}
       </div>
-    )}
-    <div className={styles.options}>
-      {content.variants[variant].options.map((option, index) =>
+      { status !== 'success' &&
+        avaibleHints > 0 &&
+        avaiblePoints > 1 &&
+        avaibleAttempts !== 0 &&
+          <div
+            onClick={showHint(variant)}
+            className={styles.showHint}
+          >
+            <div className={styles.text}>
+              Показать подсказку
+            </div>
+            <div className={styles.count}>
+              Доступно подсказок: <b>{avaibleHints}</b>
+            </div>
+            <div className={styles.info}>
+              за использование снимается 1 балл
+            </div>
+          </div>
+      }
+      <div className={styles.question}>
+        {content.variants[variant].question || '?'}
+      </div>
+      {hints.map((hint, index) =>
         <div
           key={index}
-          className={styles.option}
+          className={styles.hint}
         >
-          {option.image &&
-            <div className={styles.image}>
-              <img
-                src={storage.crops[option.image.source]
-                  || storage.images[option.image.source]
-                }
-                alt={option.image.text}
-                role="presentation"
-                width={250}
-              />
-            </div>
-          }
-          <div className={styles.answer}>
-            <div className={styles.checkbox}>
-              <AntCheckbox
-                key={index}
-                checked={option.correct}
-              />
-            </div>
-            <div className={styles.text}>
-              {option.text || '?'}
-            </div>
-          </div>
+          {hint.text}
         </div>
       )}
-    </div>
-    <div className={styles.attempts}>
-      <AntButton type="primary">
-        <div><b>Проверить ответ</b></div>
-        <div>
-          Попытка 1 из {
-            content.variants[variant].attempts || '?'
+      <div className={styles.options}>
+        {content.variants[variant].options.map((option, index) =>
+          <div
+            key={index}
+            className={styles.option}
+          >
+            {option.image &&
+              <div className={styles.image}>
+                <img
+                  src={storage.crops[option.image.source]
+                    || storage.images[option.image.source]
+                  }
+                  alt={option.image.text}
+                  role="presentation"
+                  width={250}
+                />
+              </div>
+            }
+            <div className={styles.answer}>
+              <div className={styles.checkbox}>
+                <AntCheckbox
+                  key={index}
+                  checked={/*
+                    В режиме редактирования показывает
+                    правильные ответы, в режиме выполнения
+                    задания - выбранные ответы */
+                    editing
+                      ? option.correct
+                      : answers.includes(index)
+                  }
+                  onChange={chooseAnswer(index)}
+                />
+              </div>
+              <div className={styles.text}>
+                {option.text || '?'}
+              </div>
+              {editing && option.correct &&
+                <div className={styles.hint}>
+                  правильный ответ
+                </div>
+              }
+            </div>
+          </div>
+        )}
+      </div>
+      {status &&
+        <div
+          className={classNames(
+            styles.message,
+            styles[status],
+          )}
+        >
+          <AntIcon
+            type={{
+              success: 'check-circle',
+              error: 'close-circle',
+            }[status]}
+            className={styles.icon}
+          />
+          <div className={styles.text}>{{
+            success: 'Ответ верный',
+            error: 'Ответ неверный',
+          }[status]}
+          </div>
+          {(status === 'success' || avaibleAttempts === 0) &&
+            <div className={styles.points}>
+              Получено баллов:
+              <b>{{
+                success: avaiblePoints,
+                error: 0,
+              }[status]}</b>
+            </div>
           }
         </div>
-      </AntButton>
+      }
+
+      <div className={styles.check}>
+        <AntButton
+          type="primary"
+          onClick={checkAnswers}
+          disabled={
+            isEmpty(answers) || /* Ответы не выбраны */
+            status === 'success' ||
+            avaibleAttempts === 0
+          }
+        >
+          <div><b>Проверить ответ</b></div>
+          <div>
+            {avaibleAttempts === 0
+              ? 'Попыток больше нет'
+              : `Попытка ${attemp} из ${content.variants[variant].attempts || '?'}`
+            }
+          </div>
+        </AntButton>
+      </div>
     </div>
-  </div>;
+  );
+};
 
 Preview.propTypes = {
-  hints: PropTypes.arrayOf(
-    PropTypes.string,
-  ).isRequired,
   showHint: PropTypes.func.isRequired,
+  chooseAnswer: PropTypes.func.isRequired,
+  checkAnswers: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
@@ -141,10 +209,22 @@ Preview.propTypes = {
     ).isRequired,
   }).isRequired,
   environment: PropTypes.shape({
-    editor: PropTypes.shape({
-      open: PropTypes.bool.isRequired,
-      variant: PropTypes.string.isRequired,
-    }).isRequired,
+    hints: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
+    status: PropTypes.oneOf([
+      null,
+      'error',
+      'success',
+    ]).isRequired,
+    attemp: PropTypes.number.isRequired,
+    answers: PropTypes.arrayOf(
+      PropTypes.number,
+    ).isRequired,
+    variant: PropTypes.string.isRequired,
+    editing: PropTypes.bool.isRequired,
   }).isRequired,
 };
 

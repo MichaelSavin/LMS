@@ -110,11 +110,67 @@
           font-size: 13px;
           margin-left: 10px;
         }
+
+        & .hint {
+          color: #AAA;
+          font-size: 10px;
+          align-self: center;
+          margin-left: 10px;
+        }
       }
     }
   }
 
-  & .attempts {
+  & .message {
+    width: 285px;
+    display: flex;
+    padding: 10px 5px;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  & .message {
+    margin-top: 5px;
+    border-radius: 5px;
+
+    & .icon {
+      margin-left: 5px;
+    }
+
+    & .text {
+      font-size: 13px;
+      font-weight: 700;
+      margin-left: 10px;
+    }
+
+    & .points {
+      color: #888;
+      font-size: 12px;
+      margin-left: 10px;
+
+      & b {
+        margin-left: 5px;
+      }
+    }
+  }
+
+  & .message.error {
+    background-color: rgba(255, 0, 0, 0.1);
+
+    & .icon {
+      color: red;
+    }
+  }
+
+  & .message.success {
+    background-color: rgba(0, 128, 0, 0.1);
+
+    & .icon {
+      color: green;
+    }
+  }
+
+  & .check {
     padding-top: 15px;
     text-align: left;
   }
