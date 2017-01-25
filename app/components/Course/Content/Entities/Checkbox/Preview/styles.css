@@ -187,6 +187,11 @@
     }
   }
 
+  & .explanation {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+
   & .check {
     padding-top: 15px;
     text-align: left;

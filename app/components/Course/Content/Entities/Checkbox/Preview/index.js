@@ -6,8 +6,8 @@ import {
   Button as AntButton,
   Checkbox as AntCheckbox,
   } from 'antd';
+import { isEmpty, sample } from 'lodash/fp';
 import classNames from 'classnames';
-import { isEmpty } from 'lodash/fp';
 import styles from './styles.css';
 
 const Preview = ({
@@ -152,7 +152,12 @@ const Preview = ({
           }
         </div>
       }
-
+      {(status === 'fail' || status === 'success') &&
+        <div className={styles.explanation}>
+          <b>Пояснение: </b>
+          {sample(content.variants[variant].explanations).text}
+        </div>
+      }
       <div className={styles.check}>
         <AntButton
           type="primary"
