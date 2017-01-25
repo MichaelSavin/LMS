@@ -351,7 +351,10 @@ class Checkbox extends PureComponent {
             ),
           )
             ? 'success'
-            : 'error',
+            /* Попытки закончились */
+            : variants[variant].attempts - attemp === 0
+              ? 'fail'
+              : 'error',
           this.state.environment
         ),
         attemp: attemp + 1,

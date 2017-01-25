@@ -29,8 +29,6 @@ const Preview = ({
   const avaiblePoints = content.variants[variant].points - hints.length;
   /* Количество неиспользованных подсказок */
   const avaibleHints = content.variants[variant].hints.length - hints.length;
-  /* Количество оставшихся попыток */
-  const avaibleAttempts = content.variants[variant].attempts - (attemp - 1);
 
   return (
     <div className={styles.preview}>
@@ -47,10 +45,10 @@ const Preview = ({
           </div>
         </div>
       </div>
-      { status !== 'success' &&
+      { status !== 'fail' &&
+        status !== 'success' &&
         avaibleHints > 0 &&
         avaiblePoints > 1 &&
-        avaibleAttempts !== 0 &&
           <div
             onClick={showHint(variant)}
             className={styles.showHint}
@@ -132,21 +130,23 @@ const Preview = ({
           <AntIcon
             type={{
               success: 'check-circle',
-              error: 'close-circle',
+              error: 'exclamation-circle',
+              fail: 'close-circle',
             }[status]}
             className={styles.icon}
           />
           <div className={styles.text}>{{
             success: 'Ответ верный',
-            error: 'Ответ неверный',
+            error: 'Ответ неверный, попробуйте еще раз',
+            fail: 'Задание не выпонено',
           }[status]}
           </div>
-          {(status === 'success' || avaibleAttempts === 0) &&
+          {(status === 'success' || status === 'fail') &&
             <div className={styles.points}>
               Получено баллов:
               <b>{{
                 success: avaiblePoints,
-                error: 0,
+                fail: 0,
               }[status]}</b>
             </div>
           }
@@ -159,13 +159,13 @@ const Preview = ({
           onClick={checkAnswers}
           disabled={
             isEmpty(answers) || /* Ответы не выбраны */
-            status === 'success' ||
-            avaibleAttempts === 0
+            status === 'fail' ||
+            status === 'success'
           }
         >
           <div><b>Проверить ответ</b></div>
           <div>
-            {avaibleAttempts === 0
+            {status === 'fail' || status === 'success'
               ? 'Попыток больше нет'
               : `Попытка ${attemp} из ${content.variants[variant].attempts || '?'}`
             }

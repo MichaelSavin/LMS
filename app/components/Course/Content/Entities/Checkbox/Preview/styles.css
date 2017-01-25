@@ -122,7 +122,7 @@
   }
 
   & .message {
-    width: 285px;
+    width: 300px;
     display: flex;
     padding: 10px 5px;
     align-items: center;
@@ -146,7 +146,7 @@
     & .points {
       color: #888;
       font-size: 12px;
-      margin-left: 10px;
+      margin-left: 20px;
 
       & b {
         margin-left: 5px;
@@ -154,11 +154,28 @@
     }
   }
 
-  & .message.error {
+  & .message.fail {
     background-color: rgba(255, 0, 0, 0.1);
 
     & .icon {
       color: red;
+    }
+
+    & .points {
+      font-size: 10px;
+      margin-left: 10px;
+    }
+  }
+
+  & .message.error {
+    background-color: rgba(255, 122, 0, 0.1);
+
+    & .icon {
+      color: #FF7A00;
+    }
+
+    & .text {
+      font-size: 12px;
     }
   }
 
