@@ -18,6 +18,7 @@ const tasks = [{
     { name: 'Развернутый ответ', type: 'TEXTAREA' },
     { name: 'Единственный выбор', type: 'RADIO' },
     { name: 'Множественный выбор', type: 'CHECKBOX' },
+    { name: 'Сортировка', type: 'SORTER' },
   ],
 }, {
   section: 'Математические',

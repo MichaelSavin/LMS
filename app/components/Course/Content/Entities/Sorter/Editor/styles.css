@@ -1,0 +1,325 @@
+.editor {
+  padding: 15px;
+  border-top: 2.5px solid #108EE9;
+  padding-top: 0;
+  background-color: #F9F9F9;
+
+  & .title {
+    width: 103%;
+    color: white;
+    padding: 5px 15px;
+    display: flex;
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: -15px;
+    border-bottom: 2.5px solid #108EE9;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #108EE9;
+
+    & .actions {
+      height: 20px;
+      margin-top: -4px;
+      margin-right: -2px;
+
+      & button {
+        transform: scale(0.8);
+      }
+    }
+  }
+
+  & .errors {
+    width: 103%;
+    background: #FFC3C3;
+    margin-left: -15px;
+
+    & .text {
+      color: black;
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    & .error:first-child {
+      padding-top: 10px;
+    }
+
+    & .error {
+      font-size: 13px;
+      font-weight: 600;
+      padding-left: 10px;
+      padding-bottom: 10px;
+    }
+  }
+
+  & .variants {
+    margin-top: -7.5px;
+
+    & .variant {
+      & > .remove {
+        color: red;
+
+        /* display: none; */
+        margin-left: 10px;
+        margin-right: -5px;
+      }
+
+      &:hover {
+        & > .remove {
+          /* display: inline-block; */
+        }
+      }
+
+      & .data {
+        display: flex;
+        flex-direction: row;
+
+        & .question {
+          flex: 8;
+          font-size: 13px;
+          margin-top: 5px;
+          margin-bottom: 15px;
+        }
+
+        & .points {
+          flex: 1;
+          padding: 5px 15px;
+          font-size: 13px;
+          text-align: center;
+          font-weight: 500;
+
+          & input {
+            height: 65px;
+            font-size: 18px;
+            text-align: center;
+            padding-top: 7.5px;
+          }
+        }
+
+        & .attempts {
+          flex: 1;
+          padding: 5px 15px;
+          font-size: 13px;
+          text-align: center;
+          font-weight: 500;
+
+          & input {
+            height: 65px;
+            font-size: 18px;
+            text-align: center;
+            padding-top: 7.5px;
+          }
+        }
+      }
+
+      & .sections {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 25px;
+
+        /* Общая для всех секций */
+        & .info {
+          display: flex;
+          align-items: center;
+          flex-direction: row;
+          justify-content: space-between;
+
+          & .text {
+            /* ... */
+          }
+
+          & .notifier {
+            color: black;
+            padding: 0 10px;
+
+            & .defined {
+              padding: 3px 10px;
+              display: inline;
+              border-radius: 5px;
+              background: #99FF83;
+            }
+
+            & .undefined {
+              padding: 3px 10px;
+              display: inline;
+              border-radius: 5px;
+              background: #FF8383;
+            }
+          }
+        }
+
+        & .options {
+          & ul { /* SortableContainer */
+            & .option {
+              & li { /* SortableElement */
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                flex-direction: row;
+                justify-content: space-between;
+
+                & .drag {
+                  cursor: grab;
+                }
+
+                & .text {
+                  width: 85%;
+                }
+
+                & .image {
+                  & .preview {
+                    & img {
+                      width: 70px;
+                      height: 70px;
+                    }
+
+                    & .remove {
+                      top: -7px;
+                      right: -5px;
+                      color: #FFF;
+                      cursor: pointer;
+                      padding: 3px;
+                      position: absolute;
+                      font-size: 12px;
+                      border-radius: 50%;
+                      background-color: red;
+                    }
+                  }
+
+                  & .upload {
+                    align-items: center;
+                    justify-content: center;
+
+                    & .dropzone {
+                      /* ... */
+                    }
+
+                    & .icon {
+                      cursor: pointer;
+                      font-size: 25px;
+                    }
+                  }
+                }
+
+                & .checkbox {
+                  transform: scale(1.25);
+                }
+
+                & .remove {
+                  color: red;
+                  cursor: pointer;
+                  transform: scale(1.25);
+                }
+              }
+            }
+          }
+        }
+
+        & .hints {
+          & .hint {
+            display: flex;
+            padding: 0 0 10px;
+            font-weight: normal;
+            align-items: center;
+            flex-direction: row;
+            justify-content: space-between;
+
+            & .text {
+              width: 97.5%;
+            }
+
+            & .remove {
+              color: red;
+              cursor: pointer;
+            }
+          }
+        }
+
+        & .competences {
+          & .competence {
+            display: flex;
+            padding: 0 0 10px;
+            font-weight: normal;
+            align-items: center;
+            flex-direction: row;
+            justify-content: space-between;
+
+            & .text {
+              width: 97.5%;
+            }
+
+            & .remove {
+              color: red;
+              cursor: pointer;
+            }
+          }
+        }
+
+        & .explanations {
+          & .explanation {
+            display: flex;
+            padding: 0 0 10px;
+            font-weight: normal;
+            align-items: center;
+            flex-direction: row;
+            justify-content: space-between;
+
+            & .text {
+              width: 97.5%;
+            }
+
+            & .remove {
+              color: red;
+              cursor: pointer;
+            }
+          }
+
+          & .add {
+            /* ... */
+          }
+        }
+      }
+    }
+  }
+
+  & .actions {
+    & .save {
+      /* ... */
+    }
+
+    & .cancel {
+      margin-left: 15px;
+    }
+  }
+}
+
+body > li { /* Для D&D */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  & .text {
+    width: 90%;
+  }
+}
+
+:global .ant-form-item {
+  margin-bottom: 0;
+}
+
+:global .ant-form-item-control {
+  line-height: 0;
+  margin-bottom: 16px;
+}
+
+:global .ant-form-item-control::before {
+  content: none;
+}
+
+:global .ant-row::before {
+  content: none;
+}
+
+:global .ant-tabs-tabpane {
+  height: auto !important;
+}
