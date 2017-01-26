@@ -13,7 +13,6 @@ import {
   random,
   pullAt,
   isEqual,
-  compact,
   dropRight,
   difference,
 } from 'lodash/fp';
@@ -339,19 +338,20 @@ class Checkbox extends PureComponent {
       environment: {
         ...set(
           ['status'],
+          /* Сравнение выбранных ответов с правильными */
           isEqual(
             answers,
-            compact(
-              variants[variant].options
-                .map((option, index) =>
-                  option.correct
-                    ? index
-                    : null
-                ),
-            ),
+            variants[variant].options
+              .map((option, index) =>
+                option.correct
+                  ? index
+                  : null
+              ).filter((index) =>
+                index !== null
+              ),
           )
             ? 'success'
-            /* Попытки закончились */
+            /* Попытки закончились? */
             : variants[variant].attempts - attemp === 0
               ? 'fail'
               : 'error',
