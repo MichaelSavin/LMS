@@ -486,6 +486,7 @@ Checkbox.propTypes = {
     ).isRequired,
     status: PropTypes.oneOf([
       null,
+      'fail',
       'error',
       'success',
     ]).isRequired,
