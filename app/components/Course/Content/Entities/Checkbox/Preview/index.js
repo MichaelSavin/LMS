@@ -105,6 +105,7 @@ const Preview = ({
                       ? option.correct
                       : answers.includes(index)
                   }
+                  disabled={editing}
                   onChange={chooseAnswer(index)}
                 />
               </div>
@@ -165,6 +166,7 @@ const Preview = ({
           type="primary"
           onClick={checkAnswers}
           disabled={
+            editing ||
             isEmpty(answers) || /* Ответы не выбраны */
             status === 'fail' ||
             status === 'success'
