@@ -34,7 +34,7 @@ import Timeline from './Timeline';
 import Checkbox from './Checkbox';
 import Textarea from './Textarea';
 import Sample from './Sample';
-import Sorter from './Sorter';
+import Sorter from './NewSorter';
 
 const components = { // можно использовать require()
   TAG: Tag,
