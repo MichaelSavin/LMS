@@ -33,7 +33,7 @@ const Editor = ({
   environment,
   changeContent,
   removeContent,
-  changeEnvironment,
+  changeVariant,
 }) => {
   const errors = validator(content);
 
@@ -77,12 +77,9 @@ const Editor = ({
         )}
       </div>
       <AntTabs
-        onChange={changeEnvironment([
-          'editor',
-          'variant',
-        ])}
+        onChange={changeVariant}
         className={styles.variants}
-        activeKey={environment.editor.variant}
+        activeKey={environment.variant}
         tabBarExtraContent={
           <AntButton
             size="small"
@@ -593,7 +590,7 @@ Editor.propTypes = {
   redoHistory: PropTypes.func.isRequired,
   removeContent: PropTypes.func.isRequired,
   changeContent: PropTypes.func.isRequired,
-  changeEnvironment: PropTypes.func.isRequired,
+  changeVariant: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
@@ -615,10 +612,7 @@ Editor.propTypes = {
     ).isRequired,
   }).isRequired,
   environment: PropTypes.shape({
-    editor: PropTypes.shape({
-      open: PropTypes.bool.isRequired,
-      variant: PropTypes.string.isRequired,
-    }).isRequired,
+    variant: PropTypes.string.isRequired,
   }).isRequired,
   // storage: PropTypes.shape({
   //   images: PropTypes.objectOf(

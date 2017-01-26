@@ -6,112 +6,189 @@ import {
   Button as AntButton,
   Checkbox as AntCheckbox,
   } from 'antd';
+import { isEmpty, sample } from 'lodash/fp';
+import classNames from 'classnames';
 import styles from './styles.css';
 
 const Preview = ({
-  hints,
   content,
   storage,
   showHint,
   environment: {
-    editor: {
-      variant,
-    },
+    hints,
+    status,
+    attemp,
+    editing,
+    answers,
+    variant,
   },
-}) =>
-  <div className={styles.preview}>
-    <div className={styles.flag}>
-      <div className={styles.icon}>
-        <AntIcon type="tag" />
-      </div>
-      <div className={styles.content}>
-        <div className={styles.text}>
-          Контрольный вопрос
+  chooseAnswer,
+  checkAnswers,
+}) => {
+  /* Количество баллов за задание, за вычетом использованных на подсказки */
+  const avaiblePoints = content.variants[variant].points - hints.length;
+  /* Количество неиспользованных подсказок */
+  const avaibleHints = content.variants[variant].hints.length - hints.length;
+
+  return (
+    <div className={styles.preview}>
+      <div className={styles.flag}>
+        <div className={styles.icon}>
+          <AntIcon type="tag" />
         </div>
-        <div className={styles.points}>
-          Баллы: <b>{content.variants[variant].points - hints.length || '?'}</b>
-        </div>
-      </div>
-    </div>
-    { /* Остались ли еще баллы, которые можно использовать на подсказки? */
-      (content.variants[variant].points > hints.length + 1) &&
-      /* Остались ли еще неиспользованыые подсказки? */
-      (content.variants[variant].hints.length > hints.length) &&
-        <div
-          onClick={showHint(variant)}
-          className={styles.showHint}
-        >
+        <div className={styles.content}>
           <div className={styles.text}>
-            Показать подсказку
+            Контрольный вопрос
           </div>
-          <div className={styles.count}>
-            Доступно подсказок: <b>{content.variants[variant].hints.length - hints.length}</b>
-          </div>
-          <div className={styles.info}>
-            за использование снимается 1 балл
+          <div className={styles.points}>
+            Баллы: <b>{avaiblePoints || '?'}</b>
           </div>
         </div>
-    }
-    <div className={styles.question}>
-      {content.variants[variant].question || '?'}
-    </div>
-    {hints.map((hint, index) =>
-      <div
-        key={index}
-        className={styles.hint}
-      >
-        {hint.text}
       </div>
-    )}
-    <div className={styles.options}>
-      {content.variants[variant].options.map((option, index) =>
+      { status !== 'fail' &&
+        status !== 'success' &&
+        avaibleHints > 0 &&
+        avaiblePoints > 1 &&
+          <div
+            onClick={showHint(variant)}
+            className={styles.showHint}
+          >
+            <div className={styles.text}>
+              Показать подсказку
+            </div>
+            <div className={styles.count}>
+              Доступно подсказок: <b>{avaibleHints}</b>
+            </div>
+            <div className={styles.info}>
+              за использование снимается 1 балл
+            </div>
+          </div>
+      }
+      <div className={styles.question}>
+        {content.variants[variant].question || '?'}
+      </div>
+      {hints.map((hint, index) =>
         <div
           key={index}
-          className={styles.option}
+          className={styles.hint}
         >
-          {option.image &&
-            <div className={styles.image}>
-              <img
-                src={storage.crops[option.image.source]
-                  || storage.images[option.image.source]
-                }
-                alt={option.image.text}
-                role="presentation"
-                width={250}
-              />
-            </div>
-          }
-          <div className={styles.answer}>
-            <div className={styles.checkbox}>
-              <AntCheckbox
-                key={index}
-                checked={option.correct}
-              />
-            </div>
-            <div className={styles.text}>
-              {option.text || '?'}
-            </div>
-          </div>
+          {hint.text}
         </div>
       )}
-    </div>
-    <div className={styles.attempts}>
-      <AntButton type="primary">
-        <div><b>Проверить ответ</b></div>
-        <div>
-          Попытка 1 из {
-            content.variants[variant].attempts || '?'
-          }
+      <div className={styles.options}>
+        {content.variants[variant].options.map((option, index) =>
+          <div
+            key={index}
+            className={styles.option}
+          >
+            {option.image &&
+              <div className={styles.image}>
+                <img
+                  src={storage.crops[option.image.source]
+                    || storage.images[option.image.source]
+                  }
+                  alt={option.image.text}
+                  role="presentation"
+                  width={250}
+                />
+              </div>
+            }
+            <div className={styles.answer}>
+              <div className={styles.checkbox}>
+                <AntCheckbox
+                  key={index}
+                  checked={/*
+                    В режиме редактирования показывает
+                    правильные ответы, в режиме выполнения
+                    задания - выбранные ответы */
+                    editing
+                      ? option.correct
+                      : answers.includes(index)
+                  }
+                  disabled={editing}
+                  onChange={chooseAnswer(index)}
+                />
+              </div>
+              <div className={styles.text}>
+                {option.text || '?'}
+              </div>
+              {editing && option.correct &&
+                <div className={styles.hint}>
+                  правильный ответ
+                </div>
+              }
+            </div>
+          </div>
+        )}
+      </div>
+      {status &&
+        <div
+          className={classNames(
+            styles.message,
+            styles[status],
+          )}
+        >
+          <AntIcon
+            type={{
+              fail: 'close-circle',
+              error: 'exclamation-circle',
+              success: 'check-circle',
+            }[status]}
+            className={styles.icon}
+          />
+          <div className={styles.content}>
+            <div className={styles.text}>{{
+              fail: 'Задание не выпонено',
+              error: 'Ответ неверный, попробуйте еще раз',
+              success: 'Ответ верный',
+            }[status]}
+            </div>
+            {(status === 'success' || status === 'fail') &&
+              <div className={styles.points}>
+                Получено баллов:
+                <b>{{
+                  fail: 0,
+                  success: avaiblePoints,
+                }[status]}</b>
+              </div>
+            }
+          </div>
         </div>
-      </AntButton>
+      }
+      {(status === 'fail' || status === 'success') &&
+        <div className={styles.explanation}>
+          <b>Пояснение: </b>
+          {sample(content.variants[variant].explanations).text}
+        </div>
+      }
+      <div className={styles.check}>
+        <AntButton
+          type="primary"
+          onClick={checkAnswers}
+          disabled={
+            editing ||
+            isEmpty(answers) || /* Ответы не выбраны */
+            status === 'fail' ||
+            status === 'success'
+          }
+        >
+          <div><b>Проверить ответ</b></div>
+          <div>
+            {status === 'fail' || status === 'success'
+              ? 'Попыток больше нет'
+              : `Попытка ${attemp} из ${content.variants[variant].attempts || '?'}`
+            }
+          </div>
+        </AntButton>
+      </div>
     </div>
-  </div>;
+  );
+};
 
 Preview.propTypes = {
-  hints: PropTypes.arrayOf(
-    PropTypes.string,
-  ).isRequired,
   showHint: PropTypes.func.isRequired,
+  chooseAnswer: PropTypes.func.isRequired,
+  checkAnswers: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
@@ -141,10 +218,23 @@ Preview.propTypes = {
     ).isRequired,
   }).isRequired,
   environment: PropTypes.shape({
-    editor: PropTypes.shape({
-      open: PropTypes.bool.isRequired,
-      variant: PropTypes.string.isRequired,
-    }).isRequired,
+    hints: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
+    status: PropTypes.oneOf([
+      null,
+      'fail',
+      'error',
+      'success',
+    ]).isRequired,
+    attemp: PropTypes.number.isRequired,
+    answers: PropTypes.arrayOf(
+      PropTypes.number,
+    ).isRequired,
+    variant: PropTypes.string.isRequired,
+    editing: PropTypes.bool.isRequired,
   }).isRequired,
 };
 
