@@ -129,27 +129,29 @@ const Preview = ({
         >
           <AntIcon
             type={{
-              success: 'check-circle',
-              error: 'exclamation-circle',
               fail: 'close-circle',
+              error: 'exclamation-circle',
+              success: 'check-circle',
             }[status]}
             className={styles.icon}
           />
-          <div className={styles.text}>{{
-            success: 'Ответ верный',
-            error: 'Ответ неверный, попробуйте еще раз',
-            fail: 'Задание не выпонено',
-          }[status]}
-          </div>
-          {(status === 'success' || status === 'fail') &&
-            <div className={styles.points}>
-              Получено баллов:
-              <b>{{
-                success: avaiblePoints,
-                fail: 0,
-              }[status]}</b>
+          <div className={styles.content}>
+            <div className={styles.text}>{{
+              fail: 'Задание не выпонено',
+              error: 'Ответ неверный, попробуйте еще раз',
+              success: 'Ответ верный',
+            }[status]}
             </div>
-          }
+            {(status === 'success' || status === 'fail') &&
+              <div className={styles.points}>
+                Получено баллов:
+                <b>{{
+                  fail: 0,
+                  success: avaiblePoints,
+                }[status]}</b>
+              </div>
+            }
+          </div>
         </div>
       }
       {(status === 'fail' || status === 'success') &&

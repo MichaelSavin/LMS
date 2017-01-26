@@ -122,34 +122,36 @@
   }
 
   & .message {
-    width: 300px;
-    display: flex;
+    min-width: 215px;
+    display: inline-flex;
     padding: 10px 5px;
-    align-items: center;
-    flex-direction: row;
-  }
-
-  & .message {
     margin-top: 5px;
+    align-items: center;
     border-radius: 5px;
+    flex-direction: row;
 
     & .icon {
-      margin-left: 5px;
-    }
-
-    & .text {
-      font-size: 13px;
-      font-weight: 700;
       margin-left: 10px;
     }
 
-    & .points {
-      color: #888;
-      font-size: 12px;
-      margin-left: 20px;
+    & .content {
+      display: flex;
+      flex-direction: column;
 
-      & b {
-        margin-left: 5px;
+      & .text {
+        font-size: 13px;
+        font-weight: 700;
+        margin-left: 25px;
+      }
+
+      & .points {
+        color: #888;
+        font-size: 12px;
+        margin-left: 25px;
+
+        & b {
+          margin-left: 5px;
+        }
       }
     }
   }
@@ -161,9 +163,13 @@
       color: red;
     }
 
+    & .text {
+      margin-left: 15px;
+      text-align: center;
+    }
+
     & .points {
-      font-size: 10px;
-      margin-left: 10px;
+      margin-left: 25px;
     }
   }
 
@@ -176,6 +182,7 @@
 
     & .text {
       font-size: 12px;
+      margin: 0 10px;
     }
   }
 
@@ -184,6 +191,10 @@
 
     & .icon {
       color: green;
+    }
+
+    & .text {
+      text-align: center;
     }
   }
 
