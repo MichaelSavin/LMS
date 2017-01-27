@@ -7,6 +7,7 @@ import {
   Input as AntInput,
   Button as AntButton,
   Collapse as AntCollapse,
+  // Checkbox as AntCheckbox,
   Popconfirm as AntPopconfirm,
 } from 'antd';
 import {
@@ -14,7 +15,7 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
-import { isEmpty } from 'lodash/fp';
+import { isEmpty, random } from 'lodash/fp';
 import classNames from 'classnames';
 import Uploader from 'components/UI/Uploader';
 import styles from './styles.css';
@@ -32,7 +33,7 @@ const Editor = ({
   environment,
   changeContent,
   removeContent,
-  changeEnvironment,
+  changeVariant,
 }) => {
   const errors = validator(content);
 
@@ -76,12 +77,9 @@ const Editor = ({
         )}
       </div>
       <AntTabs
-        onChange={changeEnvironment([
-          'editor',
-          'variant',
-        ])}
+        onChange={changeVariant}
         className={styles.variants}
-        activeKey={environment.editor.variant}
+        activeKey={environment.variant}
         tabBarExtraContent={
           <AntButton
             size="small"
@@ -91,19 +89,19 @@ const Editor = ({
               options: [{
                 text: 'Вариант 1',
                 image: undefined,
-                correct: false,
+                id: `${random(0, 999)}`,
               }, {
                 text: 'Вариант 2',
                 image: undefined,
-                correct: false,
+                id: `${random(0, 999)}`,
               }, {
                 text: 'Вариант 3',
                 image: undefined,
-                correct: false,
+                id: `${random(0, 999)}`,
               }, {
                 text: 'Вариант 4',
                 image: undefined,
-                correct: false,
+                id: `${random(0, 999)}`,
               }],
               hints: [],
               competences: [],
@@ -304,7 +302,7 @@ const Editor = ({
                         ], {
                           text: 'Новый вариант',
                           image: undefined,
-                          correct: false,
+                          id: `${random(0, 999)}`,
                         })}
                       >
                         Добавить вариант ответа
@@ -592,7 +590,7 @@ Editor.propTypes = {
   redoHistory: PropTypes.func.isRequired,
   removeContent: PropTypes.func.isRequired,
   changeContent: PropTypes.func.isRequired,
-  changeEnvironment: PropTypes.func.isRequired,
+  changeVariant: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
@@ -614,10 +612,7 @@ Editor.propTypes = {
     ).isRequired,
   }).isRequired,
   environment: PropTypes.shape({
-    editor: PropTypes.shape({
-      open: PropTypes.bool.isRequired,
-      variant: PropTypes.string.isRequired,
-    }).isRequired,
+    variant: PropTypes.string.isRequired,
   }).isRequired,
   // storage: PropTypes.shape({
   //   images: PropTypes.objectOf(

@@ -1,18 +1,24 @@
-import React, { PureComponent, PropTypes } from 'react';
+import React, {
+  PropTypes,
+  PureComponent,
+} from 'react';
 import {
   get,
   set,
   last,
+  pull,
+  concat,
+  sample,
   update,
   random,
   pullAt,
-  sample,
+  isEqual,
   dropRight,
   difference,
 } from 'lodash/fp';
 import Sortable from 'sortablejs';
-import { Button as AntButton } from 'antd';
 import { arrayMove } from 'react-sortable-hoc';
+import { Button as AntButton } from 'antd';
 import localForage from 'localforage';
 import classNames from 'classnames';
 import { Entity } from 'draft-js';
@@ -20,7 +26,7 @@ import Preview from './Preview';
 import Editor from './Editor';
 import styles from './styles.css';
 
-class Checkbox extends PureComponent {
+class Sorter extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -29,18 +35,17 @@ class Checkbox extends PureComponent {
       environment,
     } = props;
     this.state = {
-      /* Подсказки, показываемые в превью */
-      hints: [],
       content: {
         editor: content,
         component: content,
       },
       /* Показ случайного варианта задания при загрузке*/
       environment: set(
-        ['editor', 'variant'],
+        ['variant'],
         `${random(0, content.variants.length - 1)}`,
         environment
       ),
+      isLocked: true,
     };
     this.storage = {
       crops: {},
@@ -52,9 +57,6 @@ class Checkbox extends PureComponent {
       present: undefined,
     };
   }
-
-  // componentWillMount() {
-  // }
 
   componentDidMount() {
     // Загрузка изображений в компонент
@@ -105,24 +107,38 @@ class Checkbox extends PureComponent {
       });
   }
 
-  makeSortable = (e) => {
-    console.log(e);
-    const name = e.getAttribute('data-id');
-    Sortable.create(e, { // https://github.com/RubaXa/Sortable#options
-      group: {
-        name,
-        pull: ['pull', 'put'],
-        put: ['pull', 'put'],
-      },
-      animation: 350,
-      handle: '.sortable-handle',
-      chosenClass: styles.chosen,
-      ghostClass: styles.ghost,
-      onEnd: (event) => {
-        console.log(event);
-      },
-    });
-  };
+  makeSortable = (element) => {
+    if (element) {
+      // console.log(e);
+      const that = this;
+      const name = element.getAttribute('data-type');
+      this[name] = element;
+      Sortable.create(element, { // https://github.com/RubaXa/Sortable#options
+        group: {
+          name,
+          pull: ['pull', 'put'],
+          put: ['pull', 'put'],
+        },
+        animation: 350,
+        handle: '.sortable-handle',
+        chosenClass: styles.chosen,
+        ghostClass: styles.ghost,
+        // onEnd: (event) => {
+        //   console.log(event);
+        // },
+        // onAdd(e) {
+        //   console.log(e);
+        // },
+        onRemove(event) {
+          if (get('from.childElementCount', event) === 0) {
+            that.setState({
+              isLocked: false,
+            });
+          }
+        },
+      });
+    }
+  }
 
   uploadImage = (location) => (data, image, crop) => {
     this.storage.images = {
@@ -171,8 +187,8 @@ class Checkbox extends PureComponent {
       /* Переключение на предыдущий таб при удалении варианта */
       environment: set(
         ['editor', 'variant'],
-        `${newContent.editor.variants[environment.editor.variant]
-          ? environment.editor.variant
+        `${newContent.editor.variants[environment.variant]
+          ? environment.variant
           : newContent.editor.variants.length - 1
         }`,
         environment
@@ -208,16 +224,6 @@ class Checkbox extends PureComponent {
         this.state.content
       ),
     }, this.addStateToHistory);
-  }
-
-  changeEnvironment = (location) => (value) => {
-    this.setState({
-      environment: set(
-        [...location],
-        value,
-        this.state.environment
-      ),
-    });
   }
 
   addStateToHistory = () => {
@@ -259,7 +265,7 @@ class Checkbox extends PureComponent {
         content
       ),
       environment: set(
-        ['editor', 'open'],
+        ['editing'],
         true,
         environment
       ),
@@ -269,10 +275,8 @@ class Checkbox extends PureComponent {
   closeEditor = () => {
     this.setState({
       environment: set(
-        ['editor'], {
-          open: false,
-          variant: '0',
-        },
+        ['editing'],
+        false,
         this.state.environment
       ),
     }, this.context.toggleReadOnly);
@@ -295,54 +299,129 @@ class Checkbox extends PureComponent {
         content
       ),
       environment: set(
-        ['editor'], {
-          open: false,
-          variant: '0',
-        },
+        ['editing'],
+        false,
         environment
       ),
     }, this.context.toggleReadOnly);
   }
 
   showHint = (variant) => () => {
+    const { environment } = this.state;
     this.setState({
-      hints: this.state.hints.concat([
-        sample(
-          difference(
-            this.state.content.component.variants[variant].hints,
-            this.state.hints,
-          ),
+      environment: set(
+        ['hints'],
+        environment.hints
+          .concat([
+            sample(
+              difference(
+                this.state
+                  .content
+                  .component
+                  .variants[variant]
+                  .hints,
+                environment.hints,
+              ),
+            ),
+          ]),
+        environment
+      ),
+    });
+  }
+
+  changeVariant = (variant) => {
+    this.setState({
+      environment: set(
+        ['variant'],
+        variant,
+        this.state.environment
+      ),
+    });
+  }
+
+  chooseAnswer = (index) => (answer) => {
+    const {
+      environment: {
+        answers,
+      },
+    } = this.state;
+    this.setState({
+      environment: set(
+        ['answers'],
+        answer.target.checked
+          ? concat(answers, index)
+          : pull(index, answers),
+        this.state.environment
+      ),
+    });
+  }
+
+  checkAnswers = () => {
+    console.log(this.put);
+    console.log(this.put.children);
+    const sortedIdList = [...this.put.children].map((obj) => obj.getAttribute('data-id'));
+    console.log();
+    const {
+      content: {
+        component: {
+          variants,
+        },
+      },
+      environment: {
+        attemp,
+        variant,
+      },
+    } = this.state;
+    this.setState({
+      environment: {
+        ...set(
+          ['status'],
+          /* Сравнение выбранных ответов с правильными */
+          isEqual(
+            sortedIdList,
+            variants[variant].options
+              .map((option) => option.id
+              ),
+          )
+            ? 'success'
+            /* Попытки закончились? */
+            : variants[variant].attempts - attemp === 0
+              ? 'fail'
+              : 'error',
+          this.state.environment
         ),
-      ]),
+        attemp: attemp + 1,
+      },
     });
   }
 
   render() {
     const {
-      hints,
       content,
       environment,
+      isLocked,
     } = this.state;
     return (
       <div
         className={classNames(
           styles.checkbox,
-          { [styles.editing]: environment.editor.open },
+          { [styles.editing]: environment.editing },
         )}
       >
         <Preview
-          hints={hints}
           content={
-            environment.editor.open
+            environment.editing
               ? content.editor
               : content.component
           }
           storage={this.storage}
           showHint={this.showHint}
-          environment={environment}
+          {...{ environment, isLocked }}
+          chooseAnswer={this.chooseAnswer}
+          checkAnswers={this.checkAnswers}
           makeSortable={this.makeSortable}
         />
-        {environment.editor.open &&
+        {environment.editing &&
           <Editor
             storage={this.storage}
             content={content.editor}
@@ -356,11 +435,11 @@ class Checkbox extends PureComponent {
             redoHistory={this.redoHistory}
             removeContent={this.removeContent}
             changeContent={this.changeContent}
-            changeEnvironment={this.changeEnvironment}
+            changeVariant={this.changeVariant}
           />
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
-        {!environment.editor.open &&
+        {!environment.editing &&
           /* eslint-disable */
           // ? <div className={styles.actions}>
           //     <AntButton
@@ -396,7 +475,7 @@ class Checkbox extends PureComponent {
   }
 }
 
-Checkbox.propTypes = {
+Sorter.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
@@ -434,14 +513,28 @@ Checkbox.propTypes = {
     ).isRequired,
   }).isRequired,
   environment: PropTypes.shape({
-    editor: PropTypes.shape({
-      open: PropTypes.bool.isRequired,
-      variant: PropTypes.string.isRequired,
-    }).isRequired,
-  }),
+    /* TODO Тут лучше хранить индексы подсказок из варианта, чем сами подсказки */
+    hints: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
+    status: PropTypes.oneOf([
+      null,
+      'fail',
+      'error',
+      'success',
+    ]).isRequired,
+    attemp: PropTypes.number.isRequired,
+    answers: PropTypes.arrayOf(
+      PropTypes.number,
+    ).isRequired,
+    variant: PropTypes.string.isRequired,
+    editing: PropTypes.bool.isRequired,
+  }).isRequired,
 };
 
-Checkbox.defaultProps = {
+Sorter.defaultProps = {
   /* Контент компонента */
   content: {
     variants: [{
@@ -451,19 +544,19 @@ Checkbox.defaultProps = {
       options: [{
         text: 'Вариант 1',
         image: undefined,
-        correct: true,
+        id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 2',
         image: undefined,
-        correct: false,
+        id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 3',
         image: undefined,
-        correct: false,
+        id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 4',
         image: undefined,
-        correct: false,
+        id: `${random(0, 999)}`,
       }],
       hints: [{ 
         text: 'Новая подсказка' 
@@ -478,15 +571,17 @@ Checkbox.defaultProps = {
   },
   /* Cостояние компонента */
   environment: {
-    editor: {
-      open: false,  // Окно редактора закрыто
-      variant: '0', // Выбран первый вариант
-    },
+    hints: [],      // Показанные подсказки
+    attemp: 1,      // Попытки ответить на вопрос
+    status: null,   // Статус задания (с ошибками, без ошибок)
+    answers: [],    // Выбранные ответы
+    variant: '0',   // Первый вариант задания, меняется на случайный в конструкторе
+    editing: false, // Окно редактора закрыто
   },
 };
 
-Checkbox.contextTypes = {
+Sorter.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
 };
 
-export default Checkbox;
+export default Sorter;

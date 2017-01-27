@@ -89,7 +89,89 @@
     flex-direction: column;
   }
 
-  & .attempts {
+  & .message {
+    min-width: 215px;
+    display: inline-flex;
+    padding: 10px 5px;
+    margin-top: 5px;
+    align-items: center;
+    border-radius: 5px;
+    flex-direction: row;
+
+    & .icon {
+      margin-left: 10px;
+    }
+
+    & .content {
+      display: flex;
+      flex-direction: column;
+
+      & .text {
+        font-size: 13px;
+        font-weight: 700;
+        margin-left: 25px;
+      }
+
+      & .points {
+        color: #888;
+        font-size: 12px;
+        margin-left: 25px;
+
+        & b {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+
+  & .message.fail {
+    background-color: rgba(255, 0, 0, 0.1);
+
+    & .icon {
+      color: red;
+    }
+
+    & .text {
+      margin-left: 15px;
+      text-align: center;
+    }
+
+    & .points {
+      margin-left: 25px;
+    }
+  }
+
+  & .message.error {
+    background-color: rgba(255, 122, 0, 0.1);
+
+    & .icon {
+      color: #FF7A00;
+    }
+
+    & .text {
+      font-size: 12px;
+      margin: 0 10px;
+    }
+  }
+
+  & .message.success {
+    background-color: rgba(0, 128, 0, 0.1);
+
+    & .icon {
+      color: green;
+    }
+
+    & .text {
+      text-align: center;
+    }
+  }
+
+  & .explanation {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+
+  & .check {
     padding-top: 15px;
     text-align: left;
   }
@@ -117,6 +199,13 @@
 
       & .text {
         font-size: 13px;
+        margin-left: 10px;
+      }
+
+      & .hint {
+        color: #AAA;
+        font-size: 10px;
+        align-self: center;
         margin-left: 10px;
       }
     }
