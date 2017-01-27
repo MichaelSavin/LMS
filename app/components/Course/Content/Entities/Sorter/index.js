@@ -109,7 +109,6 @@ class Sorter extends PureComponent {
 
   makeSortable = (element) => {
     if (element) {
-      // console.log(e);
       const that = this;
       const name = element.getAttribute('data-type');
       this[name] = element;
@@ -357,10 +356,7 @@ class Sorter extends PureComponent {
   }
 
   checkAnswers = () => {
-    console.log(this.put);
-    console.log(this.put.children);
     const sortedIdList = [...this.put.children].map((obj) => obj.getAttribute('data-id'));
-    console.log();
     const {
       content: {
         component: {
