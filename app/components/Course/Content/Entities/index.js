@@ -35,6 +35,7 @@ import Checkbox from './Checkbox';
 import Textarea from './Textarea';
 import Sample from './Sample';
 import Sorter from './Sorter';
+import Matcher from './Matcher';
 
 const components = { // можно использовать require()
   TAG: Tag,
@@ -64,6 +65,7 @@ const components = { // можно использовать require()
   TEXTAREA: Textarea,
   SAMPLE: Sample,
   SORTER: Sorter,
+  MATCHER: Matcher,
 };
 
 const views = {
@@ -87,6 +89,7 @@ const views = {
   TEXTAREA: 'BLOCK',
   SAMPLE: 'BLOCK',
   SORTER: 'BLOCK',
+  MATCHER: 'BLOCK',
   LINK: 'INLINE',
   TEX: 'INLINE',
   TAG: 'INLINE',
