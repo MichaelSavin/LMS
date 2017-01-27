@@ -259,18 +259,35 @@ const Editor = ({
                                 ])}
                               />
                             </div>
-                            {/* <div className={styles.checkbox}>
-                              <AntCheckbox
-                                checked={option.correct}
+                            <div className={styles.text}>
+                              <AntInput
+                                size="default"
+                                value={option.answerText}
                                 onChange={changeContent([
                                   'variants',
                                   variantIndex,
                                   'options',
                                   optionIndex,
-                                  'correct',
+                                  'answerText',
+                                ])}
+                                className={classNames(
+                                  { error: errors[`variants[${variantIndex}].options[${optionIndex}].text`] }
+                                )}
+                              />
+                            </div>
+                            <div className={styles.image}>
+                              <Uploader
+                                size="small"
+                                preload={option.answerImage}
+                                onChange={uploadImage([
+                                  'variants',
+                                  variantIndex,
+                                  'options',
+                                  optionIndex,
+                                  'answerImage',
                                 ])}
                               />
-                            </div>*/}
+                            </div>
                             <div className={styles.remove}>
                               <AntPopconfirm
                                 title="Удалить вариант ответа?"

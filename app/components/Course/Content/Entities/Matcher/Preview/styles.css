@@ -85,8 +85,8 @@
   }
 
   & .options {
-    display: flex;
-    flex-direction: column;
+    /* display: flex;
+    flex-direction: column; */
   }
 
   & .message {
@@ -218,6 +218,14 @@
     border: 1px solid #D9D9D9;
     padding: 0 5px;
     margin-bottom: 10px;
+  }
+
+  .putField {
+    min-height: 36px;
+  }
+
+  .col {
+    padding: 10px;
   }
 }
 

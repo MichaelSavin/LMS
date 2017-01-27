@@ -1,6 +1,6 @@
 import React, {
   PropTypes,
-  PureComponent,
+  Component,
 } from 'react';
 import {
   Icon as AntIcon,
@@ -11,7 +11,7 @@ import { isEqual, sample, shuffle } from 'lodash/fp';
 import classNames from 'classnames';
 import styles from './styles.css';
 
-class Preview extends PureComponent {
+class Preview extends Component {
 
   constructor(props) {
     super(props);

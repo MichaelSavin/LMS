@@ -163,7 +163,9 @@
                 }
 
                 & .text {
-                  width: 85%;
+                  margin-left: 10px;
+                  margin-right: 5px;
+                  flex-grow: 1;
                 }
 
                 & .image {

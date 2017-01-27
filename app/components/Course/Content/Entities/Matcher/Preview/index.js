@@ -1,17 +1,19 @@
 import React, {
   PropTypes,
-  PureComponent,
+  Component,
 } from 'react';
 import {
   Icon as AntIcon,
   Button as AntButton,
   // Checkbox as AntCheckbox,
+  Row,
+  Col,
   } from 'antd';
 import { isEqual, sample, shuffle } from 'lodash/fp';
 import classNames from 'classnames';
 import styles from './styles.css';
 
-class Preview extends PureComponent {
+class Preview extends Component {
 
   constructor(props) {
     super(props);
@@ -72,7 +74,7 @@ class Preview extends PureComponent {
           <div className={styles.content}>
             <div className={styles.text}>
               Контрольный вопрос
-        </div>
+            </div>
             <div className={styles.points}>
               Баллы: <b>{avaiblePoints || '?'}</b>
             </div>
@@ -108,108 +110,89 @@ class Preview extends PureComponent {
             {hint.text}
           </div>
         )}
-        <div className={styles.answers} ref={makeSortable} data-type="put" />
-        <div className={styles.options} ref={makeSortable} data-type="pull">
-          {options.map((option, index) =>
+        <Row className={styles.answers}>
+          <Col span={12} className={styles.col}>
+            <div className={styles.options}>
+              <div className={styles.putField} ref={makeSortable} data-type="put" />
+            </div>
+          </Col>
+          <Col span={12} className={styles.col}>
+            <div className={styles.putField}>
+              <div className={styles.options}>
+                {current.options.map((option, index) =>
 
-            <div
-              key={index}
-              className={styles.option}
-              data-id={option.id}
-            >
-              {option.image &&
-                <div className={styles.image}>
-                  <img
-                    src={storage.crops[option.image.source]
-                      || storage.images[option.image.source]
-                    }
-                    alt={option.image.text}
-                    role="presentation"
-                    width={250}
-                  />
-                </div>
-              }
-              <div className={styles.answer}>
-                {/* <div className={styles.checkbox}>
-              <AntCheckbox
-                key={index}
-                checked={
-                  // В режиме редактирования показывает
-                  // правильные ответы, в режиме выполнения
-                  // задания - выбранные ответы
-                  editing
-                    ? option.correct
-                    : answers.includes(index)
-                }
-                disabled={editing}
-                onChange={chooseAnswer(index)}
-              />
-            </div>*/}
-                <div className={`sortable-handle ${styles.drager}`}>
-                  <AntIcon
-                    type="appstore-o"
+                  <div
                     key={index}
-                    checked={option.correct}
-                  />
+                    className={styles.option}
+                    data-id={option.id}
+                  >
+                    {option.answerImage &&
+                      <div className={styles.image}>
+                        <img
+                          src={storage.crops[option.answerImage.source]
+                            || storage.images[option.answerImage.source]
+                          }
+                          alt={option.answerImage.text}
+                          role="presentation"
+                          width={250}
+                        />
+                      </div>
+                    }
+                    <div className={styles.answer}>
+                      <div>
+                        <AntIcon
+                          key={index}
+                          checked={option.correct}
+                        />
+                      </div>
+                      <div className={styles.text}>
+                        {option.answerText || '?'}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12} className={styles.col}>
+            <div className={styles.options} ref={makeSortable} data-type="pull">
+              {options.map((option, index) =>
+                <div
+                  key={index}
+                  className={styles.option}
+                  data-id={option.id}
+                >
+                  {option.image &&
+                    <div className={styles.image}>
+                      <img
+                        src={storage.crops[option.image.source]
+                          || storage.images[option.image.source]
+                        }
+                        alt={option.image.text}
+                        role="presentation"
+                        width={250}
+                      />
+                    </div>
+                  }
+                  <div className={styles.answer}>
+                    <div className={`sortable-handle ${styles.drager}`}>
+                      <AntIcon
+                        type="appstore-o"
+                        key={index}
+                        checked={option.correct}
+                      />
+                    </div>
+                    <div className={styles.text}>
+                      {option.text || '?'}
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.text}>
-                  {option.text || '?'}
-                </div>
-                {editing && option.correct &&
-                  <div className={styles.hint}>
-                    правильный ответ
-              </div>
-                }
-              </div>
+              )}
             </div>
-          )}
-        </div>
-        {/* <div className={styles.options}>
-      {current.options.map((option, index) =>
-        <div
-          key={index}
-          className={styles.option}
-        >
-          {option.image &&
-            <div className={styles.image}>
-              <img
-                src={storage.crops[option.image.source]
-                  || storage.images[option.image.source]
-                }
-                alt={option.image.text}
-                role="presentation"
-                width={250}
-              />
-            </div>
-          }
-          <div className={styles.answer}>
-            <div className={styles.checkbox}>
-              <AntCheckbox
-                key={index}
-                checked={
-                  // В режиме редактирования показывает
-                  // правильные ответы, в режиме выполнения
-                  // задания - выбранные ответы
-                  editing
-                    ? option.correct
-                    : answers.includes(index)
-                }
-                disabled={editing}
-                onChange={chooseAnswer(index)}
-              />
-            </div>
-            <div className={styles.text}>
-              {option.text || '?'}
-            </div>
-            {editing && option.correct &&
-              <div className={styles.hint}>
-                правильный ответ
-              </div>
-            }
-          </div>
-        </div>
-      )}
-    </div>*/}
+          </Col>
+        </Row>
         {status &&
           <div
             className={classNames(

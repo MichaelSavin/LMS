@@ -152,7 +152,6 @@ class Matcher extends PureComponent {
       content: set([
         'editor',
         ...location,
-        'image',
       ],
         data,
         this.state.content
@@ -368,6 +367,7 @@ class Matcher extends PureComponent {
         variant,
       },
     } = this.state;
+
     this.setState({
       environment: {
         ...set(
@@ -376,8 +376,7 @@ class Matcher extends PureComponent {
           isEqual(
             sortedIdList,
             variants[variant].options
-              .map((option) => option.id
-              ),
+              .map((option) => option.id),
           )
             ? 'success'
             /* Попытки закончились? */
@@ -540,18 +539,26 @@ Matcher.defaultProps = {
       options: [{
         text: 'Вариант 1',
         image: undefined,
+        ansewerText: 'Вариант 1',
+        ansewerImage: undefined,
         id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 2',
         image: undefined,
+        ansewerText: 'Вариант 1',
+        ansewerImage: undefined,
         id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 3',
         image: undefined,
+        ansewerText: 'Вариант 1',
+        ansewerImage: undefined,
         id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 4',
         image: undefined,
+        ansewerText: 'Вариант 1',
+        ansewerImage: undefined,
         id: `${random(0, 999)}`,
       }],
       hints: [{ 
@@ -570,7 +577,6 @@ Matcher.defaultProps = {
     hints: [],      // Показанные подсказки
     attemp: 1,      // Попытки ответить на вопрос
     status: null,   // Статус задания (с ошибками, без ошибок)
-    answers: [],    // Выбранные ответы
     variant: '0',   // Первый вариант задания, меняется на случайный в конструкторе
     editing: false, // Окно редактора закрыто
   },
