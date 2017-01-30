@@ -295,24 +295,3 @@ body > li { /* Для D&D */
     width: 90%;
   }
 }
-
-:global .ant-form-item {
-  margin-bottom: 0;
-}
-
-:global .ant-form-item-control {
-  line-height: 0;
-  margin-bottom: 16px;
-}
-
-:global .ant-form-item-control::before {
-  content: none;
-}
-
-:global .ant-row::before {
-  content: none;
-}
-
-:global .ant-tabs-tabpane {
-  height: auto !important;
-}

@@ -339,7 +339,7 @@ class Input extends PureComponent {
     return (
       <div
         className={classNames(
-          styles.checkbox,
+          styles.taskInput,
           { [styles.editing]: environment.editing },
         )}
       >
