@@ -142,7 +142,6 @@ class Preview extends Component {
                       <div>
                         <AntIcon
                           key={index}
-                          checked={option.correct}
                         />
                       </div>
                       <div className={styles.text}>
@@ -181,7 +180,6 @@ class Preview extends Component {
                       <AntIcon
                         type="appstore-o"
                         key={index}
-                        checked={option.correct}
                       />
                     </div>
                     <div className={styles.text}>

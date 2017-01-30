@@ -486,7 +486,6 @@ Matcher.propTypes = {
               crop: PropTypes.object,
               source: PropTypes.string.isRequired,
             }),
-            correct: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
         hints: PropTypes.arrayOf(
