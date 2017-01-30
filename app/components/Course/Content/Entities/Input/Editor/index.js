@@ -7,26 +7,17 @@ import {
   Input as AntInput,
   Button as AntButton,
   Collapse as AntCollapse,
-  Checkbox as AntCheckbox,
   Popconfirm as AntPopconfirm,
 } from 'antd';
-import {
-  SortableHandle,
-  SortableElement,
-  SortableContainer,
-} from 'react-sortable-hoc';
 import { isEmpty } from 'lodash/fp';
 import classNames from 'classnames';
-import Uploader from 'components/UI/Uploader';
 import styles from './styles.css';
 
 const Editor = ({
   content,
   // storage,
   addContent,
-  dragContent,
   closeEditor,
-  uploadImage,
   saveContent,
   undoHistory,
   redoHistory,
@@ -88,20 +79,6 @@ const Editor = ({
               question: 'Вопрос',
               options: [{
                 text: 'Вариант 1',
-                image: undefined,
-                correct: false,
-              }, {
-                text: 'Вариант 2',
-                image: undefined,
-                correct: false,
-              }, {
-                text: 'Вариант 3',
-                image: undefined,
-                correct: false,
-              }, {
-                text: 'Вариант 4',
-                image: undefined,
-                correct: false,
               }],
               hints: [],
               competences: [],
@@ -212,102 +189,64 @@ const Editor = ({
                   }
                 >
                   <div className={styles.options}>
-                    <Sortable.List
-                      onSortEnd={dragContent([
+                    {variant.options.map((
+                      option, optionIndex
+                    ) =>
+                      <div
+                        key={optionIndex}
+                        className={styles.option}
+                      >
+                        <div className={styles.text}>
+                          <AntInput
+                            size="default"
+                            value={option.text}
+                            onChange={changeContent([
+                              'variants',
+                              variantIndex,
+                              'options',
+                              optionIndex,
+                              'text',
+                            ])}
+                            className={classNames(
+                              { error: errors[`variants[${variantIndex}].options[${optionIndex}].text`] }
+                            )}
+                          />
+                        </div>
+                        <div className={styles.remove}>
+                          <AntPopconfirm
+                            title="Удалить вариант ответа?"
+                            okText="Да"
+                            onConfirm={removeContent([
+                              'variants',
+                              variantIndex,
+                              'options',
+                              optionIndex,
+                            ])}
+                            cancelText="Нет"
+                          >
+                            <AntIcon
+                              type="close"
+                              className={styles.icon}
+                            />
+                          </AntPopconfirm>
+                        </div>
+                      </div>
+                    )}
+                    <AntButton
+                      size="small"
+                      type="primary"
+                      onClick={addContent([
                         'variants',
                         variantIndex,
                         'options',
-                      ])}
-                      useDragHandle
+                      ], {
+                        text: 'Новый вариант',
+                        image: undefined,
+                        correct: false,
+                      })}
                     >
-                      {variant.options.map((
-                        option, optionIndex
-                      ) =>
-                        <div
-                          key={optionIndex}
-                          className={styles.option}
-                        >
-                          <Sortable.Item index={optionIndex}>
-                            <div className={styles.drag}>
-                              <Sortable.Handler />
-                            </div>
-                            <div className={styles.text}>
-                              <AntInput
-                                size="default"
-                                value={option.text}
-                                onChange={changeContent([
-                                  'variants',
-                                  variantIndex,
-                                  'options',
-                                  optionIndex,
-                                  'text',
-                                ])}
-                                className={classNames(
-                                  { error: errors[`variants[${variantIndex}].options[${optionIndex}].text`] }
-                                )}
-                              />
-                            </div>
-                            <div className={styles.image}>
-                              <Uploader
-                                size="small"
-                                preload={option.image}
-                                onChange={uploadImage([
-                                  'variants',
-                                  variantIndex,
-                                  'options',
-                                  optionIndex,
-                                ])}
-                              />
-                            </div>
-                            <div className={styles.checkbox}>
-                              <AntCheckbox
-                                checked={option.correct}
-                                onChange={changeContent([
-                                  'variants',
-                                  variantIndex,
-                                  'options',
-                                  optionIndex,
-                                  'correct',
-                                ])}
-                              />
-                            </div>
-                            <div className={styles.remove}>
-                              <AntPopconfirm
-                                title="Удалить вариант ответа?"
-                                okText="Да"
-                                onConfirm={removeContent([
-                                  'variants',
-                                  variantIndex,
-                                  'options',
-                                  optionIndex,
-                                ])}
-                                cancelText="Нет"
-                              >
-                                <AntIcon
-                                  type="close"
-                                  className={styles.icon}
-                                />
-                              </AntPopconfirm>
-                            </div>
-                          </Sortable.Item>
-                        </div>
-                      )}
-                      <AntButton
-                        size="small"
-                        type="primary"
-                        onClick={addContent([
-                          'variants',
-                          variantIndex,
-                          'options',
-                        ], {
-                          text: 'Новый вариант',
-                          image: undefined,
-                          correct: false,
-                        })}
-                      >
-                        Добавить вариант ответа
-                      </AntButton>
-                    </Sortable.List>
+                      Добавить вариант ответа
+                    </AntButton>
                   </div>
                 </AntCollapse.Panel>
                 <AntCollapse.Panel
@@ -565,26 +504,9 @@ const Editor = ({
   );
 };
 
-const Sortable = {
-  List: SortableContainer(
-    (props) => <ul>{props.children}</ul>
-  ),
-  Item: SortableElement(
-    (props) => <li>{props.children}</li>
-  ),
-  Handler: SortableHandle(() =>
-    <AntIcon
-      type="appstore-o"
-      className={styles.drag}
-    />
-  ),
-};
-
 Editor.propTypes = {
   addContent: PropTypes.func.isRequired,
-  dragContent: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
-  uploadImage: PropTypes.func.isRequired,
   saveContent: PropTypes.func.isRequired,
   undoHistory: PropTypes.func.isRequired,
   redoHistory: PropTypes.func.isRequired,
@@ -600,12 +522,6 @@ Editor.propTypes = {
         options: PropTypes.arrayOf(
           PropTypes.shape({
             text: PropTypes.string.isRequired,
-            image: PropTypes.shape({
-              text: PropTypes.string.isRequired,
-              crop: PropTypes.object,
-              source: PropTypes.string.isRequired,
-            }),
-            correct: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
       }).isRequired,
@@ -633,7 +549,7 @@ const validator = (content) => {
     if (!parseInt(variant.points, 10)) { errors[`variants[${variantIndex}].points`] = `Необходимо указать количество баллов в варианте №${variantIndex + 1}`; }
     if (!(variant.options.length > 0)) { errors[`variants[${variantIndex}].options`] = `Необходимо добавить варианты ответов в варианте №${variantIndex + 1}`; }
     variant.options.forEach((option, optionIndex) => { if (!option.text) { errors[`variants[${variantIndex}].options[${optionIndex}].text`] = `Необходимо указать текст ответа №${optionIndex + 1} в варианте №${variantIndex + 1}`; }});
-    if (!variant.options.some((option) => option.correct === true)) { errors[`variants[${variantIndex}].options.checked`] = `Необходимо выбрать правильные варианты ответов в варианте №${variantIndex + 1}`; }
+    // if (!variant.options.some((option) => option.correct === true)) { errors[`variants[${variantIndex}].options.checked`] = `Необходимо выбрать правильные варианты ответов в варианте №${variantIndex + 1}`; }
     if (!(variant.hints.length > 0)) { errors[`variants[${variantIndex}].hints`] = `Необходимо добавить подсказки в варианте №${variantIndex + 1}`; }
     if (!(variant.competences.length > 0)) { errors[`variants[${variantIndex}].competences`] = `Необходимо добавить компетенции в варианте №${variantIndex + 1}`; }
     if (!(variant.explanations.length > 0)) { errors[`variants[${variantIndex}].explanations`] = `Необходимо добавить пояснения в варианте №${variantIndex + 1}`; }

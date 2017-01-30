@@ -4,25 +4,25 @@ import React, {
 import {
   Icon as AntIcon,
   Button as AntButton,
-  Checkbox as AntCheckbox,
+  Input as AntInput,
   } from 'antd';
-import { isEmpty, sample } from 'lodash/fp';
+import { sample } from 'lodash/fp';
 import classNames from 'classnames';
 import styles from './styles.css';
 
 const Preview = ({
   content,
-  storage,
+  // storage,
   showHint,
   environment: {
     hints,
     status,
     attemp,
     editing,
-    answers,
+    answer,
     variant,
   },
-  chooseAnswer,
+  changeAnswer,
   checkAnswers,
 }) => {
   /* Количество баллов за задание, за вычетом использованных на подсказки */
@@ -76,50 +76,20 @@ const Preview = ({
         </div>
       )}
       <div className={styles.options}>
-        {content.variants[variant].options.map((option, index) =>
-          <div
-            key={index}
-            className={styles.option}
-          >
-            {option.image &&
-              <div className={styles.image}>
-                <img
-                  src={storage.crops[option.image.source]
-                    || storage.images[option.image.source]
-                  }
-                  alt={option.image.text}
-                  role="presentation"
-                  width={250}
-                />
-              </div>
-            }
-            <div className={styles.answer}>
-              <div className={styles.checkbox}>
-                <AntCheckbox
-                  key={index}
-                  checked={/*
-                    В режиме редактирования показывает
-                    правильные ответы, в режиме выполнения
-                    задания - выбранные ответы */
-                    editing
-                      ? option.correct
-                      : answers.includes(index)
-                  }
-                  disabled={editing}
-                  onChange={chooseAnswer(index)}
-                />
-              </div>
-              <div className={styles.text}>
-                {option.text || '?'}
-              </div>
-              {editing && option.correct &&
-                <div className={styles.hint}>
-                  правильный ответ
-                </div>
-              }
+        <div
+          className={styles.option}
+        >
+          <div className={styles.answer}>
+            <div className={styles.text}>
+              <AntInput
+                onChange={changeAnswer}
+                size="default"
+                className={styles.text}
+              />
             </div>
           </div>
-        )}
+        </div>
+
       </div>
       {status &&
         <div
@@ -167,7 +137,7 @@ const Preview = ({
           onClick={checkAnswers}
           disabled={
             editing ||
-            isEmpty(answers) || /* Ответы не выбраны */
+            !answer.length || /* Ответы не выбраны */
             status === 'fail' ||
             status === 'success'
           }
@@ -187,7 +157,7 @@ const Preview = ({
 
 Preview.propTypes = {
   showHint: PropTypes.func.isRequired,
-  chooseAnswer: PropTypes.func.isRequired,
+  changeAnswer: PropTypes.func.isRequired,
   checkAnswers: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
@@ -198,25 +168,19 @@ Preview.propTypes = {
         options: PropTypes.arrayOf(
           PropTypes.shape({
             text: PropTypes.string.isRequired,
-            image: PropTypes.shape({
-              text: PropTypes.string.isRequired,
-              crop: PropTypes.object,
-              source: PropTypes.string.isRequired,
-            }),
-            correct: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
       }).isRequired,
     ).isRequired,
   }).isRequired,
-  storage: PropTypes.shape({
+  /* storage: PropTypes.shape({
     images: PropTypes.objectOf(
       PropTypes.string.isRequired,
     ).isRequired,
     crops: PropTypes.objectOf(
       PropTypes.string.isRequired,
     ).isRequired,
-  }).isRequired,
+  }).isRequired,*/
   environment: PropTypes.shape({
     hints: PropTypes.arrayOf(
       PropTypes.shape({
@@ -230,9 +194,7 @@ Preview.propTypes = {
       'success',
     ]).isRequired,
     attemp: PropTypes.number.isRequired,
-    answers: PropTypes.arrayOf(
-      PropTypes.number,
-    ).isRequired,
+    answer: PropTypes.string.isRequired,
     variant: PropTypes.string.isRequired,
     editing: PropTypes.bool.isRequired,
   }).isRequired,

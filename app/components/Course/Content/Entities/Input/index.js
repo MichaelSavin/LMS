@@ -3,20 +3,16 @@ import React, {
   PureComponent,
 } from 'react';
 import {
-  get,
+  // get,
   set,
   last,
-  pull,
-  concat,
   sample,
   update,
   random,
   pullAt,
-  isEqual,
   dropRight,
   difference,
 } from 'lodash/fp';
-import { arrayMove } from 'react-sortable-hoc';
 import { Button as AntButton } from 'antd';
 import localForage from 'localforage';
 import classNames from 'classnames';
@@ -38,12 +34,17 @@ class Input extends PureComponent {
         editor: content,
         component: content,
       },
-      /* Показ случайного варианта задания при загрузке*/
-      environment: set(
+      environment: {
+        ...environment,
+        /* Показ случайного варианта задания при загрузке*/
+        variant: `${random(0, content.variants.length - 1)}`,
+        answer: environment.answer || '',
+      },
+      /*set(
         ['variant'],
         `${random(0, content.variants.length - 1)}`,
         environment
-      ),
+      ),*/
     };
     this.storage = {
       crops: {},
@@ -161,21 +162,6 @@ class Input extends PureComponent {
     }, this.addStateToHistory);
   }
 
-  dragContent = (location) => ({ oldIndex, newIndex }) => {
-    const { content } = this.state;
-    this.setState({
-      content: set(
-        ['editor', ...location],
-        arrayMove(
-          get(['editor', ...location], content),
-          oldIndex,
-          newIndex,
-        ),
-        content
-      ),
-    }, this.addStateToHistory);
-  };
-
   changeContent = (location) => (event) => {
     const value = event.type
       ? event.target.value    // для инпутов
@@ -252,6 +238,7 @@ class Input extends PureComponent {
       content,
       environment,
     } = this.state;
+    console.log(content);
     Entity.replaceData(
       this.props.entityKey, {
         content: content.editor,
@@ -304,20 +291,13 @@ class Input extends PureComponent {
     });
   }
 
-  chooseAnswer = (index) => (answer) => {
-    const {
-      environment: {
-        answers,
-      },
-    } = this.state;
+  changeAnswer = (e) => {
+    const { environment } = this.state;
     this.setState({
-      environment: set(
-        ['answers'],
-        answer.target.checked
-          ? concat(answers, index)
-          : pull(index, answers),
-        this.state.environment
-      ),
+      environment: {
+        ...environment,
+        answer: e.target.value,
+      },
     });
   }
 
@@ -329,8 +309,8 @@ class Input extends PureComponent {
         },
       },
       environment: {
+        answer,
         attemp,
-        answers,
         variant,
       },
     } = this.state;
@@ -338,18 +318,7 @@ class Input extends PureComponent {
       environment: {
         ...set(
           ['status'],
-          /* Сравнение выбранных ответов с правильными */
-          isEqual(
-            answers,
-            variants[variant].options
-              .map((option, index) =>
-                option.correct
-                  ? index
-                  : null
-              ).filter((index) =>
-                index !== null
-              ),
-          )
+          variants[variant].options.some(({ text }) => text === answer)
             ? 'success'
             /* Попытки закончились? */
             : variants[variant].attempts - attemp === 0
@@ -383,7 +352,7 @@ class Input extends PureComponent {
           storage={this.storage}
           showHint={this.showHint}
           environment={environment}
-          chooseAnswer={this.chooseAnswer}
+          changeAnswer={this.changeAnswer}
           checkAnswers={this.checkAnswers}
         />
         {environment.editing &&
@@ -392,7 +361,6 @@ class Input extends PureComponent {
             content={content.editor}
             addContent={this.addContent}
             environment={environment}
-            dragContent={this.dragContent}
             closeEditor={this.closeEditor}
             uploadImage={this.uploadImage}
             saveContent={this.saveContent}
@@ -451,12 +419,6 @@ Input.propTypes = {
         options: PropTypes.arrayOf(
           PropTypes.shape({
             text: PropTypes.string.isRequired,
-            image: PropTypes.shape({
-              text: PropTypes.string.isRequired,
-              crop: PropTypes.object,
-              source: PropTypes.string.isRequired,
-            }),
-            correct: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
         hints: PropTypes.arrayOf(

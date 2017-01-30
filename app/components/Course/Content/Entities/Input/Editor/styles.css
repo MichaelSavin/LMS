@@ -149,68 +149,61 @@
         }
 
         & .options {
-          & ul { /* SortableContainer */
-            & .option {
-              & li { /* SortableElement */
-                display: flex;
-                align-items: center;
-                margin-bottom: 15px;
-                flex-direction: row;
-                justify-content: space-between;
+          & .option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-direction: row;
+            justify-content: space-between;
 
-                & .drag {
-                  cursor: grab;
-                }
+            & .text {
+              flex-grow: 1;
+              padding-right: 10px;
+            }
 
-                & .text {
-                  width: 85%;
-                }
-
-                & .image {
-                  & .preview {
-                    & img {
-                      width: 70px;
-                      height: 70px;
-                    }
-
-                    & .remove {
-                      top: -7px;
-                      right: -5px;
-                      color: #FFF;
-                      cursor: pointer;
-                      padding: 3px;
-                      position: absolute;
-                      font-size: 12px;
-                      border-radius: 50%;
-                      background-color: red;
-                    }
-                  }
-
-                  & .upload {
-                    align-items: center;
-                    justify-content: center;
-
-                    & .dropzone {
-                      /* ... */
-                    }
-
-                    & .icon {
-                      cursor: pointer;
-                      font-size: 25px;
-                    }
-                  }
-                }
-
-                & .checkbox {
-                  transform: scale(1.25);
+            & .image {
+              & .preview {
+                & img {
+                  width: 70px;
+                  height: 70px;
                 }
 
                 & .remove {
-                  color: red;
+                  top: -7px;
+                  right: -5px;
+                  color: #FFF;
                   cursor: pointer;
-                  transform: scale(1.25);
+                  padding: 3px;
+                  position: absolute;
+                  font-size: 12px;
+                  border-radius: 50%;
+                  background-color: red;
                 }
               }
+
+              & .upload {
+                align-items: center;
+                justify-content: center;
+
+                & .dropzone {
+                  /* ... */
+                }
+
+                & .icon {
+                  cursor: pointer;
+                  font-size: 25px;
+                }
+              }
+            }
+
+            & .checkbox {
+              transform: scale(1.25);
+            }
+
+            & .remove {
+              color: red;
+              cursor: pointer;
+              transform: scale(1.25);
             }
           }
         }
