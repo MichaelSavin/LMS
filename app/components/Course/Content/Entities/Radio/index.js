@@ -6,13 +6,10 @@ import {
   get,
   set,
   last,
-  pull,
-  concat,
   sample,
   update,
   random,
   pullAt,
-  isEqual,
   dropRight,
   difference,
 } from 'lodash/fp';
@@ -25,7 +22,7 @@ import Preview from './Preview';
 import Editor from './Editor';
 import styles from './styles.css';
 
-class Checkbox extends PureComponent {
+class Radio extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -39,11 +36,17 @@ class Checkbox extends PureComponent {
         component: content,
       },
       /* Показ случайного варианта задания при загрузке*/
-      environment: set(
+      environment: {
+        ...environment,
+        /* Показ случайного варианта задания при загрузке*/
+        variant: `${random(0, content.variants.length - 1)}`,
+        answer: environment.answer || '',
+      },
+      /*set(
         ['variant'],
         `${random(0, content.variants.length - 1)}`,
         environment
-      ),
+      ),*/
     };
     this.storage = {
       crops: {},
@@ -191,6 +194,27 @@ class Checkbox extends PureComponent {
     }, this.addStateToHistory);
   }
 
+  changeRadio = (variantIndex) => (event) => {
+    const { value } = event.target;
+    console.log(this.state);
+    const { options } = this.state.content.editor.variants[variantIndex];
+
+    this.setState({
+      content: set([
+        'editor',
+        'variants',
+        variantIndex,
+        'options',
+      ],
+        options.map((option) => ({
+          ...option,
+          correct: option.id === value,
+        })),
+        this.state.content
+      ),
+    }, this.addStateToHistory);
+  }
+
   addStateToHistory = () => {
     /* eslint-disable */
     this.history.present = this.state;
@@ -304,20 +328,14 @@ class Checkbox extends PureComponent {
     });
   }
 
-  chooseAnswer = (index) => (answer) => {
-    const {
-      environment: {
-        answers,
-      },
-    } = this.state;
+  chooseAnswer = (answer) => {
+    console.log(answer);
+    const { environment } = this.state;
     this.setState({
-      environment: set(
-        ['answers'],
-        answer.target.checked
-          ? concat(answers, index)
-          : pull(index, answers),
-        this.state.environment
-      ),
+      environment: {
+        ...environment,
+        answer: answer.target.value,
+      },
     });
   }
 
@@ -330,7 +348,7 @@ class Checkbox extends PureComponent {
       },
       environment: {
         attemp,
-        answers,
+        answer,
         variant,
       },
     } = this.state;
@@ -339,17 +357,10 @@ class Checkbox extends PureComponent {
         ...set(
           ['status'],
           /* Сравнение выбранных ответов с правильными */
-          isEqual(
-            answers,
-            variants[variant].options
-              .map((option, index) =>
-                option.correct
-                  ? index
-                  : null
-              ).filter((index) =>
-                index !== null
-              ),
-          )
+          variants[variant].options
+            .some((option) => (
+              option.correct && option.id === answer
+            ))
             ? 'success'
             /* Попытки закончились? */
             : variants[variant].attempts - attemp === 0
@@ -398,6 +409,7 @@ class Checkbox extends PureComponent {
             saveContent={this.saveContent}
             undoHistory={this.undoHistory}
             redoHistory={this.redoHistory}
+            changeRadio={this.changeRadio}
             removeContent={this.removeContent}
             changeContent={this.changeContent}
             changeVariant={this.changeVariant}
@@ -405,25 +417,6 @@ class Checkbox extends PureComponent {
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
         {!environment.editing &&
-          /* eslint-disable */
-          // ? <div className={styles.actions}>
-          //     <AntButton
-          //       type="primary"
-          //       icon="check"
-          //       onClick={this.saveContent}
-          //       className={styles.save}
-          //     >
-          //       Сохранить
-          //     </AntButton>
-          //     <AntButton
-          //       type="default"
-          //       icon="rollback"
-          //       onClick={this.closeEditor}
-          //       className={styles.cancel}
-          //     >
-          //       Отменить
-          //     </AntButton>
-          //   </div>
           <div className={styles.actions}>
             <AntButton
               type="primary"
@@ -440,7 +433,7 @@ class Checkbox extends PureComponent {
   }
 }
 
-Checkbox.propTypes = {
+Radio.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
@@ -499,7 +492,7 @@ Checkbox.propTypes = {
   }).isRequired,
 };
 
-Checkbox.defaultProps = {
+Radio.defaultProps = {
   /* Контент компонента */
   content: {
     variants: [{
@@ -509,28 +502,32 @@ Checkbox.defaultProps = {
       options: [{
         text: 'Вариант 1',
         image: undefined,
+        id: `${random(0, 999)}`,
         correct: true,
       }, {
         text: 'Вариант 2',
         image: undefined,
+        id: `${random(0, 999)}`,
         correct: false,
       }, {
         text: 'Вариант 3',
         image: undefined,
+        id: `${random(0, 999)}`,
         correct: false,
       }, {
         text: 'Вариант 4',
         image: undefined,
+        id: `${random(0, 999)}`,
         correct: false,
       }],
-      hints: [{ 
-        text: 'Новая подсказка' 
+      hints: [{
+        text: 'Новая подсказка',
       }],
-      competences: [{ 
-        text: 'Новая компетенция' 
+      competences: [{
+        text: 'Новая компетенция',
       }],
-      explanations: [{ 
-        text: 'Новое объяснение' 
+      explanations: [{
+        text: 'Новое объяснение',
       }],
     }],
   },
@@ -545,8 +542,8 @@ Checkbox.defaultProps = {
   },
 };
 
-Checkbox.contextTypes = {
+Radio.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
 };
 
-export default Checkbox;
+export default Radio;

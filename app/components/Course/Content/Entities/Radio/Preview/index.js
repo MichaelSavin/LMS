@@ -4,9 +4,9 @@ import React, {
 import {
   Icon as AntIcon,
   Button as AntButton,
-  Checkbox as AntCheckbox,
+  Radio as AntRadio,
   } from 'antd';
-import { isEmpty, sample } from 'lodash/fp';
+import { sample } from 'lodash/fp';
 import classNames from 'classnames';
 import styles from './styles.css';
 
@@ -19,7 +19,7 @@ const Preview = ({
     status,
     attemp,
     editing,
-    answers,
+    answer,
     variant,
   },
   chooseAnswer,
@@ -76,50 +76,54 @@ const Preview = ({
         </div>
       )}
       <div className={styles.options}>
-        {content.variants[variant].options.map((option, index) =>
-          <div
-            key={index}
-            className={styles.option}
-          >
-            {option.image &&
-              <div className={styles.image}>
-                <img
-                  src={storage.crops[option.image.source]
-                    || storage.images[option.image.source]
-                  }
-                  alt={option.image.text}
-                  role="presentation"
-                  width={250}
-                />
-              </div>
-            }
-            <div className={styles.answer}>
-              <div className={styles.checkbox}>
-                <AntCheckbox
-                  key={index}
-                  checked={/*
-                    В режиме редактирования показывает
-                    правильные ответы, в режиме выполнения
-                    задания - выбранные ответы */
-                    editing
-                      ? option.correct
-                      : answers.includes(index)
-                  }
-                  disabled={editing}
-                  onChange={chooseAnswer(index)}
-                />
-              </div>
-              <div className={styles.text}>
-                {option.text || '?'}
-              </div>
-              {editing && option.correct &&
-                <div className={styles.hint}>
-                  правильный ответ
+        <AntRadio.Group value={answer} onChange={chooseAnswer}>
+          {content.variants[variant].options.map((option) =>
+            <AntRadio
+              value={option.id}
+              className={styles.option}
+              key={option.id}
+            >
+              {option.image &&
+                <div className={styles.image}>
+                  <img
+                    src={storage.crops[option.image.source]
+                      || storage.images[option.image.source]
+                    }
+                    alt={option.image.text}
+                    role="presentation"
+                    width={250}
+                  />
                 </div>
               }
-            </div>
-          </div>
-        )}
+              <div className={styles.answer}>
+                <div className={styles.checkbox}>
+                  {/* <AntRadio
+                    value
+                    key={index}
+                    checked={
+                      // В режиме редактирования показывает
+                      // правильные ответы, в режиме выполнения
+                      // задания - выбранные ответы
+                      editing
+                        ? option.correct
+                        : answers.includes(index)
+                    }
+                    disabled={editing}
+                    onChange={chooseAnswer(index)}
+                  />*/}
+                </div>
+                <div className={styles.text}>
+                  {option.text || '?'}
+                </div>
+                {editing && option.correct &&
+                  <div className={styles.hint}>
+                    правильный ответ
+                  </div>
+                }
+              </div>
+            </AntRadio>
+          )}
+        </AntRadio.Group>
       </div>
       {status &&
         <div
@@ -167,7 +171,7 @@ const Preview = ({
           onClick={checkAnswers}
           disabled={
             editing ||
-            isEmpty(answers) || /* Ответы не выбраны */
+            !answer || /* Ответы не выбраны */
             status === 'fail' ||
             status === 'success'
           }
@@ -230,9 +234,7 @@ Preview.propTypes = {
       'success',
     ]).isRequired,
     attemp: PropTypes.number.isRequired,
-    answers: PropTypes.arrayOf(
-      PropTypes.number,
-    ).isRequired,
+    answer: PropTypes.string.isRequired,
     variant: PropTypes.string.isRequired,
     editing: PropTypes.bool.isRequired,
   }).isRequired,

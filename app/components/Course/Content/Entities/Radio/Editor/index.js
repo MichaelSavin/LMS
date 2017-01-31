@@ -7,7 +7,7 @@ import {
   Input as AntInput,
   Button as AntButton,
   Collapse as AntCollapse,
-  Checkbox as AntCheckbox,
+  Radio as AntRadio,
   Popconfirm as AntPopconfirm,
 } from 'antd';
 import {
@@ -15,7 +15,7 @@ import {
   SortableElement,
   SortableContainer,
 } from 'react-sortable-hoc';
-import { isEmpty } from 'lodash/fp';
+import { isEmpty, random } from 'lodash/fp';
 import classNames from 'classnames';
 import Uploader from 'components/UI/Uploader';
 import styles from './styles.css';
@@ -34,6 +34,7 @@ const Editor = ({
   changeContent,
   removeContent,
   changeVariant,
+  changeRadio,
 }) => {
   const errors = validator(content);
 
@@ -90,18 +91,22 @@ const Editor = ({
                 text: 'Вариант 1',
                 image: undefined,
                 correct: false,
+                id: `${random(0, 999)}`,
               }, {
                 text: 'Вариант 2',
                 image: undefined,
                 correct: false,
+                id: `${random(0, 999)}`,
               }, {
                 text: 'Вариант 3',
                 image: undefined,
                 correct: false,
+                id: `${random(0, 999)}`,
               }, {
                 text: 'Вариант 4',
                 image: undefined,
                 correct: false,
+                id: `${random(0, 999)}`,
               }],
               hints: [],
               competences: [],
@@ -259,18 +264,12 @@ const Editor = ({
                                 ])}
                               />
                             </div>
-                            <div className={styles.checkbox}>
-                              <AntCheckbox
-                                checked={option.correct}
-                                onChange={changeContent([
-                                  'variants',
-                                  variantIndex,
-                                  'options',
-                                  optionIndex,
-                                  'correct',
-                                ])}
-                              />
-                            </div>
+                            <AntRadio
+                              className={styles.radio}
+                              value={option.id}
+                              checked={option.correct}
+                              onChange={changeRadio(variantIndex)}
+                            />
                             <div className={styles.remove}>
                               <AntPopconfirm
                                 title="Удалить вариант ответа?"
@@ -303,6 +302,7 @@ const Editor = ({
                           text: 'Новый вариант',
                           image: undefined,
                           correct: false,
+                          id: `${random(0, 999)}`,
                         })}
                       >
                         Добавить вариант ответа
@@ -582,6 +582,7 @@ const Sortable = {
 
 Editor.propTypes = {
   addContent: PropTypes.func.isRequired,
+  changeRadio: PropTypes.func.isRequired,
   dragContent: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
