@@ -8,8 +8,9 @@ import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import * as actionCreators from './actions';
 import courseSelector from './selectors';
-import styles from './styles.css';
 import Sidebar from './Sidebar';
+import styles from './styles.css';
+import './global.css';
 
 class Course extends Component { // HMR
 

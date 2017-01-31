@@ -7,15 +7,23 @@ import styles from './styles.css';
 const Link = ({
   children,
   entityKey,
-}) => (
-  <RouterLink
+}) => {
+  const { url } = Entity.get(entityKey).getData();
+  return url.charAt(0) === '/' ? (<RouterLink
     rel="noopener noreferrer"
-    to={Entity.get(entityKey).getData().url}
+    to={url}
     className={styles.link}
   >
     {children}
-  </RouterLink>
-);
+  </RouterLink>) : (<a
+    target="_blank"
+    rel="noopener noreferrer"
+    href={url}
+    className={styles.link}
+  >
+    {children}
+  </a>);
+};
 
 Link.propTypes = {
   children: PropTypes.array.isRequired,

@@ -16,7 +16,6 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
-import { Link } from 'react-router';
 import classNames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {
@@ -436,10 +435,6 @@ class Table extends Component {
       )}
       onDoubleClick={isReadOnly && this.editMode}
     >
-      {/* Временная ссылка для демострации переходов */}
-      <Link to="/0-0-0/editor#id2p9j9">
-        /0-0-0/editor#id2p9j9
-      </Link>
       <AntTable
         columns={columns}
         pagination={false}
@@ -458,24 +453,6 @@ class Table extends Component {
               Скопировать: {anchorUrl}
             </AntButton>
           </CopyToClipboard>
-          <AntButton
-            type="primary"
-            icon="up-square"
-            className={styles.icon}
-            onClick={this.moveBlockUp}
-          />
-          <span
-            icon="ellipsis"
-            className={classNames(styles.icon, 'sortable-handle')}
-          >
-            <AntIcon type="ellipsis" />
-          </span>
-          <AntButton
-            type="primary"
-            icon="down-square"
-            className={styles.icon}
-            onClick={this.moveBlockDown}
-          />
           <AntButton
             type="primary"
             icon="up-square"
