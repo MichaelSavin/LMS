@@ -1,12 +1,70 @@
-.radio {
+.checkbox {
+  width: 102%;
+  border: 2.5px solid white;
   margin: 5px 0;
-  user-select: none;
   display: inline-block;
-  -webkit-user-select: none;
+  position: relative;
+  margin-left: -10px;
 }
 
-:global .ant-radio-wrapper {
-  display: block !important;
+.checkbox:hover {
+  /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
+  border: 2.5px solid #108EE9;
+}
+
+.checkbox.editing {
+  /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
+  border: 2.5px solid #108EE9;
+}
+
+.checkbox .edit {
+  visibility: hidden;
+}
+
+.checkbox:hover .edit {
+  visibility: visible;
+}
+
+.actions {
+  top: -30px;
+  left: -2px;
+  position: absolute;
+
+  & .edit {
+    transition: all 0s;
+    border-radius: 5px 5px 0 0;
+  }
+
+  & .save {
+    transition: all 0s;
+    border-radius: 5px 0 0;
+  }
+
+  & .cancel {
+    transition: all 0s;
+    border-radius: 0 5px 0 0;
+  }
+}
+
+:global(.ant-input.error) {
+  border-color: red;
+}
+
+:global(.ant-input.error):focus {
+  border-color: red;
+}
+
+:global(.ant-input.error):active {
+  border-color: red;
+}
+
+:global(.ant-input.error):focus {
+  box-shadow: 0 0 0 2px rgba(245, 45, 45, 0.2);
+}
+
+:global .ant-checkbox-group .ant-checkbox-wrapper {
   height: 30px;
+  display: block !important;
   line-height: 30px;
+  margin-left: 0 !important;
 }
