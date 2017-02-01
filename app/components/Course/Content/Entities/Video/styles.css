@@ -1,20 +1,10 @@
 .video {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   position: relative;
   padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
-}
-
-.video iframe,
-.video object,
-.video embed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 }
 
 .icon {
@@ -23,16 +13,58 @@
   position: absolute;
   cursor: pointer;
   padding: 5px;
-  right: 0;
+  left: 0;
   color: #FFF;
 }
 
 .icon:active,
 .icon:hover {
   border-radius: 10px;
-  background: #2DB7F5;
   backface-visibility: 0.3;
-  color: #000;
+  color: #2DB7F5;
   padding: 5px;
 }
 
+.player {
+  position: relative;
+
+  iframe,
+  object,
+  embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+.controls {
+  width: 640px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.helpers {
+  display: flex;
+}
+
+.button {
+  text-align: center;
+  padding: 0 5px;
+}
+
+.explanations {
+  color: grey;
+  font-size: 12px;
+}
+
+.input {
+  margin: 10px 0;
+}
+
+.text {
+  width: 640px;
+  margin-top: 70px;
+  overflow: overlay;
+  min-height: 150px;
+}
