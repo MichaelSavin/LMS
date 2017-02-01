@@ -141,7 +141,6 @@
     "offline-plugin": "3.4.2",
     "plop": "1.7.1",
     "postcss-cssnext": "2.9.0",
-    "postcss-nested": "1.0.0",        
     "postcss-focus": "1.0.0",
     "postcss-loader": "1.2.1",
     "postcss-nested": "1.0.0",
