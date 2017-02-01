@@ -130,21 +130,6 @@ class Preview extends Component {
                 </div>
               }
               <div className={styles.answer}>
-                {/* <div className={styles.checkbox}>
-              <AntCheckbox
-                key={index}
-                checked={
-                  // В режиме редактирования показывает
-                  // правильные ответы, в режиме выполнения
-                  // задания - выбранные ответы
-                  editing
-                    ? option.correct
-                    : answers.includes(index)
-                }
-                disabled={editing}
-                onChange={chooseAnswer(index)}
-              />
-            </div>*/}
                 <div className={`sortable-handle ${styles.drager}`}>
                   <AntIcon
                     type="appstore-o"
@@ -164,52 +149,6 @@ class Preview extends Component {
             </div>
           )}
         </div>
-        {/* <div className={styles.options}>
-      {current.options.map((option, index) =>
-        <div
-          key={index}
-          className={styles.option}
-        >
-          {option.image &&
-            <div className={styles.image}>
-              <img
-                src={storage.crops[option.image.source]
-                  || storage.images[option.image.source]
-                }
-                alt={option.image.text}
-                role="presentation"
-                width={250}
-              />
-            </div>
-          }
-          <div className={styles.answer}>
-            <div className={styles.checkbox}>
-              <AntCheckbox
-                key={index}
-                checked={
-                  // В режиме редактирования показывает
-                  // правильные ответы, в режиме выполнения
-                  // задания - выбранные ответы
-                  editing
-                    ? option.correct
-                    : answers.includes(index)
-                }
-                disabled={editing}
-                onChange={chooseAnswer(index)}
-              />
-            </div>
-            <div className={styles.text}>
-              {option.text || '?'}
-            </div>
-            {editing && option.correct &&
-              <div className={styles.hint}>
-                правильный ответ
-              </div>
-            }
-          </div>
-        </div>
-      )}
-    </div>*/}
         {status &&
           <div
             className={classNames(
