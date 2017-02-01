@@ -3,16 +3,21 @@ import React, {
   PureComponent,
 } from 'react';
 import {
-  // get,
+  get,
   set,
   last,
+  pull,
+  concat,
   sample,
   update,
   random,
   pullAt,
+  isEqual,
   dropRight,
   difference,
 } from 'lodash/fp';
+import Sortable from 'sortablejs';
+import { arrayMove } from 'react-sortable-hoc';
 import { Button as AntButton } from 'antd';
 import localForage from 'localforage';
 import classNames from 'classnames';
@@ -21,7 +26,7 @@ import Preview from './Preview';
 import Editor from './Editor';
 import styles from './styles.css';
 
-class Input extends PureComponent {
+class Matcher extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -34,17 +39,13 @@ class Input extends PureComponent {
         editor: content,
         component: content,
       },
-      environment: {
-        ...environment,
-        /* Показ случайного варианта задания при загрузке*/
-        variant: `${random(0, content.variants.length - 1)}`,
-        answer: environment.answer || '',
-      },
-      /*set(
+      /* Показ случайного варианта задания при загрузке*/
+      environment: set(
         ['variant'],
         `${random(0, content.variants.length - 1)}`,
         environment
-      ),*/
+      ),
+      isLocked: true,
     };
     this.storage = {
       crops: {},
@@ -106,6 +107,38 @@ class Input extends PureComponent {
       });
   }
 
+  makeSortable = (element) => {
+    if (element) {
+      const that = this;
+      const name = element.getAttribute('data-type');
+      this[name] = element;
+      Sortable.create(element, { // https://github.com/RubaXa/Sortable#options
+        group: {
+          name,
+          pull: ['pull', 'put'],
+          put: ['pull', 'put'],
+        },
+        animation: 350,
+        handle: '.sortable-handle',
+        chosenClass: styles.chosen,
+        ghostClass: styles.ghost,
+        // onEnd: (event) => {
+        //   console.log(event);
+        // },
+        // onAdd(e) {
+        //   console.log(e);
+        // },
+        onRemove(event) {
+          if (get('from.childElementCount', event) === 0) {
+            that.setState({
+              isLocked: false,
+            });
+          }
+        },
+      });
+    }
+  }
+
   uploadImage = (location) => (data, image, crop) => {
     this.storage.images = {
       ...this.storage.images,
@@ -119,7 +152,6 @@ class Input extends PureComponent {
       content: set([
         'editor',
         ...location,
-        'image',
       ],
         data,
         this.state.content
@@ -161,6 +193,21 @@ class Input extends PureComponent {
       ),
     }, this.addStateToHistory);
   }
+
+  dragContent = (location) => ({ oldIndex, newIndex }) => {
+    const { content } = this.state;
+    this.setState({
+      content: set(
+        ['editor', ...location],
+        arrayMove(
+          get(['editor', ...location], content),
+          oldIndex,
+          newIndex,
+        ),
+        content
+      ),
+    }, this.addStateToHistory);
+  };
 
   changeContent = (location) => (event) => {
     const value = event.type
@@ -238,7 +285,6 @@ class Input extends PureComponent {
       content,
       environment,
     } = this.state;
-    console.log(content);
     Entity.replaceData(
       this.props.entityKey, {
         content: content.editor,
@@ -291,17 +337,25 @@ class Input extends PureComponent {
     });
   }
 
-  changeAnswer = (e) => {
-    const { environment } = this.state;
-    this.setState({
+  chooseAnswer = (index) => (answer) => {
+    const {
       environment: {
-        ...environment,
-        answer: e.target.value,
+        answers,
       },
+    } = this.state;
+    this.setState({
+      environment: set(
+        ['answers'],
+        answer.target.checked
+          ? concat(answers, index)
+          : pull(index, answers),
+        this.state.environment
+      ),
     });
   }
 
   checkAnswers = () => {
+    const sortedIdList = [...this.put.children].map((obj) => obj.getAttribute('data-id'));
     const {
       content: {
         component: {
@@ -309,16 +363,21 @@ class Input extends PureComponent {
         },
       },
       environment: {
-        answer,
         attemp,
         variant,
       },
     } = this.state;
+
     this.setState({
       environment: {
         ...set(
           ['status'],
-          variants[variant].options.some(({ text }) => text === answer)
+          /* Сравнение выбранных ответов с правильными */
+          isEqual(
+            sortedIdList,
+            variants[variant].options
+              .map((option) => option.id),
+          )
             ? 'success'
             /* Попытки закончились? */
             : variants[variant].attempts - attemp === 0
@@ -335,11 +394,12 @@ class Input extends PureComponent {
     const {
       content,
       environment,
+      isLocked,
     } = this.state;
     return (
       <div
         className={classNames(
-          styles.taskInput,
+          styles.checkbox,
           { [styles.editing]: environment.editing },
         )}
       >
@@ -351,9 +411,10 @@ class Input extends PureComponent {
           }
           storage={this.storage}
           showHint={this.showHint}
-          environment={environment}
-          changeAnswer={this.changeAnswer}
+          {...{ environment, isLocked }}
+          chooseAnswer={this.chooseAnswer}
           checkAnswers={this.checkAnswers}
+          makeSortable={this.makeSortable}
         />
         {environment.editing &&
           <Editor
@@ -361,6 +422,7 @@ class Input extends PureComponent {
             content={content.editor}
             addContent={this.addContent}
             environment={environment}
+            dragContent={this.dragContent}
             closeEditor={this.closeEditor}
             uploadImage={this.uploadImage}
             saveContent={this.saveContent}
@@ -408,7 +470,7 @@ class Input extends PureComponent {
   }
 }
 
-Input.propTypes = {
+Matcher.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
@@ -419,6 +481,11 @@ Input.propTypes = {
         options: PropTypes.arrayOf(
           PropTypes.shape({
             text: PropTypes.string.isRequired,
+            image: PropTypes.shape({
+              text: PropTypes.string.isRequired,
+              crop: PropTypes.object,
+              source: PropTypes.string.isRequired,
+            }),
           }).isRequired,
         ).isRequired,
         hints: PropTypes.arrayOf(
@@ -461,7 +528,7 @@ Input.propTypes = {
   }).isRequired,
 };
 
-Input.defaultProps = {
+Matcher.defaultProps = {
   /* Контент компонента */
   content: {
     variants: [{
@@ -471,19 +538,27 @@ Input.defaultProps = {
       options: [{
         text: 'Вариант 1',
         image: undefined,
-        correct: true,
+        ansewerText: 'Вариант 1',
+        ansewerImage: undefined,
+        id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 2',
         image: undefined,
-        correct: false,
+        ansewerText: 'Вариант 1',
+        ansewerImage: undefined,
+        id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 3',
         image: undefined,
-        correct: false,
+        ansewerText: 'Вариант 1',
+        ansewerImage: undefined,
+        id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 4',
         image: undefined,
-        correct: false,
+        ansewerText: 'Вариант 1',
+        ansewerImage: undefined,
+        id: `${random(0, 999)}`,
       }],
       hints: [{ 
         text: 'Новая подсказка' 
@@ -501,14 +576,13 @@ Input.defaultProps = {
     hints: [],      // Показанные подсказки
     attemp: 1,      // Попытки ответить на вопрос
     status: null,   // Статус задания (с ошибками, без ошибок)
-    answers: [],    // Выбранные ответы
     variant: '0',   // Первый вариант задания, меняется на случайный в конструкторе
     editing: false, // Окно редактора закрыто
   },
 };
 
-Input.contextTypes = {
+Matcher.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
 };
 
-export default Input;
+export default Matcher;

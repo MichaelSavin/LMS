@@ -1,0 +1,213 @@
+.preview {
+  padding: 15px;
+
+  & .flag {
+    width: 285px;
+    display: flex;
+    padding: 10px;
+    position: relative;
+    font-size: 12px;
+    text-align: left;
+    user-select: none;
+    line-height: 16px;
+    background-color: rgb(255, 225, 153);
+
+    & .icon {
+      color: #DA4A00;
+      font-size: 15px;
+    }
+
+    & .content {
+      display: flex;
+      margin-left: 10px;
+      flex-direction: row;
+
+      & .text {
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      & .points {
+        color: #555;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  & .flag::after {
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    content: '';
+    position: absolute;
+    border-top: 18px solid transparent;
+    border-right: 15px solid white;
+    border-bottom: 18px solid transparent;
+  }
+
+  & .showHint {
+    color: rgba(0, 0, 0, 0.65);
+    cursor: pointer;
+    border: 1px solid transparent;
+    display: inline-block;
+    padding: 4px 15px;
+    font-size: 14px;
+    margin-top: 15px;
+    text-align: center;
+    user-select: none;
+    border-color: #D9D9D9;
+    border-radius: 4px;
+    background-color: #F7F7F7;
+
+    & .text {
+      font-weight: bold;
+    }
+
+    & .count {
+      font-size: 12px;
+    }
+
+    & .info {
+      color: #AAA;
+      font-size: 10px;
+    }
+  }
+
+  & .question {
+    margin: 15px 0 5px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  & .hint {
+    font-size: 13px;
+  }
+
+  & .options {
+    display: flex;
+    flex-direction: column;
+
+    & .option {
+      display: flex;
+      padding: 5px 0;
+      align-items: flex-start;
+
+      & .image {
+        margin: 10px 0;
+      }
+
+      & .answer {
+        display: flex;
+        flex-direction: row;
+
+        & .checkbox {
+          display: flex;
+        }
+
+        & .text {
+          font-size: 13px;
+          margin-left: 10px;
+        }
+
+        & .hint {
+          color: #AAA;
+          font-size: 10px;
+          align-self: center;
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+
+  & .message {
+    min-width: 215px;
+    display: inline-flex;
+    padding: 10px 5px;
+    margin-top: 5px;
+    align-items: center;
+    border-radius: 5px;
+    flex-direction: row;
+
+    & .icon {
+      margin-left: 10px;
+    }
+
+    & .content {
+      display: flex;
+      flex-direction: column;
+
+      & .text {
+        font-size: 13px;
+        font-weight: 700;
+        margin-left: 25px;
+      }
+
+      & .points {
+        color: #888;
+        font-size: 12px;
+        margin-left: 25px;
+
+        & b {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+
+  & .message.fail {
+    background-color: rgba(255, 0, 0, 0.1);
+
+    & .icon {
+      color: red;
+    }
+
+    & .text {
+      margin-left: 15px;
+      text-align: center;
+    }
+
+    & .points {
+      margin-left: 25px;
+    }
+  }
+
+  & .message.error {
+    background-color: rgba(255, 122, 0, 0.1);
+
+    & .icon {
+      color: #FF7A00;
+    }
+
+    & .text {
+      font-size: 12px;
+      margin: 0 10px;
+    }
+  }
+
+  & .message.success {
+    background-color: rgba(0, 128, 0, 0.1);
+
+    & .icon {
+      color: green;
+    }
+
+    & .text {
+      text-align: center;
+    }
+  }
+
+  & .explanation {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+
+  & .check {
+    padding-top: 15px;
+    text-align: left;
+  }
+}
+
+:global .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+  margin-left: 0 !important;
+}

@@ -34,6 +34,8 @@ import Timeline from './Timeline';
 import Checkbox from './Checkbox';
 import Textarea from './Textarea';
 import Sample from './Sample';
+import Sorter from './Sorter';
+import Matcher from './Matcher';
 
 const components = { // можно использовать require()
   TAG: Tag,
@@ -62,6 +64,8 @@ const components = { // можно использовать require()
   CHECKBOX: Checkbox,
   TEXTAREA: Textarea,
   SAMPLE: Sample,
+  SORTER: Sorter,
+  MATCHER: Matcher,
 };
 
 const views = {
@@ -83,14 +87,16 @@ const views = {
   TIMELINE: 'BLOCK',
   CHECKBOX: 'BLOCK',
   TEXTAREA: 'BLOCK',
+  INPUT: 'BLOCK',
+  SAMPLE: 'BLOCK',
+  SORTER: 'BLOCK',
+  MATCHER: 'BLOCK',
   LINK: 'INLINE',
   TEX: 'INLINE',
   TAG: 'INLINE',
   RATE: 'INLINE',
-  INPUT: 'INLINE',
   SWITCH: 'INLINE',
   SELECT: 'INLINE',
-  SAMPLE: 'BLOCK',
 };
 
 const findEntities = (type) => (

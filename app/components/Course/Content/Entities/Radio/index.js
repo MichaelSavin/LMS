@@ -1,139 +1,433 @@
-// Состояние редактора не изменяется при выборе ответа - facebook/draft-js#185
-// Нужно кликнуть по редактору
-
-import React, { Component, PropTypes } from 'react';
-import AntPromt from 'components/UI/Promt';
-import { Radio as AntRadio } from 'antd';
-import { isEqual, uniq } from 'lodash';
+import React, {
+  PropTypes,
+  PureComponent,
+} from 'react';
+import {
+  get,
+  set,
+  last,
+  sample,
+  update,
+  random,
+  pullAt,
+  dropRight,
+  difference,
+} from 'lodash/fp';
+import { arrayMove } from 'react-sortable-hoc';
+import { Button as AntButton } from 'antd';
+import localForage from 'localforage';
+import classNames from 'classnames';
 import { Entity } from 'draft-js';
+import Preview from './Preview';
+import Editor from './Editor';
 import styles from './styles.css';
 
-class Radio extends Component {
+class Radio extends PureComponent {
 
   constructor(props) {
     super(props);
+    const {
+      content,
+      environment,
+    } = props;
     this.state = {
-      ...props.content,
-      promt: {
-        open: false,
-        value: null,
+      content: {
+        editor: content,
+        component: content,
       },
+      /* Показ случайного варианта задания при загрузке*/
+      environment: {
+        ...environment,
+        /* Показ случайного варианта задания при загрузке*/
+        variant: `${random(0, content.variants.length - 1)}`,
+        answer: environment.answer || '',
+      },
+      /*set(
+        ['variant'],
+        `${random(0, content.variants.length - 1)}`,
+        environment
+      ),*/
+    };
+    this.storage = {
+      crops: {},
+      images: {},
+    };
+    this.history = {
+      past: [],
+      future: [],
+      present: undefined,
     };
   }
 
-  shouldComponentUpdate(
-    nextProps,
-    nextState
-  ) {
-    return !isEqual(
-      this.state,
-      nextState
-    );
+  componentDidMount() {
+    // Загрузка изображений в компонент
+    this.state
+      .content
+      .editor
+      .variants
+      .forEach((variant) => {
+        variant.options.forEach(
+          async (option) => {
+            if (option.image) {
+              const data = await localForage
+                .getItem(option.image.source);
+              this.storage.images[
+                option.image.source
+              ] = data;
+              if (option.image.crop) {
+                const canvas = document.createElement('canvas');
+                /* eslint-disable fp/no-mutation */
+                const pixelCrop = option.image.crop.pixels;
+                canvas.width = pixelCrop.width;
+                canvas.height = pixelCrop.height;
+                const context = canvas.getContext('2d');
+                const imageObj = new Image();
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                imageObj.src = this.storage.images[option.image.source];
+                imageObj.onload = () => {
+                /* eslint-enable fp/no-mutation */
+                  context.drawImage(
+                    imageObj,
+                    pixelCrop.x,
+                    pixelCrop.y,
+                    pixelCrop.width,
+                    pixelCrop.height,
+                    0, 0,
+                    pixelCrop.width,
+                    pixelCrop.height,
+                  );
+                  const binary = canvas.toDataURL('image/jpeg', 1);
+                  this.storage.crops[option.image.source] = binary;
+                  this.forceUpdate();
+                };
+              } else {
+                this.forceUpdate();
+              }
+            }
+          });
+      });
   }
 
-  editOptions = (event) => {
-    event.preventDefault();
+  uploadImage = (location) => (data, image, crop) => {
+    this.storage.images = {
+      ...this.storage.images,
+      ...image,
+    };
+    this.storage.crops = {
+      ...this.storage.crops,
+      ...crop,
+    };
     this.setState({
-      promt: {
-        open: true,
-        value: this
-          .state
-          .options
-          .join(';'),
+      content: set([
+        'editor',
+        ...location,
+        'image',
+      ],
+        data,
+        this.state.content
+      ),
+    }, this.addStateToHistory);
+  }
+
+  addContent = (location, content) => () => {
+    this.setState({
+      content: update(
+        ['editor', ...location],
+        (data) => data.concat([content]),
+        this.state.content,
+      ),
+    });
+  }
+
+  removeContent = (location) => (event) => {
+    const {
+      content,
+      environment,
+    } = this.state;
+    if (event) { event.stopPropagation(); }
+    const newContent = update(
+      ['editor', ...dropRight(1, location)],
+      (data) => pullAt([last(location)], data),
+      content
+    );
+    this.setState({
+      content: newContent,
+      /* Переключение на предыдущий таб при удалении варианта */
+      environment: set(
+        ['editor', 'variant'],
+        `${newContent.editor.variants[environment.variant]
+          ? environment.variant
+          : newContent.editor.variants.length - 1
+        }`,
+        environment
+      ),
+    }, this.addStateToHistory);
+  }
+
+  dragContent = (location) => ({ oldIndex, newIndex }) => {
+    const { content } = this.state;
+    this.setState({
+      content: set(
+        ['editor', ...location],
+        arrayMove(
+          get(['editor', ...location], content),
+          oldIndex,
+          newIndex,
+        ),
+        content
+      ),
+    }, this.addStateToHistory);
+  };
+
+  changeContent = (location) => (event) => {
+    const value = event.type
+      ? event.target.value    // для инпутов
+      : event.target.checked; // для чекбоксов
+    this.setState({
+      content: set([
+        'editor',
+        ...location,
+      ],
+        value,
+        this.state.content
+      ),
+    }, this.addStateToHistory);
+  }
+
+  changeRadio = (variantIndex) => (event) => {
+    const { value } = event.target;
+    console.log(this.state);
+    const { options } = this.state.content.editor.variants[variantIndex];
+
+    this.setState({
+      content: set([
+        'editor',
+        'variants',
+        variantIndex,
+        'options',
+      ],
+        options.map((option) => ({
+          ...option,
+          correct: option.id === value,
+        })),
+        this.state.content
+      ),
+    }, this.addStateToHistory);
+  }
+
+  addStateToHistory = () => {
+    /* eslint-disable */
+    this.history.present = this.state;
+    this.history.past.push(this.state);
+    /* eslint-enable */
+  }
+
+  undoHistory = () => {
+    if (this.history.past.length > 0) {
+      /* eslint-disable */
+      this.history.future.push(this.history.present);
+      this.history.present = this.history.past.pop();
+      /* eslint-enable */
+      this.setState(this.history.present);
+    }
+  }
+
+  redoHistory = () => {
+    if (this.history.future.length > 0) {
+      /* eslint-disable */
+      this.history.past.push(this.history.present);
+      this.history.present = this.history.future.pop();
+      /* eslint-enable */
+      this.setState(this.history.present);
+    }
+  }
+
+  openEditor = () => {
+    const {
+      content,
+      environment,
+    } = this.state;
+    this.setState({
+      content: set(
+        ['editor'],
+        content.component,
+        content
+      ),
+      environment: set(
+        ['editing'],
+        true,
+        environment
+      ),
+    }, this.context.toggleReadOnly);
+  }
+
+  closeEditor = () => {
+    this.setState({
+      environment: set(
+        ['editing'],
+        false,
+        this.state.environment
+      ),
+    }, this.context.toggleReadOnly);
+  }
+
+  saveContent = () => {
+    const {
+      content,
+      environment,
+    } = this.state;
+    Entity.replaceData(
+      this.props.entityKey, {
+        content: content.editor,
+      }
+    );
+    this.setState({
+      content: set(
+        ['component'],
+        content.editor,
+        content
+      ),
+      environment: set(
+        ['editing'],
+        false,
+        environment
+      ),
+    }, this.context.toggleReadOnly);
+  }
+
+  showHint = (variant) => () => {
+    const { environment } = this.state;
+    this.setState({
+      environment: set(
+        ['hints'],
+        environment.hints
+          .concat([
+            sample(
+              difference(
+                this.state
+                  .content
+                  .component
+                  .variants[variant]
+                  .hints,
+                environment.hints,
+              ),
+            ),
+          ]),
+        environment
+      ),
+    });
+  }
+
+  changeVariant = (variant) => {
+    this.setState({
+      environment: set(
+        ['variant'],
+        variant,
+        this.state.environment
+      ),
+    });
+  }
+
+  chooseAnswer = (answer) => {
+    console.log(answer);
+    const { environment } = this.state;
+    this.setState({
+      environment: {
+        ...environment,
+        answer: answer.target.value,
       },
     });
   }
 
-  chooseAnswer = (event) => {
+  checkAnswers = () => {
     const {
-      value: answer,
-    } = event.target;
-    Entity.replaceData(
-      this.props.entityKey, {
-        content: {
-          options: this
-            .state
-            .options,
-          answer,
+      content: {
+        component: {
+          variants,
         },
       },
-    );
-    this.setState({ answer });
-  }
-
-  modifyOptions = () => {
-    const options = uniq(
-      this.state
-      .promt.value
-      .split(';'));
-    const answer =
-      this.state.answer > options.length - 1
-        ? undefined
-        : this.state.answer;
-    Entity.replaceData(
-      this.props.entityKey, {
-        content: {
-          answer,
-          options,
-        },
-      }
-    );
+      environment: {
+        attemp,
+        answer,
+        variant,
+      },
+    } = this.state;
     this.setState({
-      answer,
-      options,
-      promt: {
-        open: false,
+      environment: {
+        ...set(
+          ['status'],
+          /* Сравнение выбранных ответов с правильными */
+          variants[variant].options
+            .some((option) => (
+              option.correct && option.id === answer
+            ))
+            ? 'success'
+            /* Попытки закончились? */
+            : variants[variant].attempts - attemp === 0
+              ? 'fail'
+              : 'error',
+          this.state.environment
+        ),
+        attemp: attemp + 1,
       },
     });
   }
 
   render() {
     const {
-      promt,
-      answer,
-      options,
+      content,
+      environment,
     } = this.state;
     return (
       <div
-        className={styles.radio}
-        onContextMenu={this.editOptions}
+        className={classNames(
+          styles.checkbox,
+          { [styles.editing]: environment.editing },
+        )}
       >
-        <AntRadio.Group
-          onChange={this.chooseAnswer}
-          value={answer}
-        >
-          {options.map((option, index) =>
-            <AntRadio
-              key={index}
-              value={index}
-            >
-              {option}
-            </AntRadio>
-          )}
-        </AntRadio.Group>
-        <AntPromt
-          value={promt.value}
-          onSave={this.modifyOptions}
-          visible={promt.open}
-          onChange={(event) => {
-            this.setState({
-              promt: {
-                ...promt,
-                value: event
-                  .target
-                  .value,
-              },
-            });
-          }}
-          onCancel={() => {
-            this.setState({
-              promt: {
-                ...promt,
-                open: false,
-              },
-            });
-          }}
+        <Preview
+          content={
+            environment.editing
+              ? content.editor
+              : content.component
+          }
+          storage={this.storage}
+          showHint={this.showHint}
+          environment={environment}
+          chooseAnswer={this.chooseAnswer}
+          checkAnswers={this.checkAnswers}
         />
+        {environment.editing &&
+          <Editor
+            storage={this.storage}
+            content={content.editor}
+            addContent={this.addContent}
+            environment={environment}
+            dragContent={this.dragContent}
+            closeEditor={this.closeEditor}
+            uploadImage={this.uploadImage}
+            saveContent={this.saveContent}
+            undoHistory={this.undoHistory}
+            redoHistory={this.redoHistory}
+            changeRadio={this.changeRadio}
+            removeContent={this.removeContent}
+            changeContent={this.changeContent}
+            changeVariant={this.changeVariant}
+          />
+        }
+        {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
+        {!environment.editing &&
+          <div className={styles.actions}>
+            <AntButton
+              type="primary"
+              icon="edit"
+              onClick={this.openEditor}
+              className={styles.edit}
+            >
+              Редактировать
+            </AntButton>
+          </div>
+        }
       </div>
     );
   }
@@ -142,21 +436,114 @@ class Radio extends Component {
 Radio.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    answer: PropTypes.number,
-    options: PropTypes.array.isRequired,
+    variants: PropTypes.arrayOf(
+      PropTypes.shape({
+        points: PropTypes.string,
+        attempts: PropTypes.string,
+        question: PropTypes.string.isRequired,
+        options: PropTypes.arrayOf(
+          PropTypes.shape({
+            text: PropTypes.string.isRequired,
+            image: PropTypes.shape({
+              text: PropTypes.string.isRequired,
+              crop: PropTypes.object,
+              source: PropTypes.string.isRequired,
+            }),
+            correct: PropTypes.bool.isRequired,
+          }).isRequired,
+        ).isRequired,
+        hints: PropTypes.arrayOf(
+          PropTypes.shape({
+            text: PropTypes.string.isRequired,
+          })
+        ).isRequired,
+        competences: PropTypes.arrayOf(
+          PropTypes.shape({
+            text: PropTypes.string.isRequired,
+          })
+        ).isRequired,
+        explanations: PropTypes.arrayOf(
+          PropTypes.shape({
+            text: PropTypes.string.isRequired,
+          })
+        ).isRequired,
+      }).isRequired,
+    ).isRequired,
+  }).isRequired,
+  environment: PropTypes.shape({
+    /* TODO Тут лучше хранить индексы подсказок из варианта, чем сами подсказки */
+    hints: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
+    status: PropTypes.oneOf([
+      null,
+      'fail',
+      'error',
+      'success',
+    ]).isRequired,
+    attemp: PropTypes.number.isRequired,
+    answers: PropTypes.arrayOf(
+      PropTypes.number,
+    ).isRequired,
+    variant: PropTypes.string.isRequired,
+    editing: PropTypes.bool.isRequired,
   }).isRequired,
 };
 
 Radio.defaultProps = {
+  /* Контент компонента */
   content: {
-    answer: undefined,
-    options: [
-      'Вариант 1',
-      'Вариант 2',
-      'Вариант 3',
-      'Вариант 4',
-    ],
+    variants: [{
+      points: '1',
+      attempts: '1',
+      question: 'Вопрос',
+      options: [{
+        text: 'Вариант 1',
+        image: undefined,
+        id: `${random(0, 999)}`,
+        correct: true,
+      }, {
+        text: 'Вариант 2',
+        image: undefined,
+        id: `${random(0, 999)}`,
+        correct: false,
+      }, {
+        text: 'Вариант 3',
+        image: undefined,
+        id: `${random(0, 999)}`,
+        correct: false,
+      }, {
+        text: 'Вариант 4',
+        image: undefined,
+        id: `${random(0, 999)}`,
+        correct: false,
+      }],
+      hints: [{
+        text: 'Новая подсказка',
+      }],
+      competences: [{
+        text: 'Новая компетенция',
+      }],
+      explanations: [{
+        text: 'Новое объяснение',
+      }],
+    }],
   },
+  /* Cостояние компонента */
+  environment: {
+    hints: [],      // Показанные подсказки
+    attemp: 1,      // Попытки ответить на вопрос
+    status: null,   // Статус задания (с ошибками, без ошибок)
+    answers: [],    // Выбранные ответы
+    variant: '0',   // Первый вариант задания, меняется на случайный в конструкторе
+    editing: false, // Окно редактора закрыто
+  },
+};
+
+Radio.contextTypes = {
+  toggleReadOnly: PropTypes.func.isRequired,
 };
 
 export default Radio;

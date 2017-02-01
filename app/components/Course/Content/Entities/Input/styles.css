@@ -1,3 +1,48 @@
-.input {
-  /* ... */
+.taskInput {
+  width: 102%;
+  border: 2.5px solid white;
+  margin: 5px 0;
+  display: inline-block;
+  position: relative;
+  margin-left: -10px;
 }
+
+.taskInput:hover {
+  /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
+  border: 2.5px solid #108EE9;
+}
+
+.taskInput.editing {
+  /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
+  border: 2.5px solid #108EE9;
+}
+
+.taskInput .edit {
+  visibility: hidden;
+}
+
+.taskInput:hover .edit {
+  visibility: visible;
+}
+
+.actions {
+  top: -30px;
+  left: -2px;
+  position: absolute;
+
+  & .edit {
+    transition: all 0s;
+    border-radius: 5px 5px 0 0;
+  }
+
+  & .save {
+    transition: all 0s;
+    border-radius: 5px 0 0;
+  }
+
+  & .cancel {
+    transition: all 0s;
+    border-radius: 0 5px 0 0;
+  }
+}
+
