@@ -1,9 +1,7 @@
 import React, { PropTypes, Component } from 'react';
-// import AntPromt from 'components/UI/Promt';
 import ReactPlayer from 'react-player';
 import { Icon as AntIcon, Button, Modal, Input } from 'antd';
-import { Entity, ContentState } from 'draft-js';
-// import { isEqual } from 'lodash';
+import { Entity } from 'draft-js';
 import styles from './styles.css';
 
 class Video extends Component {
@@ -15,20 +13,9 @@ class Video extends Component {
       playing: false,
       promt: {
         visible: false,
-        value: null,
       },
     };
   }
-
-  /* shouldComponentUpdate(
-    nextProps,
-    nextState
-  ) {
-    return !isEqual(
-      this.state,
-      nextState
-    );
-  }*/
 
   editContent = (event) => {
     event.preventDefault();
@@ -42,8 +29,6 @@ class Video extends Component {
 
   modifyContent = () => {
     const { promt: content } = this.state;
-    console.log(ContentState);
-    console.log(ContentState.replaceEntityData);
     Entity.replaceData(
       this.props.entityKey, {
         content,
