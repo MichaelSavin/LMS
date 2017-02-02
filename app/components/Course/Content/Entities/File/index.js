@@ -6,13 +6,10 @@ import {
   get,
   set,
   last,
-  pull,
-  concat,
   sample,
   update,
   random,
   pullAt,
-  isEqual,
   dropRight,
   difference,
 } from 'lodash/fp';
@@ -39,11 +36,18 @@ class File extends PureComponent {
         component: content,
       },
       /* Показ случайного варианта задания при загрузке*/
-      environment: set(
+
+      environment: {
+        ...environment,
+        /* Показ случайного варианта задания при загрузке*/
+        variant: `${random(0, content.variants.length - 1)}`,
+        fileList: environment.fileList || [],
+      },
+      /* environment: set(
         ['variant'],
         `${random(0, content.variants.length - 1)}`,
         environment
-      ),
+      ),*/
     };
     this.storage = {
       crops: {},
@@ -304,34 +308,37 @@ class File extends PureComponent {
     });
   }
 
-  chooseAnswer = (index) => (answer) => {
-    const {
-      environment: {
-        answers,
-      },
-    } = this.state;
-    this.setState({
-      environment: set(
-        ['answers'],
-        answer.target.checked
-          ? concat(answers, index)
-          : pull(index, answers),
-        this.state.environment
-      ),
-    });
+  chooseAnswer = ({
+    file,
+    event,
+  }) => {
+    if (!event) {
+      const {
+        environment: {
+          fileList,
+        },
+        environment,
+      } = this.state;
+      this.setState({
+        environment: {
+          ...environment,
+          fileList: fileList.concat([file]),
+        },
+      });
+    }
   }
 
   checkAnswers = () => {
     const {
-      content: {
-        component: {
-          variants,
-        },
-      },
+      // content: {
+      //   component: {
+      //     variants,
+      //   },
+      // },
       environment: {
         attemp,
-        answers,
-        variant,
+        // answers,
+        // variant,
       },
     } = this.state;
     this.setState({
@@ -339,22 +346,23 @@ class File extends PureComponent {
         ...set(
           ['status'],
           /* Сравнение выбранных ответов с правильными */
-          isEqual(
-            answers,
-            variants[variant].options
-              .map((option, index) =>
-                option.correct
-                  ? index
-                  : null
-              ).filter((index) =>
-                index !== null
-              ),
-          )
-            ? 'success'
-            /* Попытки закончились? */
-            : variants[variant].attempts - attemp === 0
-              ? 'fail'
-              : 'error',
+          // isEqual(
+          //   answers,
+          //   variants[variant].options
+          //     .map((option, index) =>
+          //       option.correct
+          //         ? index
+          //         : null
+          //     ).filter((index) =>
+          //       index !== null
+          //     ),
+          // )
+          //   ? 'success'
+          //   /* Попытки закончились? */
+          //   : variants[variant].attempts - attemp === 0
+          //     ? 'fail'
+          //     : 'error',
+          'success',
           this.state.environment
         ),
         attemp: attemp + 1,
@@ -506,6 +514,11 @@ File.defaultProps = {
       points: '1',
       attempts: '1',
       question: 'Вопрос',
+      option: {
+        format: 'Вариант 1',
+        qty: 1,
+        size: 1,
+      },
       options: [{
         text: 'Вариант 1',
         image: undefined,

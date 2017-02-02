@@ -4,31 +4,40 @@ import React, {
 import {
   Icon as AntIcon,
   Button as AntButton,
-  Checkbox as AntCheckbox,
+  Upload, Icon, // Modal,
   } from 'antd';
-import { isEmpty, sample } from 'lodash/fp';
+// import { isEmpty, sample } from 'lodash/fp';
 import classNames from 'classnames';
 import styles from './styles.css';
 
+const uploadButton = (
+  <div>
+    <Icon type="plus" />
+    <div className="ant-upload-text">Upload</div>
+  </div>
+);
+
 const Preview = ({
   content,
-  storage,
+  // storage,
   showHint,
   environment: {
     hints,
     status,
     attemp,
     editing,
-    answers,
     variant,
+    fileList,
   },
   chooseAnswer,
   checkAnswers,
 }) => {
   /* Количество баллов за задание, за вычетом использованных на подсказки */
+  const current = content.variants[variant];
   const avaiblePoints = content.variants[variant].points - hints.length;
   /* Количество неиспользованных подсказок */
   const avaibleHints = content.variants[variant].hints.length - hints.length;
+  const { qty } = current.option;
 
   return (
     <div className={styles.preview}>
@@ -76,50 +85,14 @@ const Preview = ({
         </div>
       )}
       <div className={styles.options}>
-        {content.variants[variant].options.map((option, index) =>
-          <div
-            key={index}
-            className={styles.option}
-          >
-            {option.image &&
-              <div className={styles.image}>
-                <img
-                  src={storage.crops[option.image.source]
-                    || storage.images[option.image.source]
-                  }
-                  alt={option.image.text}
-                  role="presentation"
-                  width={250}
-                />
-              </div>
-            }
-            <div className={styles.answer}>
-              <div className={styles.checkbox}>
-                <AntCheckbox
-                  key={index}
-                  checked={/*
-                    В режиме редактирования показывает
-                    правильные ответы, в режиме выполнения
-                    задания - выбранные ответы */
-                    editing
-                      ? option.correct
-                      : answers.includes(index)
-                  }
-                  disabled={editing}
-                  onChange={chooseAnswer(index)}
-                />
-              </div>
-              <div className={styles.text}>
-                {option.text || '?'}
-              </div>
-              {editing && option.correct &&
-                <div className={styles.hint}>
-                  правильный ответ
-                </div>
-              }
-            </div>
-          </div>
-        )}
+        <Upload
+          listType="picture-card"
+          fileList={fileList}
+          // onPreview={this.handlePreview}
+          onChange={chooseAnswer}
+        >
+          {fileList.length >= qty ? null : uploadButton}
+        </Upload>
       </div>
       {status &&
         <div
@@ -140,34 +113,34 @@ const Preview = ({
             <div className={styles.text}>{{
               fail: 'Задание не выпонено',
               error: 'Ответ неверный, попробуйте еще раз',
-              success: 'Ответ верный',
+              success: 'Задание отправленно на проверку', //'Ответ верный',
             }[status]}
             </div>
-            {(status === 'success' || status === 'fail') &&
+            {/* (status === 'success' || status === 'fail') &&
               <div className={styles.points}>
                 Получено баллов:
                 <b>{{
                   fail: 0,
                   success: avaiblePoints,
                 }[status]}</b>
-              </div>
+              </div>*/
             }
           </div>
         </div>
       }
-      {(status === 'fail' || status === 'success') &&
+      {/* (status === 'fail' || status === 'success') &&
         <div className={styles.explanation}>
           <b>Пояснение: </b>
           {sample(content.variants[variant].explanations).text}
         </div>
-      }
+      */}
       <div className={styles.check}>
         <AntButton
           type="primary"
           onClick={checkAnswers}
           disabled={
             editing ||
-            isEmpty(answers) || /* Ответы не выбраны */
+            !fileList.length || /* Ответы не выбраны */
             status === 'fail' ||
             status === 'success'
           }
@@ -209,14 +182,14 @@ Preview.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
-  storage: PropTypes.shape({
-    images: PropTypes.objectOf(
-      PropTypes.string.isRequired,
-    ).isRequired,
-    crops: PropTypes.objectOf(
-      PropTypes.string.isRequired,
-    ).isRequired,
-  }).isRequired,
+  // storage: PropTypes.shape({
+  //   images: PropTypes.objectOf(
+  //     PropTypes.string.isRequired,
+  //   ).isRequired,
+  //   crops: PropTypes.objectOf(
+  //     PropTypes.string.isRequired,
+  //   ).isRequired,
+  // }).isRequired,
   environment: PropTypes.shape({
     hints: PropTypes.arrayOf(
       PropTypes.shape({
