@@ -20,6 +20,7 @@ const tasks = [{
     { name: 'Множественный выбор', type: 'CHECKBOX' },
     { name: 'Сортировка', type: 'SORTER' },
     { name: 'Сопоставление', type: 'MATCHER' },
+    { name: 'Загрузка файла', type: 'FILE' },
   ],
 }, {
   section: 'Математические',

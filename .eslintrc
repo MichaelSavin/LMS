@@ -84,12 +84,12 @@
     "jsx-a11y/aria-props": 1,
 
     "better/no-function-expressions": 0,
-    "better/explicit-return": 1,
-    "better/no-ifs": 1,
-    "better/no-new": 1,
+    "better/explicit-return": 0,
+    "better/no-ifs": 0,
+    "better/no-new": 0,
 
     "fp/no-rest-parameters": 2,
-    "fp/no-unused-expression": 1,
+    "fp/no-unused-expression": 0,
     "fp/no-mutating-methods": [2, {
       "allowedObjects": [
         "list",

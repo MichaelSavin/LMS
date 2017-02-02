@@ -15,6 +15,7 @@ import Tree from './Tree';
 import Crop from './Crop';
 import Card from './Card';
 import Hint from './Hint';
+import File from './File';
 import Rate from './Rate';
 import Alert from './Alert';
 import Input from './Input';
@@ -62,6 +63,7 @@ const components = { // можно использовать require()
   CAROUSEL: Carousel,
   TIMELINE: Timeline,
   CHECKBOX: Checkbox,
+  FILE: File,
   TEXTAREA: Textarea,
   SAMPLE: Sample,
   SORTER: Sorter,
@@ -91,6 +93,7 @@ const views = {
   SAMPLE: 'BLOCK',
   SORTER: 'BLOCK',
   MATCHER: 'BLOCK',
+  FILE: 'BLOCK',
   LINK: 'INLINE',
   TEX: 'INLINE',
   TAG: 'INLINE',
