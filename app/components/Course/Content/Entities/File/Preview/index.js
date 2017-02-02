@@ -86,6 +86,7 @@ const Preview = ({
       )}
       <div className={styles.options}>
         <Upload
+          accept="image/*"
           listType="picture-card"
           fileList={fileList}
           // onPreview={this.handlePreview}
@@ -168,17 +169,11 @@ Preview.propTypes = {
         points: PropTypes.string,
         attempts: PropTypes.string,
         question: PropTypes.string.isRequired,
-        options: PropTypes.arrayOf(
-          PropTypes.shape({
-            text: PropTypes.string.isRequired,
-            image: PropTypes.shape({
-              text: PropTypes.string.isRequired,
-              crop: PropTypes.object,
-              source: PropTypes.string.isRequired,
-            }),
-            correct: PropTypes.bool.isRequired,
-          }).isRequired,
-        ).isRequired,
+        option: PropTypes.shape({
+          format: PropTypes.string.isRequired,
+          qty: PropTypes.number.isRequired,
+          size: PropTypes.number.isRequired,
+        }),
       }).isRequired,
     ).isRequired,
   }).isRequired,

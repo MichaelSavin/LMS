@@ -79,23 +79,11 @@ const Editor = ({
             type="primary"
             onClick={addContent(['variants'], {
               question: 'Вопрос',
-              options: [{
-                text: 'Вариант 1',
-                image: undefined,
-                correct: false,
-              }, {
-                text: 'Вариант 2',
-                image: undefined,
-                correct: false,
-              }, {
-                text: 'Вариант 3',
-                image: undefined,
-                correct: false,
-              }, {
-                text: 'Вариант 4',
-                image: undefined,
-                correct: false,
-              }],
+              option: {
+                format: 'Изображения',
+                qty: 1,
+                size: 1,
+              },
               hints: [],
               competences: [],
               explanations: [],
@@ -530,17 +518,11 @@ Editor.propTypes = {
         points: PropTypes.string,
         attempts: PropTypes.string,
         question: PropTypes.string.isRequired,
-        options: PropTypes.arrayOf(
-          PropTypes.shape({
-            text: PropTypes.string.isRequired,
-            image: PropTypes.shape({
-              text: PropTypes.string.isRequired,
-              crop: PropTypes.object,
-              source: PropTypes.string.isRequired,
-            }),
-            correct: PropTypes.bool.isRequired,
-          }).isRequired,
-        ).isRequired,
+        option: PropTypes.shape({
+          format: PropTypes.string.isRequired,
+          qty: PropTypes.number.isRequired,
+          size: PropTypes.number.isRequired,
+        }),
       }).isRequired,
     ).isRequired,
   }).isRequired,

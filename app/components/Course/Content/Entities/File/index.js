@@ -15,7 +15,7 @@ import {
 } from 'lodash/fp';
 import { arrayMove } from 'react-sortable-hoc';
 import { Button as AntButton } from 'antd';
-import localForage from 'localforage';
+// import localForage from 'localforage';
 import classNames from 'classnames';
 import { Entity } from 'draft-js';
 import Preview from './Preview';
@@ -62,51 +62,52 @@ class File extends PureComponent {
 
   componentDidMount() {
     // Загрузка изображений в компонент
-    this.state
-      .content
-      .editor
-      .variants
-      .forEach((variant) => {
-        variant.options.forEach(
-          async (option) => {
-            if (option.image) {
-              const data = await localForage
-                .getItem(option.image.source);
-              this.storage.images[
-                option.image.source
-              ] = data;
-              if (option.image.crop) {
-                const canvas = document.createElement('canvas');
-                /* eslint-disable fp/no-mutation */
-                const pixelCrop = option.image.crop.pixels;
-                canvas.width = pixelCrop.width;
-                canvas.height = pixelCrop.height;
-                const context = canvas.getContext('2d');
-                const imageObj = new Image();
-                context.clearRect(0, 0, canvas.width, canvas.height);
-                imageObj.src = this.storage.images[option.image.source];
-                imageObj.onload = () => {
-                /* eslint-enable fp/no-mutation */
-                  context.drawImage(
-                    imageObj,
-                    pixelCrop.x,
-                    pixelCrop.y,
-                    pixelCrop.width,
-                    pixelCrop.height,
-                    0, 0,
-                    pixelCrop.width,
-                    pixelCrop.height,
-                  );
-                  const binary = canvas.toDataURL('image/jpeg', 1);
-                  this.storage.crops[option.image.source] = binary;
-                  this.forceUpdate();
-                };
-              } else {
-                this.forceUpdate();
-              }
-            }
-          });
-      });
+    // TODO понадобиться позже для вставки картинок в задания
+    // this.state
+    //   .content
+    //   .editor
+    //   .variants
+    //   .forEach((variant) => {
+    //     variant.options.forEach(
+    //       async (option) => {
+    //         if (option.image) {
+    //           const data = await localForage
+    //             .getItem(option.image.source);
+    //           this.storage.images[
+    //             option.image.source
+    //           ] = data;
+    //           if (option.image.crop) {
+    //             const canvas = document.createElement('canvas');
+    //             /* eslint-disable fp/no-mutation */
+    //             const pixelCrop = option.image.crop.pixels;
+    //             canvas.width = pixelCrop.width;
+    //             canvas.height = pixelCrop.height;
+    //             const context = canvas.getContext('2d');
+    //             const imageObj = new Image();
+    //             context.clearRect(0, 0, canvas.width, canvas.height);
+    //             imageObj.src = this.storage.images[option.image.source];
+    //             imageObj.onload = () => {
+    //             /* eslint-enable fp/no-mutation */
+    //               context.drawImage(
+    //                 imageObj,
+    //                 pixelCrop.x,
+    //                 pixelCrop.y,
+    //                 pixelCrop.width,
+    //                 pixelCrop.height,
+    //                 0, 0,
+    //                 pixelCrop.width,
+    //                 pixelCrop.height,
+    //               );
+    //               const binary = canvas.toDataURL('image/jpeg', 1);
+    //               this.storage.crops[option.image.source] = binary;
+    //               this.forceUpdate();
+    //             };
+    //           } else {
+    //             this.forceUpdate();
+    //           }
+    //         }
+    //       });
+    //   });
   }
 
   uploadImage = (location) => (data, image, crop) => {
@@ -456,17 +457,11 @@ File.propTypes = {
         points: PropTypes.string,
         attempts: PropTypes.string,
         question: PropTypes.string.isRequired,
-        options: PropTypes.arrayOf(
-          PropTypes.shape({
-            text: PropTypes.string.isRequired,
-            image: PropTypes.shape({
-              text: PropTypes.string.isRequired,
-              crop: PropTypes.object,
-              source: PropTypes.string.isRequired,
-            }),
-            correct: PropTypes.bool.isRequired,
-          }).isRequired,
-        ).isRequired,
+        option: PropTypes.shape({
+          format: PropTypes.string.isRequired,
+          qty: PropTypes.number.isRequired,
+          size: PropTypes.number.isRequired,
+        }),
         hints: PropTypes.arrayOf(
           PropTypes.shape({
             text: PropTypes.string.isRequired,
@@ -515,27 +510,10 @@ File.defaultProps = {
       attempts: '1',
       question: 'Вопрос',
       option: {
-        format: 'Вариант 1',
+        format: 'Изображения',
         qty: 1,
         size: 1,
       },
-      options: [{
-        text: 'Вариант 1',
-        image: undefined,
-        correct: true,
-      }, {
-        text: 'Вариант 2',
-        image: undefined,
-        correct: false,
-      }, {
-        text: 'Вариант 3',
-        image: undefined,
-        correct: false,
-      }, {
-        text: 'Вариант 4',
-        image: undefined,
-        correct: false,
-      }],
       hints: [{ 
         text: 'Новая подсказка' 
       }],
