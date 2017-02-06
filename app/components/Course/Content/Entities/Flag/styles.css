@@ -1,0 +1,133 @@
+.flag {
+  user-select: none;
+  min-width: 200px;
+  display: inline-block;
+  position: relative;
+  padding: 8px 48px 8px 38px;
+  color: #666;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: left;
+}
+
+.message {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.flag::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 17px solid transparent;
+  border-right: 10px solid white;
+  border-bottom: 17px solid transparent;
+}
+
+.modal {
+  display: flex;
+  align-items: center;
+}
+
+.modal:hover .button {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.button {
+  display: none;
+  transition: all 0.3s;
+  margin: 0 3px;
+  font-size: 20px;
+}
+
+.button:hover {
+  color: #57C5F7;
+  transform: scale(1.4);
+}
+
+.rounded {
+  width: 18px;
+  height: 18px;
+  display: block;
+  border-radius: 50%;
+  margin: 2px 0 0 6px;
+}
+
+.info-color {
+  background-color: #EAF8FE;
+}
+
+.error-color {
+  background-color: #FFF7E6;
+}
+
+.warning-color {
+  background-color: #FFEEE6;
+}
+
+.sucess-color {
+  background-color: #F3FAF0;
+}
+
+.anticonflag {
+  font-size: 14px;
+  position: absolute;
+  left: 16px;
+  top: 9px;
+}
+
+.anticonflagselect {
+  font-size: 18px;
+  margin: 7px 0 0 6px;
+}
+
+.anticon-check-circle {
+  color: #87D068;
+}
+
+.anticon-info-circle {
+  color: #2DB7F5;
+}
+
+.anticon-exclamation-circle {
+  color: #FA0;
+}
+
+.anticon-cross-circle {
+  color: #F50;
+}
+
+.form {
+  padding-bottom: 16px;
+  position: relative;
+}
+
+.form::after {
+  position: absolute;
+  content: '';
+  left: -16px;
+  bottom: 0;
+  width: calc(100% + 32px);
+  height: 1px;
+  background-color: #E9E9E9;
+  visibility: visible;
+}
+
+.preview {
+  position: relative;
+  padding: 16px 0;
+}
+
+.title {
+  position: absolute;
+  left: 0;
+  top: -10px;
+  padding: 1px 8px;
+  background-color: #FFF;
+}
+
