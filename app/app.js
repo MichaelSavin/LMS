@@ -4,6 +4,7 @@ import reducers from './reducers';
 import router from './routes';
 import store from './store';
 
+// test merge
 store(reducers, router);
 
 if (process.env.NODE_ENV === 'production') {
