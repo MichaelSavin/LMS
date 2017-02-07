@@ -18,6 +18,7 @@ import Hint from './Hint';
 import File from './File';
 import Rate from './Rate';
 import Alert from './Alert';
+import Flag from './Flag';
 import Input from './Input';
 import Radio from './Radio';
 import Table from './Table';
@@ -48,6 +49,7 @@ const components = { // можно использовать require()
   HINT: Hint,
   RATE: Rate,
   ALERT: Alert,
+  FLAG: Flag,
   INPUT: Input,
   RADIO: Radio,
   TABLE: Table,
@@ -76,6 +78,7 @@ const views = {
   CROP: 'BLOCK',
   HINT: 'BLOCK',
   ALERT: 'BLOCK',
+  FLAG: 'BLOCK',
   RADIO: 'BLOCK',
   TABLE: 'BLOCK',
   VIDEO: 'BLOCK',
