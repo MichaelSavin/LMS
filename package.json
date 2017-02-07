@@ -71,6 +71,7 @@
     "localforage": "1.4.3",
     "lodash": "4.17.2",
     "rc-color-picker": "1.1.0",
+    "color-space": "^1.14.7",
     "react": "15.3.2",
     "react-copy-to-clipboard": "4.2.3",
     "react-dom": "15.3.2",
