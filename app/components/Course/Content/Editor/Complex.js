@@ -311,11 +311,26 @@ class Editor extends Component {
   }
 
   duplicateBlock = (entityKey) => {
+    const { editorState } = this.state;
+    const contentState = editorState.getCurrentContent();
+    const newContent = contentState.addEntity(
+      contentState.getEntity(entityKey)
+    );
+    // TODO не понятно почему не происходит добавление addEntity, contentState остаеться прежним
+    console.log(contentState.getLastCreatedEntityKey());
+    console.log(newContent.getLastCreatedEntityKey());
+    // const newState = EditorState.push(
+    //   editorState,
+    //   newContent,
+    //   ' '
+    // );
+    // this.onChange(newState);
+
     this.onChange(AtomicBlockUtils
       .insertAtomicBlock(
         this.state.editorState,
         Entity.add(
-          Entity.get(entityKey)
+          contentState.getEntity(entityKey)
         ),
         ' '
     ));
@@ -379,6 +394,12 @@ Editor.propTypes = {
   }),
   actions: PropTypes.object, // http://stackoverflow.com/a/33427304
   content: PropTypes.object,
+};
+
+Editor.defaultProps = {
+  unit: null,
+  actions: null,
+  content: null,
 };
 
 export default Editor;
