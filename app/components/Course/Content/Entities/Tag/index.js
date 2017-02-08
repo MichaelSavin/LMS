@@ -9,7 +9,7 @@ import {
   random,
 } from 'lodash/fp';
 import {
-  Entity,
+  // Entity,
   EditorState,
   ContentState,
   convertToRaw,
@@ -59,10 +59,10 @@ class Tag extends Component {
   constructor(props) {
     super(props);
     const content = convertTextToDraftEditorState(
-      Entity
-      .get(this.props.entityKey)
-      .getData()
-      .content,
+      props.contentState
+        .getEntity(this.props.entityKey)
+        .getData()
+        .content,
       'tags'
     ) || {
       tags: [{
@@ -95,7 +95,7 @@ class Tag extends Component {
       modal: false,
       content,
     });
-    Entity.replaceData(
+    this.props.contentState.replaceEntityData(
       this.props.entityKey, {
         content: convertDraftEditorStateToText(
           content,
@@ -211,7 +211,8 @@ class Tag extends Component {
 }
 
 Tag.propTypes = {
-  children: PropTypes.array.isRequired,
+  contentState: PropTypes.instanceOf(ContentState).isRequired,
+  // children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
 };
 

@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 import { Icon as AntIcon } from 'antd';
 import {
-  Entity,
+  // Entity,
   RichUtils,
 } from 'draft-js';
 import Icon from 'components/UI/Icon';
@@ -37,7 +37,12 @@ class LinkOption extends Component {
 
   getLinkValue = (editorState) => {
     const entityKey = getSelectionEntityKey(editorState);
-    return entityKey ? Entity.get(entityKey).getData().url : '';
+    return entityKey ?
+      editorState
+        .getCurrentContent()
+        .getEntity(entityKey)
+        .getData().url :
+      '';
   }
 
   showInput = () => {
@@ -60,7 +65,8 @@ class LinkOption extends Component {
     this.context.toggleReadOnly(false);
     const { editorState, changeEditorState } = this.props;
     const { linkValue, selection } = this.state;
-    const entityKey = Entity.create('LINK', 'MUTABLE', { url: linkValue });
+    const newEntity = editorState.getCurrentContent().createEntity('LINK', 'MUTABLE', { url: linkValue });
+    const entityKey = newEntity.getLastCreatedEntityKey();
     changeEditorState(
       RichUtils.toggleLink(
         editorState,
@@ -173,6 +179,10 @@ LinkOption.propTypes = {
   inPopup: PropTypes.bool,
   editorState: PropTypes.object.isRequired,
   changeEditorState: PropTypes.func.isRequired,
+};
+
+LinkOption.defaultProps = {
+  inPopup: false,
 };
 
 LinkOption.contextTypes = {

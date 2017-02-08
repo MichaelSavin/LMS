@@ -3,7 +3,7 @@ import React, {
   PropTypes,
 } from 'react';
 import { isEqual } from 'lodash/fp';
-import { Entity } from 'draft-js';
+import { Entity, ContentState } from 'draft-js';
 import Modal from './Editor';
 import Popup from './Popup';
 import Preview from './Preview';
@@ -20,8 +20,8 @@ class TeX extends Component {
         tex: defaultTex,
       },
       location,
-    } = Entity
-      .get(this.props.entityKey)
+    } = props.contentState
+      .getEntity(this.props.entityKey)
       .getData();
     this.state = {
       location,
@@ -46,8 +46,8 @@ class TeX extends Component {
         content = {
           tex: defaultTex,
         },
-      } = Entity
-        .get(nextProps.entityKey)
+      } = nextProps.contentState
+        .getEntity(nextProps.entityKey)
         .getData();
       this.setState({
         data: {
@@ -180,8 +180,9 @@ class TeX extends Component {
 }
 
 TeX.propTypes = {
-  children: PropTypes.array.isRequired,
+  // children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
+  contentState: PropTypes.instanceOf(ContentState).isRequired,
 };
 
 TeX.contextTypes = {
