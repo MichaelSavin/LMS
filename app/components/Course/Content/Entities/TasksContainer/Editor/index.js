@@ -11,6 +11,10 @@ import {
   Popconfirm as AntPopconfirm,
 } from 'antd';
 import {
+  Editor as Draft,
+  EditorState,
+} from 'draft-js';
+import {
   SortableHandle,
   SortableElement,
   SortableContainer,
@@ -22,6 +26,7 @@ import styles from './styles.css';
 
 const Editor = ({
   content,
+  changeDraftContent,
   // storage,
   addContent,
   dragContent,
@@ -232,7 +237,7 @@ const Editor = ({
                               <Sortable.Handler />
                             </div>
                             <div className={styles.text}>
-                              <AntInput
+                              {/* <AntInput
                                 size="default"
                                 value={option.text}
                                 onChange={changeContent([
@@ -243,8 +248,22 @@ const Editor = ({
                                   'text',
                                 ])}
                                 className={classNames(
-                                  { error: errors[`variants[${variantIndex}].options[${optionIndex}].text`] }
+                                  { error:
+                                    errors[`variants[${variantIndex}].options[${optionIndex}].text`]
+                                  }
                                 )}
+                              />*/}
+                              <Draft
+                                editorState={option.editorState}
+                                onChange={changeDraftContent([
+                                  'variants',
+                                  variantIndex,
+                                  'options',
+                                  optionIndex,
+                                  'editorState',
+                                ])}
+                                // className={className}
+                                // isReadOnly={isReadOnly}
                               />
                             </div>
                             <div className={styles.image}>
@@ -581,6 +600,7 @@ const Sortable = {
 };
 
 Editor.propTypes = {
+  changeDraftContent: PropTypes.func.isRequired,
   addContent: PropTypes.func.isRequired,
   dragContent: PropTypes.func.isRequired,
   closeEditor: PropTypes.func.isRequired,
@@ -599,7 +619,7 @@ Editor.propTypes = {
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({
-            text: PropTypes.string.isRequired,
+            editorState: PropTypes.instanceOf(EditorState).isRequired,
             image: PropTypes.shape({
               text: PropTypes.string.isRequired,
               crop: PropTypes.object,
@@ -629,8 +649,8 @@ const validator = (content) => {
   /* eslint-disable */
   content.variants.forEach((variant, variantIndex) => {
     if (!variant.question) { errors[`variants[${variantIndex}].question`] = `Необходимо указать вопрос в варианте №${variantIndex + 1}`; }
-    if (!parseInt(variant.attempts, 10)) { errors[`variants[${variantIndex}].attempts`] = `Необходимо указать количество попыток в варианте №${variantIndex + 1}`; }
-    if (!parseInt(variant.points, 10)) { errors[`variants[${variantIndex}].points`] = `Необходимо указать количество баллов в варианте №${variantIndex + 1}`; }
+    // if (!parseInt(variant.attempts, 10)) { errors[`variants[${variantIndex}].attempts`] = `Необходимо указать количество попыток в варианте №${variantIndex + 1}`; }
+    // if (!parseInt(variant.points, 10)) { errors[`variants[${variantIndex}].points`] = `Необходимо указать количество баллов в варианте №${variantIndex + 1}`; }
     if (!(variant.options.length > 0)) { errors[`variants[${variantIndex}].options`] = `Необходимо добавить варианты ответов в варианте №${variantIndex + 1}`; }
     variant.options.forEach((option, optionIndex) => { if (!option.text) { errors[`variants[${variantIndex}].options[${optionIndex}].text`] = `Необходимо указать текст ответа №${optionIndex + 1} в варианте №${variantIndex + 1}`; }});
     if (!variant.options.some((option) => option.correct === true)) { errors[`variants[${variantIndex}].options.checked`] = `Необходимо выбрать правильные варианты ответов в варианте №${variantIndex + 1}`; }

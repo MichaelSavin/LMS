@@ -16,14 +16,80 @@ import {
   dropRight,
   difference,
 } from 'lodash/fp';
+import {
+  Entity,
+  EditorState,
+  convertToRaw,
+  convertFromRaw,
+} from 'draft-js';
 import { arrayMove } from 'react-sortable-hoc';
 import { Button as AntButton } from 'antd';
 import localForage from 'localforage';
 import classNames from 'classnames';
-import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
+import { entitiesDecorator } from '../../Entities';
 import styles from './styles.css';
+
+const convertRawToEditorState = (data) => {
+  console.log(data);
+  const newData = {
+    ...data,
+    variants: data.variants.map((variant) => ({
+      ...variant,
+      options: variant.options.map((option) => ({
+        ...option,
+        editorState: option.editorState instanceof EditorState ?
+          option.editorState :
+          EditorState.createWithContent(
+            convertFromRaw(option.editorState),
+            entitiesDecorator
+          ),
+      })),
+    })),
+  };
+  console.log(newData);
+  return newData;
+};
+
+const convertDraftEditorStateToRaw = (content) => {
+  console.log(content);
+  const newContent = {
+    ...content,
+    variants: content.variants.map((variant) => ({
+      ...variant,
+      options: variant.options.map((option) => ({
+        ...option,
+        editorState: convertToRaw(option.editorState.getCurrentContent()),
+      })),
+    })),
+  };
+  console.log(newContent);
+  return newContent;
+  // ...content,
+  // data: {
+  //   rows: content.data.rows.map((row) => (
+  //     Object.keys(row).reduce((newRow, key) => (
+  //       row[key] instanceof EditorState ? {
+  //         ...newRow,
+  //         [key]: convertToRaw(
+  //           row[key]
+  //             .getCurrentContent()
+  //         ),
+  //       } : newRow
+  //     ), { ...row })
+  //   )),
+  //   columns: content.data.columns.map((column) => ({
+  //     ...column,
+  //     title: null,
+  //     render: null,
+  //     content: convertToRaw(
+  //       column.content
+  //         .getCurrentContent()
+  //     ),
+  //   })),
+  // },
+};
 
 class TasksContainer extends PureComponent {
 
@@ -35,8 +101,8 @@ class TasksContainer extends PureComponent {
     } = props;
     this.state = {
       content: {
-        editor: content,
-        component: content,
+        editor: convertRawToEditorState(this.props.content),
+        component: convertRawToEditorState(this.props.content),
       },
       /* Показ случайного варианта задания при загрузке*/
       environment: set(
@@ -191,6 +257,18 @@ class TasksContainer extends PureComponent {
     }, this.addStateToHistory);
   }
 
+  changeDraftContent = (location) => (editorState) => {
+    this.setState({
+      content: set([
+        'editor',
+        ...location,
+      ],
+        editorState,
+        this.state.content
+      ),
+    }, this.addStateToHistory);
+  }
+
   addStateToHistory = () => {
     /* eslint-disable */
     this.history.present = this.state;
@@ -254,7 +332,7 @@ class TasksContainer extends PureComponent {
     } = this.state;
     Entity.replaceData(
       this.props.entityKey, {
-        content: content.editor,
+        content: convertDraftEditorStateToRaw(content.editor),
       }
     );
     this.setState({
@@ -388,19 +466,20 @@ class TasksContainer extends PureComponent {
         />
         {environment.editing &&
           <Editor
-            storage={this.storage}
-            content={content.editor}
             addContent={this.addContent}
-            environment={environment}
-            dragContent={this.dragContent}
+            changeContent={this.changeContent}
+            changeDraftContent={this.changeDraftContent}
+            changeVariant={this.changeVariant}
             closeEditor={this.closeEditor}
-            uploadImage={this.uploadImage}
-            saveContent={this.saveContent}
-            undoHistory={this.undoHistory}
+            content={content.editor}
+            dragContent={this.dragContent}
+            environment={environment}
             redoHistory={this.redoHistory}
             removeContent={this.removeContent}
-            changeContent={this.changeContent}
-            changeVariant={this.changeVariant}
+            saveContent={this.saveContent}
+            storage={this.storage}
+            undoHistory={this.undoHistory}
+            uploadImage={this.uploadImage}
           />
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
@@ -450,6 +529,14 @@ TasksContainer.propTypes = {
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({
+            editorState: PropTypes.oneOfType([
+              PropTypes.instanceOf(EditorState),
+              /* https://facebook.github.io/draft-js/docs/api-reference-data-conversion.html#converttoraw */
+              PropTypes.shape({
+                blocks: PropTypes.arrayOf(PropTypes.object.isRequired),
+                entityMap: PropTypes.object.isRequired,
+              }).isRequired,
+            ]).isRequired,
             text: PropTypes.string.isRequired,
             image: PropTypes.shape({
               text: PropTypes.string.isRequired,
@@ -499,39 +586,46 @@ TasksContainer.propTypes = {
   }).isRequired,
 };
 
+const emptyEditorStateRaw = convertToRaw(
+  EditorState.createEmpty()
+    .getCurrentContent()
+);
+
 TasksContainer.defaultProps = {
   /* Контент компонента */
   content: {
     variants: [{
-      points: '1',
-      attempts: '1',
-      question: 'Вопрос',
+      question: 'Вопрос один на всех',
+      hints: [{
+        text: 'Новая подсказка'
+      }],
+      competences: [{
+        text: 'Новая компетенция'
+      }],
+      explanations: [{
+        text: 'Новое объяснение'
+      }],
       options: [{
+        id: `${random(0, 999)}`,
+        editorState: emptyEditorStateRaw,
         text: 'Вариант 1',
-        image: undefined,
         correct: true,
       }, {
+        id: `${random(0, 999)}`,
+        editorState: emptyEditorStateRaw,
         text: 'Вариант 2',
-        image: undefined,
         correct: false,
       }, {
+        id: `${random(0, 999)}`,
+        editorState: emptyEditorStateRaw,
         text: 'Вариант 3',
-        image: undefined,
         correct: false,
       }, {
+        id: `${random(0, 999)}`,
+        editorState: emptyEditorStateRaw,
         text: 'Вариант 4',
-        image: undefined,
         correct: false,
-      }],
-      hints: [{ 
-        text: 'Новая подсказка' 
-      }],
-      competences: [{ 
-        text: 'Новая компетенция' 
-      }],
-      explanations: [{ 
-        text: 'Новое объяснение' 
-      }],
+      }]
     }],
   },
   /* Cостояние компонента */

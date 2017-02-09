@@ -4,31 +4,38 @@ import React, {
 import {
   Icon as AntIcon,
   Button as AntButton,
-  Checkbox as AntCheckbox,
-  } from 'antd';
+  Collapse,
+} from 'antd';
+import {
+  Editor,
+  EditorState,
+} from 'draft-js';
 import { isEmpty, sample } from 'lodash/fp';
 import classNames from 'classnames';
 import styles from './styles.css';
 
-const Preview = ({
-  content,
-  storage,
-  showHint,
-  environment: {
-    hints,
-    status,
-    attemp,
-    editing,
-    answers,
-    variant,
-  },
-  chooseAnswer,
-  checkAnswers,
-}) => {
+const Preview = (props) => {
+  // console.log(props);
+  const {
+    content,
+    // storage,
+    // showHint,
+    environment: {
+      // hints,
+      status,
+      attemp,
+      editing,
+      answers,
+      variant,
+    },
+    // chooseAnswer,
+    checkAnswers,
+  } = props;
+
   /* Количество баллов за задание, за вычетом использованных на подсказки */
-  const avaiblePoints = content.variants[variant].points - hints.length;
+  const avaiblePoints = 2; // content.variants[variant].points - hints.length;
   /* Количество неиспользованных подсказок */
-  const avaibleHints = content.variants[variant].hints.length - hints.length;
+  //  const avaibleHints = 2; // content.variants[variant].hints.length - hints.length;
 
   return (
     <div className={styles.preview}>
@@ -45,81 +52,25 @@ const Preview = ({
           </div>
         </div>
       </div>
-      { status !== 'fail' &&
-        status !== 'success' &&
-        avaibleHints > 0 &&
-        avaiblePoints > 1 &&
-          <div
-            onClick={showHint(variant)}
-            className={styles.showHint}
-          >
-            <div className={styles.text}>
-              Показать подсказку
-            </div>
-            <div className={styles.count}>
-              Доступно подсказок: <b>{avaibleHints}</b>
-            </div>
-            <div className={styles.info}>
-              за использование снимается 1 балл
-            </div>
-          </div>
-      }
       <div className={styles.question}>
         {content.variants[variant].question || '?'}
       </div>
-      {hints.map((hint, index) =>
-        <div
-          key={index}
-          className={styles.hint}
-        >
-          {hint.text}
-        </div>
-      )}
       <div className={styles.options}>
-        {content.variants[variant].options.map((option, index) =>
-          <div
-            key={index}
-            className={styles.option}
-          >
-            {option.image &&
-              <div className={styles.image}>
-                <img
-                  src={storage.crops[option.image.source]
-                    || storage.images[option.image.source]
-                  }
-                  alt={option.image.text}
-                  role="presentation"
-                  width={250}
-                />
-              </div>
-            }
-            <div className={styles.answer}>
-              <div className={styles.checkbox}>
-                <AntCheckbox
-                  key={index}
-                  checked={/*
-                    В режиме редактирования показывает
-                    правильные ответы, в режиме выполнения
-                    задания - выбранные ответы */
-                    editing
-                      ? option.correct
-                      : answers.includes(index)
-                  }
-                  disabled={editing}
-                  onChange={chooseAnswer(index)}
-                />
-              </div>
-              <div className={styles.text}>
-                {option.text || '?'}
-              </div>
-              {editing && option.correct &&
-                <div className={styles.hint}>
-                  правильный ответ
-                </div>
-              }
-            </div>
-          </div>
-        )}
+        <Collapse>
+          {content.variants[variant].options.map((option, index) => (
+            <Collapse.Panel
+              key={index}
+            >
+              <Editor
+                readOnly
+                editorState={option.editorState}
+                // onChange={onChange}
+                // className={className}
+                // isReadOnly={isReadOnly}
+              />
+            </Collapse.Panel>)
+          )}
+        </Collapse>
       </div>
       {status &&
         <div
@@ -186,17 +137,16 @@ const Preview = ({
 };
 
 Preview.propTypes = {
-  showHint: PropTypes.func.isRequired,
-  chooseAnswer: PropTypes.func.isRequired,
+  // showHint: PropTypes.func.isRequired,
+  // chooseAnswer: PropTypes.func.isRequired,
   checkAnswers: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
-        points: PropTypes.string,
-        attempts: PropTypes.string,
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({
+            editorState: PropTypes.instanceOf(EditorState).isRequired,
             text: PropTypes.string.isRequired,
             image: PropTypes.shape({
               text: PropTypes.string.isRequired,
@@ -209,14 +159,14 @@ Preview.propTypes = {
       }).isRequired,
     ).isRequired,
   }).isRequired,
-  storage: PropTypes.shape({
-    images: PropTypes.objectOf(
-      PropTypes.string.isRequired,
-    ).isRequired,
-    crops: PropTypes.objectOf(
-      PropTypes.string.isRequired,
-    ).isRequired,
-  }).isRequired,
+  // storage: PropTypes.shape({
+  //   images: PropTypes.objectOf(
+  //     PropTypes.string.isRequired,
+  //   ).isRequired,
+  //   crops: PropTypes.objectOf(
+  //     PropTypes.string.isRequired,
+  //   ).isRequired,
+  // }).isRequired,
   environment: PropTypes.shape({
     hints: PropTypes.arrayOf(
       PropTypes.shape({
