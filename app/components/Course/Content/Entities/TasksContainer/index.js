@@ -170,6 +170,13 @@ class TasksContainer extends PureComponent {
           status: readyPanel + 2 >= component.variants[variant].options.length ? 'success' : null,
         },
       });
+    } else if (status === 'fail') {
+      this.setState({
+        environment: {
+          ...this.state.environment,
+          status,
+        },
+      });
     }
   }
 
@@ -590,12 +597,12 @@ TasksContainer.propTypes = {
         text: PropTypes.string.isRequired,
       }),
     ).isRequired,
-    /*status: PropTypes.oneOf([
+    status: PropTypes.oneOf([
       null,
       'fail',
       'error',
       'success',
-    ]).isRequired,*/
+    ]).isRequired,
     attemp: PropTypes.number.isRequired,
     answers: PropTypes.arrayOf(
       PropTypes.number,
