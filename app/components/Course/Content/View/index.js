@@ -38,7 +38,7 @@ class View extends Component { // HMR
     const { content } = this.props;
     return (
       <div className={styles.view}>
-        <div className={styles.selectors}>
+        {!this.context.isPlayer && <div className={styles.selectors}>
           <AntRadio.Group
             onChange={this.changeViewport}
             defaultValue="desktop"
@@ -59,7 +59,7 @@ class View extends Component { // HMR
               </AntRadio.Button>
           )}
           </AntRadio.Group>
-        </div>
+        </div>}
         <div
           className={classNames(
             styles.viewport,
@@ -89,7 +89,14 @@ class View extends Component { // HMR
 }
 
 View.propTypes = {
-  content: PropTypes.object, // http://stackoverflow.com/a/33427304
+  // http://stackoverflow.com/a/33427304
+  content: PropTypes.object, // eslint-disable-line react/require-default-props
 };
+
+View.contextTypes = {
+  toggleReadOnly: PropTypes.func.isRequired,
+  isPlayer: PropTypes.bool,
+};
+
 
 export default View;
