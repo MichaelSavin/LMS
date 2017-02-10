@@ -17,7 +17,8 @@ import {
   difference,
 } from 'lodash/fp';
 import {
-  Entity,
+  ContentState,
+  // Entity,
   EditorState,
   convertToRaw,
   convertFromRaw,
@@ -30,12 +31,12 @@ import Preview from './Preview';
 import Editor from './Editor';
 import { entitiesDecorator } from '../../Entities';
 import styles from './styles.css';
+import DefaultVariant from './defaults';
 
-const convertRawToEditorState = (data) => {
-  console.log(data);
-  const newData = {
-    ...data,
-    variants: data.variants.map((variant) => ({
+const convertRawToEditorState = (content) => {
+  const newContent = {
+    ...content,
+    variants: content.variants.map((variant) => ({
       ...variant,
       options: variant.options.map((option) => ({
         ...option,
@@ -48,12 +49,10 @@ const convertRawToEditorState = (data) => {
       })),
     })),
   };
-  console.log(newData);
-  return newData;
+  return newContent;
 };
 
 const convertDraftEditorStateToRaw = (content) => {
-  console.log(content);
   const newContent = {
     ...content,
     variants: content.variants.map((variant) => ({
@@ -64,31 +63,7 @@ const convertDraftEditorStateToRaw = (content) => {
       })),
     })),
   };
-  console.log(newContent);
   return newContent;
-  // ...content,
-  // data: {
-  //   rows: content.data.rows.map((row) => (
-  //     Object.keys(row).reduce((newRow, key) => (
-  //       row[key] instanceof EditorState ? {
-  //         ...newRow,
-  //         [key]: convertToRaw(
-  //           row[key]
-  //             .getCurrentContent()
-  //         ),
-  //       } : newRow
-  //     ), { ...row })
-  //   )),
-  //   columns: content.data.columns.map((column) => ({
-  //     ...column,
-  //     title: null,
-  //     render: null,
-  //     content: convertToRaw(
-  //       column.content
-  //         .getCurrentContent()
-  //     ),
-  //   })),
-  // },
 };
 
 class TasksContainer extends PureComponent {
@@ -105,11 +80,11 @@ class TasksContainer extends PureComponent {
         component: convertRawToEditorState(this.props.content),
       },
       /* Показ случайного варианта задания при загрузке*/
-      environment: set(
-        ['variant'],
-        `${random(0, content.variants.length - 1)}`,
-        environment
-      ),
+      environment: {
+        ...environment,
+        /* Показ случайного варианта задания при загрузке*/
+        variant: `${random(0, content.variants.length - 1)}`,
+      },
     };
     this.storage = {
       crops: {},
@@ -119,6 +94,12 @@ class TasksContainer extends PureComponent {
       past: [],
       future: [],
       present: undefined,
+    };
+  }
+
+  getChildContext() {
+    return {
+      answerTasksContainer: this.answerTasksContainer,
     };
   }
 
@@ -171,6 +152,28 @@ class TasksContainer extends PureComponent {
       });
   }
 
+  answerTasksContainer = (status) => {
+    const {
+      environment: {
+        readyPanel,
+        variant,
+      },
+      content: {
+        component,
+      },
+    } = this.state;
+    if (status === 'success') {
+      this.setState({
+        environment: {
+          ...this.state.environment,
+          readyPanel: readyPanel + 1,
+          activePanel: `${readyPanel + 2}`,
+          status: readyPanel + 2 >= component.variants[variant].options.length ? 'success' : null,
+        },
+      });
+    }
+  }
+
   uploadImage = (location) => (data, image, crop) => {
     this.storage.images = {
       ...this.storage.images,
@@ -217,7 +220,7 @@ class TasksContainer extends PureComponent {
       content: newContent,
       /* Переключение на предыдущий таб при удалении варианта */
       environment: set(
-        ['editor', 'variant'],
+        ['variant'],
         `${newContent.editor.variants[environment.variant]
           ? environment.variant
           : newContent.editor.variants.length - 1
@@ -312,7 +315,7 @@ class TasksContainer extends PureComponent {
         true,
         environment
       ),
-    }, this.context.toggleReadOnly);
+    }, () => this.context.toggleReadOnly(true));
   }
 
   closeEditor = () => {
@@ -322,7 +325,7 @@ class TasksContainer extends PureComponent {
         false,
         this.state.environment
       ),
-    }, this.context.toggleReadOnly);
+    }, () => this.context.toggleReadOnly(false));
   }
 
   saveContent = () => {
@@ -330,7 +333,7 @@ class TasksContainer extends PureComponent {
       content,
       environment,
     } = this.state;
-    Entity.replaceData(
+    this.props.contentState.replaceEntityData(
       this.props.entityKey, {
         content: convertDraftEditorStateToRaw(content.editor),
       }
@@ -346,7 +349,7 @@ class TasksContainer extends PureComponent {
         false,
         environment
       ),
-    }, this.context.toggleReadOnly);
+    }, () => this.context.toggleReadOnly(false));
   }
 
   showHint = (variant) => () => {
@@ -396,6 +399,21 @@ class TasksContainer extends PureComponent {
           : pull(index, answers),
         this.state.environment
       ),
+    });
+  }
+
+  changePanel = (panelKey) => {
+    console.log(panelKey);
+    const { readyPanel, activePanel } = this.state.environment;
+    this.setState({
+      environment: {
+        ...this.state.environment,
+        activePanel: !panelKey || activePanel === panelKey ?
+          '' :
+          +panelKey <= readyPanel ?
+            panelKey :
+            `${readyPanel + 1}`,
+      },
     });
   }
 
@@ -463,6 +481,7 @@ class TasksContainer extends PureComponent {
           environment={environment}
           chooseAnswer={this.chooseAnswer}
           checkAnswers={this.checkAnswers}
+          changePanel={this.changePanel}
         />
         {environment.editing &&
           <Editor
@@ -483,7 +502,7 @@ class TasksContainer extends PureComponent {
           />
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
-        {!environment.editing &&
+        {(!environment.editing && !this.context.isPlayer) &&
           /* eslint-disable */
           // ? <div className={styles.actions}>
           //     <AntButton
@@ -520,6 +539,7 @@ class TasksContainer extends PureComponent {
 }
 
 TasksContainer.propTypes = {
+  contentState: PropTypes.instanceOf(ContentState).isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
@@ -571,12 +591,12 @@ TasksContainer.propTypes = {
         text: PropTypes.string.isRequired,
       }),
     ).isRequired,
-    status: PropTypes.oneOf([
+    /*status: PropTypes.oneOf([
       null,
       'fail',
       'error',
       'success',
-    ]).isRequired,
+    ]).isRequired,*/
     attemp: PropTypes.number.isRequired,
     answers: PropTypes.arrayOf(
       PropTypes.number,
@@ -594,39 +614,7 @@ const emptyEditorStateRaw = convertToRaw(
 TasksContainer.defaultProps = {
   /* Контент компонента */
   content: {
-    variants: [{
-      question: 'Вопрос один на всех',
-      hints: [{
-        text: 'Новая подсказка'
-      }],
-      competences: [{
-        text: 'Новая компетенция'
-      }],
-      explanations: [{
-        text: 'Новое объяснение'
-      }],
-      options: [{
-        id: `${random(0, 999)}`,
-        editorState: emptyEditorStateRaw,
-        text: 'Вариант 1',
-        correct: true,
-      }, {
-        id: `${random(0, 999)}`,
-        editorState: emptyEditorStateRaw,
-        text: 'Вариант 2',
-        correct: false,
-      }, {
-        id: `${random(0, 999)}`,
-        editorState: emptyEditorStateRaw,
-        text: 'Вариант 3',
-        correct: false,
-      }, {
-        id: `${random(0, 999)}`,
-        editorState: emptyEditorStateRaw,
-        text: 'Вариант 4',
-        correct: false,
-      }]
-    }],
+    variants: [new DefaultVariant('raw')],
   },
   /* Cостояние компонента */
   environment: {
@@ -636,11 +624,18 @@ TasksContainer.defaultProps = {
     answers: [],    // Выбранные ответы
     variant: '0',   // Первый вариант задания, меняется на случайный в конструкторе
     editing: false, // Окно редактора закрыто
+    readyPanel: -1, // Номер разрешенного вопроса
+    activePanel: '', // Выбранный вопрос
   },
 };
 
 TasksContainer.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
+  isPlayer: PropTypes.bool,
+};
+
+TasksContainer.childContextTypes = {
+  answerTasksContainer: PropTypes.func.isRequired,
 };
 
 export default TasksContainer;

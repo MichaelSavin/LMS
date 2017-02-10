@@ -258,19 +258,11 @@ class Editor extends Component {
     // Для сохранения изменений добавил установку фокуса
     // чтобы работало надо что-то поменять в редакторе.
     // TODO нужно найти способо сохранять автоматически
-    if (option !== undefined) {
-      this.setState({
-        editorState: option
-          ? editorState
-          : EditorState.moveFocusToEnd(editorState),
-        isReadOnly: option,
-      });
-    }
     this.setState({
-      editorState: isReadOnly
-        ? EditorState.moveFocusToEnd(editorState)
-        : editorState,
-      isReadOnly: !isReadOnly,
+      editorState: option
+        ? editorState
+        : EditorState.moveFocusToEnd(editorState),
+      isReadOnly: option !== undefined ? option : !isReadOnly,
     });
   }
 

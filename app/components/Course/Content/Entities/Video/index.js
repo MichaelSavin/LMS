@@ -17,6 +17,36 @@ class Video extends Component {
     };
   }
 
+  onPlay = () => {
+    this.setState({
+      playing: true,
+    });
+  }
+
+  onPause = () => {
+    this.setState({
+      playing: false,
+    });
+  }
+
+  onEnded = () => {
+    this.setState({
+      playing: false,
+    });
+  }
+
+  playTogle = () => {
+    this.setState({
+      playing: !this.state.playing,
+    });
+  }
+
+  readTogle = () => {
+    this.setState({
+      isTextShowen: !this.state.isTextShowen,
+    });
+  }
+
   editContent = (event) => {
     event.preventDefault();
     this.setState({
@@ -55,18 +85,6 @@ class Video extends Component {
         ...this.state.promt,
         [type]: e.target.value,
       },
-    });
-  }
-
-  readTogle = () => {
-    this.setState({
-      isTextShowen: !this.state.isTextShowen,
-    });
-  }
-
-  playTogle = () => {
-    this.setState({
-      playing: !this.state.playing,
     });
   }
 
@@ -122,6 +140,9 @@ class Video extends Component {
             controls={false}
             style={{ position: 'relative' }}
             playing={playing}
+            onPlay={this.onPlay}
+            onPause={this.onPause}
+            onEnded={this.onEnded}
           />
         </div>
         <div className={styles.controls}>

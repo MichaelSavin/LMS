@@ -17,7 +17,7 @@ import { arrayMove } from 'react-sortable-hoc';
 import { Button as AntButton } from 'antd';
 import localForage from 'localforage';
 import classNames from 'classnames';
-import { Entity } from 'draft-js';
+import { ContentState } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
 import styles from './styles.css';
@@ -258,7 +258,7 @@ class Radio extends PureComponent {
         true,
         environment
       ),
-    }, this.context.toggleReadOnly);
+    }, () => this.context.toggleReadOnly(true));
   }
 
   closeEditor = () => {
@@ -268,15 +268,18 @@ class Radio extends PureComponent {
         false,
         this.state.environment
       ),
-    }, this.context.toggleReadOnly);
+    }, () => this.context.toggleReadOnly(false));
   }
 
   saveContent = () => {
+    console.log(this.props);
+    console.log(this.state);
+
     const {
       content,
       environment,
     } = this.state;
-    Entity.replaceData(
+    this.props.contentState.replaceEntityData(
       this.props.entityKey, {
         content: content.editor,
       }
@@ -370,6 +373,8 @@ class Radio extends PureComponent {
         ),
         attemp: attemp + 1,
       },
+    }, () => {
+      this.context.answerTasksContainer(this.state.environment.status);
     });
   }
 
@@ -434,6 +439,7 @@ class Radio extends PureComponent {
 }
 
 Radio.propTypes = {
+  contentState: PropTypes.instanceOf(ContentState).isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
@@ -544,6 +550,7 @@ Radio.defaultProps = {
 
 Radio.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
+  answerTasksContainer: PropTypes.func,
 };
 
 export default Radio;

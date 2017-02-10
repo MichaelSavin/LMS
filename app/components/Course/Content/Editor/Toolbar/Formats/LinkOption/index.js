@@ -8,10 +8,19 @@ import {
   RichUtils,
 } from 'draft-js';
 import Icon from 'components/UI/Icon';
-import { getSelectionEntityKey } from 'utils';
 
 import styles from './styles.css';
 import Option from '../Option';
+
+const getSelectionEntityKey = (editorState) => {
+  const selectionState = editorState.getSelection();
+  const start = selectionState.getStartOffset();
+  const blokKey = selectionState.getStartKey();
+  return editorState
+    .getCurrentContent()
+    .getBlockForKey(blokKey)
+    .getEntityAt(start);
+};
 
 class LinkOption extends Component {
   constructor(props) {

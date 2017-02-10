@@ -134,11 +134,6 @@ const entitiesDecorator = new CompositeDecorator(
     }))
 );
 
-const blockRenderer = (block) =>
-  block.getType() === 'atomic'
-    ? { component: Block, editable: false }
-    : undefined;
-
 const Block = ({ block, contentState }) => { // eslint-disable-line react/prop-types
   const entityKey = block.getEntityAt(0);
   const blockKey = block.getKey();
@@ -150,10 +145,16 @@ const Block = ({ block, contentState }) => { // eslint-disable-line react/prop-t
       ...entity.getData(),
       entityKey,
       blockKey,
+      contentState,
     },
     null
   );
 };
+
+const blockRenderer = (block) =>
+  block.getType() === 'atomic'
+    ? { component: Block, editable: false }
+    : undefined;
 
 const addEOLtoInlineEntity = (editorState, block) => { // REFACTORING
   const blockKey = block.key;

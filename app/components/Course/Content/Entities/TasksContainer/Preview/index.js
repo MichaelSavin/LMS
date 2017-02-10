@@ -3,15 +3,15 @@ import React, {
 } from 'react';
 import {
   Icon as AntIcon,
-  Button as AntButton,
   Collapse,
 } from 'antd';
 import {
-  Editor,
+  Editor as Draft,
   EditorState,
 } from 'draft-js';
-import { isEmpty, sample } from 'lodash/fp';
+import { sample } from 'lodash/fp';
 import classNames from 'classnames';
+import { blockRenderer } from '../../../Entities';
 import styles from './styles.css';
 
 const Preview = (props) => {
@@ -21,19 +21,18 @@ const Preview = (props) => {
     // storage,
     // showHint,
     environment: {
-      // hints,
+      hints,
       status,
-      attemp,
-      editing,
-      answers,
+      // attemp,
+      // editing,
       variant,
+      activePanel,
     },
-    // chooseAnswer,
-    checkAnswers,
+    changePanel,
   } = props;
 
   /* Количество баллов за задание, за вычетом использованных на подсказки */
-  const avaiblePoints = 2; // content.variants[variant].points - hints.length;
+  const avaiblePoints = content.variants[variant].points - hints.length;
   /* Количество неиспользованных подсказок */
   //  const avaibleHints = 2; // content.variants[variant].hints.length - hints.length;
 
@@ -56,13 +55,18 @@ const Preview = (props) => {
         {content.variants[variant].question || '?'}
       </div>
       <div className={styles.options}>
-        <Collapse>
+        <Collapse
+          accordion
+          activeKey={activePanel}
+          onChange={changePanel}
+        >
           {content.variants[variant].options.map((option, index) => (
             <Collapse.Panel
               key={index}
             >
-              <Editor
+              <Draft
                 readOnly
+                blockRendererFn={blockRenderer}
                 editorState={option.editorState}
                 // onChange={onChange}
                 // className={className}
@@ -112,13 +116,13 @@ const Preview = (props) => {
           {sample(content.variants[variant].explanations).text}
         </div>
       }
-      <div className={styles.check}>
+      {/* <div className={styles.check}>
         <AntButton
           type="primary"
           onClick={checkAnswers}
           disabled={
             editing ||
-            isEmpty(answers) || /* Ответы не выбраны */
+            isEmpty(answers) || // Ответы не выбраны
             status === 'fail' ||
             status === 'success'
           }
@@ -131,15 +135,15 @@ const Preview = (props) => {
             }
           </div>
         </AntButton>
-      </div>
+      </div>*/}
     </div>
   );
 };
 
 Preview.propTypes = {
   // showHint: PropTypes.func.isRequired,
-  // chooseAnswer: PropTypes.func.isRequired,
-  checkAnswers: PropTypes.func.isRequired,
+  changePanel: PropTypes.func.isRequired,
+  // checkAnswers: PropTypes.func.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
       PropTypes.shape({
@@ -173,18 +177,20 @@ Preview.propTypes = {
         text: PropTypes.string.isRequired,
       }),
     ).isRequired,
-    status: PropTypes.oneOf([
+    /* status: PropTypes.oneOf([
       null,
       'fail',
       'error',
       'success',
-    ]).isRequired,
+    ]).isRequired,*/
     attemp: PropTypes.number.isRequired,
     answers: PropTypes.arrayOf(
       PropTypes.number,
     ).isRequired,
     variant: PropTypes.string.isRequired,
     editing: PropTypes.bool.isRequired,
+    readyPanel: PropTypes.number.isRequired,
+    activePanel: PropTypes.string.isRequired,
   }).isRequired,
 };
 

@@ -4,6 +4,15 @@
   padding-top: 0;
   background-color: #F9F9F9;
 
+  .task {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .draft {
+    margin: 10px 0;
+  }
+
   & .title {
     width: 103%;
     color: white;
