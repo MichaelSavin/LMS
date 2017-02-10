@@ -28,6 +28,9 @@
 
   & .viewport {
     width: 100%;
+    min-height: 100vh;
+    padding-top: 94.22px;
+    margin-top: -94.22px;
     border-width: 0 10px 10px;
     border-style: solid;
     border-color: #EEE;
