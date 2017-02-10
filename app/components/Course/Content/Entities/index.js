@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  // Entity,
   Modifier,
   EditorState,
   SelectionState,

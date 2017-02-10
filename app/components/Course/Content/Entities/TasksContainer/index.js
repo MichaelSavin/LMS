@@ -18,7 +18,6 @@ import {
 } from 'lodash/fp';
 import {
   ContentState,
-  // Entity,
   EditorState,
   convertToRaw,
   convertFromRaw,

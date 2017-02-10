@@ -9,7 +9,6 @@ import {
   random,
 } from 'lodash/fp';
 import {
-  // Entity,
   EditorState,
   ContentState,
   convertToRaw,
