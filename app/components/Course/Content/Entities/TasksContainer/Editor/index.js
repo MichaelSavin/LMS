@@ -26,7 +26,7 @@ import classNames from 'classnames';
 // import Uploader from 'components/UI/Uploader';
 import Tasks from 'components/Course/Content/Editor/Toolbar/Tasks';
 import { insertEntity, blockRenderer } from '../../../Entities';
-import DefaultVariant from '../defaults';
+import DefaultVariant, { newOption } from '../defaults';
 
 import styles from './styles.css';
 
@@ -208,68 +208,78 @@ const Editor = ({
                       ])}
                       useDragHandle
                     >
-                      {variant.options.map((
-                        option, optionIndex
-                      ) =>
-                        <div
-                          key={optionIndex}
-                          className={styles.option}
-                        >
-                          <Sortable.Item index={optionIndex}>
-                            <div className={styles.drag}>
-                              <Sortable.Handler />
+                      {variant.options.map((option, optionIndex) => (
+                        <Sortable.Item index={optionIndex} key={optionIndex}>
+                          <div className={styles.drag}>
+                            <Sortable.Handler />
+                          </div>
+                          <div className={styles.task}>
+                            <div className={styles.taskTitle}>
+                              <AntInput
+                                size="default"
+                                placeholder="Заголовок задания"
+                                value={option.taskTitle}
+                                onChange={changeContent([
+                                  'variants',
+                                  variantIndex,
+                                  'options',
+                                  optionIndex,
+                                  'taskTitle',
+                                ])}
+                                className={classNames(
+                                  { error: errors[`variants.${variantIndex}.options.${optionIndex}.taskTitle`] }
+                                )}
+                              />
                             </div>
-                            <div className={styles.task}>
-                              <Tasks
+                            <Tasks
+                              editorState={option.editorState}
+                              insertEntity={insertEntity}
+                              changeEditorState={changeDraftContent([
+                                'variants',
+                                variantIndex,
+                                'options',
+                                optionIndex,
+                                'editorState',
+                              ])}
+                            />
+                            <div className={styles.draft}>
+                              <Draft
+                                readOnly
+                                blockRendererFn={blockRenderer}
+                                customStyleMap={customStyleMap}
                                 editorState={option.editorState}
-                                insertEntity={insertEntity}
-                                changeEditorState={changeDraftContent([
+                                onChange={changeDraftContent([
                                   'variants',
                                   variantIndex,
                                   'options',
                                   optionIndex,
                                   'editorState',
                                 ])}
+                                // className={className}
+                                // isReadOnly={isReadOnly}
                               />
-                              <div className={styles.draft}>
-                                <Draft
-                                  readOnly
-                                  blockRendererFn={blockRenderer}
-                                  customStyleMap={customStyleMap}
-                                  editorState={option.editorState}
-                                  onChange={changeDraftContent([
-                                    'variants',
-                                    variantIndex,
-                                    'options',
-                                    optionIndex,
-                                    'editorState',
-                                  ])}
-                                  // className={className}
-                                  // isReadOnly={isReadOnly}
-                                />
-                              </div>
                             </div>
-                            <div className={styles.remove}>
-                              <AntPopconfirm
-                                title="Удалить вариант ответа?"
-                                okText="Да"
-                                onConfirm={removeContent([
-                                  'variants',
-                                  variantIndex,
-                                  'options',
-                                  optionIndex,
-                                ])}
-                                cancelText="Нет"
-                              >
-                                <AntIcon
-                                  type="close"
-                                  className={styles.icon}
-                                />
-                              </AntPopconfirm>
-                            </div>
-                          </Sortable.Item>
-                        </div>
-                      )}
+                          </div>
+                          <div className={styles.remove}>
+                            <AntPopconfirm
+                              title="Удалить вариант ответа?"
+                              okText="Да"
+                              onConfirm={removeContent([
+                                'variants',
+                                variantIndex,
+                                'options',
+                                optionIndex,
+                              ])}
+                              cancelText="Нет"
+                            >
+                              <AntIcon
+                                type="close"
+                                className={styles.icon}
+                              />
+                            </AntPopconfirm>
+                          </div>
+                        </Sortable.Item>
+                      ))}
                       <AntButton
                         size="small"
                         type="primary"
@@ -277,11 +287,11 @@ const Editor = ({
                           'variants',
                           variantIndex,
                           'options',
-                        ], {
+                        ], newOption()/* {
                           text: 'Новый вариант',
                           image: undefined,
                           correct: false,
-                        })}
+                        }*/)}
                       >
                         Добавить вариант ответа
                       </AntButton>
@@ -548,7 +558,7 @@ const Sortable = {
     (props) => <ul>{props.children}</ul>
   ),
   Item: SortableElement(
-    (props) => <li>{props.children}</li>
+    (props) => <li className={styles.optionWraper}>{props.children}</li>
   ),
   Handler: SortableHandle(() =>
     <AntIcon
@@ -610,7 +620,14 @@ const validator = (content) => {
     if (!parseInt(variant.attempts, 10)) { errors[`variants[${variantIndex}].attempts`] = `Необходимо указать количество попыток в варианте №${variantIndex + 1}`; }
     if (!parseInt(variant.points, 10)) { errors[`variants[${variantIndex}].points`] = `Необходимо указать количество баллов в варианте №${variantIndex + 1}`; }
     if (!(variant.options.length > 0)) { errors[`variants[${variantIndex}].options`] = `Необходимо добавить варианты ответов в варианте №${variantIndex + 1}`; }
-    variant.options.forEach((option, optionIndex) => { if (!option.text) { errors[`variants[${variantIndex}].options[${optionIndex}].text`] = `Необходимо указать текст ответа №${optionIndex + 1} в варианте №${variantIndex + 1}`; }});
+    variant.options.forEach((option, optionIndex) => {
+      if (!option.text) {
+        errors[`variants[${variantIndex}].options[${optionIndex}].text`] = `Необходимо указать текст ответа №${optionIndex + 1} в варианте №${variantIndex + 1}`;
+      }
+      if (!option.taskTitle) {
+        errors[`variants[${variantIndex}].options[${optionIndex}].text`] = `Необходимо указать загловок задания №${optionIndex + 1} в варианте №${variantIndex + 1}`;
+      }
+    });
     // if (!variant.options.some((option) => option.correct === true)) { errors[`variants[${variantIndex}].options.checked`] = `Необходимо выбрать правильные варианты ответов в варианте №${variantIndex + 1}`; }
     if (!(variant.hints.length > 0)) { errors[`variants[${variantIndex}].hints`] = `Необходимо добавить подсказки в варианте №${variantIndex + 1}`; }
     if (!(variant.competences.length > 0)) { errors[`variants[${variantIndex}].competences`] = `Необходимо добавить компетенции в варианте №${variantIndex + 1}`; }

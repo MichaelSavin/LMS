@@ -151,7 +151,7 @@ class Checkbox extends PureComponent {
       content: newContent,
       /* Переключение на предыдущий таб при удалении варианта */
       environment: set(
-        ['editor', 'variant'],
+        ['variant'],
         `${newContent.editor.variants[environment.variant]
           ? environment.variant
           : newContent.editor.variants.length - 1

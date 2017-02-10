@@ -63,6 +63,7 @@ const Preview = (props) => {
           {content.variants[variant].options.map((option, index) => (
             <Collapse.Panel
               key={index}
+              header={option.taskTitle}
             >
               <Draft
                 readOnly

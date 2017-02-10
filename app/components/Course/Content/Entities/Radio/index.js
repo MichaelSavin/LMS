@@ -154,7 +154,7 @@ class Radio extends PureComponent {
       content: newContent,
       /* Переключение на предыдущий таб при удалении варианта */
       environment: set(
-        ['editor', 'variant'],
+        ['variant'],
         `${newContent.editor.variants[environment.variant]
           ? environment.variant
           : newContent.editor.variants.length - 1
@@ -272,9 +272,6 @@ class Radio extends PureComponent {
   }
 
   saveContent = () => {
-    console.log(this.props);
-    console.log(this.state);
-
     const {
       content,
       environment,

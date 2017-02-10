@@ -1,19 +1,19 @@
 import { random } from 'lodash/fp';
 import { EditorState, convertToRaw } from 'draft-js';
 
-const newOption = (isRaw) => ({
+export const newOption = (isRaw) => ({
   id: `${random(0, 999)}`,
   editorState: isRaw ? convertToRaw(
     EditorState.createEmpty()
       .getCurrentContent()
   ) : EditorState.createEmpty(),
   text: 'Вариант 1',
+  taskTitle: 'Заголовок',
 });
 
 class DefaultVariant {
   constructor(type) {
     this.type = type;
-    console.log(newOption(this.type));
   }
 
   attempts = 1
