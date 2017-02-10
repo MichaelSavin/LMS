@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 import { Icon as AntIcon } from 'antd';
 import {
-  // Entity,
   RichUtils,
 } from 'draft-js';
 import Icon from 'components/UI/Icon';
