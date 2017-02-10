@@ -434,7 +434,7 @@ class Matcher extends PureComponent {
           />
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
-        {!environment.editing &&
+        {(!environment.editing && !this.context.isPlayer) &&
           /* eslint-disable */
           // ? <div className={styles.actions}>
           //     <AntButton
@@ -583,6 +583,7 @@ Matcher.defaultProps = {
 
 Matcher.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
+  isPlayer: PropTypes.bool,
 };
 
 export default Matcher;

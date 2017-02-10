@@ -8,13 +8,13 @@
 }
 
 .taskInput:hover {
-  /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
-  border: 2.5px solid #108EE9;
+  box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #108EE9;
 }
 
 .taskInput.editing {
-  /* box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1); */
-  border: 2.5px solid #108EE9;
+  box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1), 0 -2.5px 5px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #108EE9;
 }
 
 .taskInput .edit {

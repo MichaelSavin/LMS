@@ -418,7 +418,7 @@ class Radio extends PureComponent {
           />
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
-        {!environment.editing &&
+        {(!environment.editing && !this.context.isPlayer) &&
           <div className={styles.actions}>
             <AntButton
               type="primary"
@@ -548,6 +548,7 @@ Radio.defaultProps = {
 Radio.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
   answerTasksContainer: PropTypes.func,
+  isPlayer: PropTypes.bool,
 };
 
 export default Radio;

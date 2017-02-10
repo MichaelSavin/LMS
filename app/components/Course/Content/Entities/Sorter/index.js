@@ -435,7 +435,7 @@ class Sorter extends PureComponent {
           />
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
-        {!environment.editing &&
+        {(!environment.editing && !this.context.isPlayer) &&
           /* eslint-disable */
           // ? <div className={styles.actions}>
           //     <AntButton
@@ -577,6 +577,7 @@ Sorter.defaultProps = {
 
 Sorter.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
+  isPlayer: PropTypes.bool,  
 };
 
 export default Sorter;
