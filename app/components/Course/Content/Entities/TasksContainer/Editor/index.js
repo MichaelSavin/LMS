@@ -24,7 +24,7 @@ import {
 import { isEmpty } from 'lodash/fp';
 import classNames from 'classnames';
 // import Uploader from 'components/UI/Uploader';
-import Tasks from 'components/Course/Content/Editor/Toolbar/Tasks';
+import Tasks from '../../../Editor/Toolbar/Tasks';
 import { insertEntity, blockRenderer } from '../../../Entities';
 import DefaultVariant, { newOption } from '../defaults';
 
