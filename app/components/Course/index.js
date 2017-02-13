@@ -66,9 +66,13 @@ class Course extends Component { // HMR
 
   exportCourse = () => {
     this.setState({ exporting: true });
+    const data = {
+      id: `id${Math.random()}`,
+      ...this.props.data.toJS(),
+    };
     const images = {};
     const zip = new JSZip();
-    const state = JSON.stringify(this.props.data.toJS());
+    const state = JSON.stringify(data);
     localForage.iterate((value, key) => {
       const regex = new RegExp(key, 'g');
       if (!state.match(regex)) {
@@ -168,6 +172,10 @@ Course.propTypes = {
   actions: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   children: PropTypes.element,
+};
+
+Course.defaultProps = {
+  children: null,
 };
 
 Course.contextTypes = {

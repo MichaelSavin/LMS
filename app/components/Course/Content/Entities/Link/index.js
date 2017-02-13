@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Entity } from 'draft-js';
+import { ContentState } from 'draft-js';
 import { Link as RouterLink } from 'react-router';
 
 import styles from './styles.css';
@@ -7,8 +7,9 @@ import styles from './styles.css';
 const Link = ({
   children,
   entityKey,
+  contentState,
 }) => {
-  const { url } = Entity.get(entityKey).getData();
+  const { url } = contentState.getEntity(entityKey).getData();
   return url.charAt(0) === '/' ? (<RouterLink
     rel="noopener noreferrer"
     to={url}
@@ -28,6 +29,7 @@ const Link = ({
 Link.propTypes = {
   children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
+  contentState: PropTypes.instanceOf(ContentState).isRequired,
 };
 
 export default Link;

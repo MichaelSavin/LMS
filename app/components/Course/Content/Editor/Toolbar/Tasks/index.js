@@ -29,7 +29,7 @@ const tasks = [{
   ],
 }, {
   section: 'Другие',
-  items: [],
+  items: [{ name: 'Контейнер', type: 'TASKSCONTAINER' }],
 }];
 
 const Tasks = ({

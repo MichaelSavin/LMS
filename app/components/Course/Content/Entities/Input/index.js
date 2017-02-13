@@ -152,7 +152,7 @@ class Input extends PureComponent {
       content: newContent,
       /* Переключение на предыдущий таб при удалении варианта */
       environment: set(
-        ['editor', 'variant'],
+        ['variant'],
         `${newContent.editor.variants[environment.variant]
           ? environment.variant
           : newContent.editor.variants.length - 1
@@ -372,7 +372,7 @@ class Input extends PureComponent {
           />
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
-        {!environment.editing &&
+        {(!environment.editing && !this.context.isPlayer) &&
           /* eslint-disable */
           // ? <div className={styles.actions}>
           //     <AntButton
@@ -509,6 +509,7 @@ Input.defaultProps = {
 
 Input.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
+  isPlayer: PropTypes.bool,
 };
 
 export default Input;

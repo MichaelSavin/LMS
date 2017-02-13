@@ -120,10 +120,17 @@ DraftInput.childContextTypes = {
 };
 
 DraftInput.propTypes = {
-  value: PropTypes.instanceOf(EditorState).isRequired,
+  value: PropTypes.instanceOf(EditorState), // eslint-disable-line react/require-default-props
   onChange: PropTypes.func,
   isReadOnly: PropTypes.bool,
   className: PropTypes.string,
+};
+
+DraftInput.defaultProps = {
+  // value: EditorState.createEmpty(),
+  isReadOnly: false,
+  className: '',
+  onChange: null,
 };
 
 export default DraftInput;

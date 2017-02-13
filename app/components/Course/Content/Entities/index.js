@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Entity,
   Modifier,
   EditorState,
   SelectionState,
@@ -34,6 +33,7 @@ import Progress from './Progress';
 import Carousel from './Carousel';
 import Timeline from './Timeline';
 import Checkbox from './Checkbox';
+import TasksContainer from './TasksContainer';
 import Textarea from './Textarea';
 import Sample from './Sample';
 import Sorter from './Sorter';
@@ -70,6 +70,7 @@ const components = { // можно использовать require()
   SAMPLE: Sample,
   SORTER: Sorter,
   MATCHER: Matcher,
+  TASKSCONTAINER: TasksContainer,
 };
 
 const views = {
@@ -96,6 +97,7 @@ const views = {
   SAMPLE: 'BLOCK',
   SORTER: 'BLOCK',
   MATCHER: 'BLOCK',
+  TASKSCONTAINER: 'BLOCK',
   FILE: 'BLOCK',
   LINK: 'INLINE',
   TEX: 'INLINE',
@@ -107,14 +109,15 @@ const views = {
 
 const findEntities = (type) => (
   contentBlock,
-  callback
+  callback,
+  contentState,
 ) => {
   contentBlock.findEntityRanges(
     (character) => {
       const entityKey = character.getEntity();
       return (
         entityKey !== null &&
-        Entity.get(entityKey).getType() === type
+        contentState.getEntity(entityKey).getType() === type
       );
     },
     callback
@@ -130,15 +133,10 @@ const entitiesDecorator = new CompositeDecorator(
     }))
 );
 
-const blockRenderer = (block) =>
-  block.getType() === 'atomic'
-    ? { component: Block, editable: false }
-    : undefined;
-
-const Block = ({ block }) => { // eslint-disable-line react/prop-types
+const Block = ({ block, contentState }) => { // eslint-disable-line react/prop-types
   const entityKey = block.getEntityAt(0);
   const blockKey = block.getKey();
-  const entity = Entity.get(entityKey);
+  const entity = contentState.getEntity(entityKey);
   return React.createElement(
     components[
       entity.getType()
@@ -146,10 +144,16 @@ const Block = ({ block }) => { // eslint-disable-line react/prop-types
       ...entity.getData(),
       entityKey,
       blockKey,
+      contentState,
     },
     null
   );
 };
+
+const blockRenderer = (block) =>
+  block.getType() === 'atomic'
+    ? { component: Block, editable: false }
+    : undefined;
 
 const addEOLtoInlineEntity = (editorState, block) => { // REFACTORING
   const blockKey = block.key;
@@ -204,15 +208,16 @@ const insertBlockEntity = (
   changeEditorState,
   location = undefined,
 ) => {
+  const contentState = editorState.getCurrentContent();
   changeEditorState(
     AtomicBlockUtils
       .insertAtomicBlock(
         editorState,
-        Entity.create(
+        contentState.createEntity(
           entityType,
           'IMMUTABLE',
           { location },
-        ),
+        ).getLastCreatedEntityKey(),
       ' '
     ),
   );
@@ -224,6 +229,7 @@ const insertInlineEntity = (
   changeEditorState,
   location = undefined,
 ) => {
+  const contentState = editorState.getCurrentContent();
   changeEditorState(
     EditorState.push(
       editorState,
@@ -232,11 +238,11 @@ const insertInlineEntity = (
         editorState.getSelection(),
         ' ',
         null,
-        Entity.create(
+        contentState.createEntity(
           entityType,
           'IMMUTABLE',
           { location }
-        ),
+        ).getLastCreatedEntityKey(),
       ),
       ' '
     ),

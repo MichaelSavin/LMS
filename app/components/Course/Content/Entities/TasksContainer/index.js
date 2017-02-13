@@ -16,17 +16,56 @@ import {
   dropRight,
   difference,
 } from 'lodash/fp';
-import Sortable from 'sortablejs';
+import {
+  ContentState,
+  EditorState,
+  convertToRaw,
+  convertFromRaw,
+} from 'draft-js';
 import { arrayMove } from 'react-sortable-hoc';
 import { Button as AntButton } from 'antd';
 import localForage from 'localforage';
 import classNames from 'classnames';
-import { Entity } from 'draft-js';
 import Preview from './Preview';
 import Editor from './Editor';
+import { entitiesDecorator } from '../../Entities';
 import styles from './styles.css';
+import DefaultVariant from './defaults';
 
-class Sorter extends PureComponent {
+const convertRawToEditorState = (content) => {
+  const newContent = {
+    ...content,
+    variants: content.variants.map((variant) => ({
+      ...variant,
+      options: variant.options.map((option) => ({
+        ...option,
+        editorState: option.editorState instanceof EditorState ?
+          option.editorState :
+          EditorState.createWithContent(
+            convertFromRaw(option.editorState),
+            entitiesDecorator
+          ),
+      })),
+    })),
+  };
+  return newContent;
+};
+
+const convertDraftEditorStateToRaw = (content) => {
+  const newContent = {
+    ...content,
+    variants: content.variants.map((variant) => ({
+      ...variant,
+      options: variant.options.map((option) => ({
+        ...option,
+        editorState: convertToRaw(option.editorState.getCurrentContent()),
+      })),
+    })),
+  };
+  return newContent;
+};
+
+class TasksContainer extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -36,16 +75,15 @@ class Sorter extends PureComponent {
     } = props;
     this.state = {
       content: {
-        editor: content,
-        component: content,
+        editor: convertRawToEditorState(this.props.content),
+        component: convertRawToEditorState(this.props.content),
       },
       /* Показ случайного варианта задания при загрузке*/
-      environment: set(
-        ['variant'],
-        `${random(0, content.variants.length - 1)}`,
-        environment
-      ),
-      isLocked: true,
+      environment: {
+        ...environment,
+        /* Показ случайного варианта задания при загрузке*/
+        variant: `${random(0, content.variants.length - 1)}`,
+      },
     };
     this.storage = {
       crops: {},
@@ -55,6 +93,12 @@ class Sorter extends PureComponent {
       past: [],
       future: [],
       present: undefined,
+    };
+  }
+
+  getChildContext() {
+    return {
+      answerTasksContainer: this.answerTasksContainer,
     };
   }
 
@@ -107,33 +151,30 @@ class Sorter extends PureComponent {
       });
   }
 
-  makeSortable = (element) => {
-    if (element) {
-      const that = this;
-      const name = element.getAttribute('data-type');
-      this[name] = element;
-      Sortable.create(element, { // https://github.com/RubaXa/Sortable#options
-        group: {
-          name,
-          pull: ['pull', 'put'],
-          put: ['pull', 'put'],
+  answerTasksContainer = (status) => {
+    const {
+      environment: {
+        readyPanel,
+        variant,
+      },
+      content: {
+        component,
+      },
+    } = this.state;
+    if (status === 'success') {
+      this.setState({
+        environment: {
+          ...this.state.environment,
+          readyPanel: readyPanel + 1,
+          activePanel: `${readyPanel + 2}`,
+          status: readyPanel + 2 >= component.variants[variant].options.length ? 'success' : null,
         },
-        animation: 350,
-        handle: '.sortable-handle',
-        chosenClass: styles.chosen,
-        ghostClass: styles.ghost,
-        // onEnd: (event) => {
-        //   console.log(event);
-        // },
-        // onAdd(e) {
-        //   console.log(e);
-        // },
-        onRemove(event) {
-          if (get('from.childElementCount', event) === 0) {
-            that.setState({
-              isLocked: false,
-            });
-          }
+      });
+    } else if (status === 'fail') {
+      this.setState({
+        environment: {
+          ...this.state.environment,
+          status,
         },
       });
     }
@@ -225,6 +266,18 @@ class Sorter extends PureComponent {
     }, this.addStateToHistory);
   }
 
+  changeDraftContent = (location) => (editorState) => {
+    this.setState({
+      content: set([
+        'editor',
+        ...location,
+      ],
+        editorState,
+        this.state.content
+      ),
+    }, this.addStateToHistory);
+  }
+
   addStateToHistory = () => {
     /* eslint-disable */
     this.history.present = this.state;
@@ -268,7 +321,7 @@ class Sorter extends PureComponent {
         true,
         environment
       ),
-    }, this.context.toggleReadOnly);
+    }, () => this.context.toggleReadOnly(true));
   }
 
   closeEditor = () => {
@@ -278,7 +331,7 @@ class Sorter extends PureComponent {
         false,
         this.state.environment
       ),
-    }, this.context.toggleReadOnly);
+    }, () => this.context.toggleReadOnly(false));
   }
 
   saveContent = () => {
@@ -286,9 +339,9 @@ class Sorter extends PureComponent {
       content,
       environment,
     } = this.state;
-    Entity.replaceData(
+    this.props.contentState.replaceEntityData(
       this.props.entityKey, {
-        content: content.editor,
+        content: convertDraftEditorStateToRaw(content.editor),
       }
     );
     this.setState({
@@ -302,7 +355,7 @@ class Sorter extends PureComponent {
         false,
         environment
       ),
-    }, this.context.toggleReadOnly);
+    }, () => this.context.toggleReadOnly(false));
   }
 
   showHint = (variant) => () => {
@@ -355,8 +408,22 @@ class Sorter extends PureComponent {
     });
   }
 
+  changePanel = (panelKey) => {
+    console.log(panelKey);
+    const { readyPanel, activePanel } = this.state.environment;
+    this.setState({
+      environment: {
+        ...this.state.environment,
+        activePanel: !panelKey || activePanel === panelKey ?
+          '' :
+          +panelKey <= readyPanel ?
+            panelKey :
+            `${readyPanel + 1}`,
+      },
+    });
+  }
+
   checkAnswers = () => {
-    const sortedIdList = [...this.put.children].map((obj) => obj.getAttribute('data-id'));
     const {
       content: {
         component: {
@@ -365,6 +432,7 @@ class Sorter extends PureComponent {
       },
       environment: {
         attemp,
+        answers,
         variant,
       },
     } = this.state;
@@ -374,9 +442,14 @@ class Sorter extends PureComponent {
           ['status'],
           /* Сравнение выбранных ответов с правильными */
           isEqual(
-            sortedIdList,
+            answers,
             variants[variant].options
-              .map((option) => option.id
+              .map((option, index) =>
+                option.correct
+                  ? index
+                  : null
+              ).filter((index) =>
+                index !== null
               ),
           )
             ? 'success'
@@ -395,7 +468,6 @@ class Sorter extends PureComponent {
     const {
       content,
       environment,
-      isLocked,
     } = this.state;
     return (
       <div
@@ -412,26 +484,27 @@ class Sorter extends PureComponent {
           }
           storage={this.storage}
           showHint={this.showHint}
-          {...{ environment, isLocked }}
+          environment={environment}
           chooseAnswer={this.chooseAnswer}
           checkAnswers={this.checkAnswers}
-          makeSortable={this.makeSortable}
+          changePanel={this.changePanel}
         />
         {environment.editing &&
           <Editor
-            storage={this.storage}
-            content={content.editor}
             addContent={this.addContent}
-            environment={environment}
-            dragContent={this.dragContent}
+            changeContent={this.changeContent}
+            changeDraftContent={this.changeDraftContent}
+            changeVariant={this.changeVariant}
             closeEditor={this.closeEditor}
-            uploadImage={this.uploadImage}
-            saveContent={this.saveContent}
-            undoHistory={this.undoHistory}
+            content={content.editor}
+            dragContent={this.dragContent}
+            environment={environment}
             redoHistory={this.redoHistory}
             removeContent={this.removeContent}
-            changeContent={this.changeContent}
-            changeVariant={this.changeVariant}
+            saveContent={this.saveContent}
+            storage={this.storage}
+            undoHistory={this.undoHistory}
+            uploadImage={this.uploadImage}
           />
         }
         {/* Нужно сделать проверку на наличие ошибок в валидаторе перед сохранением */}
@@ -471,7 +544,8 @@ class Sorter extends PureComponent {
   }
 }
 
-Sorter.propTypes = {
+TasksContainer.propTypes = {
+  contentState: PropTypes.instanceOf(ContentState).isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     variants: PropTypes.arrayOf(
@@ -481,12 +555,21 @@ Sorter.propTypes = {
         question: PropTypes.string.isRequired,
         options: PropTypes.arrayOf(
           PropTypes.shape({
+            editorState: PropTypes.oneOfType([
+              PropTypes.instanceOf(EditorState),
+              /* https://facebook.github.io/draft-js/docs/api-reference-data-conversion.html#converttoraw */
+              PropTypes.shape({
+                blocks: PropTypes.arrayOf(PropTypes.object.isRequired),
+                entityMap: PropTypes.object.isRequired,
+              }).isRequired,
+            ]).isRequired,
             text: PropTypes.string.isRequired,
             image: PropTypes.shape({
               text: PropTypes.string.isRequired,
               crop: PropTypes.object,
               source: PropTypes.string.isRequired,
             }),
+            correct: PropTypes.bool.isRequired,
           }).isRequired,
         ).isRequired,
         hints: PropTypes.arrayOf(
@@ -529,40 +612,15 @@ Sorter.propTypes = {
   }).isRequired,
 };
 
-Sorter.defaultProps = {
+const emptyEditorStateRaw = convertToRaw(
+  EditorState.createEmpty()
+    .getCurrentContent()
+);
+
+TasksContainer.defaultProps = {
   /* Контент компонента */
   content: {
-    variants: [{
-      points: '1',
-      attempts: '1',
-      question: 'Вопрос',
-      options: [{
-        text: 'Вариант 1',
-        image: undefined,
-        id: `${random(0, 999)}`,
-      }, {
-        text: 'Вариант 2',
-        image: undefined,
-        id: `${random(0, 999)}`,
-      }, {
-        text: 'Вариант 3',
-        image: undefined,
-        id: `${random(0, 999)}`,
-      }, {
-        text: 'Вариант 4',
-        image: undefined,
-        id: `${random(0, 999)}`,
-      }],
-      hints: [{ 
-        text: 'Новая подсказка' 
-      }],
-      competences: [{ 
-        text: 'Новая компетенция' 
-      }],
-      explanations: [{ 
-        text: 'Новое объяснение' 
-      }],
-    }],
+    variants: [new DefaultVariant('raw')],
   },
   /* Cостояние компонента */
   environment: {
@@ -572,12 +630,18 @@ Sorter.defaultProps = {
     answers: [],    // Выбранные ответы
     variant: '0',   // Первый вариант задания, меняется на случайный в конструкторе
     editing: false, // Окно редактора закрыто
+    readyPanel: -1, // Номер разрешенного вопроса
+    activePanel: '', // Выбранный вопрос
   },
 };
 
-Sorter.contextTypes = {
+TasksContainer.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
-  isPlayer: PropTypes.bool,  
+  isPlayer: PropTypes.bool,
 };
 
-export default Sorter;
+TasksContainer.childContextTypes = {
+  answerTasksContainer: PropTypes.func.isRequired,
+};
+
+export default TasksContainer;

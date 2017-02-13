@@ -3,6 +3,7 @@ import { convertToRaw, ContentState } from 'draft-js';
 const content = convertToRaw(ContentState.createFromText(''));
 
 const course = {
+  id: `id${Math.random()}`,
   name: 'Тестовый курс',
   info: 'Краткая информация о курсе',
   sections: [

@@ -258,19 +258,11 @@ class Editor extends Component {
     // Для сохранения изменений добавил установку фокуса
     // чтобы работало надо что-то поменять в редакторе.
     // TODO нужно найти способо сохранять автоматически
-    if (option !== undefined) {
-      this.setState({
-        editorState: option
-          ? editorState
-          : EditorState.moveFocusToEnd(editorState),
-        isReadOnly: option,
-      });
-    }
     this.setState({
-      editorState: isReadOnly
-        ? EditorState.moveFocusToEnd(editorState)
-        : editorState,
-      isReadOnly: !isReadOnly,
+      editorState: option
+        ? editorState
+        : EditorState.moveFocusToEnd(editorState),
+      isReadOnly: option !== undefined ? option : !isReadOnly,
     });
   }
 
@@ -311,11 +303,26 @@ class Editor extends Component {
   }
 
   duplicateBlock = (entityKey) => {
+    const { editorState } = this.state;
+    const contentState = editorState.getCurrentContent();
+    const newContent = contentState.addEntity(
+      contentState.getEntity(entityKey)
+    );
+    // TODO не понятно почему не происходит добавление addEntity, contentState остаеться прежним
+    console.log(contentState.getLastCreatedEntityKey());
+    console.log(newContent.getLastCreatedEntityKey());
+    // const newState = EditorState.push(
+    //   editorState,
+    //   newContent,
+    //   ' '
+    // );
+    // this.onChange(newState);
+
     this.onChange(AtomicBlockUtils
       .insertAtomicBlock(
         this.state.editorState,
         Entity.add(
-          Entity.get(entityKey)
+          contentState.getEntity(entityKey)
         ),
         ' '
     ));
@@ -379,6 +386,12 @@ Editor.propTypes = {
   }),
   actions: PropTypes.object, // http://stackoverflow.com/a/33427304
   content: PropTypes.object,
+};
+
+Editor.defaultProps = {
+  unit: null,
+  actions: null,
+  content: null,
 };
 
 export default Editor;
