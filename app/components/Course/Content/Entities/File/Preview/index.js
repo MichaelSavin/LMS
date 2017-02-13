@@ -13,7 +13,7 @@ import styles from './styles.css';
 const uploadButton = (
   <div>
     <Icon type="plus" />
-    <div className="ant-upload-text">Upload</div>
+    <div className="ant-upload-text">Загрузить</div>
   </div>
 );
 
