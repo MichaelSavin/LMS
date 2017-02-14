@@ -152,7 +152,7 @@ class Card extends Component {
       dimensions,
     } = this.state;
     return (
-      <div onDoubleClick={this.openModal}>
+      <div onDoubleClick={!this.context.isPlayer && this.openModal}>
         <Preview
           data={content}
           storage={this.storage}
@@ -199,6 +199,10 @@ Card.defaultProps = {
     width: undefined,
     fullscreen: true,
   },
+};
+
+Card.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Card;

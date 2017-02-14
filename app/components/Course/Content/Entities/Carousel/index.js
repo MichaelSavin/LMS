@@ -271,7 +271,7 @@ class Carousel extends Component {
       content,
     } = this.state;
     return (
-      <div onDoubleClick={this.openModal}>
+      <div onDoubleClick={!this.context.isPlayer && this.openModal}>
         <Preview
           data={content}
           cache={this.cache}
@@ -330,6 +330,10 @@ Carousel.defaultProps = {
     }],
     fullscreen: false,
   },
+};
+
+Carousel.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Carousel;

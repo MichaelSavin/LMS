@@ -107,7 +107,7 @@ class Progress extends Component {
       content,
     } = this.state;
     return (
-      <div onDoubleClick={this.openModal}>
+      <div onDoubleClick={!this.context.isPlayer && this.openModal}>
         <AntProgress
           type={content.type}
           status={content.status}
@@ -205,6 +205,10 @@ Progress.defaultProps = {
     status: 'normal',
     percent: 50,
   },
+};
+
+Progress.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Progress;

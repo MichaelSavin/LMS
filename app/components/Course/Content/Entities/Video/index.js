@@ -146,13 +146,16 @@ class Video extends Component {
           />
         </div>
         <div className={styles.controls}>
-          <Button
-            type="primary"
-            shape="circle"
-            icon={playing ? 'pause' : 'caret-right'}
-            size="large"
-            onClick={this.playTogle}
-          />
+          <div>
+            <Button
+              className={styles.playBtn}
+              type="primary"
+              shape="circle"
+              icon={playing ? 'pause' : 'caret-right'}
+              size="large"
+              onClick={this.playTogle}
+            />
+          </div>
           <div className={styles.title}>
             <h3>{title}</h3>
             <div className={styles.explanations}>{size}</div>
@@ -183,11 +186,11 @@ class Video extends Component {
           {text}
         </div>}
 
-        <AntIcon
+        {!this.context.isPlayer && <AntIcon
           type="setting"
           className={styles.icon}
           onClick={this.editContent}
-        />
+        />}
       </div>
     );
   }
@@ -210,6 +213,10 @@ Video.defaultProps = {
     title: '',
     url: 'https://www.youtube.com/watch?v=XFF2ECZ8m1A',
   },
+};
+
+Video.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Video;

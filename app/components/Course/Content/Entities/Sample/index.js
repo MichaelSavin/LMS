@@ -159,7 +159,7 @@ class Sample extends Component {
             changeColor={this.changeColor}
           />
         }
-        <div className={styles.actions}>
+        {!this.context.isPlayer && <div className={styles.actions}>
           <AntButton
             type={isEditing
               ? 'ghost'
@@ -191,7 +191,7 @@ class Sample extends Component {
               Сохранить
             </AntButton>
           }
-        </div>
+        </div>}
       </div>
     );
   }
@@ -227,6 +227,7 @@ Sample.defaultProps = {
 
 Sample.contextTypes = {
   toggleReadOnly: PropTypes.func.isRequired,
+  isPlayer: PropTypes.bool,
 };
 
 export default Sample;

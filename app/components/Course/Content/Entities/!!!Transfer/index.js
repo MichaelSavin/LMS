@@ -43,7 +43,7 @@ class Transfer extends Component {
         value: this
           .state
           .options
-          .map(option =>
+          .map((option) =>
             option.title
           ).join('\n'),
       },
@@ -61,7 +61,7 @@ class Transfer extends Component {
     const keys = this
       .state
       .keys
-      .filter(key =>
+      .filter((key) =>
         key < options.length
       );
     Entity.replaceData(
@@ -95,7 +95,7 @@ class Transfer extends Component {
           options: this
             .state
             .options
-            .map(option =>
+            .map((option) =>
               option.title
             ),
           titles: this.state.titles,
@@ -119,7 +119,7 @@ class Transfer extends Component {
       >
         <AntTransfer
           titles={titles}
-          render={item => item.title}
+          render={(item) => item.title}
           onChange={this.moveOption}
           targetKeys={keys}
           dataSource={options}

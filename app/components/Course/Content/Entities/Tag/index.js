@@ -191,7 +191,7 @@ class Tag extends Component {
       <span>
         <Preview
           data={content}
-          openModal={this.openModal}
+          openModal={!this.context.isPlayer && this.openModal}
         />
         <Editor
           data={temp}
@@ -213,6 +213,10 @@ Tag.propTypes = {
   contentState: PropTypes.instanceOf(ContentState).isRequired,
   // children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
+};
+
+Tag.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Tag;

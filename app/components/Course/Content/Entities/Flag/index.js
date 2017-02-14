@@ -158,17 +158,19 @@ class Flag extends Component {
             onEditMessage={this.editMessage}
           />
         </div>
-        <AntIcon
-          type="edit"
-          className={styles.button}
-          onClick={this.openFlagOptions}
-        />
-        <AntPopconfirm title="Вы уверены?" okText="Да" cancelText="Нет">
+        {!this.context.isPlayer && <div>
           <AntIcon
-            type="close"
+            type="edit"
             className={styles.button}
+            onClick={this.openFlagOptions}
           />
-        </AntPopconfirm>
+          <AntPopconfirm title="Вы уверены?" okText="Да" cancelText="Нет">
+            <AntIcon
+              type="close"
+              className={styles.button}
+            />
+          </AntPopconfirm>
+        </div>}
       </div>
     );
   }
@@ -191,6 +193,10 @@ Flag.propTypes = {
     color: PropTypes.string,
     bgcolor: PropTypes.string,
   }).isRequired,
+};
+
+Flag.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Flag;

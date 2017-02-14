@@ -28,7 +28,7 @@ import Select from './Select';
 import Switch from './Switch';
 import Upload from './Upload';
 import Collapse from './Collapse';
-import Transfer from './Transfer';
+// import Transfer from './Transfer';
 import Progress from './Progress';
 import Carousel from './Carousel';
 import Timeline from './Timeline';
@@ -60,7 +60,7 @@ const components = { // можно использовать require()
   SELECT: Select,
   SWITCH: Switch,
   COLLAPSE: Collapse,
-  TRANSFER: Transfer,
+  // TRANSFER: Transfer,
   PROGRESS: Progress,
   CAROUSEL: Carousel,
   TIMELINE: Timeline,
@@ -87,7 +87,7 @@ const views = {
   SLIDER: 'BLOCK',
   UPLOAD: 'BLOCK',
   COLLAPSE: 'BLOCK',
-  TRANSFER: 'BLOCK',
+  // TRANSFER: 'BLOCK',
   PROGRESS: 'BLOCK',
   CAROUSEL: 'BLOCK',
   TIMELINE: 'BLOCK',
