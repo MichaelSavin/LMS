@@ -68,3 +68,7 @@
   overflow: overlay;
   min-height: 150px;
 }
+
+.playBtn {
+  margin-right: 10px;
+}

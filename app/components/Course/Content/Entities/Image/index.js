@@ -1,8 +1,10 @@
 import React, { PropTypes, Component } from 'react';
-import AntPromt from 'components/UI/Promt';
-import { Card as AntCard } from 'antd';
+import {
+  Card as AntCard,
+  Modal,
+  Input,
+} from 'antd';
 import { Entity } from 'draft-js';
-import { isEqual } from 'lodash';
 import styles from './styles.css';
 
 class Image extends Component {
@@ -10,15 +12,13 @@ class Image extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ...props.content,
       promt: {
-        open: false,
-        value: null,
+        visible: false,
       },
     };
   }
 
-  shouldComponentUpdate(
+  /* shouldComponentUpdate(
     nextProps,
     nextState
   ) {
@@ -26,9 +26,9 @@ class Image extends Component {
       this.state,
       nextState
     );
-  }
+  }*/
 
-  editContent = () => {
+  /* editContent = () => {
     this.setState({
       promt: {
         open: true,
@@ -37,9 +37,9 @@ class Image extends Component {
           .source,
       },
     });
-  }
+  }*/
 
-  modifyContent = () => {
+  /* modifyContent = () => {
     const {
       value: source,
     } = this.state.promt;
@@ -59,53 +59,92 @@ class Image extends Component {
         open: false,
       },
     });
+  }*/
+
+  editContent = (event) => {
+    event.preventDefault();
+    this.setState({
+      promt: {
+        ...this.props.content,
+        visible: true,
+      },
+    });
+  }
+
+  modifyContent = () => {
+    const { promt: content } = this.state;
+    Entity.replaceData(
+      this.props.entityKey, {
+        content,
+      }
+    );
+    this.setState({
+      promt: {
+        visible: false,
+      },
+    });
+  }
+
+  handleCancel = () => {
+    this.setState({
+      promt: {
+        visible: false,
+      },
+    });
+  }
+
+  inputChange = (type) => (e) => {
+    this.setState({
+      promt: {
+        ...this.state.promt,
+        [type]: e.target.value,
+      },
+    });
   }
 
   render() {
     const {
-      text,
-      source,
       promt,
     } = this.state;
+    const { url, title } = this.props.content;
     return (
       <div>
+        {promt.visible && <Modal
+          title="Параметры видео"
+          visible={promt.visible}
+          onOk={this.modifyContent}
+          onCancel={this.handleCancel}
+          okText="OK"
+          cancelText="Отмена"
+        >
+          <div className={styles.input}>
+            <Input
+              placeholder="Ссылка на видео"
+              value={promt.url}
+              onChange={this.inputChange('url')}
+            />
+          </div>
+          <div className={styles.input}>
+            <Input
+              placeholder="Заголовок видео"
+              value={promt.title}
+              onChange={this.inputChange('title')}
+            />
+          </div>
+        </Modal>}
         <AntCard
           className={styles.card}
           bodyStyle={{ padding: 0 }}
-          onDoubleClick={this.editContent}
+          onDoubleClick={!this.context.isPlayer && this.editContent}
         >
           <img
             alt="example"
-            src={source}
+            src={url}
           />
           <div className={styles.text}>
-            <p>{text}</p>
+            <p>{title}</p>
           </div>
         </AntCard>
-        <AntPromt
-          type="textarea"
-          value={promt.value}
-          onSave={this.modifyContent}
-          visible={promt.open}
-          onChange={(event) => {
-            this.setState({
-              promt: {
-                ...promt,
-                value: event
-                  .target
-                  .value,
-              },
-            });
-          }}
-          onCancel={() => {
-            this.setState({
-              promt: {
-                ...promt,
-                open: false,
-              },
-            });
-          }}
-        />
       </div>
     );
   }
@@ -114,16 +153,20 @@ class Image extends Component {
 Image.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    text: PropTypes.string.isRequired,
-    source: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
   }).isRequired,
 };
 
 Image.defaultProps = {
   content: {
-    text: 'Изображение',
-    source: 'https://img3.goodfon.ru/original/1440x900/c/d3/uluru-ayers-rock-sandstone.jpg',
+    title: 'Изображение',
+    url: 'https://img3.goodfon.ru/original/1440x900/c/d3/uluru-ayers-rock-sandstone.jpg',
   },
+};
+
+Image.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Image;
