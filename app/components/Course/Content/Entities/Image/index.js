@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import {
   Card as AntCard,
   Modal,
@@ -7,7 +7,7 @@ import {
 import { Entity } from 'draft-js';
 import styles from './styles.css';
 
-class Image extends Component {
+class Image extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -17,49 +17,6 @@ class Image extends Component {
       },
     };
   }
-
-  /* shouldComponentUpdate(
-    nextProps,
-    nextState
-  ) {
-    return !isEqual(
-      this.state,
-      nextState
-    );
-  }*/
-
-  /* editContent = () => {
-    this.setState({
-      promt: {
-        open: true,
-        value: this
-          .state
-          .source,
-      },
-    });
-  }*/
-
-  /* modifyContent = () => {
-    const {
-      value: source,
-    } = this.state.promt;
-    Entity.replaceData(
-      this.props.entityKey, {
-        content: {
-          source,
-          text: this
-            .state
-            .text,
-        },
-      }
-    );
-    this.setState({
-      source,
-      promt: {
-        open: false,
-      },
-    });
-  }*/
 
   editContent = (event) => {
     event.preventDefault();
