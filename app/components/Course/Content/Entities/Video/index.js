@@ -186,11 +186,11 @@ class Video extends Component {
           {text}
         </div>}
 
-        <AntIcon
+        {!this.context.isPlayer && <AntIcon
           type="setting"
           className={styles.icon}
           onClick={this.editContent}
-        />
+        />}
       </div>
     );
   }
@@ -213,6 +213,10 @@ Video.defaultProps = {
     title: '',
     url: 'https://www.youtube.com/watch?v=XFF2ECZ8m1A',
   },
+};
+
+Video.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Video;
