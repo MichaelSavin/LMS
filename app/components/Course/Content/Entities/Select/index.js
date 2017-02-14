@@ -167,7 +167,7 @@ Select.propTypes = {
   entityKey: PropTypes.string.isRequired,
 };
 
-Image.contextTypes = {
+Select.contextTypes = {
   isPlayer: PropTypes.bool,
 };
 
