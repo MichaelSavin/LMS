@@ -328,7 +328,7 @@ Carousel.defaultProps = {
         text: undefined,
       },
     }],
-    fullscreen: false,
+    fullscreen: true,
   },
 };
 
