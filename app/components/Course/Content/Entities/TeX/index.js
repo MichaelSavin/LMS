@@ -154,7 +154,7 @@ class TeX extends Component {
     return (
       <span
         className={styles.tex}
-        onDoubleClick={this.openEditor(editor)}
+        onDoubleClick={!this.context.isPlayer && this.openEditor(editor)}
       >
         <Preview
           data={data.component}
@@ -188,6 +188,7 @@ TeX.propTypes = {
 TeX.contextTypes = {
   lockDraft: PropTypes.func,
   unlockDraft: PropTypes.func,
+  isPlayer: PropTypes.bool,
 };
 
 export default TeX;

@@ -186,7 +186,7 @@ class Timeline extends PureComponent {
       content,
     } = this.state;
     return (
-      <div onDoubleClick={this.openModal}>
+      <div onDoubleClick={!this.context.isPlayer && this.openModal}>
         <Preview
           data={content}
           images={this.images}
@@ -236,6 +236,10 @@ Timeline.defaultProps = {
       { text: 'Четвертое событие', color: 'blue', image: null },
     ],
   },
+};
+
+Timeline.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Timeline;

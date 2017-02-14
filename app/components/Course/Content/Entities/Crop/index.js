@@ -6,7 +6,7 @@ import Preview from './Preview';
 import Editor from './Editor';
 import './styles.css';
 
-class Card extends Component {
+class Crop extends Component {
 
   constructor(props) {
     super(props);
@@ -246,7 +246,7 @@ class Card extends Component {
       dimensions,
     } = this.state;
     return (
-      <div onDoubleClick={this.openModal}>
+      <div onDoubleClick={!this.context.isPlayer && this.openModal}>
         <Preview
           content={component}
           storage={this.storage}
@@ -270,7 +270,7 @@ class Card extends Component {
   }
 }
 
-Card.propTypes = {
+Crop.propTypes = {
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     text: PropTypes.string.isRequired,
@@ -306,7 +306,7 @@ Card.propTypes = {
   }).isRequired,
 };
 
-Card.defaultProps = {
+Crop.defaultProps = {
   content: {
     text: 'Текст',
     title: 'Заголовок',
@@ -318,4 +318,8 @@ Card.defaultProps = {
   },
 };
 
-export default Card;
+Image.contextTypes = {
+  isPlayer: PropTypes.bool,
+};
+
+export default Crop;

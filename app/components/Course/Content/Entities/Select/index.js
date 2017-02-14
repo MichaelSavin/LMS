@@ -128,12 +128,12 @@ class Select extends Component {
             </AntSelect.Option>
           )}
         </AntSelect>
-        <AntButton
+        {!this.context.isPlayer && <AntButton
           type="ghost"
           shape="circle-outline"
           icon="edit"
           onClick={this.editOptions}
-        />
+        />}
         <AntPromt
           value={promt.value}
           onSave={this.modifyOptions}
@@ -163,8 +163,12 @@ class Select extends Component {
 }
 
 Select.propTypes = {
-  children: PropTypes.array.isRequired,
+  // children: PropTypes.array.isRequired,
   entityKey: PropTypes.string.isRequired,
+};
+
+Image.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Select;

@@ -128,7 +128,7 @@ class Collapse extends Component {
       content,
     } = this.state;
     return (
-      <div onDoubleClick={this.openModal}>
+      <div onDoubleClick={!this.context.isPlayer && this.openModal}>
         <Preview
           data={content}
         />
@@ -167,6 +167,10 @@ Collapse.defaultProps = {
       { title: 'Заголовок', text: 'Текст' },
     ],
   },
+};
+
+Collapse.contextTypes = {
+  isPlayer: PropTypes.bool,
 };
 
 export default Collapse;

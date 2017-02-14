@@ -442,7 +442,7 @@ class Table extends Component {
         showHeader={!content.styles.isHeaderHide}
         bordered={get(['body'], content.styles) === 'big'}
       />
-      {isReadOnly ?
+      {!this.context.isPlayer && isReadOnly ?
         <div className={styles.actions}>
           <CopyToClipboard text={anchorUrl}>
             <AntButton
@@ -491,26 +491,28 @@ class Table extends Component {
           />
         </div>
         : <div className={styles.editor}>
-          <Editor
-            styles={content.styles}
-            changeStyle={this.changeStyle}
-            closeEditor={this.closeEditor}
-            saveSettings={this.saveSettings}
-          />
-          <div className={styles.actions}>
-            <AntButton
-              type="primary"
-              icon="rollback"
-              className={styles.icon}
-              onClick={this.closeEditor}
+          {!this.context.isPlayer && <div>
+            <Editor
+              styles={content.styles}
+              changeStyle={this.changeStyle}
+              closeEditor={this.closeEditor}
+              saveSettings={this.saveSettings}
             />
-            <AntButton
-              type="primary"
-              icon="check-circle"
-              className={styles.icon}
-              onClick={this.saveSettings}
-            />
-          </div>
+            <div className={styles.actions}>
+              <AntButton
+                type="primary"
+                icon="rollback"
+                className={styles.icon}
+                onClick={this.closeEditor}
+              />
+              <AntButton
+                type="primary"
+                icon="check-circle"
+                className={styles.icon}
+                onClick={this.saveSettings}
+              />
+            </div>
+          </div>}
         </div>
       }
     </div>);
@@ -611,6 +613,7 @@ Table.contextTypes = {
   removeBlock: PropTypes.func,
   duplicateBlock: PropTypes.func,
   toggleReadOnly: PropTypes.func,
+  isPlayer: PropTypes.bool,
 };
 
 export default Table;
