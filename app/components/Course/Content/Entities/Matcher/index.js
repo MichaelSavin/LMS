@@ -67,22 +67,23 @@ class Matcher extends PureComponent {
       .forEach((variant) => {
         variant.options.forEach(
           async (option) => {
-            if (option.image) {
+            const image = option.image || option.answerImage;
+            if (image) {
               const data = await localForage
-                .getItem(option.image.source);
+                .getItem(image.source);
               this.storage.images[
-                option.image.source
+                image.source
               ] = data;
-              if (option.image.crop) {
+              if (image.crop) {
                 const canvas = document.createElement('canvas');
                 /* eslint-disable fp/no-mutation */
-                const pixelCrop = option.image.crop.pixels;
+                const pixelCrop = image.crop.pixels;
                 canvas.width = pixelCrop.width;
                 canvas.height = pixelCrop.height;
                 const context = canvas.getContext('2d');
                 const imageObj = new Image();
                 context.clearRect(0, 0, canvas.width, canvas.height);
-                imageObj.src = this.storage.images[option.image.source];
+                imageObj.src = this.storage.images[image.source];
                 imageObj.onload = () => {
                 /* eslint-enable fp/no-mutation */
                   context.drawImage(
@@ -96,7 +97,7 @@ class Matcher extends PureComponent {
                     pixelCrop.height,
                   );
                   const binary = canvas.toDataURL('image/jpeg', 1);
-                  this.storage.crops[option.image.source] = binary;
+                  this.storage.crops[image.source] = binary;
                   this.forceUpdate();
                 };
               } else {
@@ -128,12 +129,12 @@ class Matcher extends PureComponent {
         // onAdd(e) {
         //   console.log(e);
         // },
-        onRemove(event) {
-          if (get('from.childElementCount', event) === 0) {
-            that.setState({
-              isLocked: false,
-            });
-          }
+        onSort() {
+          that.setState({
+            isLocked: false,
+          });
+          // if (get('from.childElementCount', event) === 0) {
+          // }
         },
       });
     }
@@ -538,25 +539,25 @@ Matcher.defaultProps = {
       options: [{
         text: 'Вариант 1',
         image: undefined,
-        ansewerText: 'Вариант 1',
+        answerText: 'Вариант 1',
         ansewerImage: undefined,
         id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 2',
         image: undefined,
-        ansewerText: 'Вариант 1',
+        answerText: 'Вариант 2',
         ansewerImage: undefined,
         id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 3',
         image: undefined,
-        ansewerText: 'Вариант 1',
+        answerText: 'Вариант 3',
         ansewerImage: undefined,
         id: `${random(0, 999)}`,
       }, {
         text: 'Вариант 4',
         image: undefined,
-        ansewerText: 'Вариант 1',
+        answerText: 'Вариант 4',
         ansewerImage: undefined,
         id: `${random(0, 999)}`,
       }],

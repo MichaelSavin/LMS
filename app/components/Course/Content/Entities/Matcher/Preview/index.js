@@ -113,14 +113,45 @@ class Preview extends Component {
         <Row className={styles.answers}>
           <Col span={12} className={styles.col}>
             <div className={styles.options}>
-              <div className={styles.putField} ref={makeSortable} data-type="put" />
+              <div className={styles.putField} ref={makeSortable} data-type="put">
+                {options.map((option, index) =>
+                  <div
+                    key={index}
+                    className={styles.option}
+                    data-id={option.id}
+                  >
+                    {option.image &&
+                      <div className={styles.image}>
+                        <img
+                          src={storage.crops[option.image.source]
+                            || storage.images[option.image.source]
+                          }
+                          alt={option.image.text}
+                          role="presentation"
+                          width={250}
+                        />
+                      </div>
+                    }
+                    <div className={styles.answer}>
+                      <div className={`sortable-handle ${styles.drager}`}>
+                        <AntIcon
+                          type="appstore-o"
+                          key={index}
+                        />
+                      </div>
+                      <div className={styles.text}>
+                        {option.text || '?'}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </Col>
           <Col span={12} className={styles.col}>
             <div className={styles.putField}>
               <div className={styles.options}>
                 {current.options.map((option, index) =>
-
                   <div
                     key={index}
                     className={styles.option}
@@ -138,56 +169,19 @@ class Preview extends Component {
                         />
                       </div>
                     }
-                    <div className={styles.answer}>
+                    {option.answerText && <div className={styles.answer}>
                       <div>
                         <AntIcon
                           key={index}
                         />
                       </div>
                       <div className={styles.text}>
-                        {option.answerText || '?'}
+                        {option.answerText}
                       </div>
-                    </div>
+                    </div>}
                   </div>
                 )}
               </div>
-            </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12} className={styles.col}>
-            <div className={styles.options} ref={makeSortable} data-type="pull">
-              {options.map((option, index) =>
-                <div
-                  key={index}
-                  className={styles.option}
-                  data-id={option.id}
-                >
-                  {option.image &&
-                    <div className={styles.image}>
-                      <img
-                        src={storage.crops[option.image.source]
-                          || storage.images[option.image.source]
-                        }
-                        alt={option.image.text}
-                        role="presentation"
-                        width={250}
-                      />
-                    </div>
-                  }
-                  <div className={styles.answer}>
-                    <div className={`sortable-handle ${styles.drager}`}>
-                      <AntIcon
-                        type="appstore-o"
-                        key={index}
-                      />
-                    </div>
-                    <div className={styles.text}>
-                      {option.text || '?'}
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </Col>
         </Row>
