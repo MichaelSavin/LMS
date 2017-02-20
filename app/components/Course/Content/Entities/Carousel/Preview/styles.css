@@ -1,5 +1,6 @@
 .preview {
   border: 1px solid #E9E9E9;
+  position: relative;
 
   & .text {
     display: flex;
@@ -30,13 +31,50 @@
   }
 
   & .resize {
-    width: 15px;
     cursor: pointer;
-    display: flex;
-    position: relative;
-    background: white;
-    margin-top: -25px;
-    margin-left: 10px;
-    margin-bottom: 15px;
+    position: absolute;
+    right: 7px;
+    bottom: 5px;
+    z-index: 3;
+  }
+
+  .carousel {
+    .dots {
+      bottom: 20px;
+
+      li {
+        padding: 4px;
+
+        button {
+          height: 9px;
+          width: 8px !important;
+          border-radius: 10px;
+        }
+      }
+    }
+
+    :global {
+      .slick-prev,
+      .slick-next {
+        left: 5px;
+        z-index: 2;
+        height: 100%;
+        background: rgba(255, 255, 255, 0);
+        top: 0;
+        display: flex !important;
+        align-items: center;
+      }
+
+      .slick-next {
+        right: 5px;
+        left: auto;
+      }
+    }
+  }
+
+  .arrow {
+    font-size: 20px;
+    color: #595959;
+    padding: 2px;
   }
 }

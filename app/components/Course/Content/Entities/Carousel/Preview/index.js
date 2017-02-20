@@ -2,7 +2,7 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Icon as AntIcon,
+  Icon,
   Carousel as AntCarousel,
 } from 'antd';
 import styles from './styles.css';
@@ -10,7 +10,7 @@ import styles from './styles.css';
 const Preview = ({
   data,
   cache,
-  placement,
+  // placement,
   fullscreen,
   toggleView,
 }) => {
@@ -33,7 +33,14 @@ const Preview = ({
       className={styles.preview}
       style={calculatedStyles}
     >
-      <AntCarousel>
+      <AntCarousel
+        swipe
+        arrows
+        dotsClass={`${styles.dots} slick-dots`}
+        prevArrow={<div><Icon type="left" className={styles.arrow} /></div>}
+        nextArrow={<div><Icon type="right" className={styles.arrow} /></div>}
+        className={styles.carousel}
+      >
         {data.slides.map(({
           type,
           text,
@@ -71,17 +78,15 @@ const Preview = ({
           </div>
         )}
       </AntCarousel>
-      {placement === 'editor' &&
-        <span className={styles.resize}>
-          <AntIcon
-            type={fullscreen
-              ? 'shrink'
-              : 'arrows-alt'
-            }
-            onClick={toggleView}
-          />
-        </span>
-      }
+      <span className={styles.resize}>
+        <Icon
+          type={fullscreen
+            ? 'shrink'
+            : 'arrows-alt'
+          }
+          onClick={toggleView}
+        />
+      </span>
     </div>
   );
 };
@@ -103,10 +108,10 @@ Preview.propTypes = {
     ).isRequired,
   }).isRequired,
   cache: PropTypes.object.isRequired,
-  placement: PropTypes.oneOf([
-    'modal',
-    'editor',
-  ]).isRequired,
+  // placement: PropTypes.oneOf([
+  //   'modal',
+  //   'editor',
+  // ]).isRequired,
   fullscreen: PropTypes.bool,
   toggleView: PropTypes.func,
 };
