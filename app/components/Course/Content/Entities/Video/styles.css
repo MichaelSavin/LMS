@@ -2,8 +2,6 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  padding-bottom: 56.25%;
-  height: 0;
   overflow: hidden;
 }
 
@@ -64,9 +62,6 @@
 
 .text {
   width: 640px;
-  margin-top: 70px;
-  overflow: overlay;
-  min-height: 150px;
 }
 
 .playBtn {
