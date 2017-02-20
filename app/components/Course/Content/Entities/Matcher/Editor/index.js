@@ -89,18 +89,26 @@ const Editor = ({
               options: [{
                 text: 'Вариант 1',
                 image: undefined,
+                answerText: 'Вариант 1',
+                ansewerImage: undefined,
                 id: `${random(0, 999)}`,
               }, {
                 text: 'Вариант 2',
                 image: undefined,
+                answerText: 'Вариант 2',
+                ansewerImage: undefined,
                 id: `${random(0, 999)}`,
               }, {
                 text: 'Вариант 3',
                 image: undefined,
+                answerText: 'Вариант 3',
+                ansewerImage: undefined,
                 id: `${random(0, 999)}`,
               }, {
                 text: 'Вариант 4',
                 image: undefined,
+                answerText: 'Вариант 4',
+                ansewerImage: undefined,
                 id: `${random(0, 999)}`,
               }],
               hints: [],

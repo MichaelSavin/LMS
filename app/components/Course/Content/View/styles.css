@@ -28,12 +28,7 @@
 
   & .viewport {
     width: 100%;
-    min-height: 100vh;
-    padding-top: 97.1px;
-    margin-top: -97.1px;
-    border-width: 0 10px 10px;
-    border-style: solid;
-    border-color: #EEE;
+    padding: 0 10px;
   }
 
   & .desktop {

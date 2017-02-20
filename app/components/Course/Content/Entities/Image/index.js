@@ -76,14 +76,14 @@ class Image extends PureComponent {
         >
           <div className={styles.input}>
             <Input
-              placeholder="Ссылка на видео"
+              placeholder="Ссылка на изображение"
               value={promt.url}
               onChange={this.inputChange('url')}
             />
           </div>
           <div className={styles.input}>
             <Input
-              placeholder="Заголовок видео"
+              placeholder="Заголовок изображения"
               value={promt.title}
               onChange={this.inputChange('title')}
             />

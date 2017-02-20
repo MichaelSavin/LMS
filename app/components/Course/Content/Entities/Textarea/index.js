@@ -60,14 +60,14 @@ class Textarea extends Component {
 
   render() {
     const {
-      value,
+      // value,
       promt,
     } = this.state;
     return (
       <div className={styles.textarea}>
         <AntInput
           type="textarea"
-          value={value}
+          // value={value}
           autosize={{ minRows: 4 }}
           onDoubleClick={this.editValue}
         />

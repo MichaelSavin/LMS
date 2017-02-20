@@ -318,7 +318,7 @@ Crop.defaultProps = {
   },
 };
 
-Image.contextTypes = {
+Crop.contextTypes = {
   isPlayer: PropTypes.bool,
 };
 

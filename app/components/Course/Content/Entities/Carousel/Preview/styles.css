@@ -1,4 +1,6 @@
 .preview {
+  border: 1px solid #E9E9E9;
+
   & .text {
     display: flex;
     padding: 0 10px;

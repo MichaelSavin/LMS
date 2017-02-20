@@ -22,7 +22,7 @@ const Preview = ({
       ? (getViewportWidth || 440) - 20
       : getViewportWidth < 400
         ? getViewportWidth - 20
-        : 400;
+        : 640;
   const calculateHeight = calculateWidth * 0.625;
   const calculatedStyles = {
     width: calculateWidth,
@@ -60,12 +60,12 @@ const Preview = ({
                       style={calculatedStyles}
                     />
                   :
-                      <div
-                        style={calculatedStyles}
-                        className={styles.empty}
-                      >
-                        Изображение не загружено
-                      </div>
+                    <div
+                      style={calculatedStyles}
+                      className={styles.empty}
+                    >
+                      Изображение не загружено
+                    </div>
                 : undefined
             }
           </div>
@@ -109,6 +109,11 @@ Preview.propTypes = {
   ]).isRequired,
   fullscreen: PropTypes.bool,
   toggleView: PropTypes.func,
+};
+
+Preview.defaultProps = {
+  fullscreen: false,
+  toggleView: () => {},
 };
 
 export default Preview;
