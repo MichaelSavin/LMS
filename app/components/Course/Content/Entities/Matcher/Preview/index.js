@@ -117,7 +117,7 @@ class Preview extends Component {
                 {options.map((option, index) =>
                   <div
                     key={index}
-                    className={styles.option}
+                    className={`${styles.option} sortable-handle`}
                     data-id={option.id}
                   >
                     {option.image &&
