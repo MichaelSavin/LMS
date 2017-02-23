@@ -272,7 +272,7 @@ class Table extends Component {
     });
   };
 
-  editMode = () => {
+  openEditor = () => {
     const { content: {
       data: {
         columns,
@@ -413,12 +413,8 @@ class Table extends Component {
       className={classNames(
         styles.table,
         styles[content.styles.head],
-        styles[content.styles.body],
-        {
-          [styles.editing]: !isReadOnly,
-        },
+        styles[content.styles.body]
       )}
-      onDoubleClick={isReadOnly && this.editMode}
     >
       <AntTable
         columns={columns}

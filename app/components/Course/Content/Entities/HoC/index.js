@@ -22,9 +22,9 @@ export default function styledHoC(WrappedComponent) {
       return !isEqual(nextState, this.state);
     }
 
-    onEdit = () => {
+    openEditor = () => {
       this.setState({
-        hocAction: 'editMode',
+        hocAction: 'openEditor',
       });
     }
 
@@ -72,7 +72,7 @@ export default function styledHoC(WrappedComponent) {
       />) : (<div
         id={`id${this.props.blockKey}`}
         className={`${styles.main} ${!isReadOnly && styles.editing}`}
-        onDoubleClick={(!this.context.isPlayer && isReadOnly) && this.onEdit}
+        onDoubleClick={(!this.context.isPlayer && isReadOnly) && this.openEditor}
       >
         <WrappedComponent
           {...this.props}
@@ -124,7 +124,7 @@ export default function styledHoC(WrappedComponent) {
               icon="edit"
               type="primary"
               className={styles.icon}
-              onClick={this.onEdit}
+              onClick={this.openEditor}
             />
           </div>
         ) : (
