@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Table as AntTable,
-  Button as AntButton,
 } from 'antd';
 import {
   get,
@@ -16,7 +15,6 @@ import {
   convertFromRaw,
 } from 'draft-js';
 import classNames from 'classnames';
-// import CopyToClipboard from 'react-copy-to-clipboard';
 import {
   entitiesDecorator,
 } from '../../Entities';
@@ -25,21 +23,21 @@ import Editor from './Editor';
 import styles from './styles.css';
 import styledHoC from '../HoC';
 
-const toggleColumnFixedWidth = (isEqual, content) => {
+const toggleColumnFixedWidth = (isItEqual, content) => {
   const { columns } = content.data;
   return {
     ...content,
     styles: set([
       'equalColumnsWidth',
     ],
-      isEqual,
+      isItEqual,
       content.styles,
     ),
     data: {
       ...content.data,
       columns: columns.map((column) => ({
         ...column,
-        width: isEqual
+        width: isItEqual
           ? `${100 / columns.length}%`
           : null,
       })),
@@ -117,14 +115,20 @@ const convertDraftEditorStateToRaw = (content) => ({
 class Table extends Component {
   constructor(props) {
     super(props);
+    this.saveSettings = this.saveSettings.bind(this);
     this.state = {
       content: convertRawToDraftEditorState(this.props.content),
       temp: false,
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.hocAction !== this.props.hocAction && this[nextProps.hocAction]) {
+      this[nextProps.hocAction]();
+    }
+  }
 
-  changeCell = (index, key) => (value) => {
+  changeCell = (index, key, value) => {
     this.setState({
       temp: set([
         'data',
@@ -133,14 +137,14 @@ class Table extends Component {
         key,
       ],
         value,
-        this.props.hocState.temp,
+        this.state.temp,
       ),
     });
   }
 
   addColumn = (columnKey) => () => {
     const dataIndex = `index${random(0, 999)}`;
-    const { temp } = this.props.hocState;
+    const { temp } = this.state;
     const rows = temp.data.rows
       .map((row) => ({
         ...row,
@@ -177,7 +181,7 @@ class Table extends Component {
         },
       },
       temp,
-    } = this.props.hocState;
+    } = this.state;
     const { dataIndex } = columns[columnKey];
     this.setState({
       temp: toggleColumnFixedWidth(
@@ -197,7 +201,7 @@ class Table extends Component {
   }
 
   addRow = (columnKey, index) => () => {
-    const newrows = [...this.props.hocState.temp.data.rows];
+    const newrows = [...this.state.temp.data.rows];
     const newRow = Object.keys(newrows[0])
       .reduce((row, key) => (
         key === 'key' ? row : {
@@ -215,13 +219,13 @@ class Table extends Component {
           newRow,
           ...newrows.slice(index),
         ],
-        this.props.hocState.temp,
+        this.state.temp,
       ),
     });
   }
 
   deleteRow = (columnKey, index) => () => {
-    const { rows } = this.props.hocState.temp.data;
+    const { rows } = this.state.temp.data;
     if (rows.length > 1) {
       this.setState({
         temp: set([
@@ -229,7 +233,7 @@ class Table extends Component {
           'rows',
         ],
           rows.filter((value, key) => key !== index),
-          this.props.hocState.temp,
+          this.state.temp,
         ),
       });
     }
@@ -237,7 +241,7 @@ class Table extends Component {
 
 
   changeHeaderCell = (columnKey) => (content) => {
-    const { temp } = this.props.hocState;
+    const { temp } = this.state;
     this.setState({
       temp: set([
         'data',
@@ -274,9 +278,8 @@ class Table extends Component {
         columns,
         rows,
       },
-    }, content } = this.props.hocState;
+    }, content } = this.state;
     this.setState({
-      isReadOnly: false,
       temp: {
         ...content,
         data: {
@@ -284,10 +287,10 @@ class Table extends Component {
           columns: this.makeEditableColumns(columns),
         },
       },
-    }, this.context.toggleReadOnly);
+    }, this.props.toggleReadOnly);
   }
 
-  saveSettings = () => {
+  saveSettings() {
     const {
       temp: {
         data: {
@@ -296,7 +299,7 @@ class Table extends Component {
         },
       },
       temp,
-    } = this.props.hocState;
+    } = this.state;
     const content = {
       ...temp,
       data: {
@@ -324,17 +327,13 @@ class Table extends Component {
     this.setState({
       content,
       temp: false,
-      isReadOnly: true,
-    });
-    this.context.toggleReadOnly();
+    }, this.props.toggleReadOnly);
   }
 
   closeEditor = () => {
     this.setState({
       temp: false,
-      isReadOnly: true,
-    });
-    this.context.toggleReadOnly();
+    }, this.props.toggleReadOnly);
   }
 
   makeEditableColumns = (columns) => columns
@@ -363,7 +362,7 @@ class Table extends Component {
           deleteColumn={this.deleteColumn}
           index={index}
           value={text}
-          onChange={this.changeCell(index, column.dataIndex)}
+          onChange={(value) => { this.changeCell(index, column.dataIndex, value); }}
           columnKey={key}
         />
       ),
@@ -374,7 +373,7 @@ class Table extends Component {
     // то в параметре функции передается
     // значение select а не event!
     const value = !event.target && event;
-    const { temp } = this.props.hocState;
+    const { temp } = this.state;
     if (value) {
       this.setState({
         temp: set([
@@ -382,7 +381,7 @@ class Table extends Component {
           type,
         ],
           value,
-          this.props.hocState.temp,
+          this.state.temp,
         ),
       });
     } else if (type === 'equalColumnsWidth') {
@@ -398,16 +397,16 @@ class Table extends Component {
           type,
         ],
           event.target.checked,
-          this.props.hocState.temp,
+          this.state.temp,
         ),
       });
     }
   }
 
   render() {
-    const content = this.props.hocState.temp || this.props.hocState.content;
+    const content = this.state.temp || this.state.content;
     const { rows, columns } = content.data;
-    const { isReadOnly } = this.props.hocState;
+    const { isReadOnly } = this.props;
 
     return (<div
       id={`id${this.props.blockKey}`}
@@ -428,7 +427,7 @@ class Table extends Component {
         showHeader={!content.styles.isHeaderHide}
         bordered={get(['body'], content.styles) === 'big'}
       />
-      {(!this.context.isPlayer && !isReadOnly) &&
+      {!isReadOnly &&
         <div className={styles.editor}>
           <Editor
             styles={content.styles}
@@ -436,21 +435,6 @@ class Table extends Component {
             closeEditor={this.closeEditor}
             saveSettings={this.saveSettings}
           />
-          <div className={styles.actions}>
-            <AntButton
-              type="primary"
-              icon="rollback"
-              className={styles.icon}
-              onClick={this.closeEditor}
-            />
-            <AntButton
-              type="primary"
-              icon="check-circle"
-              className={styles.icon}
-              onClick={this.saveSettings}
-            />
-          </div>
-
         </div>
       }
     </div>);
@@ -458,8 +442,10 @@ class Table extends Component {
 }
 
 Table.propTypes = {
-  hocState: PropTypes.object.isRequired,
+  isReadOnly: PropTypes.bool.isRequired,
+  toggleReadOnly: PropTypes.func.isRequired,
   blockKey: PropTypes.string.isRequired,
+  hocAction: PropTypes.string.isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     styles: PropTypes.shape({
@@ -545,14 +531,6 @@ Table.defaultProps = {
       }],
     },
   },
-};
-
-Table.contextTypes = {
-  moveBlock: PropTypes.func,
-  removeBlock: PropTypes.func,
-  duplicateBlock: PropTypes.func,
-  toggleReadOnly: PropTypes.func,
-  isPlayer: PropTypes.bool,
 };
 
 export default styledHoC(Table);

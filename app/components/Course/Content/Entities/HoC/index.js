@@ -1,25 +1,62 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import {
   Icon as AntIcon,
   Button as AntButton,
 } from 'antd';
+import { isEqual } from 'lodash/fp';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 import styles from './styles.css';
 
 export default function styledHoC(WrappedComponent) {
-  class HoC extends WrappedComponent {
+  class HoC extends Component {
     constructor(...args) {
       super(...args);
-      this.toggleReadOnly = this.toggleReadOnly.bind(this);
+      this.state = ({
+        isReadOnly: true,
+        hocAction: '',
+      });
     }
 
-    toggleReadOnly(option) {
+    shouldComponentUpdate(nextProps, nextState) {
+      return !isEqual(nextState, this.state);
+    }
+
+    onEdit = () => {
+      this.setState({
+        hocAction: 'editMode',
+      });
+    }
+
+    saveSettings = () => {
+      this.setState({
+        hocAction: 'saveSettings',
+      });
+    }
+
+    closeEditor = () => {
+      this.setState({
+        hocAction: 'closeEditor',
+      });
+    }
+
+    toggleReadOnly = (option) => {
       const readOnly = option !== undefined ? option : !this.state.isReadOnly;
       this.setState({
         isReadOnly: readOnly,
-      }, () => this.context.toggleReadOnly(readOnly));
+        hocAction: '',
+      }, () => {
+        this.context.toggleReadOnly(!readOnly);
+      });
     }
+
+    deleteBlock = () => this.context.removeBlock(this.props.blockKey);
+
+    duplicateBlock = () => this.context.duplicateBlock(this.props.entityKey);
+
+    moveBlockUp = () => this.context.moveBlock(this.props.blockKey, -1);
+
+    moveBlockDown = () => this.context.moveBlock(this.props.blockKey, 1);
 
     render() {
       const { isReadOnly } = this.state;
@@ -28,17 +65,21 @@ export default function styledHoC(WrappedComponent) {
       }#id${
         this.props.blockKey
       }`;
-      return (<div
+      return this.context.isPlayer ? (<WrappedComponent
+        {...this.props}
+        {...this.state}
+        toggleReadOnly={this.toggleReadOnly}
+      />) : (<div
         id={`id${this.props.blockKey}`}
-        className={styles.main}
-        onDoubleClick={isReadOnly && this.editMode}
+        className={`${styles.main} ${!isReadOnly && styles.editing}`}
+        onDoubleClick={isReadOnly && this.onEdit}
       >
         <WrappedComponent
           {...this.props}
-          hocState={this.state}
+          {...this.state}
           toggleReadOnly={this.toggleReadOnly}
         />
-        {(!this.context.isPlayer && isReadOnly) ? (
+        {isReadOnly ? (
           <div className={styles.actions}>
             <CopyToClipboard text={anchorUrl}>
               <AntButton
@@ -83,7 +124,7 @@ export default function styledHoC(WrappedComponent) {
               icon="edit"
               type="primary"
               className={styles.icon}
-              onClick={this.editMode}
+              onClick={this.onEdit}
             />
           </div>
         ) : (
@@ -107,6 +148,11 @@ export default function styledHoC(WrappedComponent) {
       </div>);
     }
   }
+
+  HoC.propTypes = {
+    blockKey: PropTypes.string.isRequired,
+    entityKey: PropTypes.string.isRequired,
+  };
 
   HoC.contextTypes = {
     moveBlock: PropTypes.func,
