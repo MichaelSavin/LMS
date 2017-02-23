@@ -72,7 +72,7 @@ export default function styledHoC(WrappedComponent) {
       />) : (<div
         id={`id${this.props.blockKey}`}
         className={`${styles.main} ${!isReadOnly && styles.editing}`}
-        onDoubleClick={isReadOnly && this.onEdit}
+        onDoubleClick={(!this.context.isPlayer && isReadOnly) && this.onEdit}
       >
         <WrappedComponent
           {...this.props}
