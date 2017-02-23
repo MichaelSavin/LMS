@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Icon as AntIcon,
   Table as AntTable,
   Button as AntButton,
 } from 'antd';
@@ -17,13 +16,14 @@ import {
   convertFromRaw,
 } from 'draft-js';
 import classNames from 'classnames';
-import CopyToClipboard from 'react-copy-to-clipboard';
+// import CopyToClipboard from 'react-copy-to-clipboard';
 import {
   entitiesDecorator,
 } from '../../Entities';
 import Cell from './Cell';
 import Editor from './Editor';
 import styles from './styles.css';
+import styledHoC from '../HoC';
 
 const toggleColumnFixedWidth = (isEqual, content) => {
   const { columns } = content.data;
@@ -119,7 +119,6 @@ class Table extends Component {
     super(props);
     this.state = {
       content: convertRawToDraftEditorState(this.props.content),
-      isReadOnly: true,
       temp: false,
     };
   }
@@ -134,14 +133,14 @@ class Table extends Component {
         key,
       ],
         value,
-        this.state.temp,
+        this.props.hocState.temp,
       ),
     });
   }
 
   addColumn = (columnKey) => () => {
     const dataIndex = `index${random(0, 999)}`;
-    const { temp } = this.state;
+    const { temp } = this.props.hocState;
     const rows = temp.data.rows
       .map((row) => ({
         ...row,
@@ -178,7 +177,7 @@ class Table extends Component {
         },
       },
       temp,
-    } = this.state;
+    } = this.props.hocState;
     const { dataIndex } = columns[columnKey];
     this.setState({
       temp: toggleColumnFixedWidth(
@@ -198,7 +197,7 @@ class Table extends Component {
   }
 
   addRow = (columnKey, index) => () => {
-    const newrows = [...this.state.temp.data.rows];
+    const newrows = [...this.props.hocState.temp.data.rows];
     const newRow = Object.keys(newrows[0])
       .reduce((row, key) => (
         key === 'key' ? row : {
@@ -216,13 +215,13 @@ class Table extends Component {
           newRow,
           ...newrows.slice(index),
         ],
-        this.state.temp,
+        this.props.hocState.temp,
       ),
     });
   }
 
   deleteRow = (columnKey, index) => () => {
-    const { rows } = this.state.temp.data;
+    const { rows } = this.props.hocState.temp.data;
     if (rows.length > 1) {
       this.setState({
         temp: set([
@@ -230,7 +229,7 @@ class Table extends Component {
           'rows',
         ],
           rows.filter((value, key) => key !== index),
-          this.state.temp,
+          this.props.hocState.temp,
         ),
       });
     }
@@ -238,7 +237,7 @@ class Table extends Component {
 
 
   changeHeaderCell = (columnKey) => (content) => {
-    const { temp } = this.state;
+    const { temp } = this.props.hocState;
     this.setState({
       temp: set([
         'data',
@@ -275,7 +274,7 @@ class Table extends Component {
         columns,
         rows,
       },
-    }, content } = this.state;
+    }, content } = this.props.hocState;
     this.setState({
       isReadOnly: false,
       temp: {
@@ -297,8 +296,7 @@ class Table extends Component {
         },
       },
       temp,
-    } =
-      this.state;
+    } = this.props.hocState;
     const content = {
       ...temp,
       data: {
@@ -376,7 +374,7 @@ class Table extends Component {
     // то в параметре функции передается
     // значение select а не event!
     const value = !event.target && event;
-    const { temp } = this.state;
+    const { temp } = this.props.hocState;
     if (value) {
       this.setState({
         temp: set([
@@ -384,7 +382,7 @@ class Table extends Component {
           type,
         ],
           value,
-          this.state.temp,
+          this.props.hocState.temp,
         ),
       });
     } else if (type === 'equalColumnsWidth') {
@@ -400,29 +398,17 @@ class Table extends Component {
           type,
         ],
           event.target.checked,
-          this.state.temp,
+          this.props.hocState.temp,
         ),
       });
     }
   }
 
-  deleteBlock = () => this.context.removeBlock(this.props.blockKey);
-
-  duplicateBlock = () => this.context.duplicateBlock(this.props.entityKey);
-
-  moveBlockUp = () => this.context.moveBlock(this.props.blockKey, -1);
-
-  moveBlockDown = () => this.context.moveBlock(this.props.blockKey, 1);
-
   render() {
-    const content = this.state.temp || this.state.content;
+    const content = this.props.hocState.temp || this.props.hocState.content;
     const { rows, columns } = content.data;
-    const { isReadOnly } = this.state;
-    const anchorUrl = `${
-      window.location.pathname
-    }#id${
-      this.props.blockKey
-    }`;
+    const { isReadOnly } = this.props.hocState;
+
     return (<div
       id={`id${this.props.blockKey}`}
       className={classNames(
@@ -442,77 +428,29 @@ class Table extends Component {
         showHeader={!content.styles.isHeaderHide}
         bordered={get(['body'], content.styles) === 'big'}
       />
-      {!this.context.isPlayer && isReadOnly ?
-        <div className={styles.actions}>
-          <CopyToClipboard text={anchorUrl}>
+      {(!this.context.isPlayer && !isReadOnly) &&
+        <div className={styles.editor}>
+          <Editor
+            styles={content.styles}
+            changeStyle={this.changeStyle}
+            closeEditor={this.closeEditor}
+            saveSettings={this.saveSettings}
+          />
+          <div className={styles.actions}>
             <AntButton
               type="primary"
-              icon="paper-clip"
+              icon="rollback"
               className={styles.icon}
-            >
-              Скопировать: {anchorUrl}
-            </AntButton>
-          </CopyToClipboard>
-          <AntButton
-            type="primary"
-            icon="up-square"
-            className={styles.icon}
-            onClick={this.moveBlockUp}
-          />
-          <span
-            icon="ellipsis"
-            className={classNames(styles.icon, 'sortable-handle')}
-          >
-            <AntIcon type="ellipsis" />
-          </span>
-          <AntButton
-            type="primary"
-            icon="down-square"
-            className={styles.icon}
-            onClick={this.moveBlockDown}
-          />
-          <AntButton
-            type="danger"
-            icon="close-circle"
-            className={styles.icon}
-            onClick={this.deleteBlock}
-          />
-          <AntButton
-            icon="copy"
-            type="primary"
-            className={styles.icon}
-            onClick={this.duplicateBlock}
-          />
-          <AntButton
-            icon="edit"
-            type="primary"
-            className={styles.icon}
-            onClick={this.editMode}
-          />
-        </div>
-        : <div className={styles.editor}>
-          {!this.context.isPlayer && <div>
-            <Editor
-              styles={content.styles}
-              changeStyle={this.changeStyle}
-              closeEditor={this.closeEditor}
-              saveSettings={this.saveSettings}
+              onClick={this.closeEditor}
             />
-            <div className={styles.actions}>
-              <AntButton
-                type="primary"
-                icon="rollback"
-                className={styles.icon}
-                onClick={this.closeEditor}
-              />
-              <AntButton
-                type="primary"
-                icon="check-circle"
-                className={styles.icon}
-                onClick={this.saveSettings}
-              />
-            </div>
-          </div>}
+            <AntButton
+              type="primary"
+              icon="check-circle"
+              className={styles.icon}
+              onClick={this.saveSettings}
+            />
+          </div>
+
         </div>
       }
     </div>);
@@ -520,6 +458,7 @@ class Table extends Component {
 }
 
 Table.propTypes = {
+  hocState: PropTypes.object.isRequired,
   blockKey: PropTypes.string.isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
@@ -616,4 +555,4 @@ Table.contextTypes = {
   isPlayer: PropTypes.bool,
 };
 
-export default Table;
+export default styledHoC(Table);
