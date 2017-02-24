@@ -428,8 +428,6 @@ class Table extends Component {
           <Editor
             styles={content.styles}
             changeStyle={this.changeStyle}
-            closeEditor={this.closeEditor}
-            saveSettings={this.saveSettings}
           />
         </div>
       }
@@ -440,8 +438,8 @@ class Table extends Component {
 Table.propTypes = {
   isReadOnly: PropTypes.bool.isRequired,
   toggleReadOnly: PropTypes.func.isRequired,
-  blockKey: PropTypes.string.isRequired,
   hocAction: PropTypes.string.isRequired,
+  blockKey: PropTypes.string.isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     styles: PropTypes.shape({

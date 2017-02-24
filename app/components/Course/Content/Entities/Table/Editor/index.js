@@ -2,15 +2,12 @@ import React, {
   PropTypes,
 } from 'react';
 import {
-  Button as AntButton,
   Select as AntSelect,
   Checkbox as AntCheckbox,
 } from 'antd';
 import styles from './styles.css';
 
 const Editor = ({
-  saveSettings,
-  closeEditor,
   changeStyle,
   ...props
 }) => (
@@ -70,14 +67,6 @@ const Editor = ({
       >
         Колонки равной ширины
       </AntCheckbox>
-    </div>
-    <div className={styles.confirms}>
-      <AntButton type="primary" onClick={saveSettings}>
-        Применить
-      </AntButton>
-      <AntButton type="ghost" onClick={closeEditor}>
-        Отменить
-      </AntButton>
     </div>
   </div>
 );

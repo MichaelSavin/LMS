@@ -1,9 +1,7 @@
 .main {
-  user-select: none;
   position: relative;
-  display: inline-block;
+  user-select: none;
   -webkit-user-select: none;
-  width: 100%;
   margin: 5px 0;
   transition: all 0.1s ease;
 
@@ -27,77 +25,20 @@
     box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
     border-left: 4px solid #108EE9 !important;
   }
-
-  & .editor {
-    margin-top: 30px;
-  }
-}
-
-.main.normal {
-  & thead > tr > th {
-    font-weight: normal;
-  }
-}
-
-.main.compact {
-  padding: 0 10px;
-
-  & thead > tr > th {
-    border-bottom: 1px solid #E9E9E9;
-  }
-
-  & tbody > tr:last-child > td {
-    border-bottom: none;
-  }
-}
-
-.main.small {
-  & tr:nth-child(even) {
-    background: #F7F7F7;
-  }
-
-  & thead > tr > th {
-    background: #F7F7F7;
-  }
-
-  & tbody > tr > td {
-    border-bottom: none;
-  }
 }
 
 .main:hover {
   box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
 
-  & .icon {
+  .icon {
     visibility: visible;
   }
 }
 
-:global .clearfix::before {
-  content: none;
-}
+.confirms {
+  padding: 16px;
 
-:global .ant-table {
-  overflow: visible;
-
-  & table {
-    overflow: visible;
-    border-radius: 0;
-  }
-
-  & .ant-table-thead > tr > th {
-    background: none;
-  }
-}
-
-:global .ant-btn-danger {
-  color: #FFF;
-  border-color: #EC6D6D;
-  background-color: #EC6D6D;
-
-  &:hover {
-    color: #FFF;
-    border-color: #F77D7D;
-    background-color: #F77D7D;
+  button {
+    margin-right: 5px;
   }
 }

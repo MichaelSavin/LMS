@@ -131,8 +131,8 @@ export default function styledHoC(WrappedComponent) {
           <div className={styles.editor}>
             <div className={styles.actions}>
               <AntButton
-                type="primary"
                 icon="rollback"
+                type="ghost"
                 className={styles.icon}
                 onClick={this.closeEditor}
               />
@@ -145,6 +145,14 @@ export default function styledHoC(WrappedComponent) {
             </div>
           </div>
         )}
+        {!isReadOnly && <div className={styles.confirms}>
+          <AntButton type="ghost" onClick={this.closeEditor} icon="rollback">
+            Отменить
+          </AntButton>
+          <AntButton type="primary" onClick={this.saveSettings} icon="check-circle">
+            Применить
+          </AntButton>
+        </div>}
       </div>);
     }
   }
