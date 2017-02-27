@@ -1,0 +1,40 @@
+.editor {
+  position: relative;
+  padding: 16px;
+  border-top: 1px solid #E9E9E9;
+
+  & .name {
+    position: absolute;
+    top: -10px;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 1px 8px;
+    margin-left: -8px;
+    border-radius: 4px;
+    background: #FFF;
+    border-top-left-radius: 0;
+  }
+
+  & .confirms {
+    margin-top: 16px;
+
+    & button {
+      margin-right: 16px;
+    }
+  }
+
+  & .options {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  & .item {
+    flex: 1 1 300px;
+    margin-right: 20px;
+
+    & > div {
+      padding: 10px 0;
+    }
+  }
+}

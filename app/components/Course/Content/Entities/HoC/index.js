@@ -1,42 +1,37 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import {
   Icon as AntIcon,
   Button as AntButton,
 } from 'antd';
-import { isEqual } from 'lodash/fp';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 import styles from './styles.css';
 
 export default function styledHoC(WrappedComponent) {
-  class HoC extends Component {
+  class HoC extends PureComponent {
     constructor(...args) {
       super(...args);
       this.state = ({
         isReadOnly: true,
-        hocAction: '',
+        actionFlag: '',
       });
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-      return !isEqual(nextState, this.state);
     }
 
     openEditor = () => {
       this.setState({
-        hocAction: 'openEditor',
+        actionFlag: 'openEditor',
       });
     }
 
     saveSettings = () => {
       this.setState({
-        hocAction: 'saveSettings',
+        actionFlag: 'saveSettings',
       });
     }
 
     closeEditor = () => {
       this.setState({
-        hocAction: 'closeEditor',
+        actionFlag: 'closeEditor',
       });
     }
 
@@ -44,7 +39,7 @@ export default function styledHoC(WrappedComponent) {
       const readOnly = option !== undefined ? option : !this.state.isReadOnly;
       this.setState({
         isReadOnly: readOnly,
-        hocAction: '',
+        actionFlag: '',
       }, () => {
         this.context.toggleReadOnly(!readOnly);
       });

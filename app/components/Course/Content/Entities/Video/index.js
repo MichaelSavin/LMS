@@ -1,20 +1,26 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import ReactPlayer from 'react-player';
-import { Icon as AntIcon, Button, Modal, Input } from 'antd';
+import { Button } from 'antd';
 import { Entity } from 'draft-js';
+import styledHoC from '../HoC';
+import Edit from './Edit';
 import styles from './styles.css';
 
-class Video extends Component {
+class Video extends PureComponent {
 
   constructor(props) {
     super(props);
     this.state = {
       isTextShowen: false,
       playing: false,
-      promt: {
-        visible: false,
-      },
+      temp: null,
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.actionFlag !== this.props.actionFlag && this[nextProps.actionFlag]) {
+      this[nextProps.actionFlag]();
+    }
   }
 
   onPlay = () => {
@@ -47,42 +53,36 @@ class Video extends Component {
     });
   }
 
-  editContent = (event) => {
-    event.preventDefault();
+  openEditor = () => {
     this.setState({
-      promt: {
+      temp: {
         ...this.props.content,
-        visible: true,
       },
-    });
+    }, this.props.toggleReadOnly);
   }
 
-  modifyContent = () => {
-    const { promt: content } = this.state;
+  saveSettings = () => {
+    const { temp: content } = this.state;
     Entity.replaceData(
       this.props.entityKey, {
         content,
       }
     );
     this.setState({
-      promt: {
-        visible: false,
-      },
-    });
+      temp: null,
+    }, this.props.toggleReadOnly);
   }
 
-  handleCancel = () => {
+  closeEditor = () => {
     this.setState({
-      promt: {
-        visible: false,
-      },
-    });
+      temp: null,
+    }, this.props.toggleReadOnly);
   }
 
   inputChange = (type) => (e) => {
     this.setState({
-      promt: {
-        ...this.state.promt,
+      temp: {
+        ...this.state.temp,
         [type]: e.target.value,
       },
     });
@@ -92,48 +92,12 @@ class Video extends Component {
     const {
       isTextShowen,
       playing,
-      promt,
+      temp,
     } = this.state;
-    const { url, text, size, title } = this.props.content;
+    const { content, isReadOnly } = this.props;
+    const { url, text, size, title } = temp || content;
     return (
       <div className={styles.video}>
-        {promt.visible && <Modal
-          title="Параметры видео"
-          visible={promt.visible}
-          onOk={this.modifyContent}
-          onCancel={this.handleCancel}
-          okText="OK"
-          cancelText="Отмена"
-        >
-          <div className={styles.input}>
-            <Input
-              placeholder="Ссылка на видео"
-              value={promt.url}
-              onChange={this.inputChange('url')}
-            />
-          </div>
-          <div className={styles.input}>
-            <Input
-              placeholder="Заголовок видео"
-              value={promt.title}
-              onChange={this.inputChange('title')}
-            />
-          </div>
-          <div className={styles.input}>
-            <Input
-              placeholder="Размер видео"
-              value={promt.size}
-              onChange={this.inputChange('size')}
-            />
-          </div>
-          <div className={styles.input}>
-            <Input
-              type="textarea" autosize={{ minRows: 2 }} placeholder="Описание видео"
-              value={promt.text}
-              onChange={this.inputChange('text')}
-            />
-          </div>
-        </Modal>}
         <div className={styles.player}>
           <ReactPlayer
             url={url}
@@ -182,21 +146,23 @@ class Video extends Component {
           </div>
         </div>
 
+        {(!isReadOnly && temp) && <Edit
+          data={temp}
+          inputChange={this.inputChange}
+        />}
+
         {isTextShowen && <div className={styles.text}>
           {text}
         </div>}
-
-        {!this.context.isPlayer && <AntIcon
-          type="setting"
-          className={styles.icon}
-          onClick={this.editContent}
-        />}
       </div>
     );
   }
 }
 
 Video.propTypes = {
+  isReadOnly: PropTypes.bool.isRequired,
+  toggleReadOnly: PropTypes.func.isRequired,
+  actionFlag: PropTypes.string.isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
     size: PropTypes.string.isRequired,
@@ -219,4 +185,4 @@ Video.contextTypes = {
   isPlayer: PropTypes.bool,
 };
 
-export default Video;
+export default styledHoC(Video);

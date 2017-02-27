@@ -123,8 +123,8 @@ class Table extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.hocAction !== this.props.hocAction && this[nextProps.hocAction]) {
-      this[nextProps.hocAction]();
+    if (nextProps.actionFlag !== this.props.actionFlag && this[nextProps.actionFlag]) {
+      this[nextProps.actionFlag]();
     }
   }
 
@@ -438,7 +438,7 @@ class Table extends Component {
 Table.propTypes = {
   isReadOnly: PropTypes.bool.isRequired,
   toggleReadOnly: PropTypes.func.isRequired,
-  hocAction: PropTypes.string.isRequired,
+  actionFlag: PropTypes.string.isRequired,
   blockKey: PropTypes.string.isRequired,
   entityKey: PropTypes.string.isRequired,
   content: PropTypes.shape({
