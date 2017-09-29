@@ -1,4 +1,4 @@
-# RTK [![Тестовый сервер](https://img.shields.io/badge/%D0%9F%D1%80%D0%BE%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BD%D0%B0-Heroku-8554BC.svg)](https://fcfb5677e948746bbcd526a8c42.herokuapp.com/0-0-0)
+# Редактор электронных учебников [![Тестовый сервер](https://img.shields.io/badge/%D0%9F%D1%80%D0%BE%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BD%D0%B0-Heroku-8554BC.svg)](https://fcfb5677e948746bbcd526a8c42.herokuapp.com/0-0-0)
 ## Продукт
 
 Издательская платформа для разработки электронных учебников и интерактивных изданий
@@ -42,17 +42,8 @@ npm start
 ## Цели создания
 
 * Создать self-publishing рынок для электронных учебных изданий
-
 * Создать независимую систему дистрибуции
 * Снизить затраты на производство электронных учебных изданий
 * Снизить время до выхода электронных учебных изданий на рынок
 * Ввести в практику электронного книгоиздания agile-методики (непрерывное совершенствование продукта короткими итерациями)
-* Создать новый формат электронного учебника на основе открытых стандартов, в т.ч. участвовать в разработке нового w3c стандарта для web-based электронных книг: <http://w3c.github.io/dpub-pwp/publishing-snapshots/FPWD/Overview.html/>
-
-### Как влияет на общественные институты и экономику в целом
-
-[Открыть в Google Docs](https://docs.google.com/spreadsheets/d/102H0TyLYbux6IPOW8f9cZAjpJSxOd9iMw1PLNxi7GD4/edit#gid=0)
-
-### Рынки. Барьеры и риски. Пути монетизации
-
-[Открыть в Google Docs](https://docs.google.com/document/d/1vL1dQblbtf_9hUunku45qK_UakoET32veVRkYoQhcu4/edit)
+* Создать новый формат электронного учебника на основе открытых стандартов, в т.ч. ePub 3.1, WebPub: <http://w3c.github.io/dpub-pwp/publishing-snapshots/FPWD/Overview.html/>
